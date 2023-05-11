@@ -83,21 +83,28 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
         if (response.ok) {
           const { text } = await response.json();
 
-          SaveCVtoUser({
-            variables: {
-              fields: {
-                // cvString: text
-                userID: currentUser?._id,
-                cvContent: text,
+          if (text.split(" ").length < 10) {
+            SaveCVtoUser({
+              variables: {
+                fields: {
+                  // cvString: text
+                  userID: currentUser?._id,
+                  cvContent: text,
+                },
               },
-            },
-          });
+            });
+          } else {
+            toast.error(
+              "No text found in uploaded CV file. Please ensure that you have text in your Resume or try a different Resume."
+            );
+            return;
+          }
 
           console.log(text);
         } else {
           const { error } = await response.json();
 
-          console.log("error aaa", error);
+          console.log("error", error);
         }
       };
 
