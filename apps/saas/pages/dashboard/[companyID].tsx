@@ -6,6 +6,8 @@ import {
   Button,
   CandidateInfo,
   CandidatesTableList,
+  GridItemSix,
+  GridLayout,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
@@ -24,8 +26,9 @@ const CompanyCRM: NextPageWithLayout = () => {
   const { companyID } = router.query;
   const [candidates, setCandidates] = useState<CandidateType[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -80,30 +83,31 @@ const CompanyCRM: NextPageWithLayout = () => {
   };
 
   return (
-    <div className="grid flex-1 grid-cols-2 gap-4">
-      <div className="col-1">
-        <div className="container m-4 border border-gray-500 p-4">
-          <CandidatesTableList
-            candidatesList={candidates}
-            fetchIsLoading={findCompanyIsLoading}
-            setRowObjectData={handleRowClick}
-          />
-          <button
-            className="mt-4 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+    <GridLayout className="">
+      <GridItemSix>
+        <div className="">
+          <Button
+            className="mb-4 ml-auto"
+            variant="secondary"
             onClick={handleTrainButtonClick}
           >
-            Train EdenAI Dirty
-          </button>
-          <Button
+            Train EdenAI AI
+          </Button>
+          {/* <Button
             variant="secondary"
             onClick={() => {
               router.push(`/train-ai/${companyID}`);
             }}
           >
             Train AI
-          </Button>
+          </Button> */}
+          <CandidatesTableList
+            candidatesList={candidates}
+            fetchIsLoading={findCompanyIsLoading}
+            setRowObjectData={handleRowClick}
+          />
           {trainModalOpen ? (
-            <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="fixed inset-0 z-30 overflow-y-auto">
               <div className="flex min-h-screen items-center justify-center px-4">
                 <div
                   className="fixed inset-0 transition-opacity"
@@ -124,9 +128,9 @@ const CompanyCRM: NextPageWithLayout = () => {
             </div>
           ) : null}
         </div>
-      </div>
-      <div className="col-2">
-        <div className="m-4 border border-gray-500 bg-white p-8">
+      </GridItemSix>
+      <GridItemSix className="relative">
+        <div className="scrollbar-hide -my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
           {selectedUserId ? (
             <CandidateInfo
               memberID={selectedUserId || ""}
@@ -134,13 +138,13 @@ const CompanyCRM: NextPageWithLayout = () => {
               summaryQuestions={selectedUserSummaryQuestions}
             />
           ) : (
-            <div>
+            <div className="w-full pt-20 text-center">
               <p className="text-gray-400">Select a candidate</p>
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </GridItemSix>
+    </GridLayout>
   );
 };
 

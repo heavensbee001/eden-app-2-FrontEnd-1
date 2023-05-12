@@ -49,31 +49,27 @@ type PopoverOnHoverProps = {
 export const PopoverOnHover: FC<PopoverOnHoverProps> = ({
   children,
   Content,
-  size = "md",
+  size,
   ubication = "top",
 }) => {
   const { show, open, delayClose } = useHover();
 
   return (
     <Float show={show} placement={ubication} offset={15} arrow={5}>
-      <div
-        className={`px-5 py-2 rounded-md`}
-        onMouseEnter={open}
-        onMouseLeave={delayClose}
-      >
+      <div className={``} onMouseEnter={open} onMouseLeave={delayClose}>
         {children}
       </div>
 
       <div
-        className={`p-4 w-${
-          size === "sm" ? "36" : size === "md" ? "48" : "80"
-        } bg-white border border-gray-200 rounded-md shadow-lg`}
+        className={`p-2 w-${
+          size ? (size === "sm" ? "36" : size === "md" ? "48" : "80") : "full"
+        } rounded-md border border-gray-200 bg-white shadow-lg`}
         onMouseEnter={open}
         onMouseLeave={delayClose}
       >
-        <Float.Arrow className="absolute bg-white w-5 h-5 rotate-45 border border-gray-200" />
+        <Float.Arrow className="absolute h-5 w-5 rotate-45 bg-white" />
 
-        <div className="relative h-full bg-white rounded-md overflow-hidden p-2">
+        <div className="relative h-full overflow-hidden rounded-md bg-white p-2">
           {<Content />}
         </div>
       </div>

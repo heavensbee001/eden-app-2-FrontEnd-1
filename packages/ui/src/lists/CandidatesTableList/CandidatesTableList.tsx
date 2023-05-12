@@ -44,16 +44,16 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   };
 
   return (
-    <section className="scrollbar-hide w-full overflow-scroll rounded-md border border-gray-400 bg-white drop-shadow-md">
+    <section className="scrollbar-hide w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md w-full">
         <thead className="bg-slate-200 text-gray-800 shadow-md">
           <tr>
-            <th className="min-w-min border-b border-gray-400 py-2">Name</th>
-            <th className="border-b border-gray-400 py-2">Match</th>
-            <th className="border-b border-gray-400 py-2 pr-2 text-right">
+            <th className="min-w-min border-b border-gray-300 py-2">Name</th>
+            <th className="border-b border-gray-300 py-2">Match</th>
+            <th className="border-b border-gray-300 py-2 pr-2 text-right">
               $/hour
             </th>
-            <th className="border-b border-gray-400 py-2">Level</th>
+            <th className="border-b border-gray-300 py-2">Level</th>
           </tr>
         </thead>
         <tbody>
@@ -94,9 +94,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     <TextHeading2 className="text-colorFFD02B font-black">
                       ${candidate.user!.budget!.perHour}
                     </TextHeading2>
-                  ) : (
-                    <span className="text-gray-400">-</span>
-                  )}
+                  ) : // <span className="text-gray-400">-</span>
+                  null}
                 </ColumnStyled>
                 <ColumnStyled extraCssClass="text-center">
                   {candidate?.user?.experienceLevel?.total ? (
