@@ -86,25 +86,26 @@ const CompanyCRM: NextPageWithLayout = () => {
     <GridLayout className="">
       <GridItemSix>
         <div className="">
-          <CandidatesTableList
-            candidatesList={candidates}
-            fetchIsLoading={findCompanyIsLoading}
-            setRowObjectData={handleRowClick}
-          />
-          <button
-            className="mt-4 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+          <Button
+            className="mb-4 ml-auto"
+            variant="secondary"
             onClick={handleTrainButtonClick}
           >
-            Train EdenAI Dirty
-          </button>
-          <Button
+            Train EdenAI AI
+          </Button>
+          {/* <Button
             variant="secondary"
             onClick={() => {
               router.push(`/train-ai/${companyID}`);
             }}
           >
             Train AI
-          </Button>
+          </Button> */}
+          <CandidatesTableList
+            candidatesList={candidates}
+            fetchIsLoading={findCompanyIsLoading}
+            setRowObjectData={handleRowClick}
+          />
           {trainModalOpen ? (
             <div className="fixed inset-0 z-10 overflow-y-auto">
               <div className="flex min-h-screen items-center justify-center px-4">
