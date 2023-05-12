@@ -20,6 +20,20 @@ import type { NextPageWithLayout } from "../_app";
 
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
+  const router = useRouter();
+  const { companyID } = router.query;
+
+  const {
+    data: findCompanyData,
+    // error: findCompanyError,
+  } = useQuery(FIND_COMPANY, {
+    variables: {
+      fields: {
+        _id: companyID,
+      },
+    },
+    skip: !companyID,
+  });
 
   return (
     <>
@@ -32,15 +46,24 @@ const HomePage: NextPageWithLayout = () => {
                 <h2 className="mb-8 text-2xl font-medium">
                   Welcome to Eden AI
                 </h2>
-                <p>You are selected to do an interview with Tesla</p>
+                {findCompanyData?.findCompany?.name ? (
+                  <p>
+                    You are selected to do an interview with{" "}
+                    {findCompanyData.findCompany.name}
+                  </p>
+                ) : (
+                  <p> </p>
+                )}
               </section>
             </WizardStep>
             <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
-                <h3 className="mb-8 text-lg font-medium">
-                  Your first interview with Tesla will be a discussion with Eden
-                  AI
-                </h3>
+                {findCompanyData?.findCompany?.name && (
+                  <h3 className="mb-8 text-lg font-medium">
+                    Your first interview with {findCompanyData.findCompany.name}{" "}
+                    will be a discussion with Eden AI
+                  </h3>
+                )}
                 <div className="mt-8 flex h-[70%] w-full justify-center">
                   <RawDataGraph
                     rawData={rawDataPersonProject}
