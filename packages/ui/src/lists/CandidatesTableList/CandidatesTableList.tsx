@@ -94,9 +94,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     <TextHeading2 className="text-colorFFD02B font-black">
                       ${candidate.user!.budget!.perHour}
                     </TextHeading2>
-                  ) : (
-                    <span className="text-gray-400">-</span>
-                  )}
+                  ) : // <span className="text-gray-400">-</span>
+                  null}
                 </ColumnStyled>
                 <ColumnStyled extraCssClass="text-center">
                   {candidate?.user?.experienceLevel?.total ? (

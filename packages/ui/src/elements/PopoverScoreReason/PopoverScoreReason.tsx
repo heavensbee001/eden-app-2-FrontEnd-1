@@ -24,7 +24,7 @@ type PopoverScoreReasonProps = {
 export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
   children,
   question,
-  size = "md",
+  size,
   ubication = "top",
 }) => {
   const ContentToShow = () => {
