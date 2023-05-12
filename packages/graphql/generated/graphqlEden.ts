@@ -3,12 +3,10 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -288,6 +286,7 @@ export type Members = {
   bio?: Maybe<Scalars["String"]>;
   budget?: Maybe<BudgetMemberType>;
   chat?: Maybe<ChatResponse>;
+  companiesApplied?: Maybe<Array<Maybe<CompaniesAppliedType>>>;
   completedOpportunities?: Maybe<Scalars["Int"]>;
   content?: Maybe<ContentType>;
   cvInfo?: Maybe<CvInfoType>;
@@ -1588,6 +1587,7 @@ export type SummaryQuestionType = {
   questionID?: Maybe<Scalars["ID"]>;
   reason?: Maybe<Scalars["String"]>;
   score?: Maybe<Scalars["Float"]>;
+  subConversationAnswer?: Maybe<Array<Maybe<ConversationType>>>;
 };
 
 export type Team = {
@@ -1896,6 +1896,11 @@ export type CollaborationLinksType = {
   __typename?: "collaborationLinksType";
   link?: Maybe<Scalars["String"]>;
   title?: Maybe<Scalars["String"]>;
+};
+
+export type CompaniesAppliedType = {
+  __typename?: "companiesAppliedType";
+  companyID?: Maybe<Scalars["ID"]>;
 };
 
 export type Conn_Node_WhType = {

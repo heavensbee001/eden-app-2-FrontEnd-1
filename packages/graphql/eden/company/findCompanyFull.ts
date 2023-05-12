@@ -46,8 +46,13 @@ export const FIND_COMPANY_FULL = gql`
           reason
           score
           bestAnswerCompany
+          subConversationAnswer {
+            role
+            content
+          }
         }
       }
+      candidatesReadyToDisplay
       questionsToAsk {
         bestAnswer
         question {
