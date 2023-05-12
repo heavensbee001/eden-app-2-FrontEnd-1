@@ -8,6 +8,33 @@ import {
 } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
+// const exampleData = [
+//   {
+//     questionID: "1242",
+//     questionContent: "Experience",
+//     userPercentage: 75,
+//     averagePercentage: 55,
+//   },
+//   {
+//     questionID: "9521",
+//     questionContent: "WFH or Office",
+//     userPercentage: 35,
+//     averagePercentage: 45,
+//   },
+//   {
+//     questionID: "2222",
+//     questionContent: "Skill",
+//     userPercentage: 85,
+//     averagePercentage: 75,
+//   },
+//   {
+//     questionID: "1211",
+//     questionContent: "Industry exp",
+//     userPercentage: 90,
+//     averagePercentage: 40,
+//   },
+// ];
+
 type Props = {
   member?: Members;
   summaryQuestions?: SummaryQuestionType[];
@@ -21,33 +48,7 @@ type BarChartQuestions = {
 };
 
 export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
-  console.log("summaryQuestions = 22", summaryQuestions);
-  const exampleData = [
-    {
-      questionID: "1242",
-      questionContent: "Experience",
-      userPercentage: 75,
-      averagePercentage: 55,
-    },
-    {
-      questionID: "9521",
-      questionContent: "WFH or Office",
-      userPercentage: 35,
-      averagePercentage: 45,
-    },
-    {
-      questionID: "2222",
-      questionContent: "Skill",
-      userPercentage: 85,
-      averagePercentage: 75,
-    },
-    {
-      questionID: "1211",
-      questionContent: "Industry exp",
-      userPercentage: 90,
-      averagePercentage: 40,
-    },
-  ];
+  // console.log("summaryQuestions = 22", summaryQuestions);
 
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 
@@ -72,9 +73,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   return (
     <div className="pt-4">
-      <div className="grid grid-cols-2">
-        <div className="col-span-1">
-          <p className="text-center">
+      <div className="mb-8 grid grid-cols-4">
+        <div className="col-span-1"></div>
+        <div className="col-span-2">
+          <p className="mb-2 text-center">
             <TextLabel1>Background match</TextLabel1>
           </p>
           {/* <BackgroundMatchChart
@@ -88,33 +90,38 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             />
           )}
         </div>
+        <div className="col-span-1"></div>
       </div>
-      <p className="text-soilHeading3 font-poppins mb-2 mt-6 text-center font-black text-gray-400">
-        EXPERTISE
+      <p className="mb-2 text-center">
+        <TextLabel1>Expertise</TextLabel1>
       </p>
       <div
-        className={`mx-auto my-4 grid grid-cols-${
-          summaryQuestions?.length === 1 ? 3 : summaryQuestions?.length
-        } gap-4`}
+        className={`mx-auto mb-2 grid grid-cols-3 gap-4`}
+        // className={`mx-auto grid grid-cols-${
+        //   summaryQuestions?.length === 1 ? 3 : summaryQuestions?.length
+        // } gap-4`}
       >
         {summaryQuestions
           ? summaryQuestions.map((item, index) => (
-              <PopoverScoreReason size="lg" key={index} question={item}>
-                <div className="hover:bg-blue-200">
-                  <div className="w- mx-auto flex h-16 items-center justify-center">
+              <div
+                key={index}
+                className="z-50 h-full rounded-md border px-4 py-2 shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
+              >
+                <PopoverScoreReason question={item}>
+                  <div className="mx-auto mb-2 flex h-10 items-center justify-center">
                     <p className="text-center">
                       <TextLabel1 className="text-black">
                         {item.questionContentSmall?.replace(".", "")}
                       </TextLabel1>
                     </p>
                   </div>
-                  <div className="mt-2">
-                    <div className="flex items-center justify-center">
-                      <TextInputLabel className="text-xs text-black">
+                  <div className="">
+                    <div className="flex h-full items-center justify-center">
+                      <TextInputLabel className="mr-auto text-xs text-black">
                         {item.answerContentSmall?.replace(".", "")}
                       </TextInputLabel>
                       {item.score ? (
-                        <div className="font-black">
+                        <div className="ml-1 font-black">
                           <TextHeading2
                             className={`${
                               index % 2
@@ -135,8 +142,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                       null}
                     </div>
                   </div>
-                </div>
-              </PopoverScoreReason>
+                </PopoverScoreReason>
+              </div>
             ))
           : null}
       </div>
