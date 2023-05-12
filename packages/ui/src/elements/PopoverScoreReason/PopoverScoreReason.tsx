@@ -46,7 +46,7 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
           </TextHeading2>
         )}
         {question.reason && (
-          <ul className="mb-6 list-inside list-disc text-sm">
+          <ul className="mb-6 list-inside list-disc text-xs leading-tight text-slate-600">
             {question.reason
               .split("-")
               .filter(Boolean)
@@ -59,7 +59,7 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
     );
 
     const content2 = (
-      <div className="rounded-lg border p-4">
+      <div className="rounded-lg border">
         <p className="mb-2 text-lg font-bold">{question.questionContent}</p>
         <p className="text-gray-600">{question.answerContent}</p>
       </div>
@@ -74,9 +74,9 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
     };
 
     return (
-      <div>
+      <div className="p-1">
         <>{showContentOne ? content1 : content2}</>
-        <div className="flex justify-end pt-4">
+        <div className="mt-2 flex justify-end">
           <Button size="sm" variant="secondary" onClick={handleChangeContent}>
             {showContentOne ? "See Responses" : "Back"}
           </Button>

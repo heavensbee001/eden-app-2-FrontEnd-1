@@ -105,41 +105,43 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ? summaryQuestions.map((item, index) => (
               <div
                 key={index}
-                className="z-50 h-full rounded-md border px-4 py-2 shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
+                className="z-20 h-full rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
               >
                 <PopoverScoreReason question={item}>
-                  <div className="mx-auto mb-2 flex h-10 items-center justify-center">
-                    <p className="text-center">
-                      <TextLabel1 className="text-black">
-                        {item.questionContentSmall?.replace(".", "")}
-                      </TextLabel1>
-                    </p>
-                  </div>
-                  <div className="">
-                    <div className="flex h-full items-center justify-center">
-                      <TextInputLabel className="mr-auto text-xs text-black">
-                        {item.answerContentSmall?.replace(".", "")}
-                      </TextInputLabel>
-                      {item.score ? (
-                        <div className="ml-1 font-black">
-                          <TextHeading2
-                            className={`${
-                              index % 2
-                                ? "text-soilPurple"
-                                : index % 3
-                                ? "text-soilOrange"
-                                : "text-soilTurquoise"
-                            }`}
-                          >
-                            {item.score * 10}%
-                          </TextHeading2>
-                        </div>
-                      ) : //  : (
-                      //   <TextInputLabel className="text-xs text-black">
-                      //     {item.answerContentSmall.replace(".", "")}
-                      //   </TextInputLabel>
-                      // )
-                      null}
+                  <div className="px-4 pb-4 pt-2">
+                    <div className="mx-auto mb-2 flex h-10 items-center justify-center">
+                      <p className="text-center">
+                        <TextLabel1 className="text-black">
+                          {item.questionContentSmall?.replace(".", "")}
+                        </TextLabel1>
+                      </p>
+                    </div>
+                    <div className="">
+                      <div className="flex h-full items-center justify-center">
+                        <TextInputLabel className="mr-auto text-xs text-black">
+                          {item.answerContentSmall?.replace(".", "")}
+                        </TextInputLabel>
+                        {item.score ? (
+                          <div className="ml-1 font-black">
+                            <TextHeading2
+                              className={`${
+                                index % 2
+                                  ? "text-soilPurple"
+                                  : index % 3
+                                  ? "text-soilOrange"
+                                  : "text-soilTurquoise"
+                              }`}
+                            >
+                              {item.score * 10}%
+                            </TextHeading2>
+                          </div>
+                        ) : //  : (
+                        //   <TextInputLabel className="text-xs text-black">
+                        //     {item.answerContentSmall.replace(".", "")}
+                        //   </TextInputLabel>
+                        // )
+                        null}
+                      </div>
                     </div>
                   </div>
                 </PopoverScoreReason>
