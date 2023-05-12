@@ -61,7 +61,7 @@ export const PopoverOnHover: FC<PopoverOnHoverProps> = ({
       </div>
 
       <div
-        className={`p-4 w-${
+        className={`p-2 w-${
           size ? (size === "sm" ? "36" : size === "md" ? "48" : "80") : "full"
         } rounded-md border border-gray-200 bg-white shadow-lg`}
         onMouseEnter={open}
