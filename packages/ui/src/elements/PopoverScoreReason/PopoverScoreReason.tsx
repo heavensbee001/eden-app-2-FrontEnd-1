@@ -31,7 +31,7 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
     return (
       <div>
         <>
-          {question.score && (
+          {question.score ? (
             <TextHeading2 className="mb-2 text-center">
               Why{" "}
               <span className="text-colorFFA9F1 font-extrabold">
@@ -39,8 +39,8 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
               </span>
               ?
             </TextHeading2>
-          )}
-          {question.reason && (
+          ) : null}
+          {question.reason ? (
             <ul className="mb-6 list-inside list-disc text-sm">
               {question.reason
                 .split("-")
@@ -49,7 +49,7 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
                   <li key={index}>{bulletPoint.trim()}</li>
                 ))}
             </ul>
-          )}
+          ) : null}
         </>
       </div>
     );
