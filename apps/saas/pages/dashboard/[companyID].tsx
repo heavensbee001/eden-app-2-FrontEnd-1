@@ -26,8 +26,9 @@ const CompanyCRM: NextPageWithLayout = () => {
   const { companyID } = router.query;
   const [candidates, setCandidates] = useState<CandidateType[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -129,7 +130,7 @@ const CompanyCRM: NextPageWithLayout = () => {
         </div>
       </GridItemSix>
       <GridItemSix className="relative">
-        <div className="scrollbar-hide -my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
+        <div className="scrollbar-hide my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
           {selectedUserId ? (
             <CandidateInfo
               memberID={selectedUserId || ""}

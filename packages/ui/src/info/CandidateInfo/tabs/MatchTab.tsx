@@ -53,7 +53,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   }, [summaryQuestions]);
 
   return (
-    <div className="pt-4">
+    <div className="relative pt-4">
       <div className="mb-8 grid grid-cols-4">
         <div className="col-span-1"></div>
         <div className="col-span-2">
@@ -86,13 +86,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ? summaryQuestions.map((item, index) => (
               <div
                 key={index}
-                className="z-20 h-full rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
+                className="z-20 h-full cursor-pointer rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
+                onClick={() => setSummaryQuestionSelected(item)}
               >
                 <PopoverScoreReason question={item}>
-                  <div
-                    className="px-4 pb-4 pt-2"
-                    onClick={() => setSummaryQuestionSelected(item)}
-                  >
+                  <div className="px-4 pb-4 pt-2">
                     <div className="mx-auto mb-2 flex h-10 items-center justify-center">
                       <p className="text-center">
                         <TextLabel1 className="text-black">
@@ -168,9 +166,9 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       <Card
         border
         shadow
-        className="min-h-fit mt-4 pb-4 overflow-scroll bg-white"
+        className="my-4 max-h-fit overflow-scroll bg-white pb-4 "
       >
-        <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3">
+        <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3">
           <div className="my-4">
             {summaryQuestionSelected &&
             summaryQuestionSelected.subConversationAnswer
@@ -213,19 +211,6 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                         /> */}
                         </div>
                       </div>
-                      <hr
-                        style={{
-                          border: "1",
-                          borderTop: "medium double #CCC",
-                          height: "1px",
-                          overflow: "visible",
-                          padding: "0",
-                          color: "#CCC",
-                          textAlign: "center",
-                          marginTop: "10px",
-                          marginBottom: "56px",
-                        }}
-                      />
                     </>
                   )
                 )
