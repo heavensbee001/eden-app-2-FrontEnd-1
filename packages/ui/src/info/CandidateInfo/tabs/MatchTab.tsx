@@ -108,7 +108,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 className="z-20 h-full rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
               >
                 <PopoverScoreReason question={item}>
-                  <div key={index} className="px-4 pb-4 pt-2">
+                  <div className="px-4 pb-4 pt-2">
                     <div className="mx-auto mb-2 flex h-10 items-center justify-center">
                       <p className="text-center">
                         <TextLabel1 className="text-black">
