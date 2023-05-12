@@ -109,7 +109,19 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
             }
             setFile(null);
           } else {
-            toast.error("Please try a uploading a Resume that has Text");
+            toast.error(
+              <div className="flex flex-col justify-center space-y-1">
+                <div className="text-lg text-black">
+                  Please try a uploading a Resume that has Text
+                </div>
+                <div className="text-sm">
+                  *Also, feel free to continue without uploading your Resume
+                </div>
+              </div>
+            );
+            // toast.info(
+            //   "Also, feel free to continue without uploading your Resume"
+            // );
             setUploading(false);
             return;
           }
