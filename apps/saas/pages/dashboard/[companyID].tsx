@@ -116,7 +116,7 @@ const CompanyCRM: NextPageWithLayout = () => {
                 >
                   <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                 </div>
-                <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-lg">
+                <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-xl">
                   <TrainQuestionsEdenAI
                     questions={questions}
                     companyID={companyID}
