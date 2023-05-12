@@ -107,7 +107,7 @@ const CompanyCRM: NextPageWithLayout = () => {
             setRowObjectData={handleRowClick}
           />
           {trainModalOpen ? (
-            <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="fixed inset-0 z-30 overflow-y-auto">
               <div className="flex min-h-screen items-center justify-center px-4">
                 <div
                   className="fixed inset-0 transition-opacity"
