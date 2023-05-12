@@ -65,6 +65,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
+      //When user tries to upload the same CV the second time
       setUploadCounter((prevCounter) => prevCounter + 1);
       e.target.value = ""; // Clear the file input
     }
