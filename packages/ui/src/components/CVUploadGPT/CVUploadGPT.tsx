@@ -112,7 +112,8 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
             toast.error(
               <div className="flex flex-col justify-center space-y-1">
                 <div className="text-lg text-black">
-                  Please try a uploading a Resume that has Text
+                  Please upload a different CV we didn&apos;t identify any text
+                  on this one
                 </div>
                 <div className="text-sm">
                   *Also, feel free to continue without uploading your Resume
