@@ -5,6 +5,7 @@ import {
   // FormEvent,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { BsCheckCircle } from "react-icons/bs";
@@ -37,6 +38,8 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploaded, setUploaded] = useState<boolean>(false);
+  const [uploadCounter, setUploadCounter] = useState(0);
+
   // const [summary, setSummary] = useState<string | null>(null);
   const { currentUser } = useContext(UserContext);
 
@@ -62,12 +65,17 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
+      setUploadCounter((prevCounter) => prevCounter + 1);
+      e.target.value = ""; // Clear the file input
     }
   };
+
+  const fileInput = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (file) {
       setUploading(true);
+
       const reader = new FileReader();
 
       reader.onloadend = async () => {
@@ -83,23 +91,27 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
         if (response.ok) {
           const { text } = await response.json();
 
-          // if (text.split(" ").length < 10) {
-          SaveCVtoUser({
-            variables: {
-              fields: {
-                // cvString: text
-                userID: currentUser?._id,
-                cvContent: text,
+          console.log("text.split", text.split(" ").length > 10);
+
+          if (text.split(" ").length > 10) {
+            SaveCVtoUser({
+              variables: {
+                fields: {
+                  // cvString: text
+                  userID: currentUser?._id,
+                  cvContent: text,
+                },
               },
-            },
-          });
-          // } else {
-          //   toast.error(
-          //     "No text found in uploaded CV file. Please ensure that you have text in your Resume or try a different Resume."
-          //   );
-          //   setUploading(false);
-          //   return;
-          // }
+            });
+            if (fileInput.current) {
+              fileInput.current.value = "";
+            }
+            setFile(null);
+          } else {
+            toast.error("Please try a uploading a Resume that has Text");
+            setUploading(false);
+            return;
+          }
 
           console.log(text);
         } else {
@@ -111,7 +123,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
 
       reader.readAsDataURL(file);
     }
-  }, [file]);
+  }, [file, uploadCounter]);
 
   // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
@@ -196,6 +208,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
           id="file-upload"
           className="hidden"
           onChange={handleFileChange}
+          ref={fileInput}
           type="file"
           accept=".pdf"
         ></input>
