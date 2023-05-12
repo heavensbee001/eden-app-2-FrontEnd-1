@@ -8,6 +8,33 @@ import {
 } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
+// const exampleData = [
+//   {
+//     questionID: "1242",
+//     questionContent: "Experience",
+//     userPercentage: 75,
+//     averagePercentage: 55,
+//   },
+//   {
+//     questionID: "9521",
+//     questionContent: "WFH or Office",
+//     userPercentage: 35,
+//     averagePercentage: 45,
+//   },
+//   {
+//     questionID: "2222",
+//     questionContent: "Skill",
+//     userPercentage: 85,
+//     averagePercentage: 75,
+//   },
+//   {
+//     questionID: "1211",
+//     questionContent: "Industry exp",
+//     userPercentage: 90,
+//     averagePercentage: 40,
+//   },
+// ];
+
 type Props = {
   member?: Members;
   summaryQuestions?: SummaryQuestionType[];
@@ -21,33 +48,7 @@ type BarChartQuestions = {
 };
 
 export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
-  console.log("summaryQuestions = 22", summaryQuestions);
-  const exampleData = [
-    {
-      questionID: "1242",
-      questionContent: "Experience",
-      userPercentage: 75,
-      averagePercentage: 55,
-    },
-    {
-      questionID: "9521",
-      questionContent: "WFH or Office",
-      userPercentage: 35,
-      averagePercentage: 45,
-    },
-    {
-      questionID: "2222",
-      questionContent: "Skill",
-      userPercentage: 85,
-      averagePercentage: 75,
-    },
-    {
-      questionID: "1211",
-      questionContent: "Industry exp",
-      userPercentage: 90,
-      averagePercentage: 40,
-    },
-  ];
+  // console.log("summaryQuestions = 22", summaryQuestions);
 
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 
@@ -72,9 +73,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   return (
     <div className="pt-4">
-      <div className="grid grid-cols-2">
-        <div className="col-span-1">
-          <p className="text-center">
+      <div className="grid grid-cols-4">
+        <div className="col-span-1"></div>
+        <div className="col-span-2">
+          <p className="mb-2 text-center">
             <TextLabel1>Background match</TextLabel1>
           </p>
           {/* <BackgroundMatchChart
@@ -88,6 +90,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             />
           )}
         </div>
+        <div className="col-span-1"></div>
       </div>
       <p className="text-soilHeading3 font-poppins mb-2 mt-6 text-center font-black text-gray-400">
         EXPERTISE

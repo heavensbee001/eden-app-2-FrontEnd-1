@@ -6,6 +6,8 @@ import {
   Button,
   CandidateInfo,
   CandidatesTableList,
+  GridItemSix,
+  GridLayout,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
@@ -24,8 +26,9 @@ const CompanyCRM: NextPageWithLayout = () => {
   const { companyID } = router.query;
   const [candidates, setCandidates] = useState<CandidateType[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -80,9 +83,9 @@ const CompanyCRM: NextPageWithLayout = () => {
   };
 
   return (
-    <div className="grid flex-1 grid-cols-2 gap-4">
-      <div className="col-1">
-        <div className="container m-4 border border-gray-500 p-4">
+    <GridLayout className="">
+      <GridItemSix>
+        <div className="">
           <CandidatesTableList
             candidatesList={candidates}
             fetchIsLoading={findCompanyIsLoading}
@@ -124,9 +127,9 @@ const CompanyCRM: NextPageWithLayout = () => {
             </div>
           ) : null}
         </div>
-      </div>
-      <div className="col-2">
-        <div className="m-4 border border-gray-500 bg-white p-8">
+      </GridItemSix>
+      <GridItemSix className="relative">
+        <div className="scrollbar-hide -my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
           {selectedUserId ? (
             <CandidateInfo
               memberID={selectedUserId || ""}
@@ -134,13 +137,13 @@ const CompanyCRM: NextPageWithLayout = () => {
               summaryQuestions={selectedUserSummaryQuestions}
             />
           ) : (
-            <div>
+            <div className="w-full pt-20 text-center">
               <p className="text-gray-400">Select a candidate</p>
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </GridItemSix>
+    </GridLayout>
   );
 };
 
