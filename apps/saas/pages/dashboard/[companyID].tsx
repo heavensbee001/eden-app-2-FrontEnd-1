@@ -3,18 +3,20 @@ import {
   FIND_COMPANY_FULL,
   MATCH_NODES_MEMBERS_AI4,
 } from "@eden/package-graphql";
-import { CandidateType } from "@eden/package-graphql/generated";
+import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
   Button,
   CandidateInfo,
   CandidatesTableList,
+  Dropdown,
   GridItemSix,
   GridLayout,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { MdIosShare } from "react-icons/md";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -36,9 +38,6 @@ const CompanyCRM: NextPageWithLayout = () => {
 
   const [nodeIDsCompany, setNodeIDsCompany] = useState<string[]>([]);
 
-  console.log("nodeIDsCompany = ", nodeIDsCompany);
-  console.log("candidates = ", candidates);
-
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
     null
@@ -49,6 +48,18 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [trainModalOpen, setTrainModalOpen] = useState(false);
+
+  const [talentListsAvailables, setTalentListsAvailables] = useState<
+    TalentListType[]
+  >([]);
+
+  const [talentListSelected, setTalentListSelected] =
+    useState<TalentListType>();
+
+  const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
+    CandidateTypeSkillMatch[]
+  >([]);
+
   const {
     // data: findCompanyData,
     loading: findCompanyIsLoading,
@@ -62,11 +73,18 @@ const CompanyCRM: NextPageWithLayout = () => {
     skip: !Boolean(companyID),
     ssr: false,
     onCompleted: (data: any) => {
+      const talentListsNames: TalentListType[] =
+        data.findCompany.talentList.map((list: TalentListType) => list);
+
+      setTalentListsAvailables(talentListsNames);
+
       setCandidates(data.findCompany.candidates);
+
+      setCandidatesFromTalentList(data.findCompany.candidates);
+
       const questionPrep: Question[] = [];
 
       data.findCompany.questionsToAsk.map((question: any) => {
-        console.log("question = ", question);
         if (question.question == null) {
         } else {
           questionPrep.push({
@@ -77,13 +95,9 @@ const CompanyCRM: NextPageWithLayout = () => {
         }
       });
 
-      // console.log("data.findCompany = ", data.findCompany);
-
       const nodesID = data.findCompany?.nodes?.map((node: any) => {
         return node?.nodeData?._id;
       });
-
-      // console.log("nodesID = ", nodesID);
 
       setNodeIDsCompany(nodesID);
 
@@ -120,10 +134,7 @@ const CompanyCRM: NextPageWithLayout = () => {
     skip: candidates.length == 0 || nodeIDsCompany.length == 0,
 
     onCompleted: (data) => {
-      console.log("data = ", data);
-
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
-
       const memberScoreObj: { [key: string]: number } = {};
 
       data.matchNodesToMembers_AI4.forEach((memberT: any) => {
@@ -133,8 +144,6 @@ const CompanyCRM: NextPageWithLayout = () => {
           memberScoreObj[keyN] = memberT?.matchPercentage?.totalPercentage;
         }
       });
-
-      console.log("memberScoreObj = ", memberScoreObj);
 
       const candidatesNew: CandidateTypeSkillMatch[] = [];
 
@@ -156,8 +165,6 @@ const CompanyCRM: NextPageWithLayout = () => {
         }
       }
 
-      console.log("candidatesNew = 202", candidatesNew);
-
       setCandidates(candidatesNew);
 
       // setDataMembersA(data.matchNodesToMembers_AI4);
@@ -172,27 +179,75 @@ const CompanyCRM: NextPageWithLayout = () => {
     setTrainModalOpen(false);
   };
 
+  const handleSelectedTalentList = (list: TalentListType) => {
+    console.log({ list });
+
+    const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
+
+    for (let i = 0; i < candidates.length; i++) {
+      for (let j = 0; j < list.talent!.length; j++) {
+        if (candidates[i].user?._id === list.talent![j]!.user!._id) {
+          candidatesOnTalentListSelected.push(candidates[i]);
+        }
+      }
+    }
+
+    setCandidatesFromTalentList(candidatesOnTalentListSelected);
+
+    setTalentListSelected(list);
+  };
+
   return (
     <GridLayout className="">
       <GridItemSix>
-        <div className="">
-          <Button
-            className="mb-4 ml-auto"
-            variant="secondary"
-            onClick={handleTrainButtonClick}
-          >
-            Train EdenAI AI
-          </Button>
-          {/* <Button
-            variant="secondary"
-            onClick={() => {
-              router.push(`/train-ai/${companyID}`);
-            }}
-          >
-            Train AI
-          </Button> */}
+        <div className="grid grid-flow-row">
+          <div className="grid grid-flow-col grid-cols-3">
+            <div className="col-span-2 grid grid-flow-row grid-cols-2 grid-rows-1">
+              <Dropdown
+                items={talentListsAvailables}
+                multiple={false}
+                placeholder="No list selected"
+                onSelect={handleSelectedTalentList}
+                value={talentListSelected?.name || ""}
+              />
+              <>
+                {!talentListSelected ? (
+                  <Button className="mb-4 ml-auto" variant="secondary">
+                    Create New List
+                  </Button>
+                ) : (
+                  <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
+                    <MdIosShare
+                      size={36}
+                      className="mt-2 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+                    />
+                    <Button
+                      className="mb-4 ml-auto pt-2"
+                      variant="secondary"
+                      size="md"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      className="mb-4 ml-auto min-w-fit"
+                      variant="secondary"
+                    >
+                      Create New List
+                    </Button>
+                  </div>
+                )}
+              </>
+            </div>
+            <Button
+              className="mb-4 ml-auto pt-2"
+              variant="secondary"
+              onClick={handleTrainButtonClick}
+            >
+              Train EdenAI AI
+            </Button>
+          </div>
           <CandidatesTableList
-            candidatesList={candidates}
+            candidatesList={candidatesFromTalentList}
             fetchIsLoading={findCompanyIsLoading}
             setRowObjectData={handleRowClick}
           />
