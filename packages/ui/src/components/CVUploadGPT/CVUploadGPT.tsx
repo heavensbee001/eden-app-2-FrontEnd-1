@@ -173,7 +173,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
                 : ""
             }`}
           >
-            Upload file
+            Upload .pdf file
           </div>
           {uploaded && (
             <BsCheckCircle
