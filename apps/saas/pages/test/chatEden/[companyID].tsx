@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 // import {
 //   // FIND_MEMBER_INFO,
 //   MATCH_NODES_MEMBERS_AI4,
@@ -17,13 +17,29 @@ import {
   DynamicSearchGraph,
   EdenAiChat,
 } from "@eden/package-ui";
+import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { FIND_RELATED_NODE } from "../../../utils/data/GQLfuncitons";
 import type { NextPageWithLayout } from "../../_app";
 import MultiSelectPopup from "./components/MultiSelectPopup";
 // import SalaryPopup from "./components/SalaryPopup";
+
+const ADD_NODES_TO_COMPANY = gql`
+  mutation ($fields: addNodesToCompanyInput) {
+    addNodesToCompany(fields: $fields) {
+      _id
+      name
+      nodes {
+        nodeData {
+          _id
+          name
+        }
+      }
+    }
+  }
+`;
 
 interface NodeObj {
   [key: string]: {
@@ -66,6 +82,17 @@ const chatEden: NextPageWithLayout = () => {
     //   active: true,
     //   isNew: false,
     // },
+  });
+
+  // --------- Company and User ------------
+  const router = useRouter();
+  const { companyID } = router.query;
+  // --------- Company and User ------------
+
+  const [addNodesToCompany, {}] = useMutation(ADD_NODES_TO_COMPANY, {
+    onCompleted({ data }) {
+      console.log("yeaaa added nodes = ", data);
+    },
   });
 
   //  ------------- Popup Preparation ----------
@@ -144,6 +171,30 @@ const chatEden: NextPageWithLayout = () => {
       setActivateNodeEvent(null);
     }
   }, [activateNodeEvent]);
+
+  useEffect(() => {
+    if (companyID && nodeObj) {
+      console.log("change = 232323", companyID);
+
+      // object nodeObj to array of IDs
+      const nodeIDs = Object.keys(nodeObj);
+
+      const nodeArrAddComp = nodeIDs.map((id) => ({ nodeID: id }));
+
+      console.log("nodeArrAddComp = ", nodeArrAddComp);
+
+      if (nodeArrAddComp.length > 0) {
+        addNodesToCompany({
+          variables: {
+            fields: {
+              companyID: companyID,
+              nodes: nodeArrAddComp,
+            },
+          },
+        });
+      }
+    }
+  }, [companyID, nodeObj]);
 
   const activateNode = (nodeID: string) => {
     // activate the node that was clicked

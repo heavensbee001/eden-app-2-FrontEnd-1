@@ -23,11 +23,15 @@ const ColumnStyled: FC<InputGroupProps> = ({
   </td>
 );
 
+interface CandidateTypeSkillMatch extends CandidateType {
+  skillMatch: number;
+}
+
 type CandidatesTableListProps = {
-  candidatesList: CandidateType[];
+  candidatesList: CandidateTypeSkillMatch[];
   fetchIsLoading: boolean;
   // eslint-disable-next-line no-unused-vars
-  setRowObjectData: (candidate: CandidateType) => void;
+  setRowObjectData: (candidate: CandidateTypeSkillMatch) => void;
 };
 
 export const CandidatesTableList: FC<CandidatesTableListProps> = ({
@@ -37,8 +41,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
 }) => {
   const [candidateIDRowSelected, setCandidateIDRowSelected] =
     useState<string>("");
-
-  const handleObjectDataSelection = (candidate: CandidateType) => {
+  const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
     setCandidateIDRowSelected(candidate.user?._id || "");
   };
@@ -53,7 +56,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             <th className="border-b border-gray-300 py-2 pr-2 text-right">
               $/hour
             </th>
-            <th className="border-b border-gray-300 py-2">Level</th>
+            <th className="border-b border-gray-400 py-2">Level</th>
+            <th className="border-b border-gray-400 py-2">Skill Match</th>
           </tr>
         </thead>
         <tbody>
@@ -92,7 +96,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
                     <TextHeading2 className="text-colorFFD02B font-black">
-                      ${candidate.user!.budget!.perHour}
+                      ${candidate.user?.budget?.perHour}
                     </TextHeading2>
                   ) : // <span className="text-gray-400">-</span>
                   null}
@@ -112,6 +116,11 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                       }
                       cutText={9}
                     />
+                  ) : null}
+                </ColumnStyled>
+                <ColumnStyled textColor="text-fuchsia-600 text-center">
+                  {candidate.skillMatch ? (
+                    <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
                   ) : null}
                 </ColumnStyled>
               </tr>

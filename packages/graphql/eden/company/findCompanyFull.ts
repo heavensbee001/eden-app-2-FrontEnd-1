@@ -52,6 +52,12 @@ export const FIND_COMPANY_FULL = gql`
           }
         }
       }
+      nodes {
+        nodeData {
+          _id
+          name
+        }
+      }
       candidatesReadyToDisplay
       questionsToAsk {
         bestAnswer
