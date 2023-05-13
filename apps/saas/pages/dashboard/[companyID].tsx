@@ -163,7 +163,7 @@ const CompanyCRM: NextPageWithLayout = () => {
       // setDataMembersA(data.matchNodesToMembers_AI4);
     },
   });
-        
+
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
   };
@@ -171,6 +171,7 @@ const CompanyCRM: NextPageWithLayout = () => {
   const handleCloseTrainModal = () => {
     setTrainModalOpen(false);
   };
+
   return (
     <GridLayout className="">
       <GridItemSix>
