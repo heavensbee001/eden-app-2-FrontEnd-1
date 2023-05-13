@@ -30,6 +30,19 @@ interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
 }
 
+type NodeDisplay = {
+  nameRelevantNode: string;
+  nameOriginalNode: string;
+  score: number;
+  color: string;
+};
+
+type relevantNodeObj = {
+  [key: string]: {
+    nodes: NodeDisplay[];
+  };
+};
+
 const CompanyCRM: NextPageWithLayout = () => {
   const router = useRouter();
   const { companyID } = router.query;
@@ -112,6 +125,9 @@ const CompanyCRM: NextPageWithLayout = () => {
       setSelectedUserSummaryQuestions(user.summaryQuestions);
   };
 
+  const [mostRelevantMemberNode, setMostRelevantMemberNode] =
+    useState<relevantNodeObj>({});
+
   const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
     variables: {
       fields: {
@@ -135,6 +151,8 @@ const CompanyCRM: NextPageWithLayout = () => {
 
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
+
+      // -------------- Get the Candidates of the page ------------
       const memberScoreObj: { [key: string]: number } = {};
 
       data.matchNodesToMembers_AI4.forEach((memberT: any) => {
@@ -151,23 +169,114 @@ const CompanyCRM: NextPageWithLayout = () => {
         const userID = candidates[i]?.user?._id;
 
         if (userID && memberScoreObj[userID]) {
-          console.log(
-            "userID = ",
-            userID,
-            memberScoreObj[userID],
-            candidates[i]
-          );
           candidatesNew.push({
             ...candidates[i],
             skillMatch: memberScoreObj[userID],
           });
-          // candidates[i].skillMatch = 3; // memberScoreObj[userID],
         }
       }
-
       setCandidates(candidatesNew);
+      // -------------- Get the Candidates of the page ------------
 
-      // setDataMembersA(data.matchNodesToMembers_AI4);
+      // --------------- Find the related nodes Score and color -----------
+
+      const mostRelevantMemberNodeT: relevantNodeObj = {};
+
+      for (let i = 0; i < data?.matchNodesToMembers_AI4?.length; i++) {
+        const infoN = data.matchNodesToMembers_AI4[i];
+
+        const userID: string = infoN?.member?._id;
+
+        if (userID && !mostRelevantMemberNodeT[userID]) {
+          mostRelevantMemberNodeT[userID] = {
+            nodes: [],
+          };
+        }
+
+        const nodesPercentageT = infoN?.nodesPercentage;
+
+        const nodesNew: NodeDisplay[] = [];
+
+        interface RelevantMemberObj {
+          [key: string]: boolean;
+        }
+        const mostRelevantMemberObj: RelevantMemberObj = {};
+
+        const mostRelevantMemberNodes = [];
+
+        for (let j = 0; j < nodesPercentageT?.length; j++) {
+          const node = nodesPercentageT[j];
+
+          // Take only the first mostRelevantMemberNodes, which has the heighers probability, later I can be more creative
+          let mostRelevantMemberNode = null;
+
+          if (
+            node?.mostRelevantMemberNodes != undefined &&
+            node?.mostRelevantMemberNodes?.length > 0
+          ) {
+            let i = 0;
+            let relNode;
+
+            while (
+              mostRelevantMemberNode == null &&
+              i < node?.mostRelevantMemberNodes.length
+            ) {
+              relNode = node?.mostRelevantMemberNodes[i];
+
+              if (
+                relNode?.node?._id != undefined &&
+                !mostRelevantMemberObj[relNode?.node?._id]
+              ) {
+                mostRelevantMemberNode = relNode;
+                mostRelevantMemberObj[relNode?.node?._id] = true;
+              } else {
+                i++;
+              }
+            }
+
+            if (mostRelevantMemberNode == null) continue;
+          }
+
+          let colorT = "bg-purple-100";
+
+          if (
+            mostRelevantMemberNode?.score != null &&
+            mostRelevantMemberNode?.score != undefined
+          ) {
+            if (mostRelevantMemberNode?.score > 60) {
+              colorT = "bg-purple-500";
+            } else if (mostRelevantMemberNode?.score > 30) {
+              colorT = "bg-purple-400";
+            } else if (mostRelevantMemberNode?.score > 13) {
+              colorT = "bg-purple-300";
+            } else if (mostRelevantMemberNode?.score > 5) {
+              colorT = "bg-purple-200";
+            }
+          }
+
+          mostRelevantMemberNodes.push({
+            searchNode: node?.node,
+            MemberRelevantnode: mostRelevantMemberNode?.node,
+            score: mostRelevantMemberNode?.score,
+            color: colorT,
+          });
+
+          nodesNew.push({
+            nameOriginalNode: nodesPercentageT[j]?.node?.name,
+            nameRelevantNode: mostRelevantMemberNode?.node?.name,
+            score: mostRelevantMemberNode?.score,
+            color: colorT,
+          });
+        }
+
+        nodesNew.sort((a, b) => b.score - a.score); // sort based on score
+
+        mostRelevantMemberNodeT[userID].nodes = nodesNew;
+      }
+
+      setMostRelevantMemberNode(mostRelevantMemberNodeT);
+
+      // --------------- Find the related nodes Score and color -----------
     },
   });
 
@@ -281,6 +390,7 @@ const CompanyCRM: NextPageWithLayout = () => {
               memberID={selectedUserId || ""}
               percentage={selectedUserScore}
               summaryQuestions={selectedUserSummaryQuestions}
+              mostRelevantMemberNode={mostRelevantMemberNode}
             />
           ) : (
             <div className="w-full pt-20 text-center">

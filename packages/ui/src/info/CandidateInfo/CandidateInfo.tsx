@@ -14,10 +14,24 @@ import {
 import { Tab } from "@headlessui/react";
 import { useState } from "react";
 
+type NodeDisplay = {
+  nameRelevantNode: string;
+  nameOriginalNode: string;
+  score: number;
+  color: string;
+};
+
+type relevantNodeObj = {
+  [key: string]: {
+    nodes: NodeDisplay[];
+  };
+};
+
 export interface ICandidateInfoProps {
   memberID: string;
   percentage: number | null;
   summaryQuestions?: SummaryQuestionType[];
+  mostRelevantMemberNode?: relevantNodeObj;
 }
 
 function classNames(...classes: any[]) {
@@ -28,6 +42,7 @@ export const CandidateInfo = ({
   memberID,
   percentage,
   summaryQuestions,
+  mostRelevantMemberNode,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
 
@@ -44,7 +59,12 @@ export const CandidateInfo = ({
   const tabs = [
     {
       tab: "INFO",
-      Content: () => <InfoTab member={dataMember?.findMember} />,
+      Content: () => (
+        <InfoTab
+          member={dataMember?.findMember}
+          mostRelevantMemberNode={mostRelevantMemberNode}
+        />
+      ),
     },
     {
       tab: "MATCH %",

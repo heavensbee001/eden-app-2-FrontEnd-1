@@ -9,13 +9,29 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { FC, useState } from "react";
 
+type NodeDisplay = {
+  nameRelevantNode: string;
+  nameOriginalNode: string;
+  score: number;
+  color: string;
+};
+
+type relevantNodeObj = {
+  [key: string]: {
+    nodes: NodeDisplay[];
+  };
+};
+
 interface Props {
   member?: Members;
+  mostRelevantMemberNode?: relevantNodeObj;
 }
 
-export const InfoTab: FC<Props> = ({ member }) => {
+export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
   const [seeMore, setSeeMore] = useState(false);
+
+  console.log("mostRelevantMemberNode 00303003 = ", mostRelevantMemberNode);
 
   return (
     <>
@@ -141,20 +157,49 @@ export const InfoTab: FC<Props> = ({ member }) => {
         </div>
       </div>
       <div className="mb-4 grid grid-cols-2">
-        <div className="col-1 p-2">
-          <section className="mb-2 w-full text-left">
-            <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
-            <div className="ml-4 inline-flex flex-wrap">
-              {member?.nodes && member?.nodes.length > 0 && (
-                <NodeList
-                  overflowNumber={3}
-                  nodes={member?.nodes}
-                  colorRGB={`224,151,232`}
-                />
-              )}
+        {mostRelevantMemberNode &&
+        member &&
+        member?._id &&
+        Object.keys(mostRelevantMemberNode).length > 0 &&
+        mostRelevantMemberNode[member?._id] ? (
+          <>
+            <div className="col-1 p-2">
+              <section className="mb-2 w-full text-left">
+                <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
+                <div className="ml-4 inline-flex flex-wrap">
+                  {mostRelevantMemberNode[member?._id].nodes
+                    .slice(0, 10)
+                    .map((node: NodeDisplay, index: number) => (
+                      <Badge
+                        text={node?.nameRelevantNode || ""}
+                        key={index}
+                        // className={`bg-soilPurple/20 py-px text-xs`}
+                        // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
+                        // className={`px-2 py-1 text-white rounded bg-purple-400`}
+                        className={`rounded px-1 py-1 text-xs text-white ${node.color}`}
+                        cutText={17}
+                      />
+                    ))}
+                </div>
+              </section>
             </div>
-          </section>
-        </div>
+          </>
+        ) : (
+          <div className="col-1 p-2">
+            <section className="mb-2 w-full text-left">
+              <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
+              <div className="ml-4 inline-flex flex-wrap">
+                {member?.nodes && member?.nodes.length > 0 && (
+                  <NodeList
+                    overflowNumber={3}
+                    nodes={member?.nodes}
+                    colorRGB={`224,151,232`}
+                  />
+                )}
+              </div>
+            </section>
+          </div>
+        )}
         <div className="col-2 p-2">
           {/* <section className="mb-2 w-full text-left">
             <TextLabel1 className="text-xs">🔎 INTERESTS</TextLabel1>
