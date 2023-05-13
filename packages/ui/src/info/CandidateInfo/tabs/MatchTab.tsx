@@ -1,39 +1,13 @@
 import { Members, SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   BackgroundMatchChart,
+  Card,
   PopoverScoreReason,
   TextHeading2,
   TextInputLabel,
   TextLabel1,
 } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
-
-// const exampleData = [
-//   {
-//     questionID: "1242",
-//     questionContent: "Experience",
-//     userPercentage: 75,
-//     averagePercentage: 55,
-//   },
-//   {
-//     questionID: "9521",
-//     questionContent: "WFH or Office",
-//     userPercentage: 35,
-//     averagePercentage: 45,
-//   },
-//   {
-//     questionID: "2222",
-//     questionContent: "Skill",
-//     userPercentage: 85,
-//     averagePercentage: 75,
-//   },
-//   {
-//     questionID: "1211",
-//     questionContent: "Industry exp",
-//     userPercentage: 90,
-//     averagePercentage: 40,
-//   },
-// ];
 
 type Props = {
   member?: Members;
@@ -47,10 +21,17 @@ type BarChartQuestions = {
   averagePercentage: number;
 };
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   // console.log("summaryQuestions = 22", summaryQuestions);
 
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
+
+  const [summaryQuestionSelected, setSummaryQuestionSelected] =
+    useState<SummaryQuestionType>();
 
   useEffect(() => {
     const dataBarChartPr: BarChartQuestions[] = [];
@@ -72,7 +53,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   }, [summaryQuestions]);
 
   return (
-    <div className="pt-4">
+    <div className="relative pt-4">
       <div className="mb-8 grid grid-cols-4">
         <div className="col-span-1"></div>
         <div className="col-span-2">
@@ -105,7 +86,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ? summaryQuestions.map((item, index) => (
               <div
                 key={index}
-                className="z-20 h-full rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
+                className="z-20 h-full cursor-pointer rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
+                onClick={() => setSummaryQuestionSelected(item)}
               >
                 <PopoverScoreReason question={item}>
                   <div className="px-4 pb-4 pt-2">
@@ -180,6 +162,62 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             ))
           : null}
       </div> */}
+
+      <Card
+        border
+        shadow
+        className="my-4 max-h-fit overflow-scroll bg-white pb-4 "
+      >
+        <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3">
+          <div className="my-4">
+            {summaryQuestionSelected &&
+            summaryQuestionSelected.subConversationAnswer
+              ? summaryQuestionSelected.subConversationAnswer.map(
+                  (conversation: any, index: number) => (
+                    <>
+                      <div className="chat-message p-2" key={index}>
+                        <div
+                          className={classNames(
+                            conversation.role == "assistant"
+                              ? ""
+                              : "justify-end",
+                            "flex items-start"
+                          )}
+                        >
+                          <div
+                            className={classNames(
+                              conversation.role == "assistant"
+                                ? "order-2"
+                                : "order-1",
+                              "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                            )}
+                          >
+                            <span
+                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                              className={classNames(
+                                conversation.role == "assistant"
+                                  ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                  : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                              )}
+                            >
+                              {conversation.content}
+                            </span>
+                          </div>
+                          {/* <img
+                          src={Users[chat.user].img}
+                          alt="My profile"
+                          className="order-1 h-6 w-6 rounded-full"
+                        /> */}
+                        </div>
+                      </div>
+                    </>
+                  )
+                )
+              : null}
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };

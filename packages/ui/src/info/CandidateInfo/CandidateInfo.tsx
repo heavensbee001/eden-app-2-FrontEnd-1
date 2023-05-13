@@ -128,17 +128,18 @@ export const CandidateInfo = ({
             ))}
           </Tab.List>
           <Tab.Panels>
-            <div className="pt-52"></div>
-            {tabs.map(({ Content }, index) => (
-              <Tab.Panel key={index}>
-                {/* <div className="h-[calc(100vh-17rem)]"> */}
-                <div className="">
-                  <div className="relative px-6">
+            <div className="relative top-48">
+              {tabs.map(({ Content }, index) => (
+                <Tab.Panel key={index}>
+                  {/* <div className="h-[calc(100vh-17rem)]"> */}
+                  {/* <div className="relative"> */}
+                  <div className="abolute px-6">
                     <Content />
                   </div>
-                </div>
-              </Tab.Panel>
-            ))}
+                  {/* </div> */}
+                </Tab.Panel>
+              ))}
+            </div>
           </Tab.Panels>
         </Tab.Group>
       </div>

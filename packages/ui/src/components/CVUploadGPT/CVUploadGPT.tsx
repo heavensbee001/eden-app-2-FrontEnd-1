@@ -5,6 +5,7 @@ import {
   // FormEvent,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { BsCheckCircle } from "react-icons/bs";
@@ -37,6 +38,8 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploaded, setUploaded] = useState<boolean>(false);
+  const [uploadCounter, setUploadCounter] = useState(0);
+
   // const [summary, setSummary] = useState<string | null>(null);
   const { currentUser } = useContext(UserContext);
 
@@ -62,12 +65,18 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
+      //When user tries to upload the same CV the second time
+      setUploadCounter((prevCounter) => prevCounter + 1);
+      e.target.value = ""; // Clear the file input
     }
   };
+
+  const fileInput = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (file) {
       setUploading(true);
+
       const reader = new FileReader();
 
       reader.onloadend = async () => {
@@ -83,27 +92,52 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
         if (response.ok) {
           const { text } = await response.json();
 
-          SaveCVtoUser({
-            variables: {
-              fields: {
-                // cvString: text
-                userID: currentUser?._id,
-                cvContent: text,
+          console.log("text.split", text.split(" ").length > 10);
+
+          if (text.split(" ").length > 10) {
+            SaveCVtoUser({
+              variables: {
+                fields: {
+                  // cvString: text
+                  userID: currentUser?._id,
+                  cvContent: text,
+                },
               },
-            },
-          });
+            });
+            if (fileInput.current) {
+              fileInput.current.value = "";
+            }
+            setFile(null);
+          } else {
+            toast.error(
+              <div className="flex flex-col justify-center space-y-1">
+                <div className="text-lg text-black">
+                  Please upload a different CV we didn&apos;t identify any text
+                  on this one
+                </div>
+                <div className="text-sm">
+                  *Also, feel free to continue without uploading your Resume
+                </div>
+              </div>
+            );
+            // toast.info(
+            //   "Also, feel free to continue without uploading your Resume"
+            // );
+            setUploading(false);
+            return;
+          }
 
           console.log(text);
         } else {
           const { error } = await response.json();
 
-          console.log("error aaa", error);
+          console.log("error", error);
         }
       };
 
       reader.readAsDataURL(file);
     }
-  }, [file]);
+  }, [file, uploadCounter]);
 
   // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
@@ -188,6 +222,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
           id="file-upload"
           className="hidden"
           onChange={handleFileChange}
+          ref={fileInput}
           type="file"
           accept=".pdf"
         ></input>
