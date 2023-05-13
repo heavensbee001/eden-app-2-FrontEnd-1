@@ -7,7 +7,7 @@ import {
   ChatMessage,
   CVUploadGPT,
   InterviewEdenAI,
-  RawDataGraph,
+  // RawDataGraph,
   SEO,
   Wizard,
   WizardStep,
@@ -15,7 +15,7 @@ import {
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 
-import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
+// import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../_app";
 
 const HomePage: NextPageWithLayout = () => {
