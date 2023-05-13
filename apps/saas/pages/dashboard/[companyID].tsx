@@ -1,5 +1,8 @@
 import { useQuery } from "@apollo/client";
-import { FIND_COMPANY_FULL } from "@eden/package-graphql";
+import {
+  FIND_COMPANY_FULL,
+  MATCH_NODES_MEMBERS_AI4,
+} from "@eden/package-graphql";
 import { CandidateType } from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
@@ -19,11 +22,20 @@ type Question = {
   bestAnswer: string;
 };
 
+interface CandidateTypeSkillMatch extends CandidateType {
+  skillMatch: number;
+}
+
 const CompanyCRM: NextPageWithLayout = () => {
   const router = useRouter();
   const { companyID } = router.query;
 
-  const [candidates, setCandidates] = useState<CandidateType[]>([]);
+  const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
+
+  const [nodeIDsCompany, setNodeIDsCompany] = useState<string[]>([]);
+
+  console.log("nodeIDsCompany = ", nodeIDsCompany);
+  console.log("candidates = ", candidates);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
@@ -72,6 +84,16 @@ const CompanyCRM: NextPageWithLayout = () => {
         }
       });
 
+      // console.log("data.findCompany = ", data.findCompany);
+
+      const nodesID = data.findCompany?.nodes?.map((node: any) => {
+        return node?.nodeData?._id;
+      });
+
+      // console.log("nodesID = ", nodesID);
+
+      setNodeIDsCompany(nodesID);
+
       setQuestions(questionPrep);
     },
   });
@@ -82,6 +104,72 @@ const CompanyCRM: NextPageWithLayout = () => {
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
   };
+
+  const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
+    variables: {
+      fields: {
+        nodesID: nodeIDsCompany,
+        membersIDallow: candidates?.map((userData: any) => {
+          return userData?.user?._id;
+        }),
+        weightModules: [
+          { type: "node_Skill", weight: 70 },
+          { type: "node_Category", weight: 20 },
+          { type: "node_Group", weight: 5 },
+          { type: "node_total", weight: 50 },
+          { type: "budget_total", weight: 80 },
+          { type: "availability_total", weight: 85 },
+          { type: "experience_total", weight: 85 },
+          { type: "everythingElse_total", weight: 50 },
+        ],
+      },
+    },
+    skip: candidates.length == 0 || nodeIDsCompany.length == 0,
+
+    onCompleted: (data) => {
+      console.log("data = ", data);
+
+      // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
+
+      const memberScoreObj: { [key: string]: number } = {};
+
+      data.matchNodesToMembers_AI4.forEach((memberT: any) => {
+        const keyN = memberT?.member?._id;
+
+        if (memberScoreObj[keyN] == undefined) {
+          memberScoreObj[keyN] = memberT?.matchPercentage?.totalPercentage;
+        }
+      });
+
+      console.log("memberScoreObj = ", memberScoreObj);
+
+      const candidatesNew: CandidateTypeSkillMatch[] = [];
+
+      for (let i = 0; i < candidates.length; i++) {
+        const userID = candidates[i]?.user?._id;
+
+        if (userID && memberScoreObj[userID]) {
+          console.log(
+            "userID = ",
+            userID,
+            memberScoreObj[userID],
+            candidates[i]
+          );
+          candidatesNew.push({
+            ...candidates[i],
+            skillMatch: memberScoreObj[userID],
+          });
+          // candidates[i].skillMatch = 3; // memberScoreObj[userID],
+        }
+      }
+
+      console.log("candidatesNew = 202", candidatesNew);
+
+      setCandidates(candidatesNew);
+
+      // setDataMembersA(data.matchNodesToMembers_AI4);
+    },
+  });
 
   return (
     <div className="grid flex-1 grid-cols-2 gap-4">

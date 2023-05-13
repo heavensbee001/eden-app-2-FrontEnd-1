@@ -48,6 +48,12 @@ export const FIND_COMPANY_FULL = gql`
           bestAnswerCompany
         }
       }
+      nodes {
+        nodeData {
+          _id
+          name
+        }
+      }
       questionsToAsk {
         bestAnswer
         question {
