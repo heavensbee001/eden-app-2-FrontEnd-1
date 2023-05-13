@@ -1,13 +1,14 @@
+/* eslint-disable no-unused-vars */
 import { useQuery } from "@apollo/client";
 import { FIND_MEMBER } from "@eden/package-graphql";
 import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   Avatar,
   Button,
+  EdenChatTab,
   GraphTab,
   InfoTab,
   MatchTab,
-  ScoresTab,
   TextHeading3,
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
@@ -16,7 +17,7 @@ import { useState } from "react";
 export interface ICandidateInfoProps {
   memberID: string;
   percentage: number | null;
-  summaryQuestions: SummaryQuestionType[];
+  summaryQuestions?: SummaryQuestionType[];
 }
 
 function classNames(...classes: any[]) {
@@ -60,21 +61,13 @@ export const CandidateInfo = ({
     },
     {
       tab: "EDEN AI CHAT",
-      Content: () => (
-        <ScoresTab
-          member={dataMember?.findMember}
-          percentage={percentage}
-          summaryQuestions={summaryQuestions}
-        />
-      ),
+      Content: () => <EdenChatTab memberID={dataMember?.findMember._id} />,
     },
   ];
 
-  console.log("summaryQuestions = ", summaryQuestions);
-
   return (
-    <section>
-      <div className="font-Inter mb-4 flex-col bg-white text-center">
+    <>
+      <div className="font-Inter absolute z-20 h-44 w-full flex-col bg-white text-center">
         <div className="grid grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full p-2 text-center">
             <div className="flex w-full justify-end">
@@ -118,15 +111,15 @@ export const CandidateInfo = ({
             setIndex(index);
           }}
         >
-          <Tab.List className="flex justify-between bg-white px-6 text-xl">
+          <Tab.List className="absolute top-40 z-20 flex h-8 w-full justify-between bg-white text-lg">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}
                 className={({ selected }) =>
                   classNames(
                     selected
-                      ? "border-b-soilGreen-700 text-soilGreen-700 w-full border-b-4 outline-none"
-                      : "font-avenir-roman w-full border-b-4 text-gray-400"
+                      ? "border-b-soilGreen-700 text-soilGreen-700 w-full border-b-2 outline-none"
+                      : "font-avenir-roman w-full border-b-2 text-gray-400"
                   )
                 }
               >
@@ -135,16 +128,21 @@ export const CandidateInfo = ({
             ))}
           </Tab.List>
           <Tab.Panels>
-            {tabs.map(({ Content }, index) => (
-              <Tab.Panel key={index}>
-                <div className="relative">
-                  <Content />
-                </div>
-              </Tab.Panel>
-            ))}
+            <div className="relative top-48">
+              {tabs.map(({ Content }, index) => (
+                <Tab.Panel key={index}>
+                  {/* <div className="h-[calc(100vh-17rem)]"> */}
+                  {/* <div className="relative"> */}
+                  <div className="abolute px-6">
+                    <Content />
+                  </div>
+                  {/* </div> */}
+                </Tab.Panel>
+              ))}
+            </div>
           </Tab.Panels>
         </Tab.Group>
       </div>
-    </section>
+    </>
   );
 };

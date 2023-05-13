@@ -55,6 +55,9 @@ const edenLink = new ApolloLink((operation, forward) => {
         // console.log("ERROR", data.error);
         if (data.error) return toPromise(forward(operation));
 
+        console.log("client.ts");
+        // console.log(auth.getToken());
+
         const edenToken = data.edenToken;
         if (edenToken) {
           operation.setContext({

@@ -1,6 +1,9 @@
 import { gql, useMutation } from "@apollo/client";
 import { Mutation } from "@eden/package-graphql/generated";
-import React, { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { BsPlusCircleFill } from "react-icons/bs";
+
+import { Button } from "../../elements";
 
 const ADD_QUESTIONS_TO_COMPANY = gql`
   mutation ($fields: addQuestionsToAskCompanyInput) {
@@ -36,9 +39,9 @@ type Props = {
   questions: Question[];
   companyID?: string | string[] | undefined;
   // eslint-disable-next-line no-unused-vars
-  setQuestions: (questions: Question[]) => void;
+  setQuestions: Dispatch<SetStateAction<any[]>>;
   // eslint-disable-next-line no-unused-vars
-  setTrainModalOpen: (open: boolean) => void;
+  setTrainModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export const TrainQuestionsEdenAI = ({
@@ -97,16 +100,16 @@ export const TrainQuestionsEdenAI = ({
   };
 
   return (
-    <div className="p-6">
+    <div className="scrollbar-hide h-[70vh] overflow-y-scroll p-6 pb-32">
       <h1 className="mb-4 text-2xl font-bold">Train Questions for Eden AI</h1>
       <ul className="space-y-2">
         {questions.map((question) => (
           <li key={question._id}>
-            <p className="font-medium">{question.content}</p>
+            <p className="font-bold text-slate-600">{question.content}</p>
             <input
               type="text"
-              className="rounded border px-2 py-1"
-              placeholder="Enter the answer"
+              className="mb-2 w-full rounded border px-2 py-1"
+              placeholder="Enter the preferred answer"
               value={question.bestAnswer}
               onChange={(e) => {
                 const newQuestions = [...questions];
@@ -121,27 +124,30 @@ export const TrainQuestionsEdenAI = ({
           </li>
         ))}
       </ul>
-      <div className="mt-4">
-        <input
-          type="text"
-          className="mr-2 rounded border px-2 py-1"
-          placeholder="Enter a new question"
-          value={newQuestion}
-          onChange={(e) => setNewQuestion(e.target.value)}
-        />
-        <button
-          className="rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
-          onClick={handleQuestionAdd}
+      <div className="absolute bottom-0 right-0 z-20 w-full bg-white px-6 pb-6">
+        <div className="mb-4 mt-4 flex w-full items-center">
+          <input
+            type="text"
+            className="mr-2 w-[calc(100%-3rem)] rounded border px-2 py-1"
+            placeholder="Enter a new question"
+            value={newQuestion}
+            onChange={(e) => setNewQuestion(e.target.value)}
+          />
+
+          <BsPlusCircleFill
+            size={28}
+            className="ml-auto cursor-pointer text-blue-500 hover:text-blue-400"
+            onClick={handleQuestionAdd}
+          />
+        </div>
+        <Button
+          className="mx-auto"
+          variant={"primary"}
+          onClick={handleSaveChanges}
         >
-          Add Question
-        </button>
+          Save Changes
+        </Button>
       </div>
-      <button
-        className="absolute bottom-0 right-0 mb-6 mr-6 mt-4 rounded bg-green-500 px-2 py-1 text-white hover:bg-green-600"
-        onClick={handleSaveChanges}
-      >
-        Save Changes
-      </button>
     </div>
   );
 };

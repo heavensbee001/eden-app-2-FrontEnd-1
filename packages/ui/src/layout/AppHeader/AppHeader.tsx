@@ -8,8 +8,8 @@ export interface IAppHeaderProps {
 
 export const AppHeader = ({ logoLink, inApp }: IAppHeaderProps) => {
   return (
-    <header className="sticky top-0 z-10 border-b bg-white shadow-lg shadow-slate-500/10">
-      <nav className="h-16 w-full px-4  sm:px-5 lg:px-6" aria-label="Top">
+    <header className="sticky top-0 z-30 border-b bg-white shadow-md shadow-slate-100">
+      <nav className="h-16 w-full px-4 sm:px-5 lg:px-6" aria-label="Top">
         <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between">
           {!logoLink ? (
             <div>
