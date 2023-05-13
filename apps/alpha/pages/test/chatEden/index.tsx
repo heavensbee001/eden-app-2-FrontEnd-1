@@ -748,7 +748,7 @@ const UserDiscoverCard = ({
               </p>
               <div>
                 {relatedNodesMemberToMatch
-                  .slice(0, 4)
+                  .slice(0, 7)
                   .map((info: any, index: number) => (
                     <Badge
                       text={info?.MemberRelevantnode?.name || ""}
