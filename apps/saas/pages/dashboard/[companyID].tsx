@@ -114,6 +114,8 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
 
+  console.log("nodeIDsCompany,candidates = ", nodeIDsCompany, candidates);
+
   const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
     variables: {
       fields: {
@@ -138,6 +140,10 @@ const CompanyCRM: NextPageWithLayout = () => {
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
+      console.log(
+        "data.matchNodesToMembers_AI4 = ",
+        data.matchNodesToMembers_AI4
+      );
       // -------------- Get the Candidates of the page ------------
       const memberScoreObj: { [key: string]: number } = {};
 
@@ -266,6 +272,7 @@ const CompanyCRM: NextPageWithLayout = () => {
     },
   });
 
+  console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
   };

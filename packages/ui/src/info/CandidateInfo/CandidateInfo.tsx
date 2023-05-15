@@ -9,6 +9,7 @@ import {
   GraphTab,
   InfoTab,
   MatchTab,
+  MeetingNotes,
   TextHeading3,
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
@@ -65,6 +66,10 @@ export const CandidateInfo = ({
           mostRelevantMemberNode={mostRelevantMemberNode}
         />
       ),
+    },
+    {
+      tab: "Meeting Notes",
+      Content: () => <MeetingNotes member={dataMember?.findMember} />,
     },
     {
       tab: "MATCH",
