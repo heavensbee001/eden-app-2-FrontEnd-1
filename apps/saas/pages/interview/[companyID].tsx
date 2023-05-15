@@ -43,12 +43,12 @@ const HomePage: NextPageWithLayout = () => {
           <Wizard>
             <WizardStep label={"welcome"}>
               <section className="flex h-full flex-col items-center justify-center">
-                <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden.`}</h2>
+                <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
                 {findCompanyData?.findCompany?.name ? (
                   <>
                     <p>
-                      👋 I am the AI that&lsquo;s here to help you unlock your
-                      next dream opportunity
+                      I am the AI that&lsquo;s here to help you unlock your next
+                      dream opportunity
                     </p>
                     <br />
                     <p>
