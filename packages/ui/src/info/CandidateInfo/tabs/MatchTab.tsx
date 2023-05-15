@@ -1,13 +1,56 @@
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Members, SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   BackgroundMatchChart,
   Card,
   PopoverScoreReason,
+  TeamAttributeChart,
   TextHeading2,
   TextInputLabel,
   TextLabel1,
 } from "@eden/package-ui";
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 import { FC, useEffect, useState } from "react";
+import { Pie } from "react-chartjs-2";
+
+const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
+  query ($fields: memberPieChartNodeCategoriesInput) {
+    memberPieChartNodeCategories(fields: $fields) {
+      categoryName
+      percentage
+    }
+  }
+`;
+
+const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
+  query ($fields: memberRadioChartCharacterAttributesInput) {
+    memberRadioChartCharacterAttributes(fields: $fields) {
+      attributeName
+      score
+      reason
+    }
+  }
+`;
+
+const dataRadarchart = [
+  {
+    memberInfo: {
+      discordName: "Kwame",
+      attributes: {
+        Coordinator: 60,
+        DirectorTP: 70,
+        Helper: 70,
+        Inspirer: 80,
+        Motivator: 70,
+        Observer: 90,
+        Reformer: 50,
+        Supporter: 40,
+      },
+    },
+  },
+];
+
+ChartJS.register(ArcElement, Legend, Tooltip);
 
 type Props = {
   member?: Members;
@@ -33,6 +76,160 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
     useState<SummaryQuestionType>();
 
+  console.log("member = ", member);
+
+  interface ChartData {
+    labels: string[];
+    datasets: {
+      data: number[];
+      backgroundColor: string[];
+    }[];
+  }
+
+  const [pieChartData, setPieChartData] = useState<ChartData>({
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+      },
+    ],
+  });
+
+  const {} = useQuery(MEMBER_PIE_CHART_NODE_CATEGORY, {
+    variables: {
+      fields: {
+        memberID: member?._id,
+      },
+    },
+    skip: member?._id == undefined,
+    onCompleted: (data) => {
+      const labels = [];
+      const dataPT = [];
+
+      for (let i = 0; i < data.memberPieChartNodeCategories.length; i++) {
+        const elementT = data.memberPieChartNodeCategories[i];
+
+        labels.push(elementT.categoryName);
+
+        dataPT.push(elementT.percentage);
+      }
+
+      setPieChartData({
+        labels: labels,
+        datasets: [
+          {
+            data: dataPT,
+            backgroundColor: [
+              "#F44336",
+              "#E91E63",
+              "#9C27B0",
+              "#673AB7",
+              "#3F51B5",
+              "#2196F3",
+              "#00BCD4",
+              "#009688",
+              "#4CAF50",
+            ],
+          },
+        ],
+      });
+    },
+  });
+
+  type radiochartType = {
+    memberInfo: {
+      discordName: string;
+      attributes: {
+        [key: string]: number;
+      };
+    };
+  };
+
+  const [radioChart, setRadioChart] = useState<radiochartType[]>([]);
+
+  const optionsRadar = {
+    scales: {
+      r: {
+        suggestedMin: 30,
+        suggestedMax: 100,
+        ticks: {
+          stepSize: 20, // Optional: Specify the step size between ticks
+        },
+      },
+    },
+  };
+
+  const {} = useQuery(MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES, {
+    variables: {
+      fields: {
+        memberID: member?._id,
+      },
+    },
+    skip: member?._id == undefined,
+    onCompleted: (data) => {
+      interface attributesType {
+        [key: string]: any;
+      }
+      const attributesT: attributesType = {};
+
+      let averageScore = 0;
+      let numT = 0;
+
+      for (
+        let i = 0;
+        i < data.memberRadioChartCharacterAttributes.length;
+        i++
+      ) {
+        const elementT: {
+          attributeName: string;
+          score: number;
+          reason: string;
+        } = data.memberRadioChartCharacterAttributes[i];
+
+        if (elementT && elementT.attributeName) {
+          let nameAtt = elementT.attributeName;
+
+          // how to make maximum 11 letters on nameAtt
+          if (nameAtt.length > 11) {
+            nameAtt = nameAtt.substring(0, 11) + "...";
+          }
+
+          attributesT[nameAtt] = elementT.score;
+
+          averageScore = averageScore + elementT.score;
+          numT = numT + 1;
+        }
+      }
+
+      averageScore = averageScore / numT;
+
+      // male averageScore int
+      averageScore = Math.round(averageScore);
+
+      setRadioChart([
+        {
+          memberInfo: {
+            discordName:
+              member?.discordName + " - " + averageScore.toString() + "%" ?? "",
+            attributes: attributesT,
+          },
+        },
+      ]);
+
+      console.log("CHANGE Radio Chart", [
+        {
+          memberInfo: {
+            discordName: member?.discordName ?? "",
+            attributes: attributesT,
+          },
+        },
+      ]);
+    },
+  });
+
+  console.log("radioChart = ", radioChart);
+
   useEffect(() => {
     const dataBarChartPr: BarChartQuestions[] = [];
 
@@ -51,6 +248,25 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
     setDataBarChart(dataBarChartPr);
   }, [summaryQuestions]);
+
+  const data = {
+    labels: ["One", "Two", "Three"],
+    datasets: [
+      {
+        data: [3, 6, 9],
+        backgroundColor: ["aqua", "orangered", "purple"],
+      },
+    ],
+  };
+
+  const options = {
+    scale: {
+      ticks: {
+        min: 0,
+        max: 100,
+      },
+    },
+  };
 
   return (
     <div className="relative pt-4">
@@ -71,6 +287,23 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             />
           )}
         </div>
+        <div className="col-span-2">
+          <p className="mb-2 text-center">
+            <TextLabel1>PieChart</TextLabel1>
+          </p>
+          {/* <Pie data={data} options={options} /> */}
+          <Pie data={pieChartData} />
+        </div>
+        {radioChart?.length > 0 && (
+          <div className="col-span-2">
+            <p className="mb-2 text-center">
+              <TextLabel1>Radar Chart</TextLabel1>
+            </p>
+            {/* <Pie data={data} options={options} /> */}
+            {/* <TeamAttributeChart members={dataRadarchart} /> */}
+            <TeamAttributeChart members={radioChart} options={optionsRadar} />
+          </div>
+        )}
         <div className="col-span-1"></div>
       </div>
       <p className="mb-2 text-center">
@@ -100,9 +333,13 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                     </div>
                     <div className="">
                       <div className="flex h-full items-center justify-center">
-                        <TextInputLabel className="mr-auto text-xs text-black">
-                          {item.answerContentSmall?.replace(".", "")}
-                        </TextInputLabel>
+                        {!item.score ? (
+                          <TextInputLabel className="mr-auto text-center text-xs text-black">
+                            {item.answerContentSmall?.replace(".", "")}
+                          </TextInputLabel>
+                        ) : (
+                          true
+                        )}
                         {item.score ? (
                           <div className="ml-1 font-black">
                             <TextHeading2
