@@ -27,6 +27,7 @@ export interface IMember {
 }
 export interface ITeamAttributeChartProps {
   members: IMember[];
+  options?: any;
 }
 
 const colors = [
@@ -42,7 +43,10 @@ const colors = [
   "#95a5a660",
 ];
 
-export const TeamAttributeChart = ({ members }: ITeamAttributeChartProps) => {
+export const TeamAttributeChart = ({
+  members,
+  options = {},
+}: ITeamAttributeChartProps) => {
   const labels = Object.keys(members[0].memberInfo.attributes);
   const datasets = members.map(({ memberInfo }, i) => {
     return {
@@ -66,6 +70,7 @@ export const TeamAttributeChart = ({ members }: ITeamAttributeChartProps) => {
         labels,
         datasets,
       }}
+      options={options}
     />
   );
 };
