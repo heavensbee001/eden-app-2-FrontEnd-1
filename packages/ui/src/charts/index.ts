@@ -1,6 +1,5 @@
 export * from "./BackgroundMatchChart";
 export * from "./Charts";
-export * from "./PieChart";
 export * from "./RangeChart";
 export * from "./RangeChartOne";
 export * from "./SalaryRangeChart";
