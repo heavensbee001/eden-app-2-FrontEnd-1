@@ -67,7 +67,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "MATCH %",
+      tab: "MATCH",
       Content: () => (
         <MatchTab
           member={dataMember?.findMember}
