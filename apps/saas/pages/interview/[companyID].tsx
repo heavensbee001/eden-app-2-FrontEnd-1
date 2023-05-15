@@ -22,6 +22,7 @@ const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { companyID } = router.query;
+  const [interviewEnded, setInterviewEnded] = useState(false);
 
   const {
     data: findCompanyData,
@@ -35,20 +36,26 @@ const HomePage: NextPageWithLayout = () => {
     skip: !companyID,
   });
 
+  const handleEnd = () => {
+    console.log("interview end");
+
+    setInterviewEnded(true);
+  };
+
   return (
     <>
       <SEO />
       <Card className="mx-auto mt-3 h-[88vh] w-full max-w-5xl bg-white" shadow>
         <div className="h-full w-full p-8">
-          <Wizard>
+          <Wizard canPrev={false}>
             <WizardStep label={"welcome"}>
               <section className="flex h-full flex-col items-center justify-center">
-                <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden.`}</h2>
+                <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
                 {findCompanyData?.findCompany?.name ? (
                   <>
                     <p>
-                      👋 I am the AI that&lsquo;s here to help you unlock your
-                      next dream opportunity
+                      I am the AI that&lsquo;s here to help you unlock your next
+                      dream opportunity
                     </p>
                     <br />
                     <p>
@@ -108,10 +115,15 @@ const HomePage: NextPageWithLayout = () => {
                 <CVUploadGPT />
               </section>
             </WizardStep>
-            <WizardStep label={"chat"}>
+            <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
               <div className="mx-auto h-[70vh] max-w-lg">
-                <InterviewEdenAIContainer />
+                <InterviewEdenAIContainer handleEnd={handleEnd} />
               </div>
+            </WizardStep>
+            <WizardStep label={"end"}>
+              <section className="flex h-full flex-col items-center justify-center">
+                <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
+              </section>
             </WizardStep>
           </Wizard>
         </div>
@@ -206,7 +218,13 @@ interface MessageObject {
   user?: string;
 }
 
-const InterviewEdenAIContainer = () => {
+interface InterviewEdenAIContainerProps {
+  handleEnd?: () => void;
+}
+
+const InterviewEdenAIContainer = ({
+  handleEnd,
+}: InterviewEdenAIContainerProps) => {
   const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
     useState<MessageObject>({ message: "", sentMessage: false, user: "" });
 
@@ -334,6 +352,9 @@ const InterviewEdenAIContainer = () => {
             questions={questions}
             setQuestions={setQuestions}
             userID={currentUser?._id}
+            handleEnd={() => {
+              if (handleEnd) handleEnd();
+            }}
           />
         }
       </div>
