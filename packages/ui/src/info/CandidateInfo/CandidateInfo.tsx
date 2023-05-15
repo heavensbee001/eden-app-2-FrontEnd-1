@@ -69,12 +69,7 @@ export const CandidateInfo = ({
     },
     {
       tab: "Meeting Notes",
-      Content: () => (
-        <MeetingNotes
-          member={dataMember?.findMember}
-          mostRelevantMemberNode={mostRelevantMemberNode}
-        />
-      ),
+      Content: () => <MeetingNotes member={dataMember?.findMember} />,
     },
     {
       tab: "MATCH",
