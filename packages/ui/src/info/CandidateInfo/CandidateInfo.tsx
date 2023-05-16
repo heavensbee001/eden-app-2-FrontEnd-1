@@ -153,7 +153,7 @@ export const CandidateInfo = ({
             ))}
           </Tab.List>
           <Tab.Panels>
-            <div className="relative top-48">
+            <div className="relative top-52">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
                   {/* <div className="h-[calc(100vh-17rem)]"> */}
