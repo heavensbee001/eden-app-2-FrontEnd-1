@@ -93,7 +93,7 @@ export const CandidateInfo = ({
   return (
     <>
       <div className="font-Inter absolute z-20 h-44 w-full flex-col bg-white text-center">
-        <div className="grid grid-cols-3 bg-white">
+        <div className="grid w-[calc(100%+1rem)] grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full p-2 text-center">
             <div className="flex w-full justify-end">
               <Button className="bg-red-400 font-bold text-white" radius="pill">
@@ -136,7 +136,7 @@ export const CandidateInfo = ({
             setIndex(index);
           }}
         >
-          <Tab.List className="absolute top-40 z-20 flex h-8 w-full justify-between bg-white text-lg">
+          <Tab.List className="absolute top-40 z-20 flex h-8  w-[calc(100%+1rem)] justify-between bg-white text-lg">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}

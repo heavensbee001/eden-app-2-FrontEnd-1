@@ -68,8 +68,8 @@ export const EdenChatTab: React.FC<Props> = ({ memberID }) => {
               : null}
             <hr
               style={{
-                border: "1",
-                borderTop: "medium double #CCC",
+                // border: "1",
+                borderTop: "1px solid #CCC",
                 height: "1px",
                 overflow: "visible",
                 padding: "0",
@@ -77,6 +77,8 @@ export const EdenChatTab: React.FC<Props> = ({ memberID }) => {
                 textAlign: "center",
                 marginTop: "10px",
                 marginBottom: "56px",
+                marginRight: "-0.75rem",
+                marginLeft: "-0.75rem",
               }}
             />
           </div>
