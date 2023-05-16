@@ -56,8 +56,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             <th className="border-b border-gray-300 py-2 pr-2 text-right">
               $/hour
             </th>
-            <th className="border-b border-gray-400 py-2">Level</th>
-            <th className="border-b border-gray-400 py-2">Skill Match</th>
+            <th className="border-b border-gray-300 py-2">Level</th>
+            <th className="border-b border-gray-300 py-2">Skill Match</th>
           </tr>
         </thead>
         <tbody>
