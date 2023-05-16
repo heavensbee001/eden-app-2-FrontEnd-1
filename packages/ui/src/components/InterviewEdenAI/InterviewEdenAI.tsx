@@ -14,7 +14,7 @@ interface NodeObj {
   };
 }
 interface Question {
-  _id: number;
+  _id: string;
   content: string;
   bestAnswer: string;
 }
@@ -45,6 +45,8 @@ export interface IInterviewEdenAIProps {
   experienceTypeID?: string;
   questions?: Question[];
   userID?: Maybe<string> | undefined;
+  useMemory?: boolean;
+  conversationID?: String;
   // eslint-disable-next-line no-unused-vars
   handleChangeNodes?: (nodes: NodeObj) => void;
   // eslint-disable-next-line no-unused-vars
@@ -59,6 +61,9 @@ export interface IInterviewEdenAIProps {
   setChangeChatN?: (messageArr: any) => void;
   // eslint-disable-next-line no-unused-vars
   setQuestions?: (questions: Question[]) => void;
+  // eslint-disable-next-line no-unused-vars
+  setConversationID?: (conversationID: string) => void;
+
   placeholder?: any;
 }
 
@@ -70,6 +75,7 @@ export const InterviewEdenAI = ({
   changeChatN,
   questions,
   userID,
+  useMemory = true,
   handleChangeNodes,
   handleChangeChat,
   // setShowPopupSalary,
@@ -77,6 +83,7 @@ export const InterviewEdenAI = ({
   setSentMessageToEdenAIobj,
   setChangeChatN,
   setQuestions,
+  setConversationID,
   placeholder = "",
 }: IInterviewEdenAIProps) => {
   // const { currentUser } = useContext(UserContext);
@@ -161,6 +168,7 @@ export const InterviewEdenAI = ({
             questionContent: question.content,
           };
         }),
+        useMemory: useMemory,
       },
     },
     skip:
@@ -212,6 +220,13 @@ export const InterviewEdenAI = ({
       // setUnansweredQuestions(unansweredQuestions);
 
       console.log("questionsT = ", questionsT);
+
+      const conversationID = dataInterviewEdenAI?.interviewEdenAI
+        ?.conversationID as string;
+
+      if (setConversationID && conversationID != undefined) {
+        setConversationID(conversationID);
+      }
 
       if (setQuestions != undefined && questionsT != undefined) {
         setQuestions(questionsT);
