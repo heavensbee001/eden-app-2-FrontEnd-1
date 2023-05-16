@@ -3,6 +3,7 @@ import { UserContext } from "@eden/package-context";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
+  Button,
   Card,
   ChatMessage,
   CVUploadGPT,
@@ -111,7 +112,6 @@ const HomePage: NextPageWithLayout = () => {
                   <br />
                   please upload your CV first.
                 </p>
-                {/* <p>--- ADD UPLOAD CV BUTTON --</p> */}
                 <CVUploadGPT />
               </section>
             </WizardStep>
@@ -120,11 +120,15 @@ const HomePage: NextPageWithLayout = () => {
                 <InterviewEdenAIContainer handleEnd={handleEnd} />
               </div>
             </WizardStep>
-            <WizardStep label={"end"}>
+            <WizardStep label={"profile"}>
+              <p className="mb-8 text-center">Just a few questions missing</p>
+              <ProfileQuestionsContainer />
+            </WizardStep>
+            {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
               </section>
-            </WizardStep>
+            </WizardStep> */}
           </Wizard>
         </div>
       </Card>
@@ -358,6 +362,235 @@ const InterviewEdenAIContainer = ({
           />
         }
       </div>
+    </div>
+  );
+};
+
+import { UPDATE_MEMBER } from "@eden/package-graphql";
+import {
+  Members,
+  Mutation,
+  UpdateMemberInput,
+} from "@eden/package-graphql/generated";
+import { locations } from "@eden/package-ui/utils/locations";
+import { Controller, useForm } from "react-hook-form";
+
+interface IProfileQuestionsContainerProps {}
+
+const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
+  const { currentUser } = useContext(UserContext);
+  const [userState, setUserState] = useState<Members>();
+  const router = useRouter();
+  // eslint-disable-next-line no-unused-vars
+  const [submitting, setSubmitting] = useState(false);
+
+  // eslint-disable-next-line no-unused-vars
+  const { register, watch, control, setValue, getValues } = useForm<Members>({
+    defaultValues: { ...currentUser },
+  });
+
+  useEffect(() => {
+    if (currentUser) {
+      setUserState(currentUser);
+    }
+  }, [currentUser]);
+
+  const [updateMember] = useMutation(UPDATE_MEMBER, {
+    onCompleted({ updateMember }: Mutation) {
+      if (!updateMember) console.log("updateMember is null");
+      router.push("/thanks");
+      setSubmitting(false);
+    },
+    onError: () => {
+      setSubmitting(false);
+    },
+  });
+
+  const handleSubmit = () => {
+    setSubmitting(true);
+    const fields: UpdateMemberInput = {};
+
+    if (userState?.budget?.perHour)
+      fields.budget = { perHour: Number(userState?.budget?.perHour || 0) };
+    if (userState?.hoursPerWeek)
+      fields.hoursPerWeek = Number(userState?.hoursPerWeek || 0);
+    if (userState?.location) fields.location = userState?.location;
+    if (userState?.timeZone) fields.timeZone = userState?.timeZone;
+    if (userState?.experienceLevel?.total)
+      fields.experienceLevel = fields.experienceLevel
+        ? {
+            ...fields.experienceLevel,
+            total: +userState?.experienceLevel?.total,
+          }
+        : {
+            total: +userState?.experienceLevel?.total,
+          };
+    if (userState?.experienceLevel?.years)
+      fields.experienceLevel = fields.experienceLevel
+        ? {
+            ...fields.experienceLevel,
+            years: +userState?.experienceLevel?.years,
+          }
+        : {
+            years: +userState?.experienceLevel?.years,
+          };
+
+    updateMember({
+      variables: {
+        fields: fields,
+      },
+    });
+  };
+
+  useEffect(() => {
+    const subscription = watch((data: any) => {
+      console.log("WATCH ---- data", data);
+      if (data) setUserState(data as Members);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  return (
+    <div className="w-full">
+      <div className="mb-8">
+        <section className="mb-4 inline-block w-1/2 pr-12">
+          <p className="mb-2">What is your desired salary</p>
+          <div className="flex items-center">
+            <input
+              type="number"
+              id="budget"
+              className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              required
+              {...register("budget.perHour")}
+            />
+            <span>$/hour</span>
+          </div>
+        </section>
+        <section className="mb-4 inline-block w-1/2 pr-12">
+          <p className="mb-2">Share your availability</p>
+          <div className="flex items-center">
+            <input
+              type="number"
+              min={0}
+              max={40}
+              id="hoursPerWeek"
+              className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              required
+              {...register("hoursPerWeek")}
+            />
+            <span>hours/week</span>
+          </div>
+        </section>
+      </div>
+      <div className="mb-8">
+        <section className="mb-4 inline-block w-1/2 pr-12">
+          <p className="mb-2">What is your location?</p>
+          <Controller
+            name={"location"}
+            control={control}
+            render={() => (
+              <select
+                defaultValue={
+                  userState?.timeZone && userState?.location
+                    ? `(${userState?.timeZone}) ${userState?.location}`
+                    : ""
+                }
+                id="location"
+                className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                required
+                onChange={(e) => {
+                  const _gmt = e.target.value.split(" ")[0].slice(1, -1);
+
+                  const _location = e.target.value
+                    .split(" ")
+                    .splice(1)
+                    .join(" ");
+
+                  setValue("timeZone", _gmt);
+                  setValue("location", _location);
+                }}
+              >
+                <option disabled value={""} hidden>
+                  Select a location...
+                </option>
+                {locations.map((loc, index) => (
+                  <option
+                    value={`(${loc.gmt}) ${loc.location}`}
+                    key={index}
+                  >{`(${loc.gmt}) ${loc.location}`}</option>
+                ))}
+              </select>
+            )}
+          />
+        </section>
+      </div>
+      <div className="mb-8">
+        <section className="mb-4 inline-block w-1/2 pr-12">
+          <p className="mb-2">
+            How many years of experience do you have in total?
+          </p>
+          <div className="flex items-center">
+            <input
+              type="number"
+              // min={0}
+              // max={40}
+              // // id="hoursPerWeek"
+              className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              // required
+              {...register("experienceLevel.years")}
+            />
+            <span>years</span>
+          </div>
+        </section>
+        <section className="mb-4 inline-block w-1/2 pr-12">
+          <p className="mb-2">What is you experience level?</p>
+          <div className="flex items-center">
+            <Controller
+              name={"experienceLevel"}
+              control={control}
+              render={() => {
+                let _defaultValue: number | string = "";
+
+                if (userState?.experienceLevel?.total == 3) _defaultValue = 3;
+                if (userState?.experienceLevel?.total == 6) _defaultValue = 6;
+                if (userState?.experienceLevel?.total == 9) _defaultValue = 9;
+
+                return (
+                  <select
+                    id="experienceLevel"
+                    className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                    required
+                    onChange={(e) => {
+                      const _val = {
+                        ...getValues("experienceLevel"),
+                        total: +e.target.value,
+                      };
+
+                      setValue("experienceLevel", _val);
+                    }}
+                    defaultValue={_defaultValue}
+                  >
+                    <option value={""} disabled hidden>
+                      Select one...
+                    </option>
+                    <option value={3}>Junior</option>
+                    <option value={6}>Mid-level</option>
+                    <option value={9}>Senior</option>
+                  </select>
+                );
+              }}
+            />
+          </div>
+        </section>
+      </div>
+      <Button
+        className="absolute bottom-4 right-4 z-20"
+        variant="primary"
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
     </div>
   );
 };

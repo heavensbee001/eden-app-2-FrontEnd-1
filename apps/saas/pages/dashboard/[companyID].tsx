@@ -290,7 +290,7 @@ const CompanyCRM: NextPageWithLayout = () => {
             variant="secondary"
             onClick={handleTrainButtonClick}
           >
-            Train EdenAI AI
+            Train Eden AI
           </Button>
           {/* <Button
             variant="secondary"
