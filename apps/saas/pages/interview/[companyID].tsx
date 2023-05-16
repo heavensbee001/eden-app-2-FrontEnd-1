@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   ChatMessage,
+  CountdownTimer,
   CVUploadGPT,
   InterviewEdenAI,
   // RawDataGraph,
@@ -362,6 +363,7 @@ const InterviewEdenAIContainer = ({
           />
         }
       </div>
+      <CountdownTimer />
     </div>
   );
 };
