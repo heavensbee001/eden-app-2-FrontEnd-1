@@ -9,6 +9,7 @@ import {
   CountdownTimer,
   CVUploadGPT,
   InterviewEdenAI,
+  ProgressBarGeneric,
   // RawDataGraph,
   SEO,
   Wizard,
@@ -25,6 +26,7 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { companyID } = router.query;
   const [interviewEnded, setInterviewEnded] = useState(false);
+  const [progress, setProgress] = useState<number>(0);
 
   const {
     data: findCompanyData,
@@ -44,12 +46,36 @@ const HomePage: NextPageWithLayout = () => {
     setInterviewEnded(true);
   };
 
+  const handleProgress = (_step: any) => {
+    switch (_step) {
+      case 1:
+        setProgress(25);
+        break;
+      case 2:
+        setProgress(50);
+        break;
+      case 3:
+        setProgress(75);
+        break;
+      case 4:
+        setProgress(100);
+        break;
+      default:
+    }
+  };
+
   return (
     <>
       <SEO />
-      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-5xl bg-white" shadow>
+      <Card
+        className="mx-auto mt-3 h-[88vh] w-full max-w-5xl overflow-y-scroll bg-white"
+        shadow
+      >
         <div className="h-full w-full p-8">
-          <Wizard canPrev={false}>
+          <div className="absolute left-0 top-0 w-full">
+            <ProgressBarGeneric progress={progress} />
+          </div>
+          <Wizard canPrev={false} onStepChange={handleProgress}>
             <WizardStep label={"welcome"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
