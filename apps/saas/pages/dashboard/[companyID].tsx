@@ -298,7 +298,7 @@ const CompanyCRM: NextPageWithLayout = () => {
     <GridLayout className="">
       <GridItemSix>
         <div>
-          <div className="mb-4 flex items-center">
+          <div className="mb-4 flex h-10 items-center">
             <h1 className="mr-6 text-2xl font-medium">
               {findCompanyData && findCompanyData.findCompany.name
                 ? findCompanyData.findCompany.name.charAt(0).toUpperCase() +
