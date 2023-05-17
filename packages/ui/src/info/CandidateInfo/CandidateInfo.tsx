@@ -59,7 +59,7 @@ export const CandidateInfo = ({
 
   const tabs = [
     {
-      tab: "INFO",
+      tab: "Info",
       Content: () => (
         <InfoTab
           member={dataMember?.findMember}
@@ -72,7 +72,7 @@ export const CandidateInfo = ({
       Content: () => <MeetingNotes member={dataMember?.findMember} />,
     },
     {
-      tab: "MATCH",
+      tab: "Match",
       Content: () => (
         <MatchTab
           member={dataMember?.findMember}
@@ -81,11 +81,11 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "GRAPH",
+      tab: "Graph",
       Content: () => <GraphTab member={dataMember?.findMember} />,
     },
     {
-      tab: "EDEN AI CHAT",
+      tab: "Eden AI chat",
       Content: () => <EdenChatTab memberID={dataMember?.findMember._id} />,
     },
   ];
@@ -142,9 +142,10 @@ export const CandidateInfo = ({
                 key={index}
                 className={({ selected }) =>
                   classNames(
+                    "pt-px",
                     selected
-                      ? "border-b-soilGreen-700 text-soilGreen-700 w-full border-b-2 outline-none"
-                      : "font-avenir-roman w-full border-b-2 text-gray-400"
+                      ? "border-b-soilGreen-700 w-full border-b-2 bg-lime-50 text-gray-600 outline-none"
+                      : "font-avenir-roman w-full border-b-2 text-gray-400 hover:bg-gray-50 hover:text-gray-500"
                   )
                 }
               >
