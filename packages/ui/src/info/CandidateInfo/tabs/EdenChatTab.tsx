@@ -66,7 +66,7 @@ export const EdenChatTab: React.FC<Props> = ({ memberID }) => {
                   </div>
                 ))
               : null}
-            <hr
+            {/* <hr
               style={{
                 // border: "1",
                 borderTop: "1px solid #CCC",
@@ -80,7 +80,7 @@ export const EdenChatTab: React.FC<Props> = ({ memberID }) => {
                 marginRight: "-0.75rem",
                 marginLeft: "-0.75rem",
               }}
-            />
+            /> */}
           </div>
         </div>
       </Card>
