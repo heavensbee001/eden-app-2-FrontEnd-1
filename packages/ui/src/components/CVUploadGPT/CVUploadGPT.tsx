@@ -54,6 +54,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
 
       setUploading(false);
       setUploaded(true);
+      setFile(null);
       toast.success("success");
     },
     onError: (err) => {
@@ -109,21 +110,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
             }
             setFile(null);
           } else {
-            toast.error(
-              <div className="flex flex-col justify-center space-y-1">
-                <div className="text-lg text-black">
-                  Please upload a different CV we didn&apos;t identify any text
-                  on this one
-                </div>
-                <div className="text-sm">
-                  *Also, feel free to continue without uploading your Resume
-                </div>
-              </div>
-            );
-            // toast.info(
-            //   "Also, feel free to continue without uploading your Resume"
-            // );
-            setUploading(false);
+            uploadOCRService(file);
             return;
           }
 
@@ -138,6 +125,64 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
       reader.readAsDataURL(file);
     }
   }, [file, uploadCounter]);
+
+  const uploadOCRService = async (_file: any) => {
+    var formData = new FormData();
+
+    // formData.append("base64Image", "data:application/pdf;base64," + _file);
+    formData.append("file", _file);
+    formData.append("filetype", "PDF");
+
+    const response = await fetch("https://api.ocr.space/parse/image", {
+      method: "POST",
+      headers: {
+        apikey: process.env.OCR_SPACE_API_KEY!,
+        contentType: "application/pdf",
+      },
+      body: formData,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log("data_____", data.ParsedResults[0].ParsedText);
+        // return response.json();
+        if (!data.ParsedResults[0] || !data.ParsedResults[0].ParsedText) {
+          throw new Error("Could not parse the cv");
+        }
+        SaveCVtoUser({
+          variables: {
+            fields: {
+              // cvString: text
+              userID: currentUser?._id,
+              cvContent: data.ParsedResults[0].ParsedText,
+            },
+          },
+        });
+        if (fileInput.current) {
+          fileInput.current.value = "";
+        }
+      })
+      .catch(() => {
+        toast.error(
+          <div className="flex flex-col justify-center space-y-1">
+            <div className="text-lg text-black">
+              Please upload a different CV we didn&apos;t identify any text on
+              this one
+            </div>
+            <div className="text-sm">
+              *Also, feel free to continue without uploading your Resume
+            </div>
+          </div>
+        );
+        // toast.info(
+        //   "Also, feel free to continue without uploading your Resume"
+        // );
+        setUploading(false);
+      });
+
+    console.log("PARSE OK", response);
+  };
 
   // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
