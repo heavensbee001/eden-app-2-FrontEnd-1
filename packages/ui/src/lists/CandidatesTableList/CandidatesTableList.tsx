@@ -47,9 +47,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   };
 
   return (
-    <section className="scrollbar-hide w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
-      <table className="text-md w-full">
-        <thead className="bg-slate-200 text-gray-800 shadow-md">
+    <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
+      <table className="text-md relative w-full">
+        <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
           <tr>
             <th className="min-w-min border-b border-gray-300 py-2">Name</th>
             <th className="border-b border-gray-300 py-2">Match</th>
