@@ -31,10 +31,16 @@ export const SAVE_CV_TO_USER = gql`
 export interface ICVUploadGPTProps {
   timePerWeek?: number;
   seed?: string;
+  handleEnd?: () => void;
 }
 
-// eslint-disable-next-line no-unused-vars
-export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
+export const CVUploadGPT = ({
+  // eslint-disable-next-line no-unused-vars
+  timePerWeek,
+  // eslint-disable-next-line no-unused-vars
+  seed,
+  handleEnd,
+}: ICVUploadGPTProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploaded, setUploaded] = useState<boolean>(false);
@@ -58,6 +64,7 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
       setFile(null);
       setSizeErr(false);
       toast.success("success");
+      if (handleEnd) handleEnd();
     },
     onError: (err) => {
       setUploading(false);

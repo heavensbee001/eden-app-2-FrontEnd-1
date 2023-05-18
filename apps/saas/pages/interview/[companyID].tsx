@@ -26,6 +26,7 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { companyID } = router.query;
   const [interviewEnded, setInterviewEnded] = useState(false);
+  const [cvEnded, setCvEnded] = useState(false);
   const [progress, setProgress] = useState<number>(0);
 
   const {
@@ -40,7 +41,12 @@ const HomePage: NextPageWithLayout = () => {
     skip: !companyID,
   });
 
-  const handleEnd = () => {
+  const handleCvEnd = () => {
+    console.log("cv end");
+
+    setCvEnded(true);
+  };
+  const handleInterviewEnd = () => {
     console.log("interview end");
 
     setInterviewEnded(true);
@@ -129,7 +135,7 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </section>
             </WizardStep> */}
-            <WizardStep label={"cv"}>
+            <WizardStep nextDisabled={!cvEnded} label={"cv"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h3 className="mb-8 text-center text-lg font-medium">
                   Hey {currentUser?.discordName}!
@@ -139,12 +145,12 @@ const HomePage: NextPageWithLayout = () => {
                   <br />
                   please upload your CV first.
                 </p>
-                <CVUploadGPT />
+                <CVUploadGPT handleEnd={handleCvEnd} />
               </section>
             </WizardStep>
             <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
               <div className="mx-auto h-[70vh] max-w-lg">
-                <InterviewEdenAIContainer handleEnd={handleEnd} />
+                <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
               </div>
             </WizardStep>
             <WizardStep label={"profile"}>
