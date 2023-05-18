@@ -77,49 +77,50 @@ const HomePage: NextPageWithLayout = () => {
         className="mx-auto mt-3 h-[88vh] w-full max-w-5xl overflow-y-scroll bg-white"
         shadow
       >
-        <div className="h-full w-full p-8">
-          <div className="absolute left-0 top-0 w-full">
-            <ProgressBarGeneric progress={progress} />
-          </div>
-          <Wizard canPrev={false} onStepChange={handleProgress}>
-            <WizardStep label={"welcome"}>
-              <section className="flex h-full flex-col items-center justify-center">
-                <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
-                {findCompanyData?.findCompany?.name ? (
-                  <>
-                    <p>
-                      I am the AI that&lsquo;s here to help you unlock your next
-                      dream opportunity
-                    </p>
-                    <br />
-                    <p>
-                      🎉 You&lsquo;ve been invited to take the next steps with{" "}
-                      <b>{findCompanyData.findCompany.name}.</b> 🎉
-                    </p>
-                    <br />
-                    <p>
-                      If you need a refresher, here&lsquo;s the{" "}
-                      <Link href={"https://google.com"} target="_blank">
-                        <b className="underline hover:text-slate-600">
-                          opportunity
-                        </b>
-                      </Link>{" "}
-                      info
-                    </p>
-                    <br />
-                    <br />
-                    <br />
-                    <p>
-                      When you&lsquo;re ready, click next and you&lsquo;ll be
-                      doing your first interview with me!
-                    </p>
-                  </>
-                ) : (
-                  <p> </p>
-                )}
-              </section>
-            </WizardStep>
-            {/* <WizardStep label={"instructions"}>
+        {currentUser && (
+          <div className="h-full w-full p-8">
+            <div className="absolute left-0 top-0 w-full">
+              <ProgressBarGeneric progress={progress} />
+            </div>
+            <Wizard canPrev={false} onStepChange={handleProgress}>
+              <WizardStep label={"welcome"}>
+                <section className="flex h-full flex-col items-center justify-center">
+                  <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
+                  {findCompanyData?.findCompany?.name ? (
+                    <>
+                      <p>
+                        I am the AI that&lsquo;s here to help you unlock your
+                        next dream opportunity
+                      </p>
+                      <br />
+                      <p>
+                        🎉 You&lsquo;ve been invited to take the next steps with{" "}
+                        <b>{findCompanyData.findCompany.name}.</b> 🎉
+                      </p>
+                      <br />
+                      <p>
+                        If you need a refresher, here&lsquo;s the{" "}
+                        <Link href={"https://google.com"} target="_blank">
+                          <b className="underline hover:text-slate-600">
+                            opportunity
+                          </b>
+                        </Link>{" "}
+                        info
+                      </p>
+                      <br />
+                      <br />
+                      <br />
+                      <p>
+                        When you&lsquo;re ready, click next and you&lsquo;ll be
+                        doing your first interview with me!
+                      </p>
+                    </>
+                  ) : (
+                    <p> </p>
+                  )}
+                </section>
+              </WizardStep>
+              {/* <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
                 {findCompanyData?.findCompany?.name && (
                   <h3 className="mb-8 text-lg font-medium">
@@ -135,35 +136,36 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </section>
             </WizardStep> */}
-            <WizardStep nextDisabled={!cvEnded} label={"cv"}>
-              <section className="flex h-full flex-col items-center justify-center">
-                <h3 className="mb-8 text-center text-lg font-medium">
-                  Hey {currentUser?.discordName}!
-                </h3>
-                <p className="mb-8 text-center">
-                  In order for me to be able to ask relevant questions,
-                  <br />
-                  please upload your CV first.
-                </p>
-                <CVUploadGPT handleEnd={handleCvEnd} />
-              </section>
-            </WizardStep>
-            <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
-              <div className="mx-auto h-[70vh] max-w-lg">
-                <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
-              </div>
-            </WizardStep>
-            <WizardStep label={"profile"}>
-              <p className="mb-8 text-center">Just a few questions missing</p>
-              <ProfileQuestionsContainer />
-            </WizardStep>
-            {/* <WizardStep label={"end"}>
+              <WizardStep nextDisabled={!cvEnded} label={"cv"}>
+                <section className="flex h-full flex-col items-center justify-center">
+                  <h3 className="mb-8 text-center text-lg font-medium">
+                    Hey {currentUser?.discordName}!
+                  </h3>
+                  <p className="mb-8 text-center">
+                    In order for me to be able to ask relevant questions,
+                    <br />
+                    please upload your CV first.
+                  </p>
+                  <CVUploadGPT handleEnd={handleCvEnd} />
+                </section>
+              </WizardStep>
+              <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
+                <div className="mx-auto h-[70vh] max-w-lg">
+                  <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
+                </div>
+              </WizardStep>
+              <WizardStep label={"profile"}>
+                <p className="mb-8 text-center">Just a few questions missing</p>
+                <ProfileQuestionsContainer />
+              </WizardStep>
+              {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
               </section>
             </WizardStep> */}
-          </Wizard>
-        </div>
+            </Wizard>
+          </div>
+        )}
       </Card>
     </>
   );
@@ -398,6 +400,7 @@ interface IProfileQuestionsContainerProps {}
 const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   const { currentUser } = useContext(UserContext);
   const [userState, setUserState] = useState<Members>();
+  const [valid, setValid] = useState<boolean>(false);
   const router = useRouter();
   // eslint-disable-next-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
@@ -469,6 +472,27 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  useEffect(() => {
+    if (
+      userState?.budget?.perHour &&
+      userState?.hoursPerWeek &&
+      userState?.location &&
+      userState?.timeZone &&
+      (userState?.experienceLevel?.years ||
+        userState?.experienceLevel?.years === 0) &&
+      (userState?.experienceLevel?.total ||
+        userState?.experienceLevel?.years === 0)
+    ) {
+      console.log("VALID");
+
+      setValid(true);
+    } else {
+      console.log("NOT VALID");
+
+      setValid(false);
+    }
+  }, [userState]);
+
   return (
     <div className="w-full">
       <div className="mb-8">
@@ -476,6 +500,8 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           <p className="mb-2">What is your desired salary</p>
           <div className="flex items-center">
             <input
+              min={0}
+              defaultValue={currentUser?.budget?.perHour || ""}
               type="number"
               id="budget"
               className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
@@ -490,6 +516,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           <div className="flex items-center">
             <input
               type="number"
+              defaultValue={currentUser?.hoursPerWeek || ""}
               min={0}
               max={40}
               id="hoursPerWeek"
@@ -510,8 +537,8 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
             render={() => (
               <select
                 defaultValue={
-                  userState?.timeZone && userState?.location
-                    ? `(${userState?.timeZone}) ${userState?.location}`
+                  currentUser?.timeZone && currentUser?.location
+                    ? `(${currentUser?.timeZone}) ${currentUser?.location}`
                     : ""
                 }
                 id="location"
@@ -529,7 +556,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                   setValue("location", _location);
                 }}
               >
-                <option disabled value={""} hidden>
+                <option value={""} disabled hidden>
                   Select a location...
                 </option>
                 {locations.map((loc, index) => (
@@ -551,9 +578,10 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           <div className="flex items-center">
             <input
               type="number"
-              // min={0}
+              min={0}
               // max={40}
-              // // id="hoursPerWeek"
+              // id="hoursPerWeek"
+              defaultValue={currentUser?.experienceLevel?.years || ""}
               className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
               // required
               {...register("experienceLevel.years")}
@@ -570,9 +598,9 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
               render={() => {
                 let _defaultValue: number | string = "";
 
-                if (userState?.experienceLevel?.total == 3) _defaultValue = 3;
-                if (userState?.experienceLevel?.total == 6) _defaultValue = 6;
-                if (userState?.experienceLevel?.total == 9) _defaultValue = 9;
+                if (currentUser?.experienceLevel?.total == 3) _defaultValue = 3;
+                if (currentUser?.experienceLevel?.total == 6) _defaultValue = 6;
+                if (currentUser?.experienceLevel?.total == 9) _defaultValue = 9;
 
                 return (
                   <select
@@ -606,6 +634,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         className="absolute bottom-4 right-4 z-20"
         variant="primary"
         onClick={handleSubmit}
+        disabled={!valid}
       >
         Submit
       </Button>
