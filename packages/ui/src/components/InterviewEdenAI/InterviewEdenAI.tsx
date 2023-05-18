@@ -66,6 +66,7 @@ export interface IInterviewEdenAIProps {
   setConversationID?: (conversationID: string) => void;
 
   placeholder?: any;
+  handleEnd?: () => void;
 }
 
 export const InterviewEdenAI = ({
@@ -87,6 +88,7 @@ export const InterviewEdenAI = ({
   setQuestions,
   setConversationID,
   placeholder = "",
+  handleEnd,
 }: IInterviewEdenAIProps) => {
   // const { currentUser } = useContext(UserContext);
 
@@ -261,6 +263,15 @@ export const InterviewEdenAI = ({
       userID == "" ||
       questions?.length == 0 ||
       questions == undefined,
+    onCompleted: (data) => {
+      if (
+        data.interviewEdenAI.unansweredQuestionsArr &&
+        data.interviewEdenAI.unansweredQuestionsArr.length === 0 &&
+        handleEnd
+      ) {
+        handleEnd();
+      }
+    },
   });
 
   console.log("questions 2 = ", questions);
