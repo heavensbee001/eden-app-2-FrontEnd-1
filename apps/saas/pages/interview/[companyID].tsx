@@ -278,7 +278,7 @@ const InterviewEdenAIContainer = ({
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const {} = useQuery(FIND_COMPANY, {
+  const { data: findCompanyData } = useQuery(FIND_COMPANY, {
     variables: {
       fields: {
         _id: companyID,
@@ -352,7 +352,18 @@ const InterviewEdenAIContainer = ({
 
   return (
     <div className="w-full">
-      <div className="h-[68vh]">
+      <div className="relative h-[68vh]">
+        <div className="absolute left-0 top-2 z-20 w-full">
+          <ProgressBarGeneric
+            color="accentColor"
+            progress={
+              (100 *
+                (findCompanyData?.findCompany?.questionsToAsk.length -
+                  questions.length)) /
+              findCompanyData?.findCompany?.questionsToAsk.length
+            }
+          />
+        </div>
         {
           <InterviewEdenAI
             key={experienceTypeID}
@@ -382,6 +393,15 @@ const InterviewEdenAIContainer = ({
         }
       </div>
       <CountdownTimer />
+      {/* <div className="absolute right-0 top-32 pr-6">
+        <span>
+          progress{" "}
+          {(100 *
+            (findCompanyData?.findCompany?.questionsToAsk.length -
+              questions.length)) /
+            findCompanyData?.findCompany?.questionsToAsk.length}
+        </span>
+      </div> */}
     </div>
   );
 };
