@@ -43,6 +43,26 @@ const ADD_NODES_TO_COMPANY = gql`
   }
 `;
 
+const ADD_CONV_RECRUITER_TO_COMPANY = gql`
+  mutation ($fields: addConvRecruiterToCompanyInput) {
+    addConvRecruiterToCompany(fields: $fields) {
+      _id
+      convRecruiterReadyToDisplay
+      convRecruiter {
+        user {
+          _id
+          discordName
+        }
+        readyToDisplay
+        conversation {
+          role
+          content
+        }
+      }
+    }
+  }
+`;
+
 interface NodeObj {
   [key: string]: {
     active: boolean;
@@ -86,7 +106,10 @@ const chatEden: NextPageWithLayout = () => {
     // },
   });
 
+  console.log("nodeObj = ", nodeObj);
+
   // --------- Company and User ------------
+  const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { companyID } = router.query;
   // --------- Company and User ------------
@@ -152,17 +175,36 @@ const chatEden: NextPageWithLayout = () => {
     },
   });
 
-  // const [setFilterState] = useState<FilterStateType>({
-  //   budget: {
-  //     minPerHour: -1,
-  //     maxPerHour: -1,
-  //   },
-  //   availability: {
-  //     minHourPerWeek: -1,
-  //     maxHourPerWeek: -1,
-  //   },
-  //   experienceLevel: -1,
-  // });
+  const [conversationID, setConversationID] = useState<String>("");
+
+  const [addConvRecruterToCompany] = useMutation(
+    ADD_CONV_RECRUITER_TO_COMPANY,
+    {
+      onCompleted: (data) => {
+        console.log("data = ", data);
+        // setAddCandidateFlag(true);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (
+      currentUser?._id != undefined &&
+      companyID != undefined &&
+      conversationID != ""
+    ) {
+      console.log("change conversationID= ", conversationID);
+      addConvRecruterToCompany({
+        variables: {
+          fields: {
+            companyID: companyID,
+            userID: currentUser?._id,
+            conversationID: conversationID,
+          },
+        },
+      });
+    }
+  }, [companyID, currentUser?._id, conversationID]);
 
   //  ------------- change activation nodes when click ----
   const [activateNodeEvent, setActivateNodeEvent] = useState<any>(null);
@@ -236,12 +278,22 @@ const chatEden: NextPageWithLayout = () => {
     bestAnswer: string;
   };
 
-  const { currentUser } = useContext(UserContext);
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
   console.log("chatN = ", chatN);
 
   const [questions, setQuestions] = useState<Question[]>([
+    {
+      _id: "6463897f156bd63721b94027",
+      content: "Can you tell me more about your company and what it does?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646255db66a9435d4ab98c6b",
+      content:
+        "What is the company culture like and how would you describe the team dynamic?",
+      bestAnswer: "",
+    },
     {
       _id: "646255d466a9435d4ab98c67",
       content:
@@ -255,9 +307,20 @@ const chatEden: NextPageWithLayout = () => {
       bestAnswer: "",
     },
     {
-      _id: "646255db66a9435d4ab98c6b",
+      _id: "6463899a156bd63721b94029",
       content:
-        "What is the company culture like and how would you describe the team dynamic?",
+        "What are the expectations for performance and success in this role?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646389aa156bd63721b9402b",
+      content:
+        "What are the biggest challenges that the new hire will face in this position?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646389b9156bd63721b9402d",
+      content: "What is the benefits of this role?",
       bestAnswer: "",
     },
   ]);
@@ -273,6 +336,10 @@ const chatEden: NextPageWithLayout = () => {
               handleChangeChat={(_chat: any) => {
                 setChatN(_chat);
               }}
+              handleChangeNodes={(_nodeObj: any) => {
+                // console.log("handleChangeNodes:", nodeObj);
+                setNodeObj(_nodeObj);
+              }}
               sentMessageToEdenAIobj={sentMessageToEdenAIobj}
               setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
               placeholder={
@@ -285,6 +352,8 @@ const chatEden: NextPageWithLayout = () => {
               setQuestions={setQuestions}
               userID={currentUser?._id}
               useMemory={false}
+              conversationID={conversationID}
+              setConversationID={setConversationID}
             />
             {/* <EdenAiChat
               aiReplyService={AI_REPLY_SERVICES.EDEN_GPT_REPLY_CHAT_API_V3}
