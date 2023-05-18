@@ -232,29 +232,29 @@ const InterviewEdenAIContainer = () => {
   const [conversationID, setConversationID] = useState<String>("");
 
   // SOS 🆘 -> the candidate is not been added to the company // return back before publish code
-  // useEffect(() => {
-  //   if (
-  //     addCandidateFlag == false &&
-  //     currentUser?._id != undefined &&
-  //     companyID != undefined &&
-  //     conversationID != ""
-  //   ) {
-  //     console.log("change conversationID= ", conversationID);
-  //     addCandidateToCompany({
-  //       variables: {
-  //         fields: {
-  //           companyID: companyID,
-  //           candidates: [
-  //             {
-  //               userID: currentUser?._id,
-  //               conversationID: conversationID,
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     });
-  //   }
-  // }, [companyID, currentUser?._id, conversationID]);
+  useEffect(() => {
+    if (
+      addCandidateFlag == false &&
+      currentUser?._id != undefined &&
+      companyID != undefined &&
+      conversationID != ""
+    ) {
+      console.log("change conversationID= ", conversationID);
+      addCandidateToCompany({
+        variables: {
+          fields: {
+            companyID: companyID,
+            candidates: [
+              {
+                userID: currentUser?._id,
+                conversationID: conversationID,
+              },
+            ],
+          },
+        },
+      });
+    }
+  }, [companyID, currentUser?._id, conversationID]);
 
   // console.log("companyID = ", companyID);
 
