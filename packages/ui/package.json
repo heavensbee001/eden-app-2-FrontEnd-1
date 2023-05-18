@@ -49,6 +49,7 @@
     "date-fns": "^2.29.3",
     "discord-api-types": "^0.37.17",
     "framer-motion": "^9.0.1",
+    "html-to-text": "^9.0.5",
     "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^3.4.120",
     "pupeteer": "^0.0.1",

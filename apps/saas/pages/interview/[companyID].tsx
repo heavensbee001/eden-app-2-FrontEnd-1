@@ -238,7 +238,7 @@ const ADD_CANDIDATE_TO_COMPANY = gql`
 // }
 
 type Question = {
-  _id: number;
+  _id: string;
   content: string;
   bestAnswer: string;
 };
@@ -296,22 +296,6 @@ const InterviewEdenAIContainer = ({
     },
   });
 
-  // const {} = useMutation(ADD_CANDIDATE_TO_COMPANY, {
-  //   variables: {
-  //     fields: {
-  //       _id: companyID,
-  //       candidates: [
-  //         {
-  //           userID: currentUser?._id,
-  //         },
-  //       ],
-  //     },
-  //   },
-  //   skip: companyID == "" || companyID == null || currentUser?._id != "",
-  //   // onCompleted: (data) => {
-  //   //   console.log("data = ", data);
-  //   // },
-  // });
   const [addCandidateToCompany] = useMutation(ADD_CANDIDATE_TO_COMPANY, {
     onCompleted: (data) => {
       console.log("data = ", data);
@@ -321,12 +305,17 @@ const InterviewEdenAIContainer = ({
 
   const [addCandidateFlag, setAddCandidateFlag] = useState<boolean>(false);
 
+  const [conversationID, setConversationID] = useState<String>("");
+
+  // SOS 🆘 -> the candidate is not been added to the company // return back before publish code
   useEffect(() => {
     if (
       addCandidateFlag == false &&
       currentUser?._id != undefined &&
-      companyID != undefined
+      companyID != undefined &&
+      conversationID != ""
     ) {
+      console.log("change conversationID= ", conversationID);
       addCandidateToCompany({
         variables: {
           fields: {
@@ -334,13 +323,14 @@ const InterviewEdenAIContainer = ({
             candidates: [
               {
                 userID: currentUser?._id,
+                conversationID: conversationID,
               },
             ],
           },
         },
       });
     }
-  }, [companyID, currentUser?._id]);
+  }, [companyID, currentUser?._id, conversationID]);
 
   // console.log("companyID = ", companyID);
 
@@ -350,28 +340,19 @@ const InterviewEdenAIContainer = ({
 
   console.log("chatN = ", chatN);
 
+  console.log("conversationID = ", conversationID);
+
   return (
     <div className="w-full">
-      {/* <h1 className="mb-4 text-3xl font-bold">
-        Help Eden with some questions to know you better
-      </h1> */}
       <div className="h-[68vh]">
         {
           <InterviewEdenAI
             key={experienceTypeID}
             aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
             experienceTypeID={experienceTypeID}
-            //   extraNodes={extraNodes}
-            //   handleChangeNodes={(_nodeObj: any) => {
-            //     // console.log("handleChangeNodes:", nodeObj);
-            //     setNodeObj(_nodeObj);
-            //   }}
             handleChangeChat={(_chat: any) => {
-              // console.log("handleChangeChat:", _chat);
               setChatN(_chat);
             }}
-            //   setShowPopupSalary={setShowPopup}
-            //   setMode={setMode}
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
@@ -383,6 +364,9 @@ const InterviewEdenAIContainer = ({
             questions={questions}
             setQuestions={setQuestions}
             userID={currentUser?._id}
+            companyID={companyID}
+            conversationID={conversationID}
+            setConversationID={setConversationID}
             handleEnd={() => {
               if (handleEnd) handleEnd();
             }}

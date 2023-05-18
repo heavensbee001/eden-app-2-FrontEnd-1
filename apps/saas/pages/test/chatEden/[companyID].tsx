@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { UserContext } from "@eden/package-context";
 // import {
 //   // FIND_MEMBER_INFO,
 //   MATCH_NODES_MEMBERS_AI4,
@@ -10,16 +11,17 @@ import {
   RoleType,
 } from "@eden/package-graphql/generated";
 import {
-  AI_REPLY_SERVICES,
-  Card,
   // CardGrid,
   // CommonServerAvatarList,
+  AI_INTERVIEW_SERVICES,
+  Card,
+  ChatMessage,
   DynamicSearchGraph,
-  EdenAiChat,
+  InterviewEdenAI,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { FIND_RELATED_NODE } from "../../../utils/data/GQLfuncitons";
 import type { NextPageWithLayout } from "../../_app";
@@ -35,6 +37,26 @@ const ADD_NODES_TO_COMPANY = gql`
         nodeData {
           _id
           name
+        }
+      }
+    }
+  }
+`;
+
+const ADD_CONV_RECRUITER_TO_COMPANY = gql`
+  mutation ($fields: addConvRecruiterToCompanyInput) {
+    addConvRecruiterToCompany(fields: $fields) {
+      _id
+      convRecruiterReadyToDisplay
+      convRecruiter {
+        user {
+          _id
+          discordName
+        }
+        readyToDisplay
+        conversation {
+          role
+          content
         }
       }
     }
@@ -84,11 +106,15 @@ const chatEden: NextPageWithLayout = () => {
     // },
   });
 
+  console.log("nodeObj = ", nodeObj);
+
   // --------- Company and User ------------
+  const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { companyID } = router.query;
   // --------- Company and User ------------
 
+  // SOS 🆘 -> This is the place that adds notes to the company backend, take it back after debugging
   const [addNodesToCompany, {}] = useMutation(ADD_NODES_TO_COMPANY, {
     onCompleted({ data }) {
       console.log("yeaaa added nodes = ", data);
@@ -100,7 +126,7 @@ const chatEden: NextPageWithLayout = () => {
   const [nodeSearchRelated, setnodeSearchRelated] = useState("");
 
   const [optionsPopup, setOptionsPopup] = useState<any>([]);
-  const [extraNodes, setExtraNodes] = useState<any>([]);
+  const [setExtraNodes] = useState<any>([]);
 
   // const optionsPopup = [
   //   { value: "ID1", label: "React" },
@@ -149,17 +175,36 @@ const chatEden: NextPageWithLayout = () => {
     },
   });
 
-  // const [setFilterState] = useState<FilterStateType>({
-  //   budget: {
-  //     minPerHour: -1,
-  //     maxPerHour: -1,
-  //   },
-  //   availability: {
-  //     minHourPerWeek: -1,
-  //     maxHourPerWeek: -1,
-  //   },
-  //   experienceLevel: -1,
-  // });
+  const [conversationID, setConversationID] = useState<String>("");
+
+  const [addConvRecruterToCompany] = useMutation(
+    ADD_CONV_RECRUITER_TO_COMPANY,
+    {
+      onCompleted: (data) => {
+        console.log("data = ", data);
+        // setAddCandidateFlag(true);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (
+      currentUser?._id != undefined &&
+      companyID != undefined &&
+      conversationID != ""
+    ) {
+      console.log("change conversationID= ", conversationID);
+      addConvRecruterToCompany({
+        variables: {
+          fields: {
+            companyID: companyID,
+            userID: currentUser?._id,
+            conversationID: conversationID,
+          },
+        },
+      });
+    }
+  }, [companyID, currentUser?._id, conversationID]);
 
   //  ------------- change activation nodes when click ----
   const [activateNodeEvent, setActivateNodeEvent] = useState<any>(null);
@@ -214,17 +259,6 @@ const chatEden: NextPageWithLayout = () => {
     //   setActiveNodes(newActiveNodes);
     // }
   };
-  //  ------------- change activation nodes when click ----
-
-  // ------------ Salary Popup ------------
-  // const [setShowPopup] = useState<boolean>(false);
-  // const [setPopupData] = useState<{
-  //   minSalary?: number;
-  //   maxSalary?: number;
-  //   level?: string;
-  //   minHours?: number;
-  //   maxHours?: number;
-  // }>({ minSalary: 0, maxSalary: 0, level: "", minHours: 0, maxHours: 0 });
 
   interface MessageObject {
     message: string;
@@ -233,59 +267,95 @@ const chatEden: NextPageWithLayout = () => {
   const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
     useState<MessageObject>({ message: "", sentMessage: false });
 
-  // const experienceToNumberMap: Record<string, number> = {
-  //   Junior: 3,
-  //   Mid: 6,
-  //   Senior: 9,
+  // --------------- interview AI ---------------
+  // type Question = {
+  //   _id: string;
+  //   content: string;
   // };
+  type Question = {
+    _id: string;
+    content: string;
+    bestAnswer: string;
+  };
 
-  // const handleDone = (data: {
-  //   minSalary?: number;
-  //   maxSalary?: number;
-  //   level?: string;
-  //   minHours?: number;
-  //   maxHours?: number;
-  //   sentMessageToEdenAI?: string;
-  // }) => {
-  //   setPopupData(data);
-  //   setShowPopup(false);
+  const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  //   const filterState = {
-  //     budget: {
-  //       minPerHour: data?.minSalary ? data.minSalary : -1,
-  //       maxPerHour: data?.maxSalary ? data.maxSalary : -1,
-  //     },
-  //     availability: {
-  //       minHourPerWeek: data?.minHours ? data.minHours : -1,
-  //       maxHourPerWeek: data?.maxHours ? data.maxHours : -1,
-  //     },
-  //     experienceLevel: -1,
-  //   };
+  console.log("chatN = ", chatN);
 
-  //   if (data?.level) {
-  //     filterState["experienceLevel"] = experienceToNumberMap[data.level];
-  //   }
-  //   setFilterState(filterState);
-
-  //   console.log("sentMessageToEdenAI = ", data.sentMessageToEdenAI);
-
-  //   if (data.sentMessageToEdenAI) {
-  //     setSentMessageToEdenAIobj({
-  //       message: data.sentMessageToEdenAI,
-  //       sentMessage: true,
-  //     });
-  //   }
-  // };
-
-  // const mode: 'salary' | 'level' = 'level';
-  // ------------ Salary Popup ------------
+  const [questions, setQuestions] = useState<Question[]>([
+    {
+      _id: "6463897f156bd63721b94027",
+      content: "Can you tell me more about your company and what it does?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646255db66a9435d4ab98c6b",
+      content:
+        "What is the company culture like and how would you describe the team dynamic?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646255d466a9435d4ab98c67",
+      content:
+        "What are the key skills and qualifications required for this role?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646255d766a9435d4ab98c69",
+      content:
+        "What are the main responsibilities and expectations of this position?",
+      bestAnswer: "",
+    },
+    {
+      _id: "6463899a156bd63721b94029",
+      content:
+        "What are the expectations for performance and success in this role?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646389aa156bd63721b9402b",
+      content:
+        "What are the biggest challenges that the new hire will face in this position?",
+      bestAnswer: "",
+    },
+    {
+      _id: "646389b9156bd63721b9402d",
+      content: "What is the benefits of this role?",
+      bestAnswer: "",
+    },
+  ]);
+  // --------------- interview AI ---------------
 
   return (
     <>
       <div className="mx-auto grid h-screen grid-cols-12 overflow-hidden bg-[#f3f3f3] ">
         <div className="col-span-5 flex flex-1 flex-col pl-8 pr-4">
           <div className="h-[60vh]">
-            <EdenAiChat
+            <InterviewEdenAI
+              aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
+              handleChangeChat={(_chat: any) => {
+                setChatN(_chat);
+              }}
+              handleChangeNodes={(_nodeObj: any) => {
+                // console.log("handleChangeNodes:", nodeObj);
+                setNodeObj(_nodeObj);
+              }}
+              sentMessageToEdenAIobj={sentMessageToEdenAIobj}
+              setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
+              placeholder={
+                <p className="bg-accentColor rounded-lg p-1 text-center font-medium">
+                  Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
+                  interview
+                </p>
+              }
+              questions={questions}
+              setQuestions={setQuestions}
+              userID={currentUser?._id}
+              useMemory={false}
+              conversationID={conversationID}
+              setConversationID={setConversationID}
+            />
+            {/* <EdenAiChat
               aiReplyService={AI_REPLY_SERVICES.EDEN_GPT_REPLY_CHAT_API_V3}
               // aiReplyService={AI_REPLY_SERVICES.EDEN_GPT_REPLY}
               extraNodes={extraNodes}
@@ -300,7 +370,7 @@ const chatEden: NextPageWithLayout = () => {
               // setShowPopupSalary={setShowPopup}
               sentMessageToEdenAIobj={sentMessageToEdenAIobj}
               setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
-            />
+            /> */}
           </div>
           <div className="h-[40vh] py-4">
             <Card border shadow className="h-full overflow-hidden bg-white">
