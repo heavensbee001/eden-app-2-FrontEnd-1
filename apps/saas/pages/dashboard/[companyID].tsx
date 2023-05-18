@@ -15,6 +15,7 @@ import {
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { HiOutlineLink } from "react-icons/hi";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -48,6 +49,7 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
 
   const [nodeIDsCompany, setNodeIDsCompany] = useState<string[]>([]);
+  const [notificationOpen, setNotificationOpen] = useState(false);
 
   console.log("nodeIDsCompany = ", nodeIDsCompany);
   console.log("candidates = ", candidates);
@@ -63,7 +65,7 @@ const CompanyCRM: NextPageWithLayout = () => {
 
   const [trainModalOpen, setTrainModalOpen] = useState(false);
   const {
-    // data: findCompanyData,
+    data: findCompanyData,
     loading: findCompanyIsLoading,
     // error: findCompanyError,
   } = useQuery(FIND_COMPANY_FULL, {
@@ -281,25 +283,57 @@ const CompanyCRM: NextPageWithLayout = () => {
     setTrainModalOpen(false);
   };
 
+  const handleCopyLink = () => {
+    // const url = window.location.href;
+    const url = window.location.origin + "/interview/" + companyID;
+
+    navigator.clipboard.writeText(url);
+    setNotificationOpen(true);
+    setTimeout(() => {
+      setNotificationOpen(false);
+    }, 3000);
+  };
+
   return (
     <GridLayout className="">
       <GridItemSix>
-        <div className="">
-          <Button
-            className="mb-4 ml-auto"
-            variant="secondary"
-            onClick={handleTrainButtonClick}
-          >
-            Train EdenAI AI
-          </Button>
-          {/* <Button
+        <div>
+          <div className="mb-4 flex h-10 items-center">
+            <h1 className="mr-6 text-2xl font-medium">
+              {findCompanyData && findCompanyData.findCompany.name
+                ? findCompanyData.findCompany.name.charAt(0).toUpperCase() +
+                  findCompanyData.findCompany.name.slice(1)
+                : ""}{" "}
+              Dashboard
+            </h1>
+            <Button
+              size="sm"
+              className="bg-soilBlue border-soilBlue mr-2 flex items-center !text-sm text-white"
+              variant="default"
+              onClick={handleCopyLink}
+            >
+              <HiOutlineLink className="mr-1" />
+              interview link
+            </Button>
+            {notificationOpen && (
+              <span className="text-sm text-gray-400">Link copied!</span>
+            )}
+            <Button
+              className="ml-auto"
+              variant="secondary"
+              onClick={handleTrainButtonClick}
+            >
+              Train Eden AI
+            </Button>
+            {/* <Button
             variant="secondary"
             onClick={() => {
               router.push(`/train-ai/${companyID}`);
             }}
-          >
+            >
             Train AI
           </Button> */}
+          </div>
           <CandidatesTableList
             candidatesList={candidates}
             fetchIsLoading={findCompanyIsLoading}
@@ -329,7 +363,7 @@ const CompanyCRM: NextPageWithLayout = () => {
         </div>
       </GridItemSix>
       <GridItemSix className="relative">
-        <div className="scrollbar-hide my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
+        <div className="scrollbar-hide -my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
           {selectedUserId ? (
             <CandidateInfo
               memberID={selectedUserId || ""}
