@@ -1,5 +1,11 @@
 import { CandidateType } from "@eden/package-graphql/generated";
-import { Avatar, Badge, Loading, TextHeading2 } from "@eden/package-ui";
+import {
+  Avatar,
+  Badge,
+  CheckBox,
+  Loading,
+  TextHeading2,
+} from "@eden/package-ui";
 import clsx from "clsx";
 import { ComponentPropsWithoutRef, FC, ReactNode, useState } from "react";
 
@@ -32,25 +38,32 @@ type CandidatesTableListProps = {
   fetchIsLoading: boolean;
   // eslint-disable-next-line no-unused-vars
   setRowObjectData: (candidate: CandidateTypeSkillMatch) => void;
+  selectable?: boolean;
+  // eslint-disable-next-line no-unused-vars
+  handleChkSelection?: (candidate: CandidateTypeSkillMatch) => void;
 };
 
 export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   candidatesList,
   fetchIsLoading,
   setRowObjectData,
+  selectable = false,
+  handleChkSelection,
 }) => {
   const [candidateIDRowSelected, setCandidateIDRowSelected] =
     useState<string>("");
+
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
     setCandidateIDRowSelected(candidate.user?._id || "");
   };
 
   return (
-    <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
+    <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md relative w-full">
         <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
           <tr>
+            {selectable ? <th>Select</th> : null}
             <th className="min-w-min border-b border-gray-300 py-2">Name</th>
             <th className="border-b border-gray-300 py-2">Match</th>
             <th className="border-b border-gray-300 py-2 pr-2 text-right">
@@ -78,6 +91,16 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     : "even:bg-slate-100"
                 } group cursor-pointer  hover:bg-lime-50 focus:outline-none focus:ring focus:ring-gray-300 active:bg-gray-300`}
               >
+                {selectable ? (
+                  <ColumnStyled>
+                    <CheckBox
+                      name={candidate.user?._id!}
+                      onChange={() =>
+                        handleChkSelection && handleChkSelection(candidate)
+                      }
+                    />
+                  </ColumnStyled>
+                ) : null}
                 <ColumnStyled extraCssClass="border-r-0 pr-0">
                   <div className="flex flex-nowrap items-center">
                     <Avatar
