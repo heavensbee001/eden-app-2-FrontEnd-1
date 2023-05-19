@@ -66,8 +66,9 @@ const CompanyCRM: NextPageWithLayout = () => {
     TalentListType[]
   >([]);
 
-  const [talentListSelected, setTalentListSelected] =
-    useState<TalentListType>();
+  const [talentListSelected, setTalentListSelected] = useState<TalentListType>(
+    {}
+  );
 
   const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
     CandidateTypeSkillMatch[]
@@ -134,7 +135,7 @@ const CompanyCRM: NextPageWithLayout = () => {
     variables: {
       fields: {
         nodesID: nodeIDsCompany,
-        membersIDallow: candidates?.map((userData: any) => {
+        membersIDallow: candidatesFromTalentList?.map((userData: any) => {
           return userData?.user?._id;
         }),
         weightModules: [
@@ -149,7 +150,7 @@ const CompanyCRM: NextPageWithLayout = () => {
         ],
       },
     },
-    skip: candidates.length == 0 || nodeIDsCompany.length == 0,
+    skip: candidatesFromTalentList.length == 0 || nodeIDsCompany.length == 0,
 
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
@@ -171,17 +172,17 @@ const CompanyCRM: NextPageWithLayout = () => {
 
       const candidatesNew: CandidateTypeSkillMatch[] = [];
 
-      for (let i = 0; i < candidates.length; i++) {
-        const userID = candidates[i]?.user?._id;
+      for (let i = 0; i < candidatesFromTalentList.length; i++) {
+        const userID = candidatesFromTalentList[i]?.user?._id;
 
         if (userID && memberScoreObj[userID]) {
           candidatesNew.push({
-            ...candidates[i],
+            ...candidatesFromTalentList[i],
             skillMatch: memberScoreObj[userID],
           });
         }
       }
-      setCandidates(candidatesNew);
+      setCandidatesFromTalentList(candidatesNew);
       // -------------- Get the Candidates of the page ------------
 
       // --------------- Find the related nodes Score and color -----------
@@ -296,8 +297,6 @@ const CompanyCRM: NextPageWithLayout = () => {
   };
 
   const handleSelectedTalentList = (list: TalentListType) => {
-    console.log({ list });
-
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     for (let i = 0; i < candidates.length; i++) {
@@ -313,6 +312,11 @@ const CompanyCRM: NextPageWithLayout = () => {
     setTalentListSelected(list);
   };
 
+  const handleUnSelectTalentList = () => {
+    setCandidatesFromTalentList(candidates);
+    setTalentListSelected({});
+  };
+
   return (
     <GridLayout className="">
       <GridItemSix>
@@ -324,7 +328,11 @@ const CompanyCRM: NextPageWithLayout = () => {
                 multiple={false}
                 placeholder="No list selected"
                 onSelect={handleSelectedTalentList}
-                value={talentListSelected?.name || ""}
+                value={
+                  talentListSelected !== null && talentListSelected?.name
+                    ? talentListSelected?.name
+                    : undefined
+                }
               />
               <>
                 {!talentListSelected ? (
@@ -335,7 +343,7 @@ const CompanyCRM: NextPageWithLayout = () => {
                   <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
                     <MdIosShare
                       size={36}
-                      className="mt-2 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+                      className="mt-1 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
                     />
                     <Button
                       className="mb-4 ml-auto pt-2"
@@ -345,10 +353,11 @@ const CompanyCRM: NextPageWithLayout = () => {
                       Edit
                     </Button>
                     <Button
-                      className="mb-4 ml-auto min-w-fit"
+                      className="pl-auto mb-4 ml-auto w-32 min-w-fit pt-2"
                       variant="secondary"
+                      onClick={handleUnSelectTalentList}
                     >
-                      Create New List
+                      Unselect
                     </Button>
                   </div>
                 )}
