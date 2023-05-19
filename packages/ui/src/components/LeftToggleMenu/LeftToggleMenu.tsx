@@ -1,30 +1,40 @@
 /* eslint-disable no-unused-vars */
-import {
-  LevelEnum,
-  Maybe,
-  // eslint-disable-next-line camelcase
-} from "@eden/package-graphql/generated";
-import { CheckCircleIcon } from "@heroicons/react/outline";
-import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { IoIosAdd } from "react-icons/io";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-import { Button } from "../../elements";
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
-export interface LeftToggleMenuProps {}
+export interface LeftToggleMenuProps {
+  defaultVisible?: boolean;
+  children?: React.ReactNode;
+}
 
-export const LeftToggleMenu = ({}: LeftToggleMenuProps) => {
-  const [] = useState(false);
+export const LeftToggleMenu = ({
+  defaultVisible = false,
+  children,
+}: LeftToggleMenuProps) => {
+  const [visible, setVisible] = useState(defaultVisible);
 
   return (
-    <div className="absolute left-0 top-16 h-[calc(100%-4rem)] -translate-x-32">
-      <div className="h-full w-32 bg-red-500">
-        <h3>Dashboard</h3>
-        <ul>
-          <li></li>
-        </ul>
+    // <div className="absolute left-0 top-16 h-[calc(100%-4rem)] -translate-x-32">
+
+    <div
+      className={classNames(
+        "absolute left-0 top-0 z-30 h-full transition-all ease-in-out",
+        visible ? "" : "-translate-x-64"
+      )}
+    >
+      <div className="h-full w-64 border-r border-gray-200 bg-white">
+        {children}
       </div>
-      <div className="h-4 w-4">{">"}</div>
+      <div
+        className="absolute -right-5 top-4 z-10 flex h-12 w-5 cursor-pointer items-center justify-center rounded-br-md rounded-tr-md border border-l-0 border-gray-300 bg-gray-200"
+        onClick={() => setVisible(!visible)}
+      >
+        {visible ? <FaChevronLeft className="-ml-[2px]" /> : <FaChevronRight />}
+      </div>
     </div>
   );
 };
