@@ -139,7 +139,7 @@ const HomePage: NextPageWithLayout = () => {
                   <br />
                   please upload your CV first.
                 </p>
-                <CVUploadGPT />
+                <CVUploadGPT companyID={companyID} />
               </section>
             </WizardStep>
             <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
