@@ -16,6 +16,7 @@ import {
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
 
 import { NextPageWithLayout } from "../_app";
@@ -50,6 +51,7 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
 
   const [nodeIDsCompany, setNodeIDsCompany] = useState<string[]>([]);
+  const [notificationOpen, setNotificationOpen] = useState(false);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
@@ -75,7 +77,7 @@ const CompanyCRM: NextPageWithLayout = () => {
   >([]);
 
   const {
-    // data: findCompanyData,
+    data: findCompanyData,
     loading: findCompanyIsLoading,
     // error: findCompanyError,
   } = useQuery(FIND_COMPANY_FULL, {
@@ -317,9 +319,56 @@ const CompanyCRM: NextPageWithLayout = () => {
     setTalentListSelected({});
   };
 
+  const handleCopyLink = () => {
+    // const url = window.location.href;
+    const url = window.location.origin + "/interview/" + companyID;
+
+    navigator.clipboard.writeText(url);
+    setNotificationOpen(true);
+    setTimeout(() => {
+      setNotificationOpen(false);
+    }, 3000);
+  };
+
   return (
     <GridLayout className="">
       <GridItemSix>
+        <div className="mb-4 flex h-10 items-center">
+          <h1 className="mr-6 text-2xl font-medium">
+            {findCompanyData && findCompanyData.findCompany.name
+              ? findCompanyData.findCompany.name.charAt(0).toUpperCase() +
+                findCompanyData.findCompany.name.slice(1)
+              : ""}{" "}
+            Dashboard
+          </h1>
+          <Button
+            size="sm"
+            className="bg-soilBlue border-soilBlue mr-2 flex items-center !text-sm text-white"
+            variant="default"
+            onClick={handleCopyLink}
+          >
+            <HiOutlineLink className="mr-1" />
+            interview link
+          </Button>
+          {notificationOpen && (
+            <span className="text-sm text-gray-400">Link copied!</span>
+          )}
+          <Button
+            className="ml-auto"
+            variant="secondary"
+            onClick={handleTrainButtonClick}
+          >
+            Train Eden AI
+          </Button>
+          {/* <Button
+            variant="secondary"
+            onClick={() => {
+              router.push(`/train-ai/${companyID}`);
+            }}
+            >
+            Train AI
+          </Button> */}
+        </div>
         <div className="grid grid-flow-row">
           <div className="grid grid-flow-col grid-cols-3">
             <div className="col-span-2 grid grid-flow-row grid-cols-2 grid-rows-1">
@@ -363,13 +412,6 @@ const CompanyCRM: NextPageWithLayout = () => {
                 )}
               </>
             </div>
-            <Button
-              className="mb-4 ml-auto pt-2"
-              variant="secondary"
-              onClick={handleTrainButtonClick}
-            >
-              Train EdenAI AI
-            </Button>
           </div>
           <CandidatesTableList
             candidatesList={candidatesFromTalentList}

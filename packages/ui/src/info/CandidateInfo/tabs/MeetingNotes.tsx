@@ -60,7 +60,7 @@ export const MeetingNotes: FC<Props> = ({ member }) => {
         memberID: member?._id,
       },
     },
-    skip: member?._id == "",
+    skip: !member?._id,
     onCompleted: (data) => {
       console.log("data = ", data);
 

@@ -4,7 +4,7 @@ import { ChatSimple } from "@eden/package-ui";
 // import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
-import { INTERVIEW_EDEN_AI } from "./gqlFunctions";
+import { INTERVIEW_EDEN_AI, MESSAGE_MAP_KG_V4 } from "./gqlFunctions";
 
 interface NodeObj {
   [key: string]: {
@@ -14,7 +14,7 @@ interface NodeObj {
   };
 }
 interface Question {
-  _id: number;
+  _id: string;
   content: string;
   bestAnswer: string;
 }
@@ -45,6 +45,9 @@ export interface IInterviewEdenAIProps {
   experienceTypeID?: string;
   questions?: Question[];
   userID?: Maybe<string> | undefined;
+  useMemory?: boolean;
+  conversationID?: String;
+  companyID?: string | string[] | undefined;
   // eslint-disable-next-line no-unused-vars
   handleChangeNodes?: (nodes: NodeObj) => void;
   // eslint-disable-next-line no-unused-vars
@@ -59,6 +62,9 @@ export interface IInterviewEdenAIProps {
   setChangeChatN?: (messageArr: any) => void;
   // eslint-disable-next-line no-unused-vars
   setQuestions?: (questions: Question[]) => void;
+  // eslint-disable-next-line no-unused-vars
+  setConversationID?: (conversationID: string) => void;
+
   placeholder?: any;
   handleEnd?: () => void;
 }
@@ -71,6 +77,8 @@ export const InterviewEdenAI = ({
   changeChatN,
   questions,
   userID,
+  useMemory = true,
+  companyID,
   handleChangeNodes,
   handleChangeChat,
   // setShowPopupSalary,
@@ -78,6 +86,7 @@ export const InterviewEdenAI = ({
   setSentMessageToEdenAIobj,
   setChangeChatN,
   setQuestions,
+  setConversationID,
   placeholder = "",
   handleEnd,
 }: IInterviewEdenAIProps) => {
@@ -88,10 +97,9 @@ export const InterviewEdenAI = ({
   // const [conversationN, setConversationN] = useState<ChatMessage>([] as ChatMessage); // all chat messages
 
   // const [chatNprepareGPT, setChatNprepareGPT] = useState<string>(""); // formated chat messages for chatGPT
-  // const [messageUser, setMessageUser] = useState<string>(""); // last message sent from user
+  const [messageUser, setMessageUser] = useState<string>(""); // last message sent from user
 
-  const [nodeObj] = useState<NodeObj>({}); // list of nodes
-  // const [nodeObj, setNodeObj] = useState<NodeObj>({}); // list of nodes
+  const [nodeObj, setNodeObj] = useState<NodeObj>({}); // list of nodes
 
   const [edenAIsentMessage, setEdenAIsentMessage] = useState<boolean>(false); // sets if response is pending (TODO => change logic to query based)
   const [numMessageLongTermMem, setNumMessageLongTermMem] = useState<any>(0);
@@ -140,6 +148,90 @@ export const InterviewEdenAI = ({
 
   const [timesAsked, setTimesAsked] = useState<number>(0);
 
+  // -------------- AI GPT NODES --------------
+  const { data: dataMessageMapKGV4 } = useQuery(MESSAGE_MAP_KG_V4, {
+    variables: {
+      fields: {
+        message: messageUser,
+        // assistantMessage:
+        // chatN.length > 3 ? chatN[chatN.length - 3]?.message : "",
+        // assistantMessage: chatN[chatN.length - 2]?.message,
+        assistantMessage: chatN[chatN.length - 3]?.message,
+      },
+    },
+    skip:
+      messageUser == "" ||
+      chatN.length < 2 ||
+      chatN[chatN.length - 2]?.user == "01",
+  });
+
+  // update nodes ---- TODO => refactor this to query onCompleted
+  useEffect(() => {
+    if (dataMessageMapKGV4) {
+      const newNodeObj: any = [];
+
+      dataMessageMapKGV4?.messageMapKG_V4?.keywords?.forEach((keyword: any) => {
+        if (keyword.nodeID) {
+          newNodeObj.push({
+            nodeID: keyword.nodeID,
+            active: true,
+            confidence: keyword.confidence,
+            isNew: true,
+          });
+        }
+      });
+
+      const newNodesObjK: any = {};
+
+      //  --------- only take the ones that are true or have high confidence ------------
+
+      for (const [key, value] of Object.entries(nodeObj)) {
+        const nodeActive = value.active;
+        const nodeConfidence = value.confidence;
+
+        if (nodeActive) {
+          newNodesObjK[key] = {
+            active: nodeActive,
+            confidence: nodeConfidence,
+          };
+        } else {
+          if (Object.keys(nodeObj).length > 7) {
+            if (nodeConfidence > 5) {
+              newNodesObjK[key] = {
+                active: nodeActive,
+                confidence: nodeConfidence,
+              };
+            }
+          } else {
+            newNodesObjK[key] = {
+              active: nodeActive,
+              confidence: nodeConfidence,
+            };
+          }
+        }
+      }
+      //  --------- only take the ones that are true or have high confidence ------------
+      for (let i = 0; i < newNodeObj.length; i++) {
+        if (!Object.keys(newNodesObjK).includes(newNodeObj[i].nodeID)) {
+          let newActive = false;
+
+          if (newNodeObj[i].confidence > 6) {
+            newActive = true;
+          }
+          newNodesObjK[newNodeObj[i].nodeID] = {
+            active: newActive,
+            confidence: newNodeObj[i].confidence,
+            isNew: true,
+          };
+        }
+      }
+
+      setNodeObj(newNodesObjK);
+      // ------- Array of objects to disctionary ------------
+    }
+  }, [dataMessageMapKGV4]);
+  // -----------------------------------------
+
   // ---------- AI GPT REPLY MESSAGE ----------
   const { data: dataInterviewEdenAI } = useQuery(INTERVIEW_EDEN_AI, {
     variables: {
@@ -152,10 +244,8 @@ export const InterviewEdenAI = ({
           }
           // }),
         }),
-        // }).slice(-(timesAsked + 1)*2),
-        // questionAskingNow: questionAskingNow,
-        // unansweredQuestions: unansweredQuestions,
         timesAsked: timesAsked,
+        companyID: companyID,
         userID: userID,
         unansweredQuestionsArr: questions?.map((question) => {
           return {
@@ -163,6 +253,7 @@ export const InterviewEdenAI = ({
             questionContent: question.content,
           };
         }),
+        useMemory: useMemory,
       },
     },
     skip:
@@ -224,6 +315,13 @@ export const InterviewEdenAI = ({
 
       console.log("questionsT = ", questionsT);
 
+      const conversationID = dataInterviewEdenAI?.interviewEdenAI
+        ?.conversationID as string;
+
+      if (setConversationID && conversationID != undefined) {
+        setConversationID(conversationID);
+      }
+
       if (setQuestions != undefined && questionsT != undefined) {
         setQuestions(questionsT);
       }
@@ -271,7 +369,7 @@ export const InterviewEdenAI = ({
       setNumMessageLongTermMem(0);
     }
 
-    // setMessageUser(messageN);
+    setMessageUser(messageN);
 
     setEdenAIsentMessage(true);
   };

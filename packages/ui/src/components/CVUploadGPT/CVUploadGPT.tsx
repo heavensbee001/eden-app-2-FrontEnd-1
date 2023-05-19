@@ -31,13 +31,20 @@ export const SAVE_CV_TO_USER = gql`
 export interface ICVUploadGPTProps {
   timePerWeek?: number;
   seed?: string;
+  handleEnd?: () => void;
 }
 
-// eslint-disable-next-line no-unused-vars
-export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
+export const CVUploadGPT = ({
+  // eslint-disable-next-line no-unused-vars
+  timePerWeek,
+  // eslint-disable-next-line no-unused-vars
+  seed,
+  handleEnd,
+}: ICVUploadGPTProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploaded, setUploaded] = useState<boolean>(false);
+  const [sizeErr, setSizeErr] = useState<boolean>(false);
   const [uploadCounter, setUploadCounter] = useState(0);
 
   // const [summary, setSummary] = useState<string | null>(null);
@@ -54,7 +61,10 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
 
       setUploading(false);
       setUploaded(true);
+      setFile(null);
+      setSizeErr(false);
       toast.success("success");
+      if (handleEnd) handleEnd();
     },
     onError: (err) => {
       setUploading(false);
@@ -109,21 +119,13 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
             }
             setFile(null);
           } else {
-            toast.error(
-              <div className="flex flex-col justify-center space-y-1">
-                <div className="text-lg text-black">
-                  Please upload a different CV we didn&apos;t identify any text
-                  on this one
-                </div>
-                <div className="text-sm">
-                  *Also, feel free to continue without uploading your Resume
-                </div>
-              </div>
-            );
-            // toast.info(
-            //   "Also, feel free to continue without uploading your Resume"
-            // );
-            setUploading(false);
+            // console.log(file);
+            if (file.size > 1000000) {
+              setSizeErr(true);
+              setUploading(false);
+              return;
+            }
+            uploadOCRService(file);
             return;
           }
 
@@ -138,6 +140,64 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
       reader.readAsDataURL(file);
     }
   }, [file, uploadCounter]);
+
+  const uploadOCRService = async (_file: any) => {
+    var formData = new FormData();
+
+    // formData.append("base64Image", "data:application/pdf;base64," + _file);
+    formData.append("file", _file);
+    formData.append("filetype", "PDF");
+
+    const response = await fetch("https://api.ocr.space/parse/image", {
+      method: "POST",
+      headers: {
+        apikey: process.env.NEXT_PUBLIC_OCR_SPACE_API_KEY!,
+        contentType: "application/pdf",
+      },
+      body: formData,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        // console.log("data_____", data.ParsedResults[0].ParsedText);
+        // return response.json();
+        if (!data.ParsedResults[0] || !data.ParsedResults[0].ParsedText) {
+          throw new Error("Could not parse the cv");
+        }
+        SaveCVtoUser({
+          variables: {
+            fields: {
+              // cvString: text
+              userID: currentUser?._id,
+              cvContent: data.ParsedResults[0].ParsedText,
+            },
+          },
+        });
+        if (fileInput.current) {
+          fileInput.current.value = "";
+        }
+      })
+      .catch(() => {
+        toast.error(
+          <div className="flex flex-col justify-center space-y-1">
+            <div className="text-lg text-black">
+              Please upload a different CV we didn&apos;t identify any text on
+              this one
+            </div>
+            <div className="text-sm">
+              *Also, feel free to continue without uploading your Resume
+            </div>
+          </div>
+        );
+        // toast.info(
+        //   "Also, feel free to continue without uploading your Resume"
+        // );
+        setUploading(false);
+      });
+
+    console.log("PARSE OK", response);
+  };
 
   // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
@@ -234,6 +294,22 @@ export const CVUploadGPT = ({ timePerWeek, seed }: ICVUploadGPTProps) => {
           Upload Resume
         </button> */}
       </form>
+      {sizeErr && (
+        <p className="mt-6 max-w-md text-center text-red-400">
+          File size is exceeding the limit and you that your CV could not be
+          processed. Please attempt again using a file of 1MB or smaller.
+          <br />
+          You can try to compress the file using{" "}
+          <a
+            href="https://www.ilovepdf.com/compress_pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="font-bold underline"
+          >
+            this service
+          </a>
+        </p>
+      )}
       {/* {summary ? (
         <div className="ml-2 mt-2 w-fit rounded-md border-2 border-black pl-6 pr-4 ">
           <label htmlFor="ul" className="text-right text-lg font-bold">
