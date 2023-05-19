@@ -1,7 +1,9 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
+  CREATE_NEW_TALENT_LIST,
   FIND_COMPANY_FULL,
   MATCH_NODES_MEMBERS_AI4,
+  UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
 import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
@@ -298,6 +300,29 @@ const CompanyCRM: NextPageWithLayout = () => {
     },
   });
 
+  const [createTalentListCompany] = useMutation(CREATE_NEW_TALENT_LIST);
+
+  const [updateUsersTalentListCompany] = useMutation(
+    UPDATE_TALENT_LIST_WITH_TALENT,
+    {
+      onCompleted: (data) => {
+        const lastTalentListIndex =
+          data?.updateUsersTalentListCompany.talentList.length - 1;
+
+        const newList =
+          data?.updateUsersTalentListCompany.talentList[lastTalentListIndex];
+
+        if (newList) {
+          setTalentListSelected({ _id: "000", name: "No list selected" });
+          setTalentListsAvailables([...talentListsAvailables, newList]);
+          setNewTalentListCreationMode(false);
+          setNewTalentListCandidatesIds([]);
+          setNewTalentListName("");
+        }
+      },
+    }
+  );
+
   // console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
@@ -369,8 +394,30 @@ const CompanyCRM: NextPageWithLayout = () => {
   };
 
   const handleSaveNewTalentListButton = async () => {
-    // falta hacer lo del new talent list name
-    console.log({ newTalentListName }, { newTalentListCandidatesIds });
+    const result = await createTalentListCompany({
+      variables: {
+        fields: {
+          companyID: companyID,
+          name: newTalentListName,
+        },
+      },
+    });
+
+    const lastTalentListIndex =
+      result.data?.createTalentListCompany.talentList.length - 1;
+
+    const newTalentListID =
+      result.data?.createTalentListCompany.talentList[lastTalentListIndex]._id;
+
+    await updateUsersTalentListCompany({
+      variables: {
+        fields: {
+          companyID: companyID,
+          talentListID: newTalentListID,
+          usersTalentList: newTalentListCandidatesIds,
+        },
+      },
+    });
   };
 
   return (
