@@ -1,9 +1,11 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
+  CREATE_NEW_TALENT_LIST,
   FIND_COMPANY_FULL,
   MATCH_NODES_MEMBERS_AI4,
+  UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
-import { CandidateType } from "@eden/package-graphql/generated";
+import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
   Button,
@@ -11,11 +13,14 @@ import {
   CandidatesTableList,
   GridItemSix,
   GridLayout,
+  SelectList,
+  TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { HiOutlineLink } from "react-icons/hi";
+import { MdIosShare } from "react-icons/md";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -51,9 +56,6 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [nodeIDsCompany, setNodeIDsCompany] = useState<string[]>([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
 
-  console.log("nodeIDsCompany = ", nodeIDsCompany);
-  console.log("candidates = ", candidates);
-
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
     null
@@ -64,6 +66,27 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [trainModalOpen, setTrainModalOpen] = useState(false);
+
+  const [talentListsAvailables, setTalentListsAvailables] = useState<
+    TalentListType[]
+  >([]);
+
+  const [talentListSelected, setTalentListSelected] =
+    useState<TalentListType>();
+
+  const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
+    CandidateTypeSkillMatch[]
+  >([]);
+
+  const [newTalentListCreationMode, setNewTalentListCreationMode] =
+    useState<boolean>(false);
+
+  const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
+    string[]
+  >([]);
+
+  const [newTalentListName, setNewTalentListName] = useState<string>("");
+
   const {
     data: findCompanyData,
     loading: findCompanyIsLoading,
@@ -77,11 +100,18 @@ const CompanyCRM: NextPageWithLayout = () => {
     skip: !Boolean(companyID),
     ssr: false,
     onCompleted: (data: any) => {
+      const talentListsNames: TalentListType[] =
+        data.findCompany.talentList.map((list: TalentListType) => list);
+
+      setTalentListsAvailables(talentListsNames);
+
       setCandidates(data.findCompany.candidates);
+
+      setCandidatesFromTalentList(data.findCompany.candidates);
+
       const questionPrep: Question[] = [];
 
       data.findCompany.questionsToAsk.map((question: any) => {
-        console.log("question = ", question);
         if (question.question == null) {
         } else {
           questionPrep.push({
@@ -92,13 +122,9 @@ const CompanyCRM: NextPageWithLayout = () => {
         }
       });
 
-      // console.log("data.findCompany = ", data.findCompany);
-
       const nodesID = data.findCompany?.nodes?.map((node: any) => {
         return node?.nodeData?._id;
       });
-
-      // console.log("nodesID = ", nodesID);
 
       setNodeIDsCompany(nodesID);
 
@@ -116,13 +142,13 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
 
-  console.log("nodeIDsCompany,candidates = ", nodeIDsCompany, candidates);
+  // console.log("nodeIDsCompany,candidates = ", nodeIDsCompany, candidates);
 
   const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
     variables: {
       fields: {
         nodesID: nodeIDsCompany,
-        membersIDallow: candidates?.map((userData: any) => {
+        membersIDallow: candidatesFromTalentList?.map((userData: any) => {
           return userData?.user?._id;
         }),
         weightModules: [
@@ -137,15 +163,15 @@ const CompanyCRM: NextPageWithLayout = () => {
         ],
       },
     },
-    skip: candidates.length == 0 || nodeIDsCompany.length == 0,
+    skip: candidatesFromTalentList.length == 0 || nodeIDsCompany.length == 0,
 
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
-      console.log(
-        "data.matchNodesToMembers_AI4 = ",
-        data.matchNodesToMembers_AI4
-      );
+      // console.log(
+      //   "data.matchNodesToMembers_AI4 = ",
+      //   data.matchNodesToMembers_AI4
+      // );
       // -------------- Get the Candidates of the page ------------
       const memberScoreObj: { [key: string]: number } = {};
 
@@ -159,17 +185,17 @@ const CompanyCRM: NextPageWithLayout = () => {
 
       const candidatesNew: CandidateTypeSkillMatch[] = [];
 
-      for (let i = 0; i < candidates.length; i++) {
-        const userID = candidates[i]?.user?._id;
+      for (let i = 0; i < candidatesFromTalentList.length; i++) {
+        const userID = candidatesFromTalentList[i]?.user?._id;
 
         if (userID && memberScoreObj[userID]) {
           candidatesNew.push({
-            ...candidates[i],
+            ...candidatesFromTalentList[i],
             skillMatch: memberScoreObj[userID],
           });
         }
       }
-      setCandidates(candidatesNew);
+      setCandidatesFromTalentList(candidatesNew);
       // -------------- Get the Candidates of the page ------------
 
       // --------------- Find the related nodes Score and color -----------
@@ -274,13 +300,64 @@ const CompanyCRM: NextPageWithLayout = () => {
     },
   });
 
-  console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
+  const [createTalentListCompany] = useMutation(CREATE_NEW_TALENT_LIST);
+
+  const [updateUsersTalentListCompany] = useMutation(
+    UPDATE_TALENT_LIST_WITH_TALENT,
+    {
+      onCompleted: (data) => {
+        const lastTalentListIndex =
+          data?.updateUsersTalentListCompany.talentList.length - 1;
+
+        const newList =
+          data?.updateUsersTalentListCompany.talentList[lastTalentListIndex];
+
+        if (newList) {
+          setTalentListSelected({ _id: "000", name: "No list selected" });
+          setTalentListsAvailables([...talentListsAvailables, newList]);
+          setNewTalentListCreationMode(false);
+          setNewTalentListCandidatesIds([]);
+          setNewTalentListName("");
+        }
+      },
+    }
+  );
+
+  // console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
   };
 
   const handleCloseTrainModal = () => {
     setTrainModalOpen(false);
+  };
+
+  const handleSelectedTalentList = (list: TalentListType) => {
+    const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
+
+    if (list._id !== "000") {
+      setNewTalentListCreationMode(false);
+
+      for (let i = 0; i < candidates.length; i++) {
+        for (let j = 0; j < list.talent!.length; j++) {
+          if (candidates[i].user?._id === list.talent![j]!.user!._id) {
+            candidatesOnTalentListSelected.push(candidates[i]);
+          }
+        }
+      }
+      setTalentListSelected(list);
+    } else {
+      candidatesOnTalentListSelected.push(...candidates);
+      setTalentListSelected({ _id: "000", name: "No list selected" });
+    }
+
+    setCandidatesFromTalentList(candidatesOnTalentListSelected);
+  };
+
+  const handleCreateNewListButton = () => {
+    setTalentListSelected({ _id: "000", name: "No list selected" });
+    setNewTalentListCreationMode(true);
+    setCandidatesFromTalentList(candidates);
   };
 
   const handleCopyLink = () => {
@@ -294,38 +371,86 @@ const CompanyCRM: NextPageWithLayout = () => {
     }, 3000);
   };
 
+  const handleCandidateCheckboxSelection = (candidate: CandidateType) => {
+    setNewTalentListCandidatesIds((prev) => {
+      const newCandidatesIds = [...prev];
+
+      if (newCandidatesIds.includes(candidate.user?._id!)) {
+        const index = newCandidatesIds.indexOf(candidate.user?._id!);
+
+        newCandidatesIds.splice(index, 1);
+      } else {
+        newCandidatesIds.push(candidate.user?._id!);
+      }
+
+      return newCandidatesIds;
+    });
+  };
+
+  const handleNewTalentListNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setNewTalentListName(e.target.value);
+  };
+
+  const handleSaveNewTalentListButton = async () => {
+    const result = await createTalentListCompany({
+      variables: {
+        fields: {
+          companyID: companyID,
+          name: newTalentListName,
+        },
+      },
+    });
+
+    const lastTalentListIndex =
+      result.data?.createTalentListCompany.talentList.length - 1;
+
+    const newTalentListID =
+      result.data?.createTalentListCompany.talentList[lastTalentListIndex]._id;
+
+    await updateUsersTalentListCompany({
+      variables: {
+        fields: {
+          companyID: companyID,
+          talentListID: newTalentListID,
+          usersTalentList: newTalentListCandidatesIds,
+        },
+      },
+    });
+  };
+
   return (
     <GridLayout className="">
       <GridItemSix>
-        <div>
-          <div className="mb-4 flex h-10 items-center">
-            <h1 className="mr-6 text-2xl font-medium">
-              {findCompanyData && findCompanyData.findCompany.name
-                ? findCompanyData.findCompany.name.charAt(0).toUpperCase() +
-                  findCompanyData.findCompany.name.slice(1)
-                : ""}{" "}
-              Dashboard
-            </h1>
-            <Button
-              size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !text-sm text-white"
-              variant="default"
-              onClick={handleCopyLink}
-            >
-              <HiOutlineLink className="mr-1" />
-              interview link
-            </Button>
-            {notificationOpen && (
-              <span className="text-sm text-gray-400">Link copied!</span>
-            )}
-            <Button
-              className="ml-auto"
-              variant="secondary"
-              onClick={handleTrainButtonClick}
-            >
-              Train Eden AI
-            </Button>
-            {/* <Button
+        <div className="mb-4 flex h-10 items-center">
+          <h1 className="mr-6 text-2xl font-medium">
+            {findCompanyData && findCompanyData.findCompany.name
+              ? findCompanyData.findCompany.name.charAt(0).toUpperCase() +
+                findCompanyData.findCompany.name.slice(1)
+              : ""}{" "}
+            Dashboard
+          </h1>
+          <Button
+            size="sm"
+            className="bg-soilBlue border-soilBlue mr-2 flex items-center !text-sm text-white"
+            variant="default"
+            onClick={handleCopyLink}
+          >
+            <HiOutlineLink className="mr-1" />
+            interview link
+          </Button>
+          {notificationOpen && (
+            <span className="text-sm text-gray-400">Link copied!</span>
+          )}
+          <Button
+            className="ml-auto"
+            variant="secondary"
+            onClick={handleTrainButtonClick}
+          >
+            Train Eden AI
+          </Button>
+          {/* <Button
             variant="secondary"
             onClick={() => {
               router.push(`/train-ai/${companyID}`);
@@ -333,11 +458,82 @@ const CompanyCRM: NextPageWithLayout = () => {
             >
             Train AI
           </Button> */}
+        </div>
+        <div className="grid grid-flow-row">
+          <div className="grid grid-flow-col grid-cols-3">
+            <div className="col-span-2 grid grid-flow-row grid-cols-2 grid-rows-1">
+              {!newTalentListCreationMode ? (
+                <SelectList
+                  items={[
+                    { _id: "000", name: "No list selected" },
+                    ...talentListsAvailables,
+                  ]}
+                  onChange={handleSelectedTalentList}
+                  newValue={talentListSelected ? talentListSelected : undefined}
+                />
+              ) : (
+                <TextField
+                  onChange={handleNewTalentListNameChange}
+                  placeholder="Name your custom list"
+                  radius="pill-shadow"
+                  required={true}
+                  className="-mt-2"
+                />
+              )}
+              <>
+                {talentListSelected?._id === "000" ? (
+                  !newTalentListCreationMode ? (
+                    <Button
+                      className="mb-4 ml-auto"
+                      variant="secondary"
+                      onClick={handleCreateNewListButton}
+                    >
+                      Create New List
+                    </Button>
+                  ) : (
+                    <Button
+                      className="mb-4 ml-auto"
+                      variant="secondary"
+                      onClick={handleSaveNewTalentListButton}
+                      disabled={
+                        newTalentListName === "" ||
+                        newTalentListCandidatesIds.length === 0
+                      }
+                    >
+                      Save
+                    </Button>
+                  )
+                ) : (
+                  <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
+                    <MdIosShare
+                      size={36}
+                      className="mt-1 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+                    />
+                    <Button
+                      className="mb-4 ml-auto pt-2"
+                      variant="secondary"
+                      size="md"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      className="pl-auto mb-4 ml-auto w-32 min-w-fit pt-2 text-xs"
+                      variant="secondary"
+                      onClick={handleCreateNewListButton}
+                    >
+                      Create new
+                    </Button>
+                  </div>
+                )}
+              </>
+            </div>
           </div>
           <CandidatesTableList
-            candidatesList={candidates}
+            candidatesList={candidatesFromTalentList}
             fetchIsLoading={findCompanyIsLoading}
             setRowObjectData={handleRowClick}
+            selectable={newTalentListCreationMode}
+            handleChkSelection={handleCandidateCheckboxSelection}
           />
           {trainModalOpen ? (
             <div className="fixed inset-0 z-30 overflow-y-auto">

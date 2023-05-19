@@ -32,17 +32,21 @@ export interface ICVUploadGPTProps {
   timePerWeek?: number;
   seed?: string;
   companyID?: string | string[] | undefined;
+  handleEnd?: () => void;
 }
 
-// eslint-disable-next-line no-unused-vars
 export const CVUploadGPT = ({
+  // eslint-disable-next-line no-unused-vars
   timePerWeek,
+  // eslint-disable-next-line no-unused-vars
   seed,
   companyID,
+  handleEnd,
 }: ICVUploadGPTProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploaded, setUploaded] = useState<boolean>(false);
+  const [sizeErr, setSizeErr] = useState<boolean>(false);
   const [uploadCounter, setUploadCounter] = useState(0);
 
   // const [summary, setSummary] = useState<string | null>(null);
@@ -60,7 +64,9 @@ export const CVUploadGPT = ({
       setUploading(false);
       setUploaded(true);
       setFile(null);
+      setSizeErr(false);
       toast.success("success");
+      if (handleEnd) handleEnd();
     },
     onError: (err) => {
       setUploading(false);
@@ -116,6 +122,12 @@ export const CVUploadGPT = ({
             }
             setFile(null);
           } else {
+            // console.log(file);
+            if (file.size > 1000000) {
+              setSizeErr(true);
+              setUploading(false);
+              return;
+            }
             uploadOCRService(file);
             return;
           }
@@ -142,7 +154,7 @@ export const CVUploadGPT = ({
     const response = await fetch("https://api.ocr.space/parse/image", {
       method: "POST",
       headers: {
-        apikey: process.env.OCR_SPACE_API_KEY!,
+        apikey: process.env.NEXT_PUBLIC_OCR_SPACE_API_KEY!,
         contentType: "application/pdf",
       },
       body: formData,
@@ -151,7 +163,7 @@ export const CVUploadGPT = ({
         return res.json();
       })
       .then((data) => {
-        console.log("data_____", data.ParsedResults[0].ParsedText);
+        // console.log("data_____", data.ParsedResults[0].ParsedText);
         // return response.json();
         if (!data.ParsedResults[0] || !data.ParsedResults[0].ParsedText) {
           throw new Error("Could not parse the cv");
@@ -285,6 +297,22 @@ export const CVUploadGPT = ({
           Upload Resume
         </button> */}
       </form>
+      {sizeErr && (
+        <p className="mt-6 max-w-md text-center text-red-400">
+          File size is exceeding the limit and you that your CV could not be
+          processed. Please attempt again using a file of 1MB or smaller.
+          <br />
+          You can try to compress the file using{" "}
+          <a
+            href="https://www.ilovepdf.com/compress_pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="font-bold underline"
+          >
+            this service
+          </a>
+        </p>
+      )}
       {/* {summary ? (
         <div className="ml-2 mt-2 w-fit rounded-md border-2 border-black pl-6 pr-4 ">
           <label htmlFor="ul" className="text-right text-lg font-bold">

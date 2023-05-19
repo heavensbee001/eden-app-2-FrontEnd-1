@@ -1,4 +1,4 @@
-import { AppUserLayout, SEO } from "@eden/package-ui";
+import { AppUserLayout, LeftToggleMenu, SEO } from "@eden/package-ui";
 import Link from "next/link";
 
 import type { NextPageWithLayout } from "../_app";
@@ -8,22 +8,48 @@ const HomePage: NextPageWithLayout = () => {
     <>
       <SEO />
       <div className="w-full p-8">
-        <h2>Quick directory</h2>
-        <ul className="list-disc">
-          <li>
-            <Link href={"/interview/644e052ca7177f51e7c27b77"}>Interview</Link>
-          </li>
-          <li>
-            <Link href={"/dashboard/644e052ca7177f51e7c27b77"}>
-              Company Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link href={"/train-ai/644e052ca7177f51e7c27b77"}>
-              Company Train AI
-            </Link>
-          </li>
-        </ul>
+        <LeftToggleMenu defaultVisible={true}>
+          <div className="px-4 py-2">
+            <h2>Quick directory</h2>
+            <ul className="list-disc">
+              <li>
+                <Link href={"/interview/644e052ca7177f51e7c27b77"}>
+                  Interview
+                </Link>
+              </li>
+              <li>
+                <Link href={"/dashboard/644e052ca7177f51e7c27b77"}>
+                  Company Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href={"/train-ai/644e052ca7177f51e7c27b77"}>
+                  Company Train AI
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </LeftToggleMenu>
+        <div className="mx-auto max-w-3xl">
+          <h2>Home</h2>
+          {/* <ul className="list-disc">
+            <li>
+              <Link href={"/interview/644e052ca7177f51e7c27b77"}>
+                Interview
+              </Link>
+            </li>
+            <li>
+              <Link href={"/dashboard/644e052ca7177f51e7c27b77"}>
+                Company Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link href={"/train-ai/644e052ca7177f51e7c27b77"}>
+                Company Train AI
+              </Link>
+            </li>
+          </ul> */}
+        </div>
       </div>
     </>
   );

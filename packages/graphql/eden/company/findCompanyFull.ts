@@ -52,6 +52,28 @@ export const FIND_COMPANY_FULL = gql`
           }
         }
       }
+      talentList {
+        _id
+        name
+        talent {
+          user {
+            _id
+            discordName
+            discordAvatar
+            memberRole {
+              _id
+              title
+            }
+            budget {
+              perHour
+            }
+            experienceLevel {
+              total
+              years
+            }
+          }
+        }
+      }
       nodes {
         nodeData {
           _id
