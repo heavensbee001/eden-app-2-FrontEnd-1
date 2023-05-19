@@ -3,10 +3,12 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -92,7 +94,9 @@ export type Company = {
   candidatesReadyToDisplay?: Maybe<Scalars["Boolean"]>;
   employees?: Maybe<Array<Maybe<EmployeeType>>>;
   name?: Maybe<Scalars["String"]>;
+  nodes?: Maybe<Array<Maybe<NodeDataType>>>;
   questionsToAsk?: Maybe<Array<Maybe<QuestionType>>>;
+  talentList?: Maybe<Array<Maybe<TalentListType>>>;
 };
 
 export type Conversation = {
@@ -343,6 +347,7 @@ export type Mutation = {
   addMessages?: Maybe<Array<Maybe<Ai>>>;
   addNewChat?: Maybe<Chats>;
   addNewMember?: Maybe<Members>;
+  addNodesToCompany?: Maybe<Company>;
   addNodesToGrant?: Maybe<GrantTemplate>;
   addNodesToMember?: Maybe<Members>;
   addNodesToMemberInRoom?: Maybe<Members>;
@@ -372,6 +377,7 @@ export type Mutation = {
   createProject?: Maybe<Project>;
   createProjectUpdate?: Maybe<ProjectUpdate>;
   createRoom?: Maybe<Rooms>;
+  createTalentListCompany?: Maybe<Company>;
   cvMapKG?: Maybe<CvMapKgOutput>;
   deleteAllEndorsements?: Maybe<Scalars["Boolean"]>;
   deleteError?: Maybe<ErrorLog>;
@@ -417,6 +423,7 @@ export type Mutation = {
   updateProject?: Maybe<Project>;
   updateRoleTemplate?: Maybe<RoleTemplate>;
   updateServer?: Maybe<ServerTemplate>;
+  updateUsersTalentListCompany?: Maybe<Company>;
   uploadUserDataGPT?: Maybe<Members>;
   useAI_OnMessage?: Maybe<UseAi_OnMessageOutput>;
 };
@@ -459,6 +466,10 @@ export type MutationAddNewChatArgs = {
 
 export type MutationAddNewMemberArgs = {
   fields: AddNewMemberInput;
+};
+
+export type MutationAddNodesToCompanyArgs = {
+  fields?: InputMaybe<AddNodesToCompanyInput>;
 };
 
 export type MutationAddNodesToGrantArgs = {
@@ -575,6 +586,10 @@ export type MutationCreateProjectUpdateArgs = {
 
 export type MutationCreateRoomArgs = {
   fields: CreateRoomInput;
+};
+
+export type MutationCreateTalentListCompanyArgs = {
+  fields?: InputMaybe<CreateTalentListCompanyInput>;
 };
 
 export type MutationCvMapKgArgs = {
@@ -757,6 +772,10 @@ export type MutationUpdateServerArgs = {
   fields?: InputMaybe<UpdateServerInput>;
 };
 
+export type MutationUpdateUsersTalentListCompanyArgs = {
+  fields?: InputMaybe<UpdateUsersTalentListCompanyInput>;
+};
+
 export type MutationUploadUserDataGptArgs = {
   fields?: InputMaybe<UploadUserDataGptInput>;
 };
@@ -783,6 +802,11 @@ export type Node = {
   star?: Maybe<Scalars["Boolean"]>;
   state?: Maybe<StateEnum>;
   subNodes?: Maybe<Array<Maybe<Node>>>;
+};
+
+export type NodeDataType = {
+  __typename?: "NodeDataType";
+  nodeData?: Maybe<Node>;
 };
 
 export type NodeVisual = {
@@ -1687,6 +1711,15 @@ export type AddNewMemberInput = {
   serverID?: InputMaybe<Scalars["String"]>;
 };
 
+export type AddNodeType = {
+  nodeID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type AddNodesToCompanyInput = {
+  companyID?: InputMaybe<Scalars["ID"]>;
+  nodes?: InputMaybe<Array<InputMaybe<AddNodeType>>>;
+};
+
 export type AddNodesToGrantInput = {
   grantID?: InputMaybe<Scalars["ID"]>;
   nodesID?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
@@ -2123,6 +2156,12 @@ export type CreateSkillInput = {
 export type CreateSkillsInput = {
   names?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   state?: InputMaybe<ApprovedSkillEnum>;
+};
+
+export type CreateTalentListCompanyInput = {
+  companyID?: InputMaybe<Scalars["ID"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  talentListID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type CvInfoType = {
@@ -2934,6 +2973,7 @@ export type MatchNodesToMembers_Ai4Input = {
   budget?: InputMaybe<BudgetInputT>;
   experienceLevel?: InputMaybe<Scalars["Int"]>;
   limit?: InputMaybe<Scalars["Int"]>;
+  membersIDallow?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   nodesID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   page?: InputMaybe<Scalars["Int"]>;
   weightModules?: InputMaybe<Array<InputMaybe<WeightModulesInput>>>;
@@ -3554,6 +3594,18 @@ export type SummaryType = {
   pineConeID?: Maybe<Scalars["String"]>;
 };
 
+export type TalentListType = {
+  __typename?: "talentListType";
+  _id?: Maybe<Scalars["ID"]>;
+  name?: Maybe<Scalars["String"]>;
+  talent?: Maybe<Array<Maybe<TalentType>>>;
+};
+
+export type TalentType = {
+  __typename?: "talentType";
+  user?: Maybe<Members>;
+};
+
 export type TeamInput = {
   memberID?: InputMaybe<Scalars["String"]>;
   phase?: InputMaybe<PhaseType>;
@@ -3813,6 +3865,12 @@ export type UpdateSkillSubCategoryInput = {
   id_lightcast?: InputMaybe<Scalars["String"]>;
   name?: InputMaybe<Scalars["String"]>;
   skills?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+};
+
+export type UpdateUsersTalentListCompanyInput = {
+  companyID?: InputMaybe<Scalars["ID"]>;
+  talentListID?: InputMaybe<Scalars["ID"]>;
+  usersTalentList?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
 export type UploadUserDataGptInput = {
