@@ -1,7 +1,9 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
+  CREATE_NEW_TALENT_LIST,
   FIND_COMPANY_FULL,
   MATCH_NODES_MEMBERS_AI4,
+  UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
 import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
@@ -12,6 +14,7 @@ import {
   GridItemSix,
   GridLayout,
   SelectList,
+  TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
@@ -74,6 +77,15 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
     CandidateTypeSkillMatch[]
   >([]);
+
+  const [newTalentListCreationMode, setNewTalentListCreationMode] =
+    useState<boolean>(false);
+
+  const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
+    string[]
+  >([]);
+
+  const [newTalentListName, setNewTalentListName] = useState<string>("");
 
   const {
     data: findCompanyData,
@@ -288,6 +300,29 @@ const CompanyCRM: NextPageWithLayout = () => {
     },
   });
 
+  const [createTalentListCompany] = useMutation(CREATE_NEW_TALENT_LIST);
+
+  const [updateUsersTalentListCompany] = useMutation(
+    UPDATE_TALENT_LIST_WITH_TALENT,
+    {
+      onCompleted: (data) => {
+        const lastTalentListIndex =
+          data?.updateUsersTalentListCompany.talentList.length - 1;
+
+        const newList =
+          data?.updateUsersTalentListCompany.talentList[lastTalentListIndex];
+
+        if (newList) {
+          setTalentListSelected({ _id: "000", name: "No list selected" });
+          setTalentListsAvailables([...talentListsAvailables, newList]);
+          setNewTalentListCreationMode(false);
+          setNewTalentListCandidatesIds([]);
+          setNewTalentListName("");
+        }
+      },
+    }
+  );
+
   // console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
@@ -301,6 +336,8 @@ const CompanyCRM: NextPageWithLayout = () => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     if (list._id !== "000") {
+      setNewTalentListCreationMode(false);
+
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -319,6 +356,7 @@ const CompanyCRM: NextPageWithLayout = () => {
 
   const handleCreateNewListButton = () => {
     setTalentListSelected({ _id: "000", name: "No list selected" });
+    setNewTalentListCreationMode(true);
     setCandidatesFromTalentList(candidates);
   };
 
@@ -331,6 +369,55 @@ const CompanyCRM: NextPageWithLayout = () => {
     setTimeout(() => {
       setNotificationOpen(false);
     }, 3000);
+  };
+
+  const handleCandidateCheckboxSelection = (candidate: CandidateType) => {
+    setNewTalentListCandidatesIds((prev) => {
+      const newCandidatesIds = [...prev];
+
+      if (newCandidatesIds.includes(candidate.user?._id!)) {
+        const index = newCandidatesIds.indexOf(candidate.user?._id!);
+
+        newCandidatesIds.splice(index, 1);
+      } else {
+        newCandidatesIds.push(candidate.user?._id!);
+      }
+
+      return newCandidatesIds;
+    });
+  };
+
+  const handleNewTalentListNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setNewTalentListName(e.target.value);
+  };
+
+  const handleSaveNewTalentListButton = async () => {
+    const result = await createTalentListCompany({
+      variables: {
+        fields: {
+          companyID: companyID,
+          name: newTalentListName,
+        },
+      },
+    });
+
+    const lastTalentListIndex =
+      result.data?.createTalentListCompany.talentList.length - 1;
+
+    const newTalentListID =
+      result.data?.createTalentListCompany.talentList[lastTalentListIndex]._id;
+
+    await updateUsersTalentListCompany({
+      variables: {
+        fields: {
+          companyID: companyID,
+          talentListID: newTalentListID,
+          usersTalentList: newTalentListCandidatesIds,
+        },
+      },
+    });
   };
 
   return (
@@ -375,19 +462,47 @@ const CompanyCRM: NextPageWithLayout = () => {
         <div className="grid grid-flow-row">
           <div className="grid grid-flow-col grid-cols-3">
             <div className="col-span-2 grid grid-flow-row grid-cols-2 grid-rows-1">
-              <SelectList
-                items={[
-                  { _id: "000", name: "No list selected" },
-                  ...talentListsAvailables,
-                ]}
-                onChange={handleSelectedTalentList}
-                newValue={talentListSelected ? talentListSelected : undefined}
-              />
+              {!newTalentListCreationMode ? (
+                <SelectList
+                  items={[
+                    { _id: "000", name: "No list selected" },
+                    ...talentListsAvailables,
+                  ]}
+                  onChange={handleSelectedTalentList}
+                  newValue={talentListSelected ? talentListSelected : undefined}
+                />
+              ) : (
+                <TextField
+                  onChange={handleNewTalentListNameChange}
+                  placeholder="Name your custom list"
+                  radius="pill-shadow"
+                  required={true}
+                  className="-mt-2"
+                />
+              )}
               <>
                 {talentListSelected?._id === "000" ? (
-                  <Button className="mb-4 ml-auto" variant="secondary">
-                    Create New List
-                  </Button>
+                  !newTalentListCreationMode ? (
+                    <Button
+                      className="mb-4 ml-auto"
+                      variant="secondary"
+                      onClick={handleCreateNewListButton}
+                    >
+                      Create New List
+                    </Button>
+                  ) : (
+                    <Button
+                      className="mb-4 ml-auto"
+                      variant="secondary"
+                      onClick={handleSaveNewTalentListButton}
+                      disabled={
+                        newTalentListName === "" ||
+                        newTalentListCandidatesIds.length === 0
+                      }
+                    >
+                      Save
+                    </Button>
+                  )
                 ) : (
                   <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
                     <MdIosShare
@@ -417,6 +532,8 @@ const CompanyCRM: NextPageWithLayout = () => {
             candidatesList={candidatesFromTalentList}
             fetchIsLoading={findCompanyIsLoading}
             setRowObjectData={handleRowClick}
+            selectable={newTalentListCreationMode}
+            handleChkSelection={handleCandidateCheckboxSelection}
           />
           {trainModalOpen ? (
             <div className="fixed inset-0 z-30 overflow-y-auto">
