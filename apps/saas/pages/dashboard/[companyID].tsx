@@ -9,9 +9,9 @@ import {
   Button,
   CandidateInfo,
   CandidatesTableList,
-  Dropdown,
   GridItemSix,
   GridLayout,
+  SelectList,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
@@ -68,9 +68,8 @@ const CompanyCRM: NextPageWithLayout = () => {
     TalentListType[]
   >([]);
 
-  const [talentListSelected, setTalentListSelected] = useState<TalentListType>(
-    {}
-  );
+  const [talentListSelected, setTalentListSelected] =
+    useState<TalentListType>();
 
   const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
     CandidateTypeSkillMatch[]
@@ -131,7 +130,7 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
 
-  console.log("nodeIDsCompany,candidates = ", nodeIDsCompany, candidates);
+  // console.log("nodeIDsCompany,candidates = ", nodeIDsCompany, candidates);
 
   const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
     variables: {
@@ -157,10 +156,10 @@ const CompanyCRM: NextPageWithLayout = () => {
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
-      console.log(
-        "data.matchNodesToMembers_AI4 = ",
-        data.matchNodesToMembers_AI4
-      );
+      // console.log(
+      //   "data.matchNodesToMembers_AI4 = ",
+      //   data.matchNodesToMembers_AI4
+      // );
       // -------------- Get the Candidates of the page ------------
       const memberScoreObj: { [key: string]: number } = {};
 
@@ -289,7 +288,7 @@ const CompanyCRM: NextPageWithLayout = () => {
     },
   });
 
-  console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
+  // console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
   };
@@ -301,22 +300,26 @@ const CompanyCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    for (let i = 0; i < candidates.length; i++) {
-      for (let j = 0; j < list.talent!.length; j++) {
-        if (candidates[i].user?._id === list.talent![j]!.user!._id) {
-          candidatesOnTalentListSelected.push(candidates[i]);
+    if (list._id !== "000") {
+      for (let i = 0; i < candidates.length; i++) {
+        for (let j = 0; j < list.talent!.length; j++) {
+          if (candidates[i].user?._id === list.talent![j]!.user!._id) {
+            candidatesOnTalentListSelected.push(candidates[i]);
+          }
         }
       }
+      setTalentListSelected(list);
+    } else {
+      candidatesOnTalentListSelected.push(...candidates);
+      setTalentListSelected({ _id: "000", name: "No list selected" });
     }
 
     setCandidatesFromTalentList(candidatesOnTalentListSelected);
-
-    setTalentListSelected(list);
   };
 
-  const handleUnSelectTalentList = () => {
+  const handleCreateNewListButton = () => {
+    setTalentListSelected({ _id: "000", name: "No list selected" });
     setCandidatesFromTalentList(candidates);
-    setTalentListSelected({});
   };
 
   const handleCopyLink = () => {
@@ -372,19 +375,16 @@ const CompanyCRM: NextPageWithLayout = () => {
         <div className="grid grid-flow-row">
           <div className="grid grid-flow-col grid-cols-3">
             <div className="col-span-2 grid grid-flow-row grid-cols-2 grid-rows-1">
-              <Dropdown
-                items={talentListsAvailables}
-                multiple={false}
-                placeholder="No list selected"
-                onSelect={handleSelectedTalentList}
-                value={
-                  talentListSelected !== null && talentListSelected?.name
-                    ? talentListSelected?.name
-                    : undefined
-                }
+              <SelectList
+                items={[
+                  { _id: "000", name: "No list selected" },
+                  ...talentListsAvailables,
+                ]}
+                onChange={handleSelectedTalentList}
+                newValue={talentListSelected ? talentListSelected : undefined}
               />
               <>
-                {!talentListSelected ? (
+                {talentListSelected?._id === "000" ? (
                   <Button className="mb-4 ml-auto" variant="secondary">
                     Create New List
                   </Button>
@@ -402,11 +402,11 @@ const CompanyCRM: NextPageWithLayout = () => {
                       Edit
                     </Button>
                     <Button
-                      className="pl-auto mb-4 ml-auto w-32 min-w-fit pt-2"
+                      className="pl-auto mb-4 ml-auto w-32 min-w-fit pt-2 text-xs"
                       variant="secondary"
-                      onClick={handleUnSelectTalentList}
+                      onClick={handleCreateNewListButton}
                     >
-                      Unselect
+                      Create new
                     </Button>
                   </div>
                 )}
