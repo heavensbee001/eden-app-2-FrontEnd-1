@@ -400,7 +400,7 @@ const CompanyCRM: NextPageWithLayout = () => {
         </div>
       </GridItemSix>
       <GridItemSix className="relative">
-        <div className="scrollbar-hide my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
+        <div className="scrollbar-hide -my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
           {selectedUserId ? (
             <CandidateInfo
               memberID={selectedUserId || ""}
