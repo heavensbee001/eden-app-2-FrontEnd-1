@@ -149,88 +149,88 @@ export const InterviewEdenAI = ({
   const [timesAsked, setTimesAsked] = useState<number>(0);
 
   // -------------- AI GPT NODES --------------
-  const { data: dataMessageMapKGV4 } = useQuery(MESSAGE_MAP_KG_V4, {
-    variables: {
-      fields: {
-        message: messageUser,
-        // assistantMessage:
-        // chatN.length > 3 ? chatN[chatN.length - 3]?.message : "",
-        // assistantMessage: chatN[chatN.length - 2]?.message,
-        assistantMessage: chatN[chatN.length - 3]?.message,
-      },
-    },
-    skip:
-      messageUser == "" ||
-      chatN.length < 2 ||
-      chatN[chatN.length - 2]?.user == "01",
-  });
+  // const { data: dataMessageMapKGV4 } = useQuery(MESSAGE_MAP_KG_V4, {
+  //   variables: {
+  //     fields: {
+  //       message: messageUser,
+  //       // assistantMessage:
+  //       // chatN.length > 3 ? chatN[chatN.length - 3]?.message : "",
+  //       // assistantMessage: chatN[chatN.length - 2]?.message,
+  //       assistantMessage: chatN[chatN.length - 3]?.message,
+  //     },
+  //   },
+  //   skip:
+  //     messageUser == "" ||
+  //     chatN.length < 2 ||
+  //     chatN[chatN.length - 2]?.user == "01",
+  // });
 
   // update nodes ---- TODO => refactor this to query onCompleted
-  useEffect(() => {
-    if (dataMessageMapKGV4) {
-      const newNodeObj: any = [];
+  // useEffect(() => {
+  //   if (dataMessageMapKGV4) {
+  //     const newNodeObj: any = [];
 
-      dataMessageMapKGV4?.messageMapKG_V4?.keywords?.forEach((keyword: any) => {
-        if (keyword.nodeID) {
-          newNodeObj.push({
-            nodeID: keyword.nodeID,
-            active: true,
-            confidence: keyword.confidence,
-            isNew: true,
-          });
-        }
-      });
+  //     dataMessageMapKGV4?.messageMapKG_V4?.keywords?.forEach((keyword: any) => {
+  //       if (keyword.nodeID) {
+  //         newNodeObj.push({
+  //           nodeID: keyword.nodeID,
+  //           active: true,
+  //           confidence: keyword.confidence,
+  //           isNew: true,
+  //         });
+  //       }
+  //     });
 
-      const newNodesObjK: any = {};
+  //     const newNodesObjK: any = {};
 
-      //  --------- only take the ones that are true or have high confidence ------------
+  //     //  --------- only take the ones that are true or have high confidence ------------
 
-      for (const [key, value] of Object.entries(nodeObj)) {
-        const nodeActive = value.active;
-        const nodeConfidence = value.confidence;
+  //     for (const [key, value] of Object.entries(nodeObj)) {
+  //       const nodeActive = value.active;
+  //       const nodeConfidence = value.confidence;
 
-        if (nodeActive) {
-          newNodesObjK[key] = {
-            active: nodeActive,
-            confidence: nodeConfidence,
-          };
-        } else {
-          if (Object.keys(nodeObj).length > 7) {
-            if (nodeConfidence > 5) {
-              newNodesObjK[key] = {
-                active: nodeActive,
-                confidence: nodeConfidence,
-              };
-            }
-          } else {
-            newNodesObjK[key] = {
-              active: nodeActive,
-              confidence: nodeConfidence,
-            };
-          }
-        }
-      }
-      //  --------- only take the ones that are true or have high confidence ------------
-      for (let i = 0; i < newNodeObj.length; i++) {
-        if (!Object.keys(newNodesObjK).includes(newNodeObj[i].nodeID)) {
-          let newActive = false;
+  //       if (nodeActive) {
+  //         newNodesObjK[key] = {
+  //           active: nodeActive,
+  //           confidence: nodeConfidence,
+  //         };
+  //       } else {
+  //         if (Object.keys(nodeObj).length > 7) {
+  //           if (nodeConfidence > 5) {
+  //             newNodesObjK[key] = {
+  //               active: nodeActive,
+  //               confidence: nodeConfidence,
+  //             };
+  //           }
+  //         } else {
+  //           newNodesObjK[key] = {
+  //             active: nodeActive,
+  //             confidence: nodeConfidence,
+  //           };
+  //         }
+  //       }
+  //     }
+  //     //  --------- only take the ones that are true or have high confidence ------------
+  //     for (let i = 0; i < newNodeObj.length; i++) {
+  //       if (!Object.keys(newNodesObjK).includes(newNodeObj[i].nodeID)) {
+  //         let newActive = false;
 
-          if (newNodeObj[i].confidence > 6) {
-            newActive = true;
-          }
-          newNodesObjK[newNodeObj[i].nodeID] = {
-            active: newActive,
-            confidence: newNodeObj[i].confidence,
-            isNew: true,
-          };
-        }
-      }
+  //         if (newNodeObj[i].confidence > 6) {
+  //           newActive = true;
+  //         }
+  //         newNodesObjK[newNodeObj[i].nodeID] = {
+  //           active: newActive,
+  //           confidence: newNodeObj[i].confidence,
+  //           isNew: true,
+  //         };
+  //       }
+  //     }
 
-      setNodeObj(newNodesObjK);
-      // ------- Array of objects to disctionary ------------
-    }
-  }, [dataMessageMapKGV4]);
-  // -----------------------------------------
+  //     setNodeObj(newNodesObjK);
+  //     // ------- Array of objects to disctionary ------------
+  //   }
+  // }, [dataMessageMapKGV4]);
+  // // -----------------------------------------
 
   // ---------- AI GPT REPLY MESSAGE ----------
   const { data: dataInterviewEdenAI } = useQuery(INTERVIEW_EDEN_AI, {

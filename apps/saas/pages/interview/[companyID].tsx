@@ -26,9 +26,10 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { companyID } = router.query;
   const [interviewEnded, setInterviewEnded] = useState(false);
-  const [cvEnded, setCvEnded] = useState(false);
+  const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
 
+  console.log("cvEnded = ", cvEnded);
   const {
     data: findCompanyData,
     // error: findCompanyError,
@@ -83,6 +84,25 @@ const HomePage: NextPageWithLayout = () => {
               <ProgressBarGeneric progress={progress} />
             </div>
             <Wizard canPrev={false} onStepChange={handleProgress}>
+              <WizardStep
+                // nextDisabled={!cvEnded}
+                label={"cv"}
+              >
+                <section className="flex h-full flex-col items-center justify-center">
+                  <h3 className="mb-8 text-center text-lg font-medium">
+                    Hey {currentUser?.discordName}!
+                  </h3>
+                  <p className="mb-8 text-center">
+                    In order for me to be able to ask relevant questions,
+                    <br />
+                    please upload your CV first.
+                    <br />
+                    <br />
+                    The AI Magic 🪄 takes exactly 30 seconds
+                  </p>
+                  <CVUploadGPT handleEnd={handleCvEnd} companyID={companyID} />
+                </section>
+              </WizardStep>
               <WizardStep label={"welcome"}>
                 <section className="flex h-full flex-col items-center justify-center">
                   <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
@@ -136,28 +156,18 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </section>
             </WizardStep> */}
-              <WizardStep nextDisabled={!cvEnded} label={"cv"}>
-                <section className="flex h-full flex-col items-center justify-center">
-                  <h3 className="mb-8 text-center text-lg font-medium">
-                    Hey {currentUser?.discordName}!
-                  </h3>
-                  <p className="mb-8 text-center">
-                    In order for me to be able to ask relevant questions,
-                    <br />
-                    please upload your CV first.
-                  </p>
-                  <CVUploadGPT handleEnd={handleCvEnd} companyID={companyID} />
-                </section>
-              </WizardStep>
+
               <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
                 <div className="mx-auto h-[70vh] max-w-lg">
                   <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                 </div>
               </WizardStep>
+
               <WizardStep label={"profile"}>
                 <p className="mb-8 text-center">Just a few questions missing</p>
                 <ProfileQuestionsContainer />
               </WizardStep>
+
               {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
