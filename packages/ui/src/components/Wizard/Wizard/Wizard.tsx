@@ -107,6 +107,18 @@ export const Wizard = ({
             Previous
           </Button>
         )}
+
+        {/* JUST FOR TESTING REMOVE BEFORE PROD */}
+        <Button
+          className="!border-white !bg-white text-gray-50 hover:!text-gray-200"
+          variant="secondary"
+          onClick={handleNextClick}
+          disabled={isNextDisabled()}
+        >
+          Next
+        </Button>
+        {/* ------ */}
+
         {!isHideNext() && (
           <Button
             className="ml-auto"

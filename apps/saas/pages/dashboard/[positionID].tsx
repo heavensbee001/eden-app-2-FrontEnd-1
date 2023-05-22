@@ -13,6 +13,7 @@ import {
   CandidatesTableList,
   GridItemSix,
   GridLayout,
+  ListModeEnum,
   SelectList,
   TextField,
   TrainQuestionsEdenAI,
@@ -80,6 +81,8 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const [newTalentListCreationMode, setNewTalentListCreationMode] =
     useState<boolean>(false);
+
+  const [editTalentListMode, setEditTalentListMode] = useState<boolean>(false);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
     string[]
@@ -318,8 +321,10 @@ const PositionCRM: NextPageWithLayout = () => {
 
         if (newList) {
           setTalentListSelected({ _id: "000", name: "No list selected" });
-          setTalentListsAvailables([...talentListsAvailables, newList]);
+          if (!editTalentListMode)
+            setTalentListsAvailables([...talentListsAvailables, newList]);
           setNewTalentListCreationMode(false);
+          setEditTalentListMode(false);
           setNewTalentListCandidatesIds([]);
           setNewTalentListName("");
         }
@@ -364,6 +369,15 @@ const PositionCRM: NextPageWithLayout = () => {
     setCandidatesFromTalentList(candidates);
   };
 
+  const handleEditTalentListButton = () => {
+    setEditTalentListMode(true);
+    setNewTalentListName(talentListSelected?.name!);
+    setCandidatesFromTalentList(candidates);
+    setNewTalentListCandidatesIds(
+      talentListSelected?.talent!.map((t) => t?.user?._id!)!
+    );
+  };
+
   const handleCopyLink = () => {
     // const url = window.location.href;
     const url = window.location.origin + "/interview/" + positionID;
@@ -387,7 +401,7 @@ const PositionCRM: NextPageWithLayout = () => {
         newCandidatesIds.push(candidate.user?._id!);
       }
 
-      return newCandidatesIds;
+      return newCandidatesIds.filter((id) => id !== undefined || id !== null);
     });
   };
 
@@ -398,30 +412,43 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleSaveNewTalentListButton = async () => {
-    const result = await createTalentListPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          name: newTalentListName,
+    if (!editTalentListMode) {
+      const result = await createTalentListPosition({
+        variables: {
+          fields: {
+            positionID: positionID,
+            name: newTalentListName,
+          },
         },
-      },
-    });
+      });
 
-    const lastTalentListIndex =
-      result.data?.createTalentListPosition.talentList.length - 1;
+      const lastTalentListIndex =
+        result.data?.createTalentListPosition.talentList.length - 1;
 
-    const newTalentListID =
-      result.data?.createTalentListPosition.talentList[lastTalentListIndex]._id;
+      const newTalentListID =
+        result.data?.createTalentListPosition.talentList[lastTalentListIndex]
+          ._id;
 
-    await updateUsersTalentListPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          talentListID: newTalentListID,
-          usersTalentList: newTalentListCandidatesIds,
+      await updateUsersTalentListPosition({
+        variables: {
+          fields: {
+            positionID: positionID,
+            talentListID: newTalentListID,
+            usersTalentList: newTalentListCandidatesIds,
+          },
         },
-      },
-    });
+      });
+    } else {
+      await updateUsersTalentListPosition({
+        variables: {
+          fields: {
+            positionID: positionID,
+            talentListID: talentListSelected?._id!,
+            usersTalentList: newTalentListCandidatesIds,
+          },
+        },
+      });
+    }
   };
 
   return (
@@ -507,7 +534,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       Save
                     </Button>
                   )
-                ) : (
+                ) : !editTalentListMode ? (
                   <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
                     <MdIosShare
                       size={36}
@@ -517,6 +544,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       className="mb-4 ml-auto pt-2"
                       variant="secondary"
                       size="md"
+                      onClick={handleEditTalentListButton}
                     >
                       Edit
                     </Button>
@@ -528,6 +556,18 @@ const PositionCRM: NextPageWithLayout = () => {
                       Create new
                     </Button>
                   </div>
+                ) : (
+                  <Button
+                    className="mb-4 ml-auto"
+                    variant="secondary"
+                    onClick={handleSaveNewTalentListButton}
+                    disabled={
+                      newTalentListName === "" ||
+                      newTalentListCandidatesIds.length === 0
+                    }
+                  >
+                    Save
+                  </Button>
                 )}
               </>
             </div>
@@ -536,7 +576,14 @@ const PositionCRM: NextPageWithLayout = () => {
             candidatesList={candidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
-            selectable={newTalentListCreationMode}
+            listMode={
+              newTalentListCreationMode
+                ? ListModeEnum.creation
+                : editTalentListMode
+                ? ListModeEnum.edit
+                : ListModeEnum.list
+            }
+            selectedIds={newTalentListCandidatesIds}
             handleChkSelection={handleCandidateCheckboxSelection}
           />
           {trainModalOpen ? (
