@@ -19,12 +19,12 @@ const HomePage: NextPageWithLayout = () => {
               </li>
               <li>
                 <Link href={"/dashboard/644e052ca7177f51e7c27b77"}>
-                  Company Dashboard
+                  Position Dashboard
                 </Link>
               </li>
               <li>
                 <Link href={"/train-ai/644e052ca7177f51e7c27b77"}>
-                  Company Train AI
+                  Position Train AI
                 </Link>
               </li>
             </ul>
@@ -40,12 +40,12 @@ const HomePage: NextPageWithLayout = () => {
             </li>
             <li>
               <Link href={"/dashboard/644e052ca7177f51e7c27b77"}>
-                Company Dashboard
+                Position Dashboard
               </Link>
             </li>
             <li>
               <Link href={"/train-ai/644e052ca7177f51e7c27b77"}>
-                Company Train AI
+                Position Train AI
               </Link>
             </li>
           </ul> */}

@@ -24,22 +24,22 @@ import type { NextPageWithLayout } from "../_app";
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
-  const { companyID } = router.query;
+  const { positionID } = router.query;
   const [interviewEnded, setInterviewEnded] = useState(false);
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
 
   console.log("cvEnded = ", cvEnded);
   const {
-    data: findCompanyData,
-    // error: findCompanyError,
-  } = useQuery(FIND_COMPANY, {
+    data: findPositionData,
+    // error: findPositionError,
+  } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
-        _id: companyID,
+        _id: positionID,
       },
     },
-    skip: !companyID,
+    skip: !positionID,
   });
 
   const handleCvEnd = () => {
@@ -100,13 +100,16 @@ const HomePage: NextPageWithLayout = () => {
                     <br />
                     The AI Magic 🪄 takes exactly 30 seconds
                   </p>
-                  <CVUploadGPT handleEnd={handleCvEnd} companyID={companyID} />
+                  <CVUploadGPT
+                    handleEnd={handleCvEnd}
+                    positionID={positionID}
+                  />
                 </section>
               </WizardStep>
               <WizardStep label={"welcome"}>
                 <section className="flex h-full flex-col items-center justify-center">
                   <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
-                  {findCompanyData?.findCompany?.name ? (
+                  {findPositionData?.findPosition?.name ? (
                     <>
                       <p>
                         I am the AI that&lsquo;s here to help you unlock your
@@ -115,7 +118,7 @@ const HomePage: NextPageWithLayout = () => {
                       <br />
                       <p>
                         🎉 You&lsquo;ve been invited to take the next steps with{" "}
-                        <b>{findCompanyData.findCompany.name}.</b> 🎉
+                        <b>{findPositionData.findPosition.name}.</b> 🎉
                       </p>
                       <br />
                       <p>
@@ -142,9 +145,9 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
               {/* <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
-                {findCompanyData?.findCompany?.name && (
+                {findPositionData?.findPosition?.name && (
                   <h3 className="mb-8 text-lg font-medium">
-                    Your first interview with {findCompanyData.findCompany.name}{" "}
+                    Your first interview with {findPositionData.findPosition.name}{" "}
                     will be a discussion with Eden AI
                   </h3>
                 )}
@@ -213,9 +216,9 @@ export async function getServerSideProps(ctx: {
 
 // ------- Interview Chat --------
 
-const FIND_COMPANY = gql`
-  query ($fields: findCompanyInput) {
-    findCompany(fields: $fields) {
+const FIND_POSITION = gql`
+  query ($fields: findPositionInput) {
+    findPosition(fields: $fields) {
       _id
       name
       questionsToAsk {
@@ -229,9 +232,9 @@ const FIND_COMPANY = gql`
   }
 `;
 
-const ADD_CANDIDATE_TO_COMPANY = gql`
-  mutation ($fields: addCandidatesCompanyInput) {
-    addCandidatesCompany(fields: $fields) {
+const ADD_CANDIDATE_TO_POSITION = gql`
+  mutation ($fields: addCandidatesPositionInput) {
+    addCandidatesPosition(fields: $fields) {
       _id
       name
       candidates {
@@ -277,26 +280,26 @@ const InterviewEdenAIContainer = ({
   const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
     useState<MessageObject>({ message: "", sentMessage: false, user: "" });
 
-  // --------- Company and User ------------
+  // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
 
   console.log("currentUser = ", currentUser?._id);
 
   const router = useRouter();
-  const { companyID } = router.query;
-  // --------- Company and User ------------
+  const { positionID } = router.query;
+  // --------- Position and User ------------
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const { data: findCompanyData } = useQuery(FIND_COMPANY, {
+  const { data: findPositionData } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
-        _id: companyID,
+        _id: positionID,
       },
     },
-    skip: companyID == "" || companyID == null,
+    skip: positionID == "" || positionID == null,
     onCompleted: (data) => {
-      let questionsChange = data.findCompany.questionsToAsk.map(
+      let questionsChange = data.findPosition.questionsToAsk.map(
         (question: any) => {
           return {
             _id: question?.question?._id,
@@ -314,7 +317,7 @@ const InterviewEdenAIContainer = ({
     },
   });
 
-  const [addCandidateToCompany] = useMutation(ADD_CANDIDATE_TO_COMPANY, {
+  const [addCandidateToPosition] = useMutation(ADD_CANDIDATE_TO_POSITION, {
     onCompleted: (data) => {
       console.log("data = ", data);
       setAddCandidateFlag(true);
@@ -325,19 +328,19 @@ const InterviewEdenAIContainer = ({
 
   const [conversationID, setConversationID] = useState<String>("");
 
-  // SOS 🆘 -> the candidate is not been added to the company // return back before publish code
+  // SOS 🆘 -> the candidate is not been added to the position // return back before publish code
   useEffect(() => {
     if (
       addCandidateFlag == false &&
       currentUser?._id != undefined &&
-      companyID != undefined &&
+      positionID != undefined &&
       conversationID != ""
     ) {
       console.log("change conversationID= ", conversationID);
-      addCandidateToCompany({
+      addCandidateToPosition({
         variables: {
           fields: {
-            companyID: companyID,
+            positionID: positionID,
             candidates: [
               {
                 userID: currentUser?._id,
@@ -348,9 +351,9 @@ const InterviewEdenAIContainer = ({
         },
       });
     }
-  }, [companyID, currentUser?._id, conversationID]);
+  }, [positionID, currentUser?._id, conversationID]);
 
-  // console.log("companyID = ", companyID);
+  // console.log("positionID = ", positionID);
 
   const [experienceTypeID] = useState<string>("");
 
@@ -368,9 +371,9 @@ const InterviewEdenAIContainer = ({
             color="accentColor"
             progress={
               (100 *
-                (findCompanyData?.findCompany?.questionsToAsk.length -
+                (findPositionData?.findPosition?.questionsToAsk.length -
                   questions.length)) /
-              findCompanyData?.findCompany?.questionsToAsk.length
+              findPositionData?.findPosition?.questionsToAsk.length
             }
           />
         </div>
@@ -393,7 +396,7 @@ const InterviewEdenAIContainer = ({
             questions={questions}
             setQuestions={setQuestions}
             userID={currentUser?._id}
-            companyID={companyID}
+            positionID={positionID}
             conversationID={conversationID}
             setConversationID={setConversationID}
             handleEnd={() => {
@@ -407,9 +410,9 @@ const InterviewEdenAIContainer = ({
         <span>
           progress{" "}
           {(100 *
-            (findCompanyData?.findCompany?.questionsToAsk.length -
+            (findPositionData?.findPosition?.questionsToAsk.length -
               questions.length)) /
-            findCompanyData?.findCompany?.questionsToAsk.length}
+            findPositionData?.findPosition?.questionsToAsk.length}
         </span>
       </div> */}
     </div>

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const FIND_COMPANY_TALENT_LISTS = gql`
-  query FindCompanyTalentLists($fields: findCompanyInput) {
-    findCompany(fields: $fields) {
+export const FIND_POSITION_TALENT_LISTS = gql`
+  query FindPositionTalentLists($fields: findPositionInput) {
+    findPosition(fields: $fields) {
       _id
       name
       talentList {

@@ -1,12 +1,12 @@
 import { render } from "@testing-library/react";
 
 import { UserAttributeChart } from ".";
-import { mockCompanyData } from "./mockData";
+import { mockPositionData } from "./mockData";
 
 describe("UserAttributeChart", () => {
   it("renders without throwing an error", () => {
     const { container } = render(
-      <UserAttributeChart companies={mockCompanyData} />
+      <UserAttributeChart positions={mockPositionData} />
     );
 
     expect(container).toBeInTheDocument();

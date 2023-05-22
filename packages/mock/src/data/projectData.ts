@@ -2,7 +2,7 @@ export const projectData = [
   {
     title: "Reactive Technologies",
     description:
-      "Reactive Technologies is a cutting-edge technology company that specializes in developing innovative solutions to modern problems. Our team of experienced engineers and developers are dedicated to creating tech solutions that are tailored to the specific needs of our clients. We offer a wide range of products and services, from software development to hardware design, that can help businesses and individuals achieve their goals.",
+      "Reactive Technologies is a cutting-edge technology position that specializes in developing innovative solutions to modern problems. Our team of experienced engineers and developers are dedicated to creating tech solutions that are tailored to the specific needs of our clients. We offer a wide range of products and services, from software development to hardware design, that can help businesses and individuals achieve their goals.",
     descriptionOneLine: "Innovating solutions to modern problems.",
   },
   {

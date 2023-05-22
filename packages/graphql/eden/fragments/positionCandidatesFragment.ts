@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
-export const CompanyCandidatesFragment = gql`
-  fragment CompanyCandidatesFragment on Project {
+export const PositionCandidatesFragment = gql`
+  fragment PositionCandidatesFragment on Project {
     candidates {
       overallScore
       user {
@@ -38,7 +38,7 @@ export const CompanyCandidatesFragment = gql`
         answerContent
         reason
         score
-        bestAnswerCompany
+        bestAnswerPosition
       }
     }
   }

@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 
-// import { CompanyCandidatesFragment } from "../fragments/companyCandidatesFragment";
+// import { PositionCandidatesFragment } from "../fragments/positionCandidatesFragment";
 
-export const FIND_COMPANY_FULL = gql`
-  query ($fields: findCompanyInput!) {
-    findCompany(fields: $fields) {
+export const FIND_POSITION_FULL = gql`
+  query ($fields: findPositionInput!) {
+    findPosition(fields: $fields) {
       _id
       name
       candidates {
@@ -45,7 +45,7 @@ export const FIND_COMPANY_FULL = gql`
           answerContentSmall
           reason
           score
-          bestAnswerCompany
+          bestAnswerPosition
           subConversationAnswer {
             role
             content
@@ -91,4 +91,4 @@ export const FIND_COMPANY_FULL = gql`
     }
   }
 `;
-// ${CompanyCandidatesFragment}
+// ${PositionCandidatesFragment}

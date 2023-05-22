@@ -4,7 +4,7 @@ type summaryQuestionType = {
   questionID: number;
   questionContent: string;
   answerContent: string;
-  bestAnswerCompany: string;
+  bestAnswerPosition: string;
   reason: string;
   score: number;
 };

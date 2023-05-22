@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const UPDATE_TALENT_LIST_WITH_TALENT = gql`
-  mutation UpdateUsersTalentListCompany(
-    $fields: updateUsersTalentListCompanyInput
+  mutation UpdateUsersTalentListPosition(
+    $fields: updateUsersTalentListPositionInput
   ) {
-    updateUsersTalentListCompany(fields: $fields) {
+    updateUsersTalentListPosition(fields: $fields) {
       _id
       name
       talentList {
