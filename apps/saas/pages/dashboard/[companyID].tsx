@@ -193,6 +193,10 @@ const CompanyCRM: NextPageWithLayout = () => {
             ...candidatesFromTalentList[i],
             skillMatch: memberScoreObj[userID],
           });
+        } else {
+          candidatesNew.push({
+            ...candidatesFromTalentList[i],
+          });
         }
       }
       setCandidatesFromTalentList(candidatesNew);
