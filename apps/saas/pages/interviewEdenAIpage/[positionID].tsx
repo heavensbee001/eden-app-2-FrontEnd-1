@@ -8,9 +8,9 @@ import {
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
 
-const FIND_COMPANY = gql`
-  query ($fields: findCompanyInput) {
-    findCompany(fields: $fields) {
+const FIND_POSITION = gql`
+  query ($fields: findPositionInput) {
+    findPosition(fields: $fields) {
       _id
       name
       questionsToAsk {
@@ -24,9 +24,9 @@ const FIND_COMPANY = gql`
   }
 `;
 
-// const ADD_CANDIDATE_TO_COMPANY = gql`
-//   query ($fields: addCandidatesCompanyInput) {
-//     addCandidatesCompany(fields: $fields) {
+// const ADD_CANDIDATE_TO_POSITION = gql`
+//   query ($fields: addCandidatesPositionInput) {
+//     addCandidatesPosition(fields: $fields) {
 //       _id
 //       name
 //       candidates {
@@ -65,27 +65,27 @@ const InterviewEdenAIpage: React.FC = () => {
   const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
     useState<MessageObject>({ message: "", sentMessage: false, user: "" });
 
-  // --------- Company and User ------------
+  // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
 
   console.log("currentUser = ", currentUser?._id);
 
   const router = useRouter();
-  const { companyID } = router.query;
-  // --------- Company and User ------------
+  const { positionID } = router.query;
+  // --------- Position and User ------------
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const {} = useQuery(FIND_COMPANY, {
+  const {} = useQuery(FIND_POSITION, {
     variables: {
       fields: {
-        _id: companyID,
+        _id: positionID,
       },
     },
-    skip: companyID == "" || companyID == null,
+    skip: positionID == "" || positionID == null,
     onCompleted: (data) => {
       setQuestions(
-        data.findCompany.questionsToAsk.map((question: any) => {
+        data.findPosition.questionsToAsk.map((question: any) => {
           return {
             _id: question.question._id,
             content: question.question.content,
@@ -96,10 +96,10 @@ const InterviewEdenAIpage: React.FC = () => {
     },
   });
 
-  // const {} = useMutation(ADD_CANDIDATE_TO_COMPANY, {
+  // const {} = useMutation(ADD_CANDIDATE_TO_POSITION, {
   //   variables: {
   //     fields: {
-  //       _id: companyID,
+  //       _id: positionID,
   //       candidates: [
   //         {
   //           userID: "908392557258604544",
@@ -107,13 +107,13 @@ const InterviewEdenAIpage: React.FC = () => {
   //       ],
   //     },
   //   },
-  //   skip: companyID == "" || companyID == null || currentUser?._id != "",
+  //   skip: positionID == "" || positionID == null || currentUser?._id != "",
   //   onCompleted: (data) => {
   //     console.log("data = ", data);
   //   },
   // });
 
-  console.log("companyID = ", companyID);
+  console.log("positionID = ", positionID);
 
   const [experienceTypeID] = useState<string>("");
 

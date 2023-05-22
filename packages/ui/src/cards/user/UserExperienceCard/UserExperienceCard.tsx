@@ -163,7 +163,7 @@ const ExperienceForm = ({
           <div className="w-48">
             <TextField
               defaultValue={role[1]}
-              placeholder="Company/project/DAO"
+              placeholder="Position/project/DAO"
               onChange={(e) => setRole([role[0], e.target.value])}
               className="h-8 !rounded-full"
             />

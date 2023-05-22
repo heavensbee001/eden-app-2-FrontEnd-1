@@ -3,10 +3,10 @@ export interface CandidatesResponseData {
 }
 
 export interface Data {
-  findCompany: FindCompany;
+  findPosition: FindPosition;
 }
 
-export interface FindCompany {
+export interface FindPosition {
   _id: string;
   candidates: Candidate[];
 }
@@ -34,7 +34,7 @@ export interface NodeData {
 }
 export const candidatesListExample: CandidatesResponseData = {
   data: {
-    findCompany: {
+    findPosition: {
       _id: "644e052ca7177f51e7c27b77",
       candidates: [
         {
@@ -185,7 +185,7 @@ function random(mn: number, mx: number) {
 }
 
 export const candidatesListFormatted =
-  candidatesListExample.data.findCompany.candidates.map((candidate) => {
+  candidatesListExample.data.findPosition.candidates.map((candidate) => {
     return {
       _id: Number(candidate.user?._id!),
       avatar: candidate.user?.discordAvatar,

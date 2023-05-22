@@ -4,9 +4,9 @@ import React, { useState } from "react";
 
 import TrainQuestionsEdenAI from "./components/TrainQuestionsEdenAI";
 
-const FIND_COMPANY = gql`
-  query ($fields: findCompanyInput) {
-    findCompany(fields: $fields) {
+const FIND_POSITION = gql`
+  query ($fields: findPositionInput) {
+    findPosition(fields: $fields) {
       _id
       name
       candidates {
@@ -41,7 +41,7 @@ type summaryQuestionType = {
   questionID: number;
   questionContent: string;
   answerContent: string;
-  bestAnswerCompany: string;
+  bestAnswerPosition: string;
   reason: string;
   score: number;
 };
@@ -70,7 +70,7 @@ type Question = {
 //   // Add more users as needed
 // ];
 
-const CompanyCRM: React.FC = () => {
+const PositionCRM: React.FC = () => {
   // interface MessageObject {
   //   message: string;
   //   sentMessage: boolean;
@@ -78,25 +78,25 @@ const CompanyCRM: React.FC = () => {
   // }
 
   const router = useRouter();
-  const { companyID } = router.query;
+  const { positionID } = router.query;
 
-  // const [companyID] = useState<String>("644a5949e1ba07a9e9e3842c");
+  // const [positionID] = useState<String>("644a5949e1ba07a9e9e3842c");
 
   const [users, setUsers] = useState<User[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
 
-  const { data: dataCompany } = useQuery(FIND_COMPANY, {
+  const { data: dataPosition } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
-        _id: companyID,
+        _id: positionID,
       },
     },
-    skip: companyID == "" || companyID == null,
+    skip: positionID == "" || positionID == null,
     onCompleted: (data) => {
       // console.log("createRoom completed", data);
       setUsers(
-        data.findCompany.candidates.map((candidate: any) => {
+        data.findPosition.candidates.map((candidate: any) => {
           return {
             _id: candidate.user._id,
             name: candidate.user.discordName,
@@ -108,7 +108,7 @@ const CompanyCRM: React.FC = () => {
 
       const questionPrep: Question[] = [];
 
-      data.findCompany.questionsToAsk.map((question: any) => {
+      data.findPosition.questionsToAsk.map((question: any) => {
         console.log("question = ", question);
         if (question.question == null) {
         } else {
@@ -129,9 +129,9 @@ const CompanyCRM: React.FC = () => {
     },
   });
 
-  console.log("dataCompany = ", dataCompany);
+  console.log("dataPosition = ", dataPosition);
 
-  console.log("companyID = ", companyID);
+  console.log("positionID = ", positionID);
 
   console.log("questions = ", questions);
 
@@ -152,7 +152,7 @@ const CompanyCRM: React.FC = () => {
 
   const handleCopyLink = () => {
     // const url = window.location.href;
-    const url = "http://localhost:3000/test/interviewEdenAIpage/" + companyID;
+    const url = "http://localhost:3000/test/interviewEdenAIpage/" + positionID;
 
     navigator.clipboard.writeText(url);
     setNotificationOpen(true);
@@ -265,7 +265,7 @@ const CompanyCRM: React.FC = () => {
             <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-lg">
               <TrainQuestionsEdenAI
                 questions={questions}
-                companyID={companyID}
+                positionID={positionID}
                 setQuestions={setQuestions}
                 setTrainModalOpen={setTrainModalOpen}
               />
@@ -282,4 +282,4 @@ const CompanyCRM: React.FC = () => {
   );
 };
 
-export default CompanyCRM;
+export default PositionCRM;

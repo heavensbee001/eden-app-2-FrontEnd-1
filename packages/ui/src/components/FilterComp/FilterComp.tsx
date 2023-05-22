@@ -33,7 +33,7 @@ export const FilterComp = ({ data, onChangeRange }: IFilterCompProps) => {
     <div>
       <div className="text-left">
         <button
-          className="mr-2 mb-2 rounded-full bg-blue-700 px-5 py-2.5 text-base font-semibold text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="mb-2 mr-2 rounded-full bg-blue-700 px-5 py-2.5 text-base font-semibold text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="button"
           onClick={() => {
             setShowDrawer(true);
@@ -55,7 +55,7 @@ export const FilterComp = ({ data, onChangeRange }: IFilterCompProps) => {
           </h5>
           <button
             type="button"
-            className="absolute top-2.5 right-2.5 inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+            className="absolute right-2.5 top-2.5 inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
             onClick={() => {
               setShowDrawer(false);
             }}
@@ -90,9 +90,9 @@ export const FilterComp = ({ data, onChangeRange }: IFilterCompProps) => {
             What is your Priority?
             <div className="h-2 w-64">
               <UserAttributeChart
-                companies={[
+                positions={[
                   {
-                    companyInfo: {
+                    positionInfo: {
                       attributes: range,
                       discordName: "priorities",
                     },
@@ -101,7 +101,7 @@ export const FilterComp = ({ data, onChangeRange }: IFilterCompProps) => {
               />
             </div>
           </div>
-          <div className="mt-64 mb-10 text-base capitalize text-gray-400">
+          <div className="mb-10 mt-64 text-base capitalize text-gray-400">
             Do you want to search in other servers?
             <div className="h-2 w-64">
               <ServerSelector

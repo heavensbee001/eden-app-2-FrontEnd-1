@@ -52,7 +52,7 @@ type summaryQuestionType = {
   questionID: string;
   questionContent: string;
   answerContent: string;
-  bestAnswerCompany: string | null;
+  bestAnswerPosition: string | null;
   reason: string | null;
   score: number | null;
 };

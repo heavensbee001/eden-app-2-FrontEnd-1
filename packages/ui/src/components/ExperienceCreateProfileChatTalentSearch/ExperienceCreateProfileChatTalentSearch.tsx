@@ -32,7 +32,7 @@ const cardsDataInit = [
     time: 2,
     completed: false,
     firstMessage:
-      "What qualities and characteristics do you think would be most important for the candidate to possess in order to fit well with your team and company culture?",
+      "What qualities and characteristics do you think would be most important for the candidate to possess in order to fit well with your team and position culture?",
     experienceTypeID: "CULTURE_FIT",
   },
 ];

@@ -28,9 +28,9 @@ import type { NextPageWithLayout } from "../../_app";
 import MultiSelectPopup from "./components/MultiSelectPopup";
 // import SalaryPopup from "./components/SalaryPopup";
 
-const ADD_NODES_TO_COMPANY = gql`
-  mutation ($fields: addNodesToCompanyInput) {
-    addNodesToCompany(fields: $fields) {
+const ADD_NODES_TO_POSITION = gql`
+  mutation ($fields: addNodesToPositionInput) {
+    addNodesToPosition(fields: $fields) {
       _id
       name
       nodes {
@@ -43,9 +43,9 @@ const ADD_NODES_TO_COMPANY = gql`
   }
 `;
 
-const ADD_CONV_RECRUITER_TO_COMPANY = gql`
-  mutation ($fields: addConvRecruiterToCompanyInput) {
-    addConvRecruiterToCompany(fields: $fields) {
+const ADD_CONV_RECRUITER_TO_POSITION = gql`
+  mutation ($fields: addConvRecruiterToPositionInput) {
+    addConvRecruiterToPosition(fields: $fields) {
       _id
       convRecruiterReadyToDisplay
       convRecruiter {
@@ -108,14 +108,14 @@ const chatEden: NextPageWithLayout = () => {
 
   console.log("nodeObj = ", nodeObj);
 
-  // --------- Company and User ------------
+  // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
-  const { companyID } = router.query;
-  // --------- Company and User ------------
+  const { positionID } = router.query;
+  // --------- Position and User ------------
 
-  // SOS 🆘 -> This is the place that adds notes to the company backend, take it back after debugging
-  const [addNodesToCompany, {}] = useMutation(ADD_NODES_TO_COMPANY, {
+  // SOS 🆘 -> This is the place that adds notes to the position backend, take it back after debugging
+  const [addNodesToPosition, {}] = useMutation(ADD_NODES_TO_POSITION, {
     onCompleted({ data }) {
       console.log("yeaaa added nodes = ", data);
     },
@@ -177,8 +177,8 @@ const chatEden: NextPageWithLayout = () => {
 
   const [conversationID, setConversationID] = useState<String>("");
 
-  const [addConvRecruterToCompany] = useMutation(
-    ADD_CONV_RECRUITER_TO_COMPANY,
+  const [addConvRecruterToPosition] = useMutation(
+    ADD_CONV_RECRUITER_TO_POSITION,
     {
       onCompleted: (data) => {
         console.log("data = ", data);
@@ -190,21 +190,21 @@ const chatEden: NextPageWithLayout = () => {
   useEffect(() => {
     if (
       currentUser?._id != undefined &&
-      companyID != undefined &&
+      positionID != undefined &&
       conversationID != ""
     ) {
       console.log("change conversationID= ", conversationID);
-      addConvRecruterToCompany({
+      addConvRecruterToPosition({
         variables: {
           fields: {
-            companyID: companyID,
+            positionID: positionID,
             userID: currentUser?._id,
             conversationID: conversationID,
           },
         },
       });
     }
-  }, [companyID, currentUser?._id, conversationID]);
+  }, [positionID, currentUser?._id, conversationID]);
 
   //  ------------- change activation nodes when click ----
   const [activateNodeEvent, setActivateNodeEvent] = useState<any>(null);
@@ -218,8 +218,8 @@ const chatEden: NextPageWithLayout = () => {
   }, [activateNodeEvent]);
 
   useEffect(() => {
-    if (companyID && nodeObj) {
-      console.log("change = 232323", companyID);
+    if (positionID && nodeObj) {
+      console.log("change = 232323", positionID);
 
       // object nodeObj to array of IDs
       const nodeIDs = Object.keys(nodeObj);
@@ -229,17 +229,17 @@ const chatEden: NextPageWithLayout = () => {
       console.log("nodeArrAddComp = ", nodeArrAddComp);
 
       if (nodeArrAddComp.length > 0) {
-        addNodesToCompany({
+        addNodesToPosition({
           variables: {
             fields: {
-              companyID: companyID,
+              positionID: positionID,
               nodes: nodeArrAddComp,
             },
           },
         });
       }
     }
-  }, [companyID, nodeObj]);
+  }, [positionID, nodeObj]);
 
   const activateNode = (nodeID: string) => {
     // activate the node that was clicked
@@ -285,13 +285,13 @@ const chatEden: NextPageWithLayout = () => {
   const [questions, setQuestions] = useState<Question[]>([
     {
       _id: "6463897f156bd63721b94027",
-      content: "Can you tell me more about your company and what it does?",
+      content: "Can you tell me more about your position and what it does?",
       bestAnswer: "",
     },
     {
       _id: "646255db66a9435d4ab98c6b",
       content:
-        "What is the company culture like and how would you describe the team dynamic?",
+        "What is the position culture like and how would you describe the team dynamic?",
       bestAnswer: "",
     },
     {

@@ -5,9 +5,9 @@ import { BsPlusCircleFill } from "react-icons/bs";
 
 import { Button } from "../../elements";
 
-const ADD_QUESTIONS_TO_COMPANY = gql`
-  mutation ($fields: addQuestionsToAskCompanyInput) {
-    addQuestionsToAskCompany(fields: $fields) {
+const ADD_QUESTIONS_TO_POSITION = gql`
+  mutation ($fields: addQuestionsToAskPositionInput) {
+    addQuestionsToAskPosition(fields: $fields) {
       _id
       name
       candidates {
@@ -37,7 +37,7 @@ export type Question = {
 
 type Props = {
   questions: Question[];
-  companyID?: string | string[] | undefined;
+  positionID?: string | string[] | undefined;
   // eslint-disable-next-line no-unused-vars
   setQuestions: Dispatch<SetStateAction<any[]>>;
   // eslint-disable-next-line no-unused-vars
@@ -46,15 +46,15 @@ type Props = {
 
 export const TrainQuestionsEdenAI = ({
   questions = [],
-  companyID,
+  positionID,
   setQuestions,
   setTrainModalOpen,
 }: Props) => {
-  const [updateQuestionsCompany] = useMutation(ADD_QUESTIONS_TO_COMPANY, {
+  const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
     onCompleted({ updateNodesToMember }: Mutation) {
       console.log("updateNodesToMember = ", updateNodesToMember);
     },
-    // skip: companyID == "" || companyID == null,
+    // skip: positionID == "" || positionID == null,
   });
 
   console.log("questions = ", questions);
@@ -75,10 +75,10 @@ export const TrainQuestionsEdenAI = ({
   };
 
   const handleSaveChanges = () => {
-    updateQuestionsCompany({
+    updateQuestionsPosition({
       variables: {
         fields: {
-          companyID: companyID,
+          positionID: positionID,
           questionsToAsk: questions.map((question) => {
             if (question._id) {
               return {

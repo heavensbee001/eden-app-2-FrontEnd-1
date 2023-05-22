@@ -15,7 +15,7 @@ const Template: ComponentStory<typeof TrainQuestionsEdenAI> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   questions: [],
-  companyID: "",
+  positionID: "",
   setQuestions: (questions: Question[]) => console.log(questions),
   setTrainModalOpen: (open: boolean) => console.log(open),
 };

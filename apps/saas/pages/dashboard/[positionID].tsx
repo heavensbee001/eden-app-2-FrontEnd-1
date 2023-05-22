@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
-  FIND_COMPANY_FULL,
+  FIND_POSITION_FULL,
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
@@ -48,13 +48,13 @@ type relevantNodeObj = {
   };
 };
 
-const CompanyCRM: NextPageWithLayout = () => {
+const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
-  const { companyID } = router.query;
+  const { positionID } = router.query;
 
   const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
 
-  const [nodeIDsCompany, setNodeIDsCompany] = useState<string[]>([]);
+  const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -91,30 +91,30 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [newTalentListName, setNewTalentListName] = useState<string>("");
 
   const {
-    data: findCompanyData,
-    loading: findCompanyIsLoading,
-    // error: findCompanyError,
-  } = useQuery(FIND_COMPANY_FULL, {
+    data: findPositionData,
+    loading: findPositionIsLoading,
+    // error: findPositionError,
+  } = useQuery(FIND_POSITION_FULL, {
     variables: {
       fields: {
-        _id: companyID,
+        _id: positionID,
       },
     },
-    skip: !Boolean(companyID),
+    skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
       const talentListsNames: TalentListType[] =
-        data.findCompany.talentList.map((list: TalentListType) => list);
+        data.findPosition.talentList.map((list: TalentListType) => list);
 
       setTalentListsAvailables(talentListsNames);
 
-      setCandidates(data.findCompany.candidates);
+      setCandidates(data.findPosition.candidates);
 
-      setCandidatesFromTalentList(data.findCompany.candidates);
+      setCandidatesFromTalentList(data.findPosition.candidates);
 
       const questionPrep: Question[] = [];
 
-      data.findCompany.questionsToAsk.map((question: any) => {
+      data.findPosition.questionsToAsk.map((question: any) => {
         if (question.question == null) {
         } else {
           questionPrep.push({
@@ -125,11 +125,11 @@ const CompanyCRM: NextPageWithLayout = () => {
         }
       });
 
-      const nodesID = data.findCompany?.nodes?.map((node: any) => {
+      const nodesID = data.findPosition?.nodes?.map((node: any) => {
         return node?.nodeData?._id;
       });
 
-      setNodeIDsCompany(nodesID);
+      setNodeIDsPosition(nodesID);
 
       setQuestions(questionPrep);
     },
@@ -145,12 +145,12 @@ const CompanyCRM: NextPageWithLayout = () => {
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
 
-  // console.log("nodeIDsCompany,candidates = ", nodeIDsCompany, candidates);
+  // console.log("nodeIDsPosition,candidates = ", nodeIDsPosition, candidates);
 
   const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
     variables: {
       fields: {
-        nodesID: nodeIDsCompany,
+        nodesID: nodeIDsPosition,
         membersIDallow: candidatesFromTalentList?.map((userData: any) => {
           return userData?.user?._id;
         }),
@@ -166,7 +166,7 @@ const CompanyCRM: NextPageWithLayout = () => {
         ],
       },
     },
-    skip: candidatesFromTalentList.length == 0 || nodeIDsCompany.length == 0,
+    skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
 
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
@@ -307,17 +307,17 @@ const CompanyCRM: NextPageWithLayout = () => {
     },
   });
 
-  const [createTalentListCompany] = useMutation(CREATE_NEW_TALENT_LIST);
+  const [createTalentListPosition] = useMutation(CREATE_NEW_TALENT_LIST);
 
-  const [updateUsersTalentListCompany] = useMutation(
+  const [updateUsersTalentListPosition] = useMutation(
     UPDATE_TALENT_LIST_WITH_TALENT,
     {
       onCompleted: (data) => {
         const lastTalentListIndex =
-          data?.updateUsersTalentListCompany.talentList.length - 1;
+          data?.updateUsersTalentListPosition.talentList.length - 1;
 
         const newList =
-          data?.updateUsersTalentListCompany.talentList[lastTalentListIndex];
+          data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
 
         if (newList) {
           setTalentListSelected({ _id: "000", name: "No list selected" });
@@ -380,7 +380,7 @@ const CompanyCRM: NextPageWithLayout = () => {
 
   const handleCopyLink = () => {
     // const url = window.location.href;
-    const url = window.location.origin + "/interview/" + companyID;
+    const url = window.location.origin + "/interview/" + positionID;
 
     navigator.clipboard.writeText(url);
     setNotificationOpen(true);
@@ -413,36 +413,36 @@ const CompanyCRM: NextPageWithLayout = () => {
 
   const handleSaveNewTalentListButton = async () => {
     if (!editTalentListMode) {
-      const result = await createTalentListCompany({
+      const result = await createTalentListPosition({
         variables: {
           fields: {
-            companyID: companyID,
+            positionID: positionID,
             name: newTalentListName,
           },
         },
       });
 
       const lastTalentListIndex =
-        result.data?.createTalentListCompany.talentList.length - 1;
+        result.data?.createTalentListPosition.talentList.length - 1;
 
       const newTalentListID =
-        result.data?.createTalentListCompany.talentList[lastTalentListIndex]
+        result.data?.createTalentListPosition.talentList[lastTalentListIndex]
           ._id;
 
-      await updateUsersTalentListCompany({
+      await updateUsersTalentListPosition({
         variables: {
           fields: {
-            companyID: companyID,
+            positionID: positionID,
             talentListID: newTalentListID,
             usersTalentList: newTalentListCandidatesIds,
           },
         },
       });
     } else {
-      await updateUsersTalentListCompany({
+      await updateUsersTalentListPosition({
         variables: {
           fields: {
-            companyID: companyID,
+            positionID: positionID,
             talentListID: talentListSelected?._id!,
             usersTalentList: newTalentListCandidatesIds,
           },
@@ -456,9 +456,9 @@ const CompanyCRM: NextPageWithLayout = () => {
       <GridItemSix>
         <div className="mb-4 flex h-10 items-center">
           <h1 className="mr-6 text-2xl font-medium">
-            {findCompanyData && findCompanyData.findCompany.name
-              ? findCompanyData.findCompany.name.charAt(0).toUpperCase() +
-                findCompanyData.findCompany.name.slice(1)
+            {findPositionData && findPositionData.findPosition.name
+              ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
+                findPositionData.findPosition.name.slice(1)
               : ""}{" "}
             Dashboard
           </h1>
@@ -484,7 +484,7 @@ const CompanyCRM: NextPageWithLayout = () => {
           {/* <Button
             variant="secondary"
             onClick={() => {
-              router.push(`/train-ai/${companyID}`);
+              router.push(`/train-ai/${positionID}`);
             }}
             >
             Train AI
@@ -574,7 +574,7 @@ const CompanyCRM: NextPageWithLayout = () => {
           </div>
           <CandidatesTableList
             candidatesList={candidatesFromTalentList}
-            fetchIsLoading={findCompanyIsLoading}
+            fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
             listMode={
               newTalentListCreationMode
@@ -599,7 +599,7 @@ const CompanyCRM: NextPageWithLayout = () => {
                 <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-xl">
                   <TrainQuestionsEdenAI
                     questions={questions}
-                    companyID={companyID}
+                    positionID={positionID}
                     setQuestions={setQuestions}
                     setTrainModalOpen={setTrainModalOpen}
                   />
@@ -629,6 +629,6 @@ const CompanyCRM: NextPageWithLayout = () => {
   );
 };
 
-CompanyCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
+PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
-export default CompanyCRM;
+export default PositionCRM;

@@ -47,7 +47,7 @@ export interface IInterviewEdenAIProps {
   userID?: Maybe<string> | undefined;
   useMemory?: boolean;
   conversationID?: String;
-  companyID?: string | string[] | undefined;
+  positionID?: string | string[] | undefined;
   // eslint-disable-next-line no-unused-vars
   handleChangeNodes?: (nodes: NodeObj) => void;
   // eslint-disable-next-line no-unused-vars
@@ -78,7 +78,7 @@ export const InterviewEdenAI = ({
   questions,
   userID,
   useMemory = true,
-  companyID,
+  positionID,
   handleChangeNodes,
   handleChangeChat,
   // setShowPopupSalary,
@@ -245,7 +245,7 @@ export const InterviewEdenAI = ({
           // }),
         }),
         timesAsked: timesAsked,
-        companyID: companyID,
+        positionID: positionID,
         userID: userID,
         unansweredQuestionsArr: questions?.map((question) => {
           return {

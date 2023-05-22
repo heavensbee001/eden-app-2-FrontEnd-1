@@ -31,7 +31,7 @@ export const SAVE_CV_TO_USER = gql`
 export interface ICVUploadGPTProps {
   timePerWeek?: number;
   seed?: string;
-  companyID?: string | string[] | undefined;
+  positionID?: string | string[] | undefined;
   handleEnd?: () => void;
 }
 
@@ -40,7 +40,7 @@ export const CVUploadGPT = ({
   timePerWeek,
   // eslint-disable-next-line no-unused-vars
   seed,
-  companyID,
+  positionID,
   handleEnd,
 }: ICVUploadGPTProps) => {
   const [file, setFile] = useState<File | null>(null);
@@ -113,7 +113,7 @@ export const CVUploadGPT = ({
                   // cvString: text
                   userID: currentUser?._id,
                   cvContent: text,
-                  companyID: companyID,
+                  positionID: positionID,
                 },
               },
             });
