@@ -1,46 +1,20 @@
 import { gql, useQuery } from "@apollo/client";
 import { Members } from "@eden/package-graphql/generated";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
-const CANDIDATE_NOTES_EDENAI = gql`
-  query ($fields: candidateNotesEdenAIInput!) {
-    candidateNotesEdenAI(fields: $fields) {
-      categoryName
-      reason
-    }
-  }
-`;
+// const CANDIDATE_NOTES_EDENAI = gql`
+//   query ($fields: candidateNotesEdenAIInput!) {
+//     candidateNotesEdenAI(fields: $fields) {
+//       categoryName
+//       reason
+//     }
+//   }
+// `;
 
 interface Props {
   member?: Members;
+  candidate: any;
 }
-
-const data = [
-  {
-    categoryName: "Personal Details",
-    reason: [
-      "- Has 11+ years of experience in Computer Vision, Machine Learning, and Robotics",
-      "- Worked as a Senior Machine Learning Engineer and Deep Learning Researcher at the University of Bristol",
-      "- Specialized in fine-tuning, PyTorch, TensorFlow, and paper reading in Machine Learning",
-    ],
-  },
-  {
-    categoryName: "Work Culture",
-    reason: [
-      "- Has experience in team leadership in both 10clouds and EdenAI",
-      "- Values growth mindset and quick innovation",
-      "- Seeks to create a better environment for other coders to work in",
-    ],
-  },
-  {
-    categoryName: "Interests",
-    reason: [
-      "- Focused on front-end engineering with React, Tailwind, and Node.js for the backend using GraphQL",
-      "- Worked on a challenging project in creating a graph-based visual representation of optical flow",
-      "- Aims to become a successful CTO in the future",
-    ],
-  },
-];
 
 type Category = {
   categoryName: string;
@@ -49,24 +23,33 @@ type Category = {
 
 type meetingNotesType = Category[];
 
-export const MeetingNotes: FC<Props> = ({ member }) => {
+export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
   const [meetingNotesData, setMeetingNotesData] = useState<meetingNotesType>(
     []
   );
 
-  const {} = useQuery(CANDIDATE_NOTES_EDENAI, {
-    variables: {
-      fields: {
-        memberID: member?._id,
-      },
-    },
-    skip: !member?._id,
-    onCompleted: (data) => {
-      console.log("data = ", data);
+  console.log("member = ", member);
 
-      setMeetingNotesData(data.candidateNotesEdenAI);
-    },
-  });
+  // const {} = useQuery(CANDIDATE_NOTES_EDENAI, {
+  //   variables: {
+  //     fields: {
+  //       memberID: member?._id,
+  //     },
+  //   },
+  //   skip: !member?._id,
+  //   onCompleted: (data) => {
+  //     console.log("data = ", data);
+
+  //     setMeetingNotesData(data.candidateNotesEdenAI);
+  //   },
+  // });
+
+  useEffect(() => {
+    // if (dataProject?.findProject) setProject(dataProject?.findProject);
+    console.log("candidate = 2", candidate);
+
+    if (candidate) setMeetingNotesData(candidate.notesInterview);
+  }, [candidate]);
 
   return (
     <>
