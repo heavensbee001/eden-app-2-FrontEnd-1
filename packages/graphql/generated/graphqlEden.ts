@@ -92,6 +92,15 @@ export type Combo = {
   style?: Maybe<StyleNodeOut>;
 };
 
+export type Company = {
+  __typename?: "Company";
+  _id?: Maybe<Scalars["ID"]>;
+  employees?: Maybe<Array<Maybe<EmployeeType>>>;
+  name?: Maybe<Scalars["String"]>;
+  positions?: Maybe<Array<Maybe<Position>>>;
+  url?: Maybe<Scalars["String"]>;
+};
+
 export type Conversation = {
   __typename?: "Conversation";
   _id?: Maybe<Scalars["ID"]>;
@@ -335,7 +344,7 @@ export type Mutation = {
   CVtoSummary?: Maybe<CVtoSummaryOutput>;
   addCandidatesPosition?: Maybe<Position>;
   addConvRecruiterToPosition?: Maybe<Position>;
-  addEmployeesPosition?: Maybe<Position>;
+  addEmployeesCompany?: Maybe<Company>;
   addEndorsement?: Maybe<Endorsement>;
   addFavoriteProject?: Maybe<Members>;
   addMessage?: Maybe<Ai>;
@@ -380,6 +389,7 @@ export type Mutation = {
   deleteNodesFromMember?: Maybe<Members>;
   deleteNodesFromMemberInRoom?: Maybe<Members>;
   deleteNodesToProjectRole?: Maybe<Project>;
+  deletePositionCandidate?: Maybe<Position>;
   deleteProject?: Maybe<Project>;
   deleteQuestionsToAskPosition?: Maybe<Position>;
   endorseAttribute?: Maybe<Members>;
@@ -402,6 +412,7 @@ export type Mutation = {
   storeLongTermMemorySummary?: Maybe<StoreLongTermMemorySummaryOutput>;
   updateChatReply?: Maybe<Chats>;
   updateChatResult?: Maybe<Chats>;
+  updateCompany?: Maybe<Company>;
   updateConvSummaries?: Maybe<Array<Maybe<Conversation>>>;
   updateConversation?: Maybe<Conversation>;
   updateGrant?: Maybe<GrantTemplate>;
@@ -420,6 +431,8 @@ export type Mutation = {
   updateProject?: Maybe<Project>;
   updateRoleTemplate?: Maybe<RoleTemplate>;
   updateServer?: Maybe<ServerTemplate>;
+  updateUrl?: Maybe<Position>;
+  updateUrlCompany?: Maybe<Company>;
   updateUsersTalentListPosition?: Maybe<Position>;
   uploadUserDataGPT?: Maybe<Members>;
   useAI_OnMessage?: Maybe<UseAi_OnMessageOutput>;
@@ -441,8 +454,8 @@ export type MutationAddConvRecruiterToPositionArgs = {
   fields?: InputMaybe<AddConvRecruiterToPositionInput>;
 };
 
-export type MutationAddEmployeesPositionArgs = {
-  fields?: InputMaybe<AddEmployeesPositionInput>;
+export type MutationAddEmployeesCompanyArgs = {
+  fields?: InputMaybe<AddEmployeesCompanyInput>;
 };
 
 export type MutationAddEndorsementArgs = {
@@ -621,6 +634,10 @@ export type MutationDeleteNodesToProjectRoleArgs = {
   fields: DeleteNodesToProjectRoleInput;
 };
 
+export type MutationDeletePositionCandidateArgs = {
+  fields?: InputMaybe<DeletePositionCandidateInput>;
+};
+
 export type MutationDeleteProjectArgs = {
   fields?: InputMaybe<DeleteProjectInput>;
 };
@@ -709,6 +726,10 @@ export type MutationUpdateChatResultArgs = {
   fields?: InputMaybe<UpdateChatResultInput>;
 };
 
+export type MutationUpdateCompanyArgs = {
+  fields?: InputMaybe<UpdateCompanyInput>;
+};
+
 export type MutationUpdateConvSummariesArgs = {
   fields?: InputMaybe<UpdateConvSummariesInput>;
 };
@@ -779,6 +800,14 @@ export type MutationUpdateRoleTemplateArgs = {
 
 export type MutationUpdateServerArgs = {
   fields?: InputMaybe<UpdateServerInput>;
+};
+
+export type MutationUpdateUrlArgs = {
+  fields?: InputMaybe<UpdateUrlInput>;
+};
+
+export type MutationUpdateUrlCompanyArgs = {
+  fields?: InputMaybe<UpdateUrlInput>;
 };
 
 export type MutationUpdateUsersTalentListPositionArgs = {
@@ -871,13 +900,14 @@ export type Position = {
   _id?: Maybe<Scalars["ID"]>;
   candidates?: Maybe<Array<Maybe<CandidateType>>>;
   candidatesReadyToDisplay?: Maybe<Scalars["Boolean"]>;
+  company?: Maybe<Company>;
   convRecruiter?: Maybe<Array<Maybe<ConvRecruiterType>>>;
   convRecruiterReadyToDisplay?: Maybe<Scalars["Boolean"]>;
-  employees?: Maybe<Array<Maybe<EmployeeType>>>;
   name?: Maybe<Scalars["String"]>;
   nodes?: Maybe<Array<Maybe<NodeDataType>>>;
   questionsToAsk?: Maybe<Array<Maybe<QuestionType>>>;
   talentList?: Maybe<Array<Maybe<TalentListType>>>;
+  url?: Maybe<Scalars["String"]>;
 };
 
 export type Project = {
@@ -933,7 +963,6 @@ export type Query = {
   candidateNotesEdenAI?: Maybe<Array<Maybe<CandidateNotesEdenAiOutput>>>;
   conversationToSummaryGPT?: Maybe<ConversationToSummaryGptOutput>;
   createProfileExperienceWithChatCVMemory?: Maybe<CreateProfileExperienceWithChatCvMemoryOutput>;
-  deletePositionCandidate?: Maybe<CandidateType>;
   dynamicSearchGraph?: Maybe<Graph>;
   dynamicSearchToMemberCategoryGroup?: Maybe<Graph>;
   dynamicSearchToMemberGraph?: Maybe<Graph>;
@@ -957,6 +986,8 @@ export type Query = {
     Array<Maybe<FindAllProjectsTeamsAnouncmentsOutput>>
   >;
   findChat?: Maybe<Chats>;
+  findCompanies?: Maybe<Array<Maybe<Company>>>;
+  findCompany?: Maybe<Company>;
   findConversation?: Maybe<Conversation>;
   findConversations?: Maybe<Array<Maybe<Conversation>>>;
   findEndorsementLink?: Maybe<Array<Maybe<EndorsementLink>>>;
@@ -1064,10 +1095,6 @@ export type QueryCreateProfileExperienceWithChatCvMemoryArgs = {
   fields?: InputMaybe<CreateProfileExperienceWithChatCvMemoryInput>;
 };
 
-export type QueryDeletePositionCandidateArgs = {
-  fields?: InputMaybe<DeletePositionCandidateInput>;
-};
-
 export type QueryDynamicSearchGraphArgs = {
   fields?: InputMaybe<DynamicSearchGraphInput>;
 };
@@ -1150,6 +1177,14 @@ export type QueryFindAllProjectsTeamsAnouncmentsArgs = {
 
 export type QueryFindChatArgs = {
   fields?: InputMaybe<FindChatInput>;
+};
+
+export type QueryFindCompaniesArgs = {
+  fields?: InputMaybe<FindCompaniesInput>;
+};
+
+export type QueryFindCompanyArgs = {
+  fields?: InputMaybe<FindCompanyInput>;
 };
 
 export type QueryFindConversationArgs = {
@@ -1718,9 +1753,9 @@ export type AddConvRecruiterToPositionInput = {
   userID?: InputMaybe<Scalars["ID"]>;
 };
 
-export type AddEmployeesPositionInput = {
+export type AddEmployeesCompanyInput = {
+  companyID?: InputMaybe<Scalars["ID"]>;
   employees?: InputMaybe<Array<InputMaybe<EmployeeTypeInput>>>;
-  positionID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type AddEndorsementInput = {
@@ -2677,6 +2712,14 @@ export type FindChatInput = {
   threadID?: InputMaybe<Scalars["ID"]>;
 };
 
+export type FindCompaniesInput = {
+  _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+};
+
+export type FindCompanyInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+};
+
 export type FindConversationInput = {
   _id?: InputMaybe<Scalars["ID"]>;
 };
@@ -2807,11 +2850,11 @@ export type FindOneMemberToMembersGraphInput = {
 };
 
 export type FindPositionInput = {
-  _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  _id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type FindPositionsInput = {
-  _id?: InputMaybe<Scalars["ID"]>;
+  _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
 export type FindProjectGraphInput = {
@@ -3832,6 +3875,11 @@ export type UpdateChatResultInput = {
   threadID?: InputMaybe<Scalars["ID"]>;
 };
 
+export type UpdateCompanyInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+  name?: InputMaybe<Scalars["String"]>;
+};
+
 export type UpdateConvSummariesInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   convKey?: InputMaybe<Scalars["String"]>;
@@ -3953,6 +4001,7 @@ export type UpdatePositionConvRecruiterInput = {
 
 export type UpdatePositionInput = {
   _id?: InputMaybe<Scalars["ID"]>;
+  companyID?: InputMaybe<Scalars["ID"]>;
   name?: InputMaybe<Scalars["String"]>;
 };
 
@@ -4007,6 +4056,12 @@ export type UpdateSkillSubCategoryInput = {
   id_lightcast?: InputMaybe<Scalars["String"]>;
   name?: InputMaybe<Scalars["String"]>;
   skills?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+};
+
+export type UpdateUrlInput = {
+  companyID?: InputMaybe<Scalars["ID"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+  url?: InputMaybe<Scalars["String"]>;
 };
 
 export type UpdateUsersTalentListPositionInput = {
