@@ -75,7 +75,9 @@ const LinkedInScraper = () => {
         >
           Submit
         </Button>
-        {linkedInText && <div>{linkedInText}</div>}
+        {linkedInText && (
+          <div className="whitespace-pre-wrap">{linkedInText}</div>
+        )}
         {error && <div className="text-red-500">{error}</div>}
       </form>
     </>

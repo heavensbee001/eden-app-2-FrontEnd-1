@@ -1,22 +1,15 @@
-/* API Call  */
-// import { gql, useMutation } from "@apollo/client";
-/* API Call  */
-// import { UserContext } from "@eden/package-context";
+import { gql, useMutation } from "@apollo/client";
+import { UserContext } from "@eden/package-context";
 import { Button, TextArea } from "@eden/package-ui";
-/* API Call, import useContext */
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 
-/* API Call  */
-
-// const { currentUser } = useContext(UserContext);
-
-// export const WEBPAGE_TO_MEMORY = gql`
-//   mutation ($fields: WebsiteToMemoryCompanyInput!) {
-//     WebsiteToMemoryCompany(fields: $fields) {
-//       result
-//     }
-//   }
-// `;
+export const WEBPAGE_TO_MEMORY = gql`
+  mutation ($fields: websiteToMemoryCompanyInput!) {
+    websiteToMemoryCompany(fields: $fields) {
+      report
+    }
+  }
+`;
 
 const LinkedInScraper = () => {
   const [webpageLink, setWebpageLink] = useState("");
@@ -25,15 +18,29 @@ const LinkedInScraper = () => {
   const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [report, setReport] = useState<string | null>(null);
 
-  /* API Call  */
+  const { currentUser } = useContext(UserContext);
 
-  // const [WebpageToMemory] = useMutation(WEBPAGE_TO_MEMORY, {
-  //   onCompleted({ WebpageToMemory }) {
-  //     console.log("Memory Recorded");
-  //     console.log(WebpageToMemory);
-  //   },
-  // });
+  const [websiteToMemoryCompany] = useMutation(WEBPAGE_TO_MEMORY, {
+    onCompleted({ websiteToMemoryCompany }) {
+      console.log("Memory Recorded");
+      console.log(websiteToMemoryCompany);
+      console.log("websiteToMemoryCompany.data", websiteToMemoryCompany.data);
+      console.log(
+        "websiteToMemoryCompany.report",
+        websiteToMemoryCompany.report
+      );
+      let jobDescription = websiteToMemoryCompany.report.replace(/<|>/g, "");
+
+      //Change - to •
+      jobDescription = jobDescription.replace(/-\s/g, "• ");
+
+      setReport(jobDescription);
+
+      setScraping(false);
+    },
+  });
 
   const handleWebpageLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
     setWebpageLink(e.target.value);
@@ -77,15 +84,14 @@ const LinkedInScraper = () => {
 
       const { textResponse } = await response.json();
 
-      /* API Call  */
+      websiteToMemoryCompany({
+        variables: {
+          // fields: { message: textResponse, userID: currentUser?._id },
+          fields: { message: textResponse, userID: "361194148063215616" },
+        },
+      });
 
-      // WebpageToMemory({
-      //   variables: {
-      //     fields: { message: textResponse, userID: currentUser?._id },
-      //   },
-      // });
-
-      setWebPageText(textResponse);
+      // setReport(textResponse);
     } catch (error) {
       setError(
         `An error occurred while fetching the LinkedIn profile: ${
@@ -94,8 +100,6 @@ const LinkedInScraper = () => {
         
         Please copy the text from the job post page manually and paste it in the textfield below`
       );
-    } finally {
-      setScraping(false);
     }
   };
 
@@ -103,13 +107,11 @@ const LinkedInScraper = () => {
     e.preventDefault();
     console.log("pastedText", pastedText);
 
-    /* API Call  */
-
-    // WebpageToMemory({
-    //   variables: {
-    //     fields: { message: pastedText, userID: currentUser?._id },
-    //   },
-    // });
+    websiteToMemoryCompany({
+      variables: {
+        fields: { message: pastedText, userID: currentUser?._id },
+      },
+    });
     setPastedText("");
   };
 
@@ -133,7 +135,7 @@ const LinkedInScraper = () => {
         >
           Submit Link
         </Button>
-        {webPageText && <div>{webPageText}</div>}
+        {report && <div className="whitespace-pre-wrap">{report}</div>}
         {error && <div className="text-red-500">{error}</div>}
       </form>
       <form
