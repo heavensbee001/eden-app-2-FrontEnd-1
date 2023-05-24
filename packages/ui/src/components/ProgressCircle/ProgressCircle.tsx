@@ -26,8 +26,6 @@ export const ProgressCircle = ({
   const LIMIT = 100;
 
   function calculateFraction() {
-    console.log(progress);
-
     const rawFraction = (progress ? progress : 1) / LIMIT;
 
     return rawFraction - (1 / LIMIT) * (1 - rawFraction);
