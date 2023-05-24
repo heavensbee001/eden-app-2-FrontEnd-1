@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
+// import { UserContext } from "@eden/package-context";
 import { Button, TextArea } from "@eden/package-ui";
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 export const WEBPAGE_TO_MEMORY = gql`
   mutation ($fields: websiteToMemoryCompanyInput!) {
@@ -20,7 +20,7 @@ const LinkedInScraper = () => {
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<string | null>(null);
 
-  const { currentUser } = useContext(UserContext);
+  // const { currentUser } = useContext(UserContext);
 
   const [websiteToMemoryCompany] = useMutation(WEBPAGE_TO_MEMORY, {
     onCompleted({ websiteToMemoryCompany }) {
@@ -105,11 +105,12 @@ const LinkedInScraper = () => {
 
   const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setScraping(true);
     console.log("pastedText", pastedText);
 
     websiteToMemoryCompany({
       variables: {
-        fields: { message: pastedText, userID: currentUser?._id },
+        fields: { message: pastedText, userID: "361194148063215616" },
       },
     });
     setPastedText("");
