@@ -3,8 +3,10 @@ import "./styles.css";
 
 export interface IProgressCircleProps {
   progress: number;
+  number?: number;
   color?: string;
   size?: number;
+  units?: string;
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -15,16 +17,18 @@ function classNames(...classes: string[]) {
 // eslint-disable-next-line no-unused-vars
 export const ProgressCircle = ({
   progress,
+  number,
   color = "rgb(116 250 109)",
   size = 80,
+  units = "%",
 }: IProgressCircleProps) => {
   const FULL_DASH_ARRAY = 283;
   const LIMIT = 100;
 
   function calculateFraction() {
-    const rawTimeFraction = progress / LIMIT;
+    const rawFraction = (progress ? progress : 1) / LIMIT;
 
-    return rawTimeFraction - (1 / LIMIT) * (1 - rawTimeFraction);
+    return rawFraction - (1 / LIMIT) * (1 - rawFraction);
   }
 
   function circleDasharray() {
@@ -74,7 +78,7 @@ export const ProgressCircle = ({
             `absolute top-0 flex items-center justify-center text-sm`
           )}
         >
-          {progress}%
+          {number || number === 0 ? `${number}${units}` : null}
         </span>
       </div>
     </>
