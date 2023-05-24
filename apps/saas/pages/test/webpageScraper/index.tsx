@@ -1,8 +1,10 @@
-import { Button } from "@eden/package-ui";
+import { Button, TextArea } from "@eden/package-ui";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 const LinkedInScraper = () => {
   const [webpageLink, setWebpageLink] = useState("");
+  const [pastedText, setPastedText] = useState("");
+
   const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +13,11 @@ const LinkedInScraper = () => {
     setWebpageLink(e.target.value);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handlePastedTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setPastedText(e.target.value);
+  };
+
+  const handleLinkSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setScraping(true);
 
@@ -50,24 +56,32 @@ const LinkedInScraper = () => {
       setError(
         `An error occurred while fetching the LinkedIn profile: ${
           (error as Error).message
-        }`
+        }
+        
+        Please copy the text from the job post page manually and paste it in the textfield below`
       );
     } finally {
       setScraping(false);
     }
   };
 
+  const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("pastedText", pastedText);
+    setPastedText("");
+  };
+
   return (
-    <>
+    <div className="flex flex-col items-center space-y-6">
       <form
         className=" flex flex-col items-center  space-y-2"
-        onSubmit={handleSubmit}
+        onSubmit={handleLinkSubmit}
       >
         <label>Extract Text From Page</label>
         <input
           className="w-96 border-2 border-black pl-1"
           onChange={handleWebpageLinkChange}
-          placeholder="https://www.exapmple.com"
+          placeholder="https://www.example.com"
         />
         <Button
           variant="primary"
@@ -75,12 +89,27 @@ const LinkedInScraper = () => {
           type="submit"
           loading={scraping}
         >
-          Submit
+          Submit Link
         </Button>
         {webPageText && <div>{webPageText}</div>}
         {error && <div className="text-red-500">{error}</div>}
       </form>
-    </>
+      <form
+        className="flex w-3/12 flex-col items-center  space-y-2"
+        onSubmit={handleTextSubmit}
+      >
+        <label>Paste the text from the Position Page Here</label>
+
+        <TextArea
+          value={pastedText}
+          rows={15}
+          onChange={handlePastedTextChange}
+        />
+        <Button variant="primary" type="submit">
+          Submit Text
+        </Button>
+      </form>
+    </div>
   );
 };
 
