@@ -23,6 +23,9 @@ const FIND_COMPANY = gql`
         name
         candidates {
           overallScore
+          conversation {
+            date
+          }
         }
       }
     }
@@ -107,7 +110,8 @@ const HomePage: NextPageWithLayout = () => {
                         <h4 className="text-center">{position.name}</h4>
                         <hr />
                         <p className="mb-4 text-center text-xs text-gray-400">
-                          Average time of interview: {0}min
+                          Average time of interview:{" "}
+                          {getAverageMinutes(position)}min
                         </p>
                         <div className="mb-4 flex">
                           <div className="flex w-[30%] flex-col items-center pt-2">
@@ -245,6 +249,27 @@ const getMatchAverage = (position: Position) => {
     candidates!.length === 0 ? 0 : totalScore! / candidates!.length;
 
   return averageScore;
+};
+
+const getAverageMinutes = (position: Position): number => {
+  const totalMinutes = position.candidates?.reduce((acc, curr) => {
+    if (curr?.conversation) {
+      return (
+        acc +
+        Math.round(
+          (curr?.conversation[curr.conversation.length - 1]?.date.getTime() -
+            curr.conversation[0]?.date.getTime()) /
+            1000
+        )
+      );
+    } else {
+      return acc;
+    }
+  }, 0);
+
+  const averageMinutes = totalMinutes! / position.candidates!.length;
+
+  return averageMinutes;
 };
 
 const getTopCandidatesNumber = (position: Position, percentage: number) => {
