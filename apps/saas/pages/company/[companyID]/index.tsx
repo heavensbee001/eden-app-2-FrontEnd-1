@@ -21,6 +21,9 @@ const FIND_COMPANY = gql`
       positions {
         _id
         name
+        candidates {
+          overallScore
+        }
       }
     }
   }
@@ -103,14 +106,41 @@ const HomePage: NextPageWithLayout = () => {
                       >
                         <h4 className="text-center">{position.name}</h4>
                         <hr />
-                        <p className="mb-4 text-center text-sm">
-                          Average time of interview: {12}min
+                        <p className="mb-4 text-center text-xs text-gray-400">
+                          Average time of interview: {0}min
                         </p>
-                        <div className="mb-4">
-                          <div className="flex w-[30%] flex-col items-center">
-                            <ProgressCircle size={60} progress={40} />
+                        <div className="mb-4 flex">
+                          <div className="flex w-[30%] flex-col items-center pt-2">
+                            <ProgressCircle
+                              color="rgb(216,180,254)"
+                              size={60}
+                              progress={100}
+                              number={position.candidates.length}
+                              units=""
+                            />
                             <p className="text-center text-xs text-gray-400">
                               interviewed
+                            </p>
+                          </div>
+                          <div className="flex w-[40%] flex-col items-center">
+                            <ProgressCircle
+                              size={80}
+                              number={getMatchAverage(position)}
+                              progress={getMatchAverage(position)}
+                            />
+                            <p className="text-center text-xs text-gray-400">
+                              average % match
+                            </p>
+                          </div>
+                          <div className="flex w-[30%] flex-col items-center pt-2">
+                            <ProgressCircle
+                              size={60}
+                              number={0}
+                              progress={100}
+                              color="#e3e3e3"
+                            />
+                            <p className="text-center text-xs text-gray-400">
+                              satisfaction
                             </p>
                           </div>
                         </div>
@@ -119,18 +149,24 @@ const HomePage: NextPageWithLayout = () => {
                         </p>
                         <div className="mb-4 grid grid-cols-3 gap-2 pt-1">
                           <div className="rounded-md bg-gray-100 text-center">
-                            <p className="mb-1 text-sm">Over 90%</p>
-                            <p>{14}</p>
+                            <p className="mb-1 text-sm font-bold text-fuchsia-600">
+                              Over 90%
+                            </p>
+                            <p>{getTopCandidatesNumber(position, 90)}</p>
                             <p className="text-xs">candidates</p>
                           </div>
                           <div className="rounded-md bg-gray-100 text-center">
-                            <p className="mb-1 text-sm">Over 70%</p>
-                            <p>{14}</p>
+                            <p className="mb-1 text-sm font-bold text-fuchsia-600">
+                              Over 70%
+                            </p>
+                            <p>{getTopCandidatesNumber(position, 70)}</p>
                             <p className="text-xs">candidates</p>
                           </div>
                           <div className="rounded-md bg-gray-100 text-center">
-                            <p className="mb-1 text-sm">Over 50%</p>
-                            <p>{14}</p>
+                            <p className="mb-1 text-sm font-bold text-fuchsia-600">
+                              Over 50%
+                            </p>
+                            <p>{getTopCandidatesNumber(position, 50)}</p>
                             <p className="text-xs">candidates</p>
                           </div>
                         </div>
@@ -174,6 +210,7 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 export default HomePage;
 
 import { gql, useQuery } from "@apollo/client";
+import { Position } from "@eden/package-graphql/generated";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
@@ -195,4 +232,27 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {},
   };
+};
+
+const getMatchAverage = (position: Position) => {
+  const candidates = position.candidates;
+
+  const totalScore = candidates?.reduce((acc, curr) => {
+    return acc + (curr?.overallScore ? curr?.overallScore : 0);
+  }, 0);
+
+  const averageScore =
+    candidates!.length === 0 ? 0 : totalScore! / candidates!.length;
+
+  return averageScore;
+};
+
+const getTopCandidatesNumber = (position: Position, percentage: number) => {
+  const candidates = position.candidates;
+
+  const topCandidates = candidates?.filter((candidate) => {
+    return candidate?.overallScore! > percentage;
+  });
+
+  return topCandidates!.length;
 };
