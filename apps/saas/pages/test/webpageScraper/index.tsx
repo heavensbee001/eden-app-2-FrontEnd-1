@@ -1,17 +1,56 @@
-import { Button } from "@eden/package-ui";
+import { gql, useMutation } from "@apollo/client";
+// import { UserContext } from "@eden/package-context";
+import { Button, TextArea } from "@eden/package-ui";
 import { ChangeEvent, FormEvent, useState } from "react";
+
+export const WEBPAGE_TO_MEMORY = gql`
+  mutation ($fields: websiteToMemoryCompanyInput!) {
+    websiteToMemoryCompany(fields: $fields) {
+      report
+    }
+  }
+`;
 
 const LinkedInScraper = () => {
   const [webpageLink, setWebpageLink] = useState("");
-  const [webPageText, setWebPageText] = useState("");
+  const [pastedText, setPastedText] = useState("");
+
+  // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [report, setReport] = useState<string | null>(null);
+
+  // const { currentUser } = useContext(UserContext);
+
+  const [websiteToMemoryCompany] = useMutation(WEBPAGE_TO_MEMORY, {
+    onCompleted({ websiteToMemoryCompany }) {
+      console.log("Memory Recorded");
+      console.log(websiteToMemoryCompany);
+      console.log("websiteToMemoryCompany.data", websiteToMemoryCompany.data);
+      console.log(
+        "websiteToMemoryCompany.report",
+        websiteToMemoryCompany.report
+      );
+      let jobDescription = websiteToMemoryCompany.report.replace(/<|>/g, "");
+
+      //Change - to •
+      jobDescription = jobDescription.replace(/-\s/g, "• ");
+
+      setReport(jobDescription);
+
+      setScraping(false);
+    },
+  });
 
   const handleWebpageLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
     setWebpageLink(e.target.value);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handlePastedTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setPastedText(e.target.value);
+  };
+
+  const handleLinkSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setScraping(true);
 
@@ -41,33 +80,53 @@ const LinkedInScraper = () => {
         );
       }
 
-      const { text } = await response.json();
+      console.log("API response:", response);
 
-      console.log("profileText", text);
+      const { textResponse } = await response.json();
 
-      setWebPageText(text);
+      websiteToMemoryCompany({
+        variables: {
+          // fields: { message: textResponse, userID: currentUser?._id },
+          fields: { message: textResponse, userID: "361194148063215616" },
+        },
+      });
+
+      // setReport(textResponse);
     } catch (error) {
       setError(
         `An error occurred while fetching the LinkedIn profile: ${
           (error as Error).message
-        }`
+        }
+        
+        Please copy the text from the job post page manually and paste it in the textfield below`
       );
-    } finally {
-      setScraping(false);
     }
   };
 
+  const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setScraping(true);
+    console.log("pastedText", pastedText);
+
+    websiteToMemoryCompany({
+      variables: {
+        fields: { message: pastedText, userID: "361194148063215616" },
+      },
+    });
+    setPastedText("");
+  };
+
   return (
-    <>
+    <div className="flex flex-col items-center space-y-6">
       <form
         className=" flex flex-col items-center  space-y-2"
-        onSubmit={handleSubmit}
+        onSubmit={handleLinkSubmit}
       >
         <label>Extract Text From Page</label>
         <input
           className="w-96 border-2 border-black pl-1"
           onChange={handleWebpageLinkChange}
-          placeholder="https://www.exapmple.com"
+          placeholder="https://www.example.com"
         />
         <Button
           variant="primary"
@@ -75,12 +134,27 @@ const LinkedInScraper = () => {
           type="submit"
           loading={scraping}
         >
-          Submit
+          Submit Link
         </Button>
-        {webPageText && <div>{webPageText}</div>}
+        {report && <div className="whitespace-pre-wrap">{report}</div>}
         {error && <div className="text-red-500">{error}</div>}
       </form>
-    </>
+      <form
+        className="flex w-3/12 flex-col items-center  space-y-2"
+        onSubmit={handleTextSubmit}
+      >
+        <label>Paste the text from the Position Page Here</label>
+
+        <TextArea
+          value={pastedText}
+          rows={15}
+          onChange={handlePastedTextChange}
+        />
+        <Button variant="primary" type="submit">
+          Submit Text
+        </Button>
+      </form>
+    </div>
   );
 };
 
