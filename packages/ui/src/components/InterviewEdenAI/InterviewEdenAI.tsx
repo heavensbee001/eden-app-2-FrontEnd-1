@@ -4,6 +4,7 @@ import { ChatSimple } from "@eden/package-ui";
 // import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
+// eslint-disable-next-line no-unused-vars
 import { INTERVIEW_EDEN_AI, MESSAGE_MAP_KG_V4 } from "./gqlFunctions";
 
 interface NodeObj {
@@ -35,7 +36,7 @@ export enum AI_INTERVIEW_SERVICES {
   // eslint-disable-next-line no-unused-vars
   INTERVIEW_EDEN_AI = "INTERVIEW_EDEN_AI",
 }
-type ChatMessage = Array<{ user: string; message: string }>;
+type ChatMessage = Array<{ user: string; message: string; date: Date }>;
 
 export interface IInterviewEdenAIProps {
   aiReplyService: AI_INTERVIEW_SERVICES;
@@ -97,8 +98,10 @@ export const InterviewEdenAI = ({
   // const [conversationN, setConversationN] = useState<ChatMessage>([] as ChatMessage); // all chat messages
 
   // const [chatNprepareGPT, setChatNprepareGPT] = useState<string>(""); // formated chat messages for chatGPT
+  // eslint-disable-next-line no-unused-vars
   const [messageUser, setMessageUser] = useState<string>(""); // last message sent from user
 
+  // eslint-disable-next-line no-unused-vars
   const [nodeObj, setNodeObj] = useState<NodeObj>({}); // list of nodes
 
   const [edenAIsentMessage, setEdenAIsentMessage] = useState<boolean>(false); // sets if response is pending (TODO => change logic to query based)
@@ -238,9 +241,9 @@ export const InterviewEdenAI = ({
       fields: {
         conversation: chatN.map((obj) => {
           if (obj.user === "01") {
-            return { role: "assistant", content: obj.message };
+            return { role: "assistant", content: obj.message, date: obj.date };
           } else {
-            return { role: "user", content: obj.message };
+            return { role: "user", content: obj.message, date: obj.date };
           }
           // }),
         }),
@@ -331,6 +334,7 @@ export const InterviewEdenAI = ({
       chatT.push({
         user: "01",
         message: reply,
+        date: dataInterviewEdenAI?.interviewEdenAI.date,
       });
 
       setChatN(chatT);
@@ -360,8 +364,9 @@ export const InterviewEdenAI = ({
     chatT.push({
       user: userN,
       message: messageN,
+      date: new Date(),
     });
-    setChatN(chatT as [{ user: string; message: string }]);
+    setChatN(chatT as [{ user: string; message: string; date: Date }]);
 
     setNumMessageLongTermMem(numMessageLongTermMem + 1);
 
