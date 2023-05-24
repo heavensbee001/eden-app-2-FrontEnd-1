@@ -41,11 +41,11 @@ const LinkedInScraper = () => {
         );
       }
 
-      const { text } = await response.json();
+      console.log("API response:", response);
 
-      console.log("profileText", text);
+      const { textResponse } = await response.json();
 
-      setWebPageText(text);
+      setWebPageText(textResponse);
     } catch (error) {
       setError(
         `An error occurred while fetching the LinkedIn profile: ${
