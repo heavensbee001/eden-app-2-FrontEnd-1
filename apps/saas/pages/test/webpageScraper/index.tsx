@@ -15,7 +15,7 @@ const LinkedInScraper = () => {
   const [webpageLink, setWebpageLink] = useState("");
   const [pastedText, setPastedText] = useState("");
 
-  const [webPageText, setWebPageText] = useState("");
+  // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<string | null>(null);
