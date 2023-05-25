@@ -316,10 +316,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             backgroundMatchData={exampleData}
           /> */}
           {dataBarChart.length > 0 && (
-            <BackgroundMatchChart
-              memberName={member?.discordName ?? ""}
-              backgroundMatchData={dataBarChart}
-            />
+            <div className="h-[300px]">
+              <BackgroundMatchChart
+                memberName={member?.discordName ?? ""}
+                backgroundMatchData={dataBarChart}
+              />
+            </div>
           )}
         </div>
         <div className="col-span-1"></div>
