@@ -308,7 +308,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         </div>
         <div className="col-span-1"></div>
         <div className="col-span-2">
-          <p className="mb-2 text-center">
+          <p className="mb-4 text-center">
             <TextLabel1>Background match</TextLabel1>
           </p>
           {/* <BackgroundMatchChart
@@ -348,9 +348,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 onClick={() => {
                   setSummaryQuestionSelected(item);
                   if (document) {
-                    document
-                      .getElementById("summary-question-chat")
-                      ?.scrollIntoView({ behavior: "smooth" });
+                    setTimeout(() => {
+                      document
+                        .getElementById("summary-question-chat")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }, 200);
                   }
                 }}
               >
