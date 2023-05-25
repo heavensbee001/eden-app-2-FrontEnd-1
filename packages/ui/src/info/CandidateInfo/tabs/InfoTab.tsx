@@ -2,7 +2,7 @@ import { Members } from "@eden/package-graphql/generated";
 import {
   Badge,
   NodeList,
-  SocialMediaComp,
+  // SocialMediaComp,
   TextLabel1,
   UserBackground,
 } from "@eden/package-ui";
