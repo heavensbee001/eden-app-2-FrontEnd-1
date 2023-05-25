@@ -273,7 +273,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   // };
 
   return (
-    <div className="relative pt-4">
+    <div className="relative pb-4 pt-4">
       <div className="mb-8 grid grid-cols-4">
         <div className="col-span-2 mb-4">
           <p className="mb-2 text-center">
@@ -339,8 +339,20 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ? summaryQuestions.map((item, index) => (
               <div
                 key={index}
-                className="z-20 h-full cursor-pointer rounded-3xl border bg-gray-50 shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-white hover:shadow-lime-200"
-                onClick={() => setSummaryQuestionSelected(item)}
+                className={classNames(
+                  "transition-scale z-10 h-full cursor-pointer rounded-3xl border bg-gray-50 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-white hover:shadow-lime-200",
+                  summaryQuestionSelected?.questionID === item.questionID
+                    ? "border-accentColor scale-[1.02] bg-lime-50"
+                    : ""
+                )}
+                onClick={() => {
+                  setSummaryQuestionSelected(item);
+                  if (document) {
+                    document
+                      .getElementById("summary-question-chat")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
               >
                 <PopoverScoreReason question={item}>
                   <div className="flex min-h-[120px] flex-col items-center justify-evenly py-4">
@@ -416,61 +428,62 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           : null}
       </div> */}
 
-      <Card
-        border
-        shadow
-        className="my-4 max-h-fit overflow-scroll bg-white pb-4 "
-      >
-        <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3">
-          <div className="my-4">
-            {summaryQuestionSelected &&
-            summaryQuestionSelected.subConversationAnswer
-              ? summaryQuestionSelected.subConversationAnswer.map(
-                  (conversation: any, index: number) => (
-                    <>
-                      <div className="chat-message p-2" key={index}>
+      {summaryQuestionSelected &&
+      summaryQuestionSelected.subConversationAnswer ? (
+        <Card
+          border
+          shadow
+          className="my-4 max-h-fit overflow-scroll bg-white pb-4 "
+        >
+          <div
+            id="summary-question-chat"
+            className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
+          >
+            <div className="my-4">
+              {summaryQuestionSelected.subConversationAnswer.map(
+                (conversation: any, index: number) => (
+                  <>
+                    <div className="chat-message p-2" key={index}>
+                      <div
+                        className={classNames(
+                          conversation.role == "assistant" ? "" : "justify-end",
+                          "flex items-start"
+                        )}
+                      >
                         <div
                           className={classNames(
                             conversation.role == "assistant"
-                              ? ""
-                              : "justify-end",
-                            "flex items-start"
+                              ? "order-2"
+                              : "order-1",
+                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                           )}
                         >
-                          <div
+                          <span
+                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
                             className={classNames(
                               conversation.role == "assistant"
-                                ? "order-2"
-                                : "order-1",
-                              "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
                             )}
                           >
-                            <span
-                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                              className={classNames(
-                                conversation.role == "assistant"
-                                  ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                  : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
-                              )}
-                            >
-                              {conversation.content}
-                            </span>
-                          </div>
-                          {/* <img
+                            {conversation.content}
+                          </span>
+                        </div>
+                        {/* <img
                           src={Users[chat.user].img}
                           alt="My profile"
                           className="order-1 h-6 w-6 rounded-full"
                         /> */}
-                        </div>
                       </div>
-                    </>
-                  )
+                    </div>
+                  </>
                 )
-              : null}
+              )}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      ) : null}
     </div>
   );
 };
