@@ -68,10 +68,6 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Meeting Notes",
-      Content: () => <MeetingNotes member={dataMember?.findMember} />,
-    },
-    {
       tab: "Match",
       Content: () => (
         <MatchTab
@@ -83,6 +79,10 @@ export const CandidateInfo = ({
     {
       tab: "Graph",
       Content: () => <GraphTab member={dataMember?.findMember} />,
+    },
+    {
+      tab: "Meeting Notes",
+      Content: () => <MeetingNotes member={dataMember?.findMember} />,
     },
     {
       tab: "Eden AI chat",
