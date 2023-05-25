@@ -3715,7 +3715,10 @@ export type SaveCVtoUserInput = {
 
 export type SaveCVtoUserOutput = {
   __typename?: "saveCVtoUserOutput";
+  cvSummary?: Maybe<Scalars["String"]>;
+  mainSkills?: Maybe<Array<Maybe<Scalars["String"]>>>;
   success?: Maybe<Scalars["Boolean"]>;
+  titleRole?: Maybe<Scalars["String"]>;
 };
 
 export type SaveCoreProductFeatureInterationInput = {
@@ -4147,6 +4150,7 @@ export type WebsiteToMemoryCompanyInput = {
 
 export type WebsiteToMemoryCompanyOutput = {
   __typename?: "websiteToMemoryCompanyOutput";
+  report?: Maybe<Scalars["String"]>;
   message?: Maybe<Scalars["String"]>;
   success?: Maybe<Scalars["Boolean"]>;
 };

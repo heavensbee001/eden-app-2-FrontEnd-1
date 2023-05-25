@@ -33,6 +33,7 @@ export interface ICandidateInfoProps {
   percentage: number | null;
   summaryQuestions?: SummaryQuestionType[];
   mostRelevantMemberNode?: relevantNodeObj;
+  candidate?: any;
 }
 
 function classNames(...classes: any[]) {
@@ -44,6 +45,7 @@ export const CandidateInfo = ({
   percentage,
   summaryQuestions,
   mostRelevantMemberNode,
+  candidate,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
 
@@ -57,6 +59,8 @@ export const CandidateInfo = ({
     ssr: false,
   });
 
+  // console.log("candidate 000f0f0 = ", candidate);
+
   const tabs = [
     {
       tab: "Info",
@@ -65,6 +69,12 @@ export const CandidateInfo = ({
           member={dataMember?.findMember}
           mostRelevantMemberNode={mostRelevantMemberNode}
         />
+      ),
+    },
+    {
+      tab: "Notes",
+      Content: () => (
+        <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
       ),
     },
     {
@@ -81,11 +91,7 @@ export const CandidateInfo = ({
       Content: () => <GraphTab member={dataMember?.findMember} />,
     },
     {
-      tab: "Meeting Notes",
-      Content: () => <MeetingNotes member={dataMember?.findMember} />,
-    },
-    {
-      tab: "Eden AI chat",
+      tab: "Interview",
       Content: () => <EdenChatTab memberID={dataMember?.findMember._id} />,
     },
   ];
