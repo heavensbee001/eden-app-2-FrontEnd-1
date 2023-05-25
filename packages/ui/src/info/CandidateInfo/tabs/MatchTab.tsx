@@ -343,7 +343,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 onClick={() => setSummaryQuestionSelected(item)}
               >
                 <PopoverScoreReason question={item}>
-                  <div className="flex min-h-[120px] flex-col items-center justify-between py-4">
+                  <div className="flex min-h-[120px] flex-col items-center justify-evenly py-4">
                     <div className="mx-auto mb-2 flex h-10 items-center justify-center">
                       <p className="text-center">
                         <TextLabel1 className="text-black">
@@ -361,14 +361,14 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                           true
                         )}
                         {item.score ? (
-                          <div className="ml-1 font-black">
-                            <TextHeading2
+                          <div className="ml-1 text-center text-lg font-black leading-tight">
+                            <p
                               className={classNames(
                                 `text-${getPercentageColor(item.score * 10)}`
                               )}
                             >
-                              {item.score * 10}%
-                            </TextHeading2>
+                              {getPercentageText(item.score * 10)}
+                            </p>
                           </div>
                         ) : //  : (
                         //   <TextInputLabel className="text-xs text-black">
@@ -487,4 +487,22 @@ const getPercentageColor = (percentage: number) => {
   }
 
   return color;
+};
+
+const getPercentageText = (percentage: number) => {
+  let text = "";
+
+  if (percentage >= 90) {
+    text = "very strong answer";
+  } else if (percentage >= 70) {
+    text = "strong answer";
+  } else if (percentage >= 50) {
+    text = "neutral answer";
+  } else if (percentage >= 40) {
+    text = "weak answer";
+  } else {
+    text = "very weak answer";
+  }
+
+  return text;
 };
