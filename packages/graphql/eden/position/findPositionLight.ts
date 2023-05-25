@@ -36,6 +36,11 @@ export const FIND_POSITION_LIGHT = gql`
             content
           }
         }
+        notesInterview {
+          categoryName
+          score
+          reason
+        }
       }
       talentList {
         _id
@@ -73,11 +78,6 @@ export const FIND_POSITION_LIGHT = gql`
           _id
           content
         }
-      }
-      notesInterview {
-        categoryName
-        score
-        reason
       }
     }
   }
