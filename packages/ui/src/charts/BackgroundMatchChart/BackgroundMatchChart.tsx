@@ -23,8 +23,8 @@ export const options = {
   responsive: true,
   plugins: {
     legend: {
-      // position: "top" as const,
-      display: false,
+      position: "bottom" as const,
+      // display: false,
     },
     // title: {
     //   display: true,
@@ -75,7 +75,7 @@ export const BackgroundMatchChart: FC<BackgroundMatchChartProps> = ({
       );
 
       setChartData({
-        labels: barsLabels,
+        labels: barsLabels.map((label) => label.split(" ")),
         datasets: [
           {
             label: memberName,
