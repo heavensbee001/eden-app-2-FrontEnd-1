@@ -361,13 +361,9 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                         {item.score ? (
                           <div className="ml-1 font-black">
                             <TextHeading2
-                              className={`${
-                                index % 2
-                                  ? "text-soilPurple"
-                                  : index % 3
-                                  ? "text-soilOrange"
-                                  : "text-soilTurquoise"
-                              }`}
+                              className={classNames(
+                                `text-${getPercentageColor(item.score * 10)}`
+                              )}
                             >
                               {item.score * 10}%
                             </TextHeading2>
@@ -475,4 +471,18 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       </Card>
     </div>
   );
+};
+
+const getPercentageColor = (percentage: number) => {
+  let color = "";
+
+  if (percentage >= 70) {
+    color = "accentColor";
+  } else if (percentage >= 40) {
+    color = "yellow-400";
+  } else {
+    color = "red-400";
+  }
+
+  return color;
 };
