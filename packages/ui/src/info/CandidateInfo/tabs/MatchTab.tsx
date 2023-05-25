@@ -328,7 +328,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <TextLabel1>Expertise</TextLabel1>
       </p>
       <div
-        className={`mx-auto mb-2 grid grid-cols-3 gap-4`}
+        className={`mx-auto mb-2 grid grid-cols-4 gap-6`}
         // className={`mx-auto grid grid-cols-${
         //   summaryQuestions?.length === 1 ? 3 : summaryQuestions?.length
         // } gap-4`}
@@ -337,11 +337,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ? summaryQuestions.map((item, index) => (
               <div
                 key={index}
-                className="z-20 h-full cursor-pointer rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
+                className="z-20 h-full cursor-pointer rounded-3xl border bg-gray-50 shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-white hover:shadow-lime-200"
                 onClick={() => setSummaryQuestionSelected(item)}
               >
                 <PopoverScoreReason question={item}>
-                  <div className="px-4 pb-4 pt-2">
+                  <div className="flex min-h-[120px] flex-col items-center justify-between py-4">
                     <div className="mx-auto mb-2 flex h-10 items-center justify-center">
                       <p className="text-center">
                         <TextLabel1 className="text-black">

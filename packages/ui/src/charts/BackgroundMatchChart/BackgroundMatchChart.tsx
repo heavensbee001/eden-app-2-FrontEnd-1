@@ -75,7 +75,7 @@ export const BackgroundMatchChart: FC<BackgroundMatchChartProps> = ({
       );
 
       setChartData({
-        labels: barsLabels.map((label) => label.split(" ")),
+        labels: barsLabels?.map((label) => label?.split(" ")),
         datasets: [
           {
             label: memberName,
