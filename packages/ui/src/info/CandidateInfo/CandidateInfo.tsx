@@ -152,7 +152,7 @@ export const CandidateInfo = ({
             setIndex(index);
           }}
         >
-          <Tab.List className="absolute top-[8.25rem] z-20 flex h-8  w-full justify-between bg-white text-lg">
+          <Tab.List className="absolute top-36 z-20 flex h-8  w-full justify-between bg-white text-lg">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}
