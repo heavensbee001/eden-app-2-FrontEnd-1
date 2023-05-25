@@ -73,6 +73,22 @@ const HomePage: NextPageWithLayout = () => {
 
   return (
     <>
+      <Head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(h,o,t,j,a,r){
+                  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                  h._hjSettings={hjid:3442218,hjsv:6};
+                  a=o.getElementsByTagName('head')[0];
+                  r=o.createElement('script');r.async=1;
+                  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                  a.appendChild(r);
+              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+            `,
+          }}
+        />
+      </Head>
       <SEO />
       <Card
         className="mx-auto mt-3 h-[88vh] w-full max-w-5xl overflow-y-scroll bg-white"
@@ -426,6 +442,7 @@ import {
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
 import { locations } from "@eden/package-ui/utils/locations";
+import Head from "next/head";
 import { Controller, useForm } from "react-hook-form";
 
 interface IProfileQuestionsContainerProps {}

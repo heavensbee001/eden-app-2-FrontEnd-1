@@ -158,6 +158,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   {candidate?.user?.experienceLevel?.total ? (
                     <Badge
                       colorRGB="153,255,204"
+                      tooltip={false}
                       text={
                         candidate?.user.experienceLevel?.total
                           ? candidate?.user.experienceLevel?.total <= 3

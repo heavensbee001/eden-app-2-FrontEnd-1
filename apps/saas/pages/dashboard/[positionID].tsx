@@ -464,7 +464,7 @@ const PositionCRM: NextPageWithLayout = () => {
       <div
         className={classNames(
           `z-20 transition-all duration-200 ease-in-out`,
-          selectedUserId ? "w-[calc(50%-1rem)]" : "w-[calc(100%-1rem)]"
+          selectedUserId ? "w-[calc(50%-1rem)]" : "w-full"
         )}
       >
         <div className="mb-4 flex h-10 items-center">
