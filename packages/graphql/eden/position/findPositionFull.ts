@@ -51,6 +51,11 @@ export const FIND_POSITION_FULL = gql`
             content
           }
         }
+        notesInterview {
+          categoryName
+          score
+          reason
+        }
       }
       talentList {
         _id

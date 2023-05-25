@@ -64,6 +64,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
+  console.log("candidates totot= ", candidates);
+
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [trainModalOpen, setTrainModalOpen] = useState(false);
@@ -617,6 +619,10 @@ const PositionCRM: NextPageWithLayout = () => {
               percentage={selectedUserScore}
               summaryQuestions={selectedUserSummaryQuestions}
               mostRelevantMemberNode={mostRelevantMemberNode}
+              candidate={candidates?.find(
+                (candidate) =>
+                  candidate?.user?._id?.toString() == selectedUserId.toString()
+              )}
             />
           ) : (
             <div className="w-full pt-20 text-center">

@@ -33,7 +33,7 @@ export interface ICandidateInfoProps {
   percentage: number | null;
   summaryQuestions?: SummaryQuestionType[];
   mostRelevantMemberNode?: relevantNodeObj;
-  candidate: any;
+  candidate?: any;
 }
 
 function classNames(...classes: any[]) {
@@ -59,7 +59,7 @@ export const CandidateInfo = ({
     ssr: false,
   });
 
-  // console.log("candidate 000f0f0 = " , candidate)
+  // console.log("candidate 000f0f0 = ", candidate);
 
   const tabs = [
     {
