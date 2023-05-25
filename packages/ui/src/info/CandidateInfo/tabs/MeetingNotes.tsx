@@ -48,7 +48,8 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
     // if (dataProject?.findProject) setProject(dataProject?.findProject);
     console.log("candidate = 2", candidate);
 
-    if (candidate) setMeetingNotesData(candidate.notesInterview);
+    if (candidate?.notesInterview)
+      setMeetingNotesData(candidate.notesInterview);
   }, [candidate]);
 
   return (

@@ -60,6 +60,11 @@ export const FIND_POSITION_LIGHT = gql`
           content
         }
       }
+      notesInterview {
+        categoryName
+        score
+        reason
+      }
     }
   }
 `;
