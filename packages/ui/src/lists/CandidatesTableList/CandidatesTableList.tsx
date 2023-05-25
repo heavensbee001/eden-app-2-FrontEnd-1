@@ -71,8 +71,12 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
       <table className="text-md relative w-full">
         <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
           <tr>
-            {listMode !== ListModeEnum.list ? <th>Select</th> : null}
-            <th className="min-w-min border-b border-gray-300 py-2">Name</th>
+            {listMode !== ListModeEnum.list ? (
+              <th className="border-b border-gray-300 py-2">{/* Select */}</th>
+            ) : null}
+            <th className="min-w-min border-b border-gray-300 py-2 pl-4 text-start">
+              Name
+            </th>
             <th className="border-b border-gray-300 py-2">Match</th>
             <th className="border-b border-gray-300 py-2 pr-2 text-right">
               $/hour
@@ -100,8 +104,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 } group cursor-pointer  hover:bg-lime-50 focus:outline-none focus:ring focus:ring-gray-300 active:bg-gray-300`}
               >
                 {listMode !== ListModeEnum.list ? (
-                  <ColumnStyled>
+                  <ColumnStyled className="-mr-1 px-0 py-0">
                     <CheckBox
+                      className="-mr-1 pl-2"
                       name={candidate.user?._id!}
                       checked={
                         selectedIds
