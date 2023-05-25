@@ -4151,6 +4151,7 @@ export type WebsiteToMemoryCompanyInput = {
 export type WebsiteToMemoryCompanyOutput = {
   __typename?: "websiteToMemoryCompanyOutput";
   report?: Maybe<Scalars["String"]>;
+  message?: Maybe<Scalars["String"]>;
   success?: Maybe<Scalars["Boolean"]>;
 };
 

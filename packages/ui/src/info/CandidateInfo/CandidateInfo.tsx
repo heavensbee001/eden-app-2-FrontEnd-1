@@ -91,6 +91,10 @@ export const CandidateInfo = ({
       Content: () => <GraphTab member={dataMember?.findMember} />,
     },
     {
+      tab: "Meeting Notes",
+      Content: () => <MeetingNotes member={dataMember?.findMember} />,
+    },
+    {
       tab: "Eden AI chat",
       Content: () => <EdenChatTab memberID={dataMember?.findMember._id} />,
     },

@@ -20,6 +20,7 @@ export * from "./NodesExpandable";
 export * from "./NodesSearchSkill";
 export * from "./OpenPositions";
 export * from "./Prioritize";
+export * from "./ProgressCircle";
 export * from "./ProjectChampion";
 export * from "./ReadMoreComp";
 export * from "./ReportBugButton";
