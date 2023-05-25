@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+// import { gql, useQuery } from "@apollo/client";
 import { Members } from "@eden/package-graphql/generated";
 import { FC, useEffect, useState } from "react";
 
@@ -56,18 +56,20 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
     <>
       <div className="container mx-auto px-4">
         <div className="-mx-4 flex flex-wrap">
-          {meetingNotesData.map((d, i) => (
-            <div key={i} className="w-full p-4 md:w-1/2">
-              <div className="rounded-lg border bg-white p-6 shadow">
-                <h3 className="mb-4 text-lg font-bold">{d.categoryName}</h3>
-                <ul className="list-disc pl-6">
-                  {d.reason.map((r, j) => (
-                    <li key={j}>{r.replace("- ", "")}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
+          {meetingNotesData
+            ? meetingNotesData?.map((d, i) => (
+                <div key={i} className="w-full p-4 md:w-1/2">
+                  <div className="rounded-lg border bg-white p-6 shadow">
+                    <h3 className="mb-4 text-lg font-bold">{d.categoryName}</h3>
+                    <ul className="list-disc pl-6">
+                      {d.reason.map((r, j) => (
+                        <li key={j}>{r.replace("- ", "")}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))
+            : null}
         </div>
       </div>
     </>

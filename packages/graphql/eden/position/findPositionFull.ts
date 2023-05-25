@@ -13,6 +13,8 @@ export const FIND_POSITION_FULL = gql`
           _id
           discordName
           discordAvatar
+          timeZone
+          location
           memberRole {
             _id
             title
