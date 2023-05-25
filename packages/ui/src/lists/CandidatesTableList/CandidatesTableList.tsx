@@ -9,6 +9,10 @@ import {
 import clsx from "clsx";
 import { ComponentPropsWithoutRef, FC, ReactNode, useState } from "react";
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 interface InputGroupProps extends ComponentPropsWithoutRef<"td"> {
   extraCssClass?: string;
   textColor?: string;
@@ -81,6 +85,16 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             </th>
             <th className="border-b border-gray-300 py-2">Level</th>
             <th className="border-b border-gray-300 py-2">Skill Match</th>
+            <th
+              className={classNames(
+                "border-b border-gray-300 py-2",
+                !candidateIDRowSelected
+                  ? "w-auto"
+                  : "hidden w-0 overflow-hidden"
+              )}
+            >
+              Location
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -161,6 +175,23 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   {candidate.skillMatch ? (
                     <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
                   ) : null}
+                </ColumnStyled>
+                <ColumnStyled
+                  textColor="text-center"
+                  extraCssClass={classNames(
+                    candidateIDRowSelected
+                      ? "hidden w-0 overflow-hidden"
+                      : "w-auto"
+                  )}
+                >
+                  {candidate.user?.location && (
+                    <p>{candidate.user?.location}</p>
+                  )}
+                  {candidate.user?.timeZone && (
+                    <p className="!text-xs text-gray-500">
+                      {candidate.user?.timeZone}
+                    </p>
+                  )}
                 </ColumnStyled>
               </tr>
             ))
