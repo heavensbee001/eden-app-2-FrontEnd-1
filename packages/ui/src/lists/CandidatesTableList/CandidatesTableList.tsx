@@ -154,7 +154,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     />
                   ) : null}
                 </ColumnStyled>
-                <ColumnStyled textColor="text-fuchsia-600 text-center">
+                <ColumnStyled textColor="text-[#86C8BC] text-center">
                   {candidate.skillMatch ? (
                     <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
                   ) : null}
