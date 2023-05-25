@@ -348,9 +348,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 onClick={() => {
                   setSummaryQuestionSelected(item);
                   if (document) {
-                    document
-                      .getElementById("summary-question-chat")
-                      ?.scrollIntoView({ behavior: "smooth" });
+                    setTimeout(() => {
+                      document
+                        .getElementById("summary-question-chat")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }, 200);
                   }
                 }}
               >
