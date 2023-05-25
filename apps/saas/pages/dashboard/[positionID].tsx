@@ -19,6 +19,7 @@ import {
   TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { HiOutlineLink } from "react-icons/hi";
@@ -487,11 +488,22 @@ const PositionCRM: NextPageWithLayout = () => {
             <span className="text-sm text-gray-400">Link copied!</span>
           )}
           <Button
-            className="ml-auto"
+            className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+            radius="pill"
             variant="secondary"
             onClick={handleTrainButtonClick}
           >
             Train Eden AI
+            <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#ff5656]">
+              <div className="h-[40px] w-[40px] min-w-[40px]">
+                <Image
+                  src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                  width={40}
+                  height={40}
+                  alt=""
+                />
+              </div>
+            </div>
           </Button>
           {/* <Button
             variant="secondary"

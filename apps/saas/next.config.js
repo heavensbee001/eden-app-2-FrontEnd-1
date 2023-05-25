@@ -6,4 +6,5 @@ module.exports = {
     "@eden/package-graphql",
     "@eden/package-mock",
   ],
+  images: { domains: ["pbs.twimg.com"], formats: ["image/avif"] },
 };
