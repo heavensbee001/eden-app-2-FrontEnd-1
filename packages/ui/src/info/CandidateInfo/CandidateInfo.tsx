@@ -75,12 +75,6 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Notes",
-      Content: () => (
-        <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
-      ),
-    },
-    {
       tab: "Match",
       Content: () => (
         <MatchTab
@@ -92,6 +86,12 @@ export const CandidateInfo = ({
     {
       tab: "Graph",
       Content: () => <GraphTab member={dataMember?.findMember} />,
+    },
+    {
+      tab: "Notes",
+      Content: () => (
+        <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
+      ),
     },
     {
       tab: "Interview",
