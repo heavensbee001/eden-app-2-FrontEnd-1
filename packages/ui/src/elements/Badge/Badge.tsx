@@ -18,6 +18,7 @@ export interface BadgeProps {
   text?: string;
   className?: string;
   closeButton?: boolean;
+  tooltip?: boolean;
   cutText?: number;
   onClose?: () => void;
 }
@@ -27,6 +28,7 @@ export const Badge = ({
   className = "",
   closeButton = false,
   cutText = 8,
+  tooltip = true,
   onClose,
 }: BadgeProps) => {
   const [isHover, setIsHover] = useState("");
@@ -64,9 +66,11 @@ export const Badge = ({
             )}
           </>
         </div>
-        <ReactTooltip id={`badgeTip-${text}`} place="top" effect="solid">
-          {isHover}
-        </ReactTooltip>
+        {tooltip && (
+          <ReactTooltip id={`badgeTip-${text}`} place="top" effect="solid">
+            {isHover}
+          </ReactTooltip>
+        )}
       </div>
     </>
   );
