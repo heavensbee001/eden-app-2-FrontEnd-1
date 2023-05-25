@@ -308,7 +308,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         </div>
         <div className="col-span-1"></div>
         <div className="col-span-2">
-          <p className="mb-2 text-center">
+          <p className="mb-4 text-center">
             <TextLabel1>Background match</TextLabel1>
           </p>
           {/* <BackgroundMatchChart

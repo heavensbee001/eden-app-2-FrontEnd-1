@@ -81,12 +81,12 @@ export const BackgroundMatchChart: FC<BackgroundMatchChartProps> = ({
           {
             label: memberName,
             data: memberData,
-            backgroundColor: "rgba(23, 48, 232)",
+            backgroundColor: "rgba(124, 235, 215)",
           },
           {
             label: "Average Candidate",
             data: averageData,
-            backgroundColor: "rgba(100, 151, 227)",
+            backgroundColor: "rgba(211, 232, 228)",
           },
         ],
       });
