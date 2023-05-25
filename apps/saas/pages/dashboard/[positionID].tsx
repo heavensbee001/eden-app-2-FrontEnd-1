@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
-  FIND_POSITION_FULL,
+  // FIND_POSITION_FULL,
+  FIND_POSITION_LIGHT,
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
@@ -96,7 +97,7 @@ const PositionCRM: NextPageWithLayout = () => {
     data: findPositionData,
     loading: findPositionIsLoading,
     // error: findPositionError,
-  } = useQuery(FIND_POSITION_FULL, {
+  } = useQuery(FIND_POSITION_LIGHT, {
     variables: {
       fields: {
         _id: positionID,

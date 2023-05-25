@@ -2,7 +2,7 @@ import { Members } from "@eden/package-graphql/generated";
 import {
   Badge,
   NodeList,
-  SocialMediaComp,
+  // SocialMediaComp,
   TextLabel1,
   UserBackground,
 } from "@eden/package-ui";
@@ -36,7 +36,7 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
   return (
     <>
       <div className="mb-4 grid grid-cols-2">
-        <div className="col-1 p-2">
+        <div className="col-span-2 p-2">
           <div className="my-4 flex flex-col items-start justify-center">
             <TextLabel1>🌸 Short bio</TextLabel1>
             {member?.bio ? (
@@ -44,11 +44,11 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
                 <p className="text-soilBody font-Inter whitespace-pre-wrap font-normal">
                   {seeMore
                     ? member.bio
-                    : member.bio.length > 200
-                    ? member.bio.substring(0, 200) + "..."
+                    : member.bio.length > 600
+                    ? member.bio.substring(0, 600) + "..."
                     : member.bio}
                 </p>
-                {member.bio.length > 200 && (
+                {member.bio.length > 600 && (
                   <p
                     className="mt-1 w-full cursor-pointer text-center text-sm"
                     onClick={() => setSeeMore(!seeMore)}
@@ -74,87 +74,34 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
             )}
           </div>
         </div>
-        <div className="col-2 p-2">
-          <div className="grid grid-cols-2">
-            {/* First Column: Availability, Location, Timezone */}
-            <div className="col-1 p-2">
-              <section className="mb-2 w-full text-left">
-                <TextLabel1 className="mb-2 text-xs">
-                  ⏳️ AVAILABILITY
-                </TextLabel1>
-                <p className="ml-4 font-bold text-slate-600">
-                  {member?.hoursPerWeek
-                    ? `${member?.hoursPerWeek} hrs\\week`
-                    : "unavailable"}
-                </p>
-              </section>
-              <section className="mb-2 w-full text-left">
-                <TextLabel1 className="mb-2 text-xs">🌍 Location</TextLabel1>
-                <p className="ml-4 font-bold text-slate-600">
-                  {member?.location ? `${member?.location}` : "-"}
-                </p>
-              </section>
-              <section className="mb-2 w-full text-left">
-                <p>
-                  <TextLabel1 className="mb-2 text-xs">🧭 Timezone</TextLabel1>
-                </p>
-                <div className="ml-4 inline-flex">
-                  <p className="font-bold text-slate-600">
-                    {member?.timeZone ? `${member?.timeZone}` : "-"}
-                  </p>
-                </div>
-              </section>
+
+        {/* <div className="col-2 p-2">
+          <section className="mb-2 w-full text-left">
+            <TextLabel1 className="text-xs">🔎 INTERESTS</TextLabel1>
+            <div className="ml-4 inline-flex flex-wrap">
+              {["Travelling", "Trading", "Community", "DAOs"].map(
+                (preference: string, index: number) => (
+                  <Badge
+                    key={index}
+                    text={preference}
+                    colorRGB="224,151,232"
+                    className={`font-Inter text-sm`}
+                    closeButton={false}
+                    cutText={16}
+                  />
+                )
+              )}
             </div>
-            {/* Second Column: Hourly Rate, Level, Notice */}
-            <div className="col-2 p-2">
-              <section className="mb-2 w-full text-left">
-                <p>
-                  <TextLabel1 className="text-xs">💰 Hourly rate</TextLabel1>
-                </p>
-                <div>
-                  {member?.budget?.perHour !== null &&
-                  member?.budget?.perHour !== undefined &&
-                  member?.budget?.perHour >= 0 ? (
-                    <p className="ml-4 text-sm">
-                      <span className="text-xl font-bold text-[#fcba03]">
-                        ${member.budget.perHour}
-                      </span>{" "}
-                      / hour
-                    </p>
-                  ) : (
-                    <span className="ml-4 font-bold text-slate-600">-</span>
-                  )}
-                </div>
-              </section>
-              <section className="mb-2 w-full text-left">
-                <p>
-                  <TextLabel1 className="text-xs">⭐ Level</TextLabel1>
-                </p>
-                <div>
-                  {member?.experienceLevel?.total ? (
-                    <Badge
-                      className="ml-4 text-sm"
-                      colorRGB="151,232,163"
-                      text={
-                        member?.experienceLevel?.total <= 3
-                          ? "Junior"
-                          : member?.experienceLevel?.total <= 6
-                          ? "Mid"
-                          : "Senior"
-                      }
-                    />
-                  ) : (
-                    <span className="ml-4 font-bold text-slate-600">-</span>
-                  )}
-                </div>
-              </section>
-              <section className="mb-2 w-full text-left">
-                <TextLabel1 className="text-xs">🍀 Notice</TextLabel1>
-                <p className="ml-4">2 Weeks</p>
-              </section>
+          </section>
+
+          <section className="mb-2 w-full text-center">
+            <div className="my-4 flex justify-center">
+              {member?.links && member?.links.length > 0 && (
+                <SocialMediaComp size="sm" links={member?.links} />
+              )}
             </div>
-          </div>
-        </div>
+          </section>
+        </div> */}
       </div>
       <div className="mb-4 grid grid-cols-2">
         {mostRelevantMemberNode &&
@@ -200,36 +147,86 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
             </section>
           </div>
         )}
-        <div className="col-2 p-2">
-          {/* <section className="mb-2 w-full text-left">
-            <TextLabel1 className="text-xs">🔎 INTERESTS</TextLabel1>
-            <div className="ml-4 inline-flex flex-wrap">
-              {["Travelling", "Trading", "Community", "DAOs"].map(
-                (preference: string, index: number) => (
+        <div className="col-1 grid grid-cols-2">
+          {/* First Column: Availability, Location, Timezone */}
+          <div className="col-1 p-2">
+            <section className="mb-2 w-full text-left">
+              <TextLabel1 className="mb-2 text-xs">⏳️ AVAILABILITY</TextLabel1>
+              <p className="ml-4 font-bold text-slate-600">
+                {member?.hoursPerWeek
+                  ? `${member?.hoursPerWeek} hrs\\week`
+                  : "unavailable"}
+              </p>
+            </section>
+            <section className="mb-2 w-full text-left">
+              <TextLabel1 className="mb-2 text-xs">🌍 Location</TextLabel1>
+              <p className="ml-4 font-bold text-slate-600">
+                {member?.location ? `${member?.location}` : "-"}
+              </p>
+            </section>
+            <section className="mb-2 w-full text-left">
+              <p>
+                <TextLabel1 className="mb-2 text-xs">🧭 Timezone</TextLabel1>
+              </p>
+              <div className="ml-4 inline-flex">
+                <p className="font-bold text-slate-600">
+                  {member?.timeZone ? `${member?.timeZone}` : "-"}
+                </p>
+              </div>
+            </section>
+          </div>
+          {/* Second Column: Hourly Rate, Level, Notice */}
+          <div className="col-2 p-2">
+            <section className="mb-2 w-full text-left">
+              <p>
+                <TextLabel1 className="text-xs">💰 Hourly rate</TextLabel1>
+              </p>
+              <div>
+                {member?.budget?.perHour !== null &&
+                member?.budget?.perHour !== undefined &&
+                member?.budget?.perHour >= 0 ? (
+                  <p className="ml-4 text-sm">
+                    <span className="text-xl font-bold text-[#fcba03]">
+                      ${member.budget.perHour}
+                    </span>{" "}
+                    / hour
+                  </p>
+                ) : (
+                  <span className="ml-4 font-bold text-slate-600">-</span>
+                )}
+              </div>
+            </section>
+            <section className="mb-2 w-full text-left">
+              <p>
+                <TextLabel1 className="text-xs">⭐ Level</TextLabel1>
+              </p>
+              <div>
+                {member?.experienceLevel?.total ? (
                   <Badge
-                    key={index}
-                    text={preference}
-                    colorRGB="224,151,232"
-                    className={`font-Inter text-sm`}
-                    closeButton={false}
-                    cutText={16}
+                    className="ml-4 text-sm"
+                    colorRGB="151,232,163"
+                    text={
+                      member?.experienceLevel?.total <= 3
+                        ? "Junior"
+                        : member?.experienceLevel?.total <= 6
+                        ? "Mid"
+                        : "Senior"
+                    }
                   />
-                )
-              )}
-            </div>
-          </section> */}
-
-          <section className="mb-2 w-full text-center">
-            <div className="my-4 flex justify-center">
-              {member?.links && member?.links.length > 0 && (
-                <SocialMediaComp size="sm" links={member?.links} />
-              )}
-            </div>
-          </section>
+                ) : (
+                  <span className="ml-4 font-bold text-slate-600">-</span>
+                )}
+              </div>
+            </section>
+            <section className="mb-2 w-full text-left">
+              <TextLabel1 className="text-xs">🍀 Notice</TextLabel1>
+              <p className="ml-4">2 Weeks</p>
+            </section>
+          </div>
         </div>
       </div>
       {member?.previousProjects && member?.previousProjects.length ? (
-        <section className="mb-2 w-full text-left">
+        <section className="w-full pb-4 text-left">
           <TextLabel1 className="text-xs">🍒 BACKGROUND</TextLabel1>
           <UserBackground
             background={member?.previousProjects || []}

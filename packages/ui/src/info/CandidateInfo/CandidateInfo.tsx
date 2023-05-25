@@ -72,7 +72,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Notes_",
+      tab: "Notes",
       Content: () => (
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
       ),
@@ -98,26 +98,29 @@ export const CandidateInfo = ({
 
   return (
     <>
-      <div className="font-Inter absolute z-20 h-44 w-full flex-col bg-white text-center">
+      <div className="font-Inter absolute z-20 h-40 w-full flex-col bg-white text-center">
         <div className="grid w-[calc(100%+1rem)] grid-cols-3 bg-white">
-          <div className="col-1 mt-5 w-full p-2 text-center">
+          <div className="col-1 mt-5 w-full py-2 text-center">
             <div className="flex w-full justify-end">
-              <Button className="bg-red-400 font-bold text-white" radius="pill">
+              <Button
+                className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
+                radius="pill"
+              >
                 REJECT
               </Button>
             </div>
           </div>
-          <div className="col-2 p-2">
+          <div className="col-2 p-2 pb-1">
             <div className="flex w-full justify-center">
               <Avatar src={dataMember?.findMember.discordAvatar!} size={`lg`} />
             </div>
           </div>
-          <div className="col-3 mt-5 w-full p-2 text-center">
+          <div className="col-3 mt-5 w-full py-2 text-center text-sm">
             <div className="flex w-full justify-start">
               <Button
                 variant="primary"
                 radius="pill"
-                className="font-bold text-white"
+                className="border-none font-bold text-white"
               >
                 APPROVE
               </Button>
@@ -125,12 +128,12 @@ export const CandidateInfo = ({
           </div>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex w-[calc(100%+1rem)] justify-center px-4">
           <TextHeading3 className="font-extrabold">
             {dataMember?.findMember?.discordName}
           </TextHeading3>
         </div>
-        <TextHeading3 className="font-extrabold text-gray-500">
+        <TextHeading3 className="w-[calc(100%+1rem)] justify-center px-4 !text-sm font-bold text-gray-400">
           {dataMember?.findMember?.memberRole?.title}
         </TextHeading3>
       </div>
@@ -142,13 +145,13 @@ export const CandidateInfo = ({
             setIndex(index);
           }}
         >
-          <Tab.List className="absolute top-40 z-20 flex h-8  w-[calc(100%+1rem)] justify-between bg-white text-lg">
+          <Tab.List className="absolute top-[8.25rem] z-20 flex h-8  w-[calc(100%+1rem)] justify-between bg-white text-lg">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}
                 className={({ selected }) =>
                   classNames(
-                    "pt-px",
+                    "pt-px text-[14px]",
                     selected
                       ? "border-b-soilGreen-700 w-full border-b-2 bg-lime-50 text-gray-600 outline-none"
                       : "font-avenir-roman w-full border-b-2 text-gray-400 hover:bg-gray-50 hover:text-gray-500"
@@ -160,7 +163,7 @@ export const CandidateInfo = ({
             ))}
           </Tab.List>
           <Tab.Panels>
-            <div className="relative top-52">
+            <div className="relative top-44">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
                   {/* <div className="h-[calc(100vh-17rem)]"> */}
