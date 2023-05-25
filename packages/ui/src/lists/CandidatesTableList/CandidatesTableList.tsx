@@ -45,6 +45,7 @@ type CandidatesTableListProps = {
   // eslint-disable-next-line no-unused-vars
   setRowObjectData: (candidate: CandidateTypeSkillMatch) => void;
   listMode?: ListModeEnum;
+  candidateIDRowSelected?: string | null;
   // eslint-disable-next-line no-unused-vars
   handleChkSelection?: (candidate: CandidateTypeSkillMatch) => void;
   selectedIds?: string[];
@@ -54,16 +55,13 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   candidatesList,
   fetchIsLoading,
   setRowObjectData,
+  candidateIDRowSelected = null,
   listMode = ListModeEnum.list,
   handleChkSelection,
   selectedIds,
 }) => {
-  const [candidateIDRowSelected, setCandidateIDRowSelected] =
-    useState<string>("");
-
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
-    setCandidateIDRowSelected(candidate.user?._id || "");
   };
 
   return (
