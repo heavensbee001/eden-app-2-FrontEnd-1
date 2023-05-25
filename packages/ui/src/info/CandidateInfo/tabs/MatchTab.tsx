@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { Members, SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   BackgroundMatchChart,
@@ -32,23 +32,23 @@ const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
   }
 `;
 
-const dataRadarchart = [
-  {
-    memberInfo: {
-      discordName: "Kwame",
-      attributes: {
-        Coordinator: 60,
-        DirectorTP: 70,
-        Helper: 70,
-        Inspirer: 80,
-        Motivator: 70,
-        Observer: 90,
-        Reformer: 50,
-        Supporter: 40,
-      },
-    },
-  },
-];
+// const dataRadarchart = [
+//   {
+//     memberInfo: {
+//       discordName: "Kwame",
+//       attributes: {
+//         Coordinator: 60,
+//         DirectorTP: 70,
+//         Helper: 70,
+//         Inspirer: 80,
+//         Motivator: 70,
+//         Observer: 90,
+//         Reformer: 50,
+//         Supporter: 40,
+//       },
+//     },
+//   },
+// ];
 
 ChartJS.register(ArcElement, Legend, Tooltip);
 
@@ -121,15 +121,14 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           {
             data: dataPT,
             backgroundColor: [
-              "#F44336",
-              "#E91E63",
-              "#9C27B0",
-              "#673AB7",
-              "#3F51B5",
-              "#2196F3",
-              "#00BCD4",
-              "#009688",
-              "#4CAF50",
+              "#FFD4B2",
+              "#FFF6BD",
+              "#CEEDC7",
+              "#86C8BC",
+              "#FD8A8A",
+              "#F1F7B5",
+              "#A8D1D1",
+              "#9EA1D4",
             ],
           },
         ],
@@ -149,6 +148,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const [radioChart, setRadioChart] = useState<radiochartType[]>([]);
 
   const optionsRadar = {
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+    },
     scales: {
       r: {
         suggestedMin: 30,
@@ -188,12 +192,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         } = data.memberRadioChartCharacterAttributes[i];
 
         if (elementT && elementT.attributeName) {
-          let nameAtt = elementT.attributeName;
+          const nameAtt = elementT.attributeName;
 
           // how to make maximum 11 letters on nameAtt
-          if (nameAtt.length > 11) {
-            nameAtt = nameAtt.substring(0, 11) + "...";
-          }
+          // if (nameAtt.length > 11) {
+          //   nameAtt = nameAtt.substring(0, 11) + "...";
+          // }
 
           attributesT[nameAtt] = elementT.score;
 
@@ -249,28 +253,59 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     setDataBarChart(dataBarChartPr);
   }, [summaryQuestions]);
 
-  const data = {
-    labels: ["One", "Two", "Three"],
-    datasets: [
-      {
-        data: [3, 6, 9],
-        backgroundColor: ["aqua", "orangered", "purple"],
-      },
-    ],
-  };
+  // const data = {
+  //   labels: ["One", "Two", "Three"],
+  //   datasets: [
+  //     {
+  //       data: [3, 6, 9],
+  //       backgroundColor: ["aqua", "orangered", "purple"],
+  //     },
+  //   ],
+  // };
 
-  const options = {
-    scale: {
-      ticks: {
-        min: 0,
-        max: 100,
-      },
-    },
-  };
+  // const options = {
+  //   scale: {
+  //     ticks: {
+  //       min: 0,
+  //       max: 100,
+  //     },
+  //   },
+  // };
 
   return (
     <div className="relative pt-4">
       <div className="mb-8 grid grid-cols-4">
+        <div className="col-span-2 mb-4">
+          <p className="mb-2 text-center">
+            <TextLabel1>PieChart</TextLabel1>
+          </p>
+          {/* <Pie data={data} options={options} /> */}
+          <Pie
+            data={pieChartData}
+            options={{
+              layout: {
+                padding: 12,
+              },
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+              },
+            }}
+          />
+        </div>
+        <div className="col-span-2 mb-4">
+          <p className="mb-2 text-center">
+            <TextLabel1>Radar Chart</TextLabel1>
+          </p>
+          {/* <Pie data={data} options={options} /> */}
+          {/* <TeamAttributeChart members={dataRadarchart} /> */}
+          {radioChart?.length > 0 && (
+            <div className="-mt-8">
+              <TeamAttributeChart members={radioChart} options={optionsRadar} />
+            </div>
+          )}
+        </div>
         <div className="col-span-1"></div>
         <div className="col-span-2">
           <p className="mb-2 text-center">
@@ -287,23 +322,6 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             />
           )}
         </div>
-        <div className="col-span-2">
-          <p className="mb-2 text-center">
-            <TextLabel1>PieChart</TextLabel1>
-          </p>
-          {/* <Pie data={data} options={options} /> */}
-          <Pie data={pieChartData} />
-        </div>
-        {radioChart?.length > 0 && (
-          <div className="col-span-2">
-            <p className="mb-2 text-center">
-              <TextLabel1>Radar Chart</TextLabel1>
-            </p>
-            {/* <Pie data={data} options={options} /> */}
-            {/* <TeamAttributeChart members={dataRadarchart} /> */}
-            <TeamAttributeChart members={radioChart} options={optionsRadar} />
-          </div>
-        )}
         <div className="col-span-1"></div>
       </div>
       <p className="mb-2 text-center">
