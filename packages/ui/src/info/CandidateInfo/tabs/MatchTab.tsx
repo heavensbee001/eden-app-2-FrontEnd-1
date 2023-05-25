@@ -5,7 +5,7 @@ import {
   Card,
   PopoverScoreReason,
   TeamAttributeChart,
-  TextHeading2,
+  // TextHeading2,
   TextInputLabel,
   TextLabel1,
 } from "@eden/package-ui";
