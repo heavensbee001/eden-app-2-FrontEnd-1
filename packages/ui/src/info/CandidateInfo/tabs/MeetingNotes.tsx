@@ -28,7 +28,7 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
     []
   );
 
-  // console.log("member = ", member);
+  console.log("member = ", member);
 
   // const {} = useQuery(CANDIDATE_NOTES_EDENAI, {
   //   variables: {
