@@ -12,8 +12,8 @@ import {
   Button,
   CandidateInfo,
   CandidatesTableList,
-  GridItemSix,
-  GridLayout,
+  // GridItemSix,
+  // GridLayout,
   ListModeEnum,
   SelectList,
   TextField,
@@ -25,6 +25,10 @@ import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
 
 import { NextPageWithLayout } from "../_app";
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 type Question = {
   _id: string;
@@ -455,8 +459,13 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   return (
-    <GridLayout className="">
-      <GridItemSix>
+    <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
+      <div
+        className={classNames(
+          `z-20 transition-all duration-200 ease-in-out`,
+          selectedUserId ? "w-[calc(50%-1rem)]" : "w-[calc(100%-1rem)]"
+        )}
+      >
         <div className="mb-4 flex h-10 items-center">
           <h1 className="mr-6 text-2xl font-medium">
             {findPositionData && findPositionData.findPosition.name
@@ -576,6 +585,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           </div>
           <CandidatesTableList
+            candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
@@ -611,28 +621,36 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           ) : null}
         </div>
-      </GridItemSix>
-      <GridItemSix className="relative">
-        <div className="scrollbar-hide -my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
-          {selectedUserId ? (
-            <CandidateInfo
-              memberID={selectedUserId || ""}
-              percentage={selectedUserScore}
-              summaryQuestions={selectedUserSummaryQuestions}
-              mostRelevantMemberNode={mostRelevantMemberNode}
-              candidate={candidates?.find(
-                (candidate) =>
-                  candidate?.user?._id?.toString() == selectedUserId.toString()
-              )}
-            />
-          ) : (
+      </div>
+      <div
+        className={classNames(
+          "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+          selectedUserId ? "w-[50vw]" : "w-0"
+        )}
+      >
+        <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
+          {/* {selectedUserId ? ( */}
+          <CandidateInfo
+            memberID={selectedUserId || ""}
+            percentage={selectedUserScore}
+            summaryQuestions={selectedUserSummaryQuestions}
+            mostRelevantMemberNode={mostRelevantMemberNode}
+            candidate={candidates?.find(
+              (candidate) =>
+                candidate?.user?._id?.toString() == selectedUserId?.toString()
+            )}
+            onClose={() => {
+              setSelectedUserId(null);
+            }}
+          />
+          {/* ) : (
             <div className="w-full pt-20 text-center">
               <p className="text-gray-400">Select a candidate</p>
             </div>
-          )}
+          )} */}
         </div>
-      </GridItemSix>
-    </GridLayout>
+      </div>
+    </div>
   );
 };
 

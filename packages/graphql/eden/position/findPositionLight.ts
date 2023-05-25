@@ -22,6 +22,20 @@ export const FIND_POSITION_LIGHT = gql`
           }
         }
         readyToDisplay
+        summaryQuestions {
+          questionID
+          questionContent
+          questionContentSmall
+          answerContent
+          answerContentSmall
+          reason
+          score
+          bestAnswerPosition
+          subConversationAnswer {
+            role
+            content
+          }
+        }
       }
       talentList {
         _id
