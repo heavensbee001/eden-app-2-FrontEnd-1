@@ -631,6 +631,7 @@ const PositionCRM: NextPageWithLayout = () => {
         <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
           {/* {selectedUserId ? ( */}
           <CandidateInfo
+            key={selectedUserId || ""}
             memberID={selectedUserId || ""}
             percentage={selectedUserScore}
             summaryQuestions={selectedUserSummaryQuestions}
