@@ -72,7 +72,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Notes",
+      tab: "Notes_",
       Content: () => (
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
       ),
