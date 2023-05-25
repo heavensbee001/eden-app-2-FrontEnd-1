@@ -226,7 +226,7 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
         </div>
       </div>
       {member?.previousProjects && member?.previousProjects.length ? (
-        <section className="mb-2 w-full text-left">
+        <section className="w-full pb-4 text-left">
           <TextLabel1 className="text-xs">🍒 BACKGROUND</TextLabel1>
           <UserBackground
             background={member?.previousProjects || []}
