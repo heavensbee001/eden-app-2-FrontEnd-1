@@ -43,7 +43,7 @@ export const UserBackground = ({
                 >
                   {!empty && index === experienceOpen ? "▼" : "▶"}
                 </span>
-                <div className="scrollbar-hide flex h-8 items-center overflow-x-scroll whitespace-nowrap !rounded-full border-0 bg-[#DEFEFF] px-4 outline-0">
+                <div className=" flex h-fit justify-center break-words  !rounded-full border-0 bg-[#DEFEFF] px-4 text-center outline-0">
                   {item?.title}
                 </div>
                 {/* {index < 2 && <span className="ml-3 text-xl">⭐️</span>} */}
