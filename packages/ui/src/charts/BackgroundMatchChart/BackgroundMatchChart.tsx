@@ -84,7 +84,13 @@ export const options = {
       grid: {
         display: false,
       },
-      ticks: { min: 0, autoSkip: false, display: true, maxRotation: 0 },
+      ticks: {
+        min: 0,
+        autoSkip: false,
+        display: true,
+        maxRotation: 0,
+        font: { size: 8 },
+      },
     },
     y: {
       display: false,

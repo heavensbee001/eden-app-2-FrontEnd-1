@@ -24,6 +24,7 @@ type PopoverScoreReasonProps = {
 export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
   children,
   question,
+  // eslint-disable-next-line no-unused-vars
   size,
   ubication = "top",
 }) => {
@@ -56,7 +57,7 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
   };
 
   return (
-    <PopoverOnHover size={size} ubication={ubication} Content={ContentToShow}>
+    <PopoverOnHover size={"md"} ubication={ubication} Content={ContentToShow}>
       {children}
     </PopoverOnHover>
   );
