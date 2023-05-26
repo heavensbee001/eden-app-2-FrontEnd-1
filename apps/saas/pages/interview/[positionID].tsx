@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   ChatMessage,
-  CheckBox,
   CountdownTimer,
   CVUploadGPT,
   InterviewEdenAI,
@@ -31,7 +30,7 @@ const HomePage: NextPageWithLayout = () => {
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [titleRole, setTitleRole] = useState(null);
-  const [topSkills, setTopSkills] = useState(null);
+  const [topSkills, setTopSkills] = useState([]);
 
   console.log("cvEnded = ", cvEnded);
   const {
@@ -198,8 +197,8 @@ const HomePage: NextPageWithLayout = () => {
                       <div className="flex flex-col items-center space-y-2">
                         <p>Your main skills:</p>
                         <div>
-                          {topSkills &&
-                            topSkills.map((skill, index) => (
+                          {topSkills !== null &&
+                            topSkills.map((skill: any, index: number) => (
                               <Badge
                                 key={index}
                                 text={skill}
@@ -227,7 +226,7 @@ const HomePage: NextPageWithLayout = () => {
                         </div>
                         <p>
                           I acknowledge That my CV & responses will be stored
-                          and shared with Tesla Inc{" "}
+                          and shared with Tesla Inc
                         </p>
                       </div>
                     </>
@@ -282,7 +281,6 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 export default HomePage;
 
 import { IncomingMessage, ServerResponse } from "http";
-import Link from "next/link";
 import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
