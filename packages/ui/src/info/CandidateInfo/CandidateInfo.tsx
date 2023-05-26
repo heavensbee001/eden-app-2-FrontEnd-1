@@ -95,7 +95,12 @@ export const CandidateInfo = ({
     },
     {
       tab: "Interview",
-      Content: () => <EdenChatTab memberID={dataMember?.findMember._id} />,
+      Content: () => (
+        <EdenChatTab
+          memberID={dataMember?.findMember._id}
+          memberImg={dataMember?.findMember.discordAvatar}
+        />
+      ),
     },
   ];
 

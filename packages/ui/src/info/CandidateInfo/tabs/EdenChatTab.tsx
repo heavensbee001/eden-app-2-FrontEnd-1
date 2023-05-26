@@ -5,13 +5,14 @@ import React from "react";
 
 type Props = {
   memberID: string;
+  memberImg?: string;
 };
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const EdenChatTab: React.FC<Props> = ({ memberID }) => {
+export const EdenChatTab: React.FC<Props> = ({ memberID, memberImg }) => {
   const { data: findConversationsData } = useQuery(FIND_CONVERSATIONS, {
     variables: {
       fields: {
@@ -24,47 +25,56 @@ export const EdenChatTab: React.FC<Props> = ({ memberID }) => {
 
   return (
     <>
-      <Card border shadow className="h-6/10 mt-4 overflow-scroll bg-white">
+      <Card
+        border
+        shadow
+        className="mx-auto mt-3 h-[calc(100vh-17rem)] max-w-lg overflow-scroll !border-gray-200 bg-white"
+      >
         <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3">
-          <div className="my-4">
+          <div className="">
             {findConversationsData &&
             findConversationsData.findConversations.length
               ? findConversationsData.findConversations[
                   findConversationsData.findConversations.length - 1
-                ].conversation.map((chat: any, index: any) => (
-                  <div className="chat-message p-2" key={index}>
-                    <div
-                      className={classNames(
-                        chat.role == "assistant" ? "" : "justify-end",
-                        "flex items-start"
-                      )}
-                    >
+                ].conversation
+                  .slice(1)
+                  .map((chat: any, index: any) => (
+                    <div className="chat-message p-2" key={index}>
                       <div
                         className={classNames(
-                          chat.role == "assistant" ? "order-2" : "order-1",
-                          "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                          chat.role == "assistant" ? "" : "justify-end",
+                          "flex items-start"
                         )}
                       >
-                        <span
-                          // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                        <div
                           className={classNames(
-                            chat.role == "assistant"
-                              ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                              : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                            "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                            chat.role == "assistant" ? "order-2" : "order-1",
+                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                           )}
                         >
-                          {chat.content}
-                        </span>
+                          <span
+                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                            className={classNames(
+                              chat.role == "assistant"
+                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                            )}
+                          >
+                            {chat.content}
+                          </span>
+                        </div>
+                        <img
+                          src={
+                            chat.role == "assistant"
+                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                              : memberImg
+                          }
+                          className="order-1 h-6 w-6 rounded-full"
+                        />
                       </div>
-                      {/* <img
-                      src={Users[chat.user].img}
-                      alt="My profile"
-                      className="order-1 h-6 w-6 rounded-full"
-                    /> */}
                     </div>
-                  </div>
-                ))
+                  ))
               : null}
             {/* <hr
               style={{
