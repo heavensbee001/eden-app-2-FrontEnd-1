@@ -3,9 +3,11 @@ import { UserContext } from "@eden/package-context";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
+  Badge,
   Button,
   Card,
   ChatMessage,
+  CheckBox,
   CountdownTimer,
   CVUploadGPT,
   InterviewEdenAI,
@@ -29,6 +31,7 @@ const HomePage: NextPageWithLayout = () => {
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [titleRole, setTitleRole] = useState(null);
+  const [topSkills, setTopSkills] = useState(null);
 
   console.log("cvEnded = ", cvEnded);
   const {
@@ -74,8 +77,10 @@ const HomePage: NextPageWithLayout = () => {
 
   const handleDataFromCVUploadGPT = (data: any) => {
     const role = data.saveCVtoUser.titleRole;
+    const skills = data.saveCVtoUser.mainSkills;
 
     setTitleRole(role);
+    setTopSkills(skills);
   };
 
   return (
@@ -170,35 +175,61 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
               <WizardStep label={"welcome"}>
                 <section className="flex h-full flex-col items-center justify-center">
-                  <h2 className="mb-8 text-2xl font-medium">{`Hi! I'm Eden. 👋`}</h2>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="200"
+                    height="200"
+                    viewBox="0 0 24 24"
+                    style={{
+                      fill: "rgba(215, 254, 109, 1)",
+                      transform: "",
+                      msFilter: "",
+                    }}
+                  >
+                    <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
+                  </svg>
+                  <h2 className="mb-8 text-2xl font-medium">
+                    Good to know you, {currentUser?.discordName}!
+                  </h2>
                   {findPositionData?.findPosition?.name ? (
                     <>
-                      <p>
-                        I am the AI that&lsquo;s here to help you unlock your
-                        next dream opportunity
+                      <p>Impressive background in {titleRole}</p>
+                      <br />
+                      <div className="flex flex-col items-center space-y-2">
+                        <p>Your main skills:</p>
+                        <div>
+                          {topSkills &&
+                            topSkills.map((skill, index) => (
+                              <Badge
+                                key={index}
+                                text={skill}
+                                colorRGB="190, 140, 255"
+                              />
+                            ))}
+                        </div>
+                      </div>
+                      <br />
+                      <p>Probability Of Passing:</p>
+                      <p className="text-[50px] text-lime-400">73%</p>
+                      <p className="text-gray-400">
+                        Rock this interview and increase your
+                      </p>
+                      <p className="text-gray-400">
+                        chance of passing by up to 25%
                       </p>
                       <br />
-                      <p>
-                        🎉 You&lsquo;ve been invited to take the next steps with{" "}
-                        <b>{findPositionData.findPosition.name}.</b> 🎉
-                      </p>
                       <br />
-                      <p>
-                        If you need a refresher, here&lsquo;s the{" "}
-                        <Link href={"https://google.com"} target="_blank">
-                          <b className="underline hover:text-slate-600">
-                            opportunity
-                          </b>
-                        </Link>{" "}
-                        info
-                      </p>
-                      <br />
-                      <br />
-                      <br />
-                      <p>
-                        When you&lsquo;re ready, click next and you&lsquo;ll be
-                        doing your first interview with me!
-                      </p>
+
+                      <div className="flex justify-center ">
+                        <div className="flex">
+                          <input type="checkbox" />
+                          <p className="mx-1 text-red-600">*</p>
+                        </div>
+                        <p>
+                          I acknowledge That my CV & responses will be stored
+                          and shared with Tesla Inc{" "}
+                        </p>
+                      </div>
                     </>
                   ) : (
                     <p> </p>
