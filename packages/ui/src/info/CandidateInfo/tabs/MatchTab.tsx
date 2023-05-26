@@ -476,7 +476,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                           src={
                             conversation.role == "assistant"
                               ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                              : member?.discordAvatar
+                              : member?.discordAvatar || ""
                           }
                           className="order-1 h-6 w-6 rounded-full"
                         />
