@@ -100,8 +100,9 @@ export const ChatSimple = ({
               {/* <div className="p:2 flex h-screen flex-1 flex-col justify-between sm:p-6"> */}
               {/* <p className="text-lg font-bold">Message Title</p> */}
               <div className="my-4">
-                {chatN && chatN.length
-                  ? chatN.map((chat: any, index: any) => (
+                {chatN && chatN.length ? (
+                  <>
+                    {chatN.map((chat: any, index: any) => (
                       <div className="chat-message p-2" key={index}>
                         <div
                           className={classNames(
@@ -134,8 +135,27 @@ export const ChatSimple = ({
                           />
                         </div>
                       </div>
-                    ))
-                  : placeholder}
+                    ))}
+                    {chatN[chatN.length - 1].user == "02" ? (
+                      <div className="chat-message flex items-center space-x-[5px] rounded-full pl-2">
+                        <div
+                          className="h-[6px] w-[6px] animate-bounce  rounded-full bg-gray-300"
+                          style={{ animationDelay: "100ms" }}
+                        ></div>
+                        <div
+                          className="h-[6px] w-[6px] animate-bounce rounded-full bg-gray-300"
+                          style={{ animationDelay: "200ms" }}
+                        ></div>
+                        <div
+                          className="h-[6px] w-[6px] animate-bounce  rounded-full bg-gray-300"
+                          style={{ animationDelay: "300ms" }}
+                        ></div>
+                      </div>
+                    ) : null}
+                  </>
+                ) : (
+                  placeholder
+                )}
               </div>
             </div>
           </Card>

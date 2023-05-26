@@ -21,10 +21,10 @@ ChartJS.register(
 
 function formatLabel(str: string, maxwidth: number) {
   var sections: any[] = [];
-  var words = str.split(" ");
+  var words = str?.split(" ");
   var temp = "";
 
-  words.forEach(function (item, index) {
+  words?.forEach(function (item, index) {
     if (temp.length > 0) {
       var concat = temp + " " + item;
 
