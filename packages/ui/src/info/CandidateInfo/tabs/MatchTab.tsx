@@ -435,13 +435,13 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <Card
           border
           shadow
-          className="my-4 max-h-fit overflow-scroll bg-white pb-4 "
+          className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white  pb-4"
         >
           <div
             id="summary-question-chat"
             className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
           >
-            <div className="my-4">
+            <div className="">
               {summaryQuestionSelected.subConversationAnswer.map(
                 (conversation: any, index: number) => (
                   <>
@@ -472,11 +472,14 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                             {conversation.content}
                           </span>
                         </div>
-                        {/* <img
-                          src={Users[chat.user].img}
-                          alt="My profile"
+                        <img
+                          src={
+                            conversation.role == "assistant"
+                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                              : member?.discordAvatar
+                          }
                           className="order-1 h-6 w-6 rounded-full"
-                        /> */}
+                        />
                       </div>
                     </div>
                   </>
