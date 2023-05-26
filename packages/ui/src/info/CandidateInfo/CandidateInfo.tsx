@@ -10,6 +10,7 @@ import {
   InfoTab,
   MatchTab,
   MeetingNotes,
+  ReportNotes,
   TextHeading3,
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
@@ -91,6 +92,12 @@ export const CandidateInfo = ({
       tab: "Notes",
       Content: () => (
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
+      ),
+    },
+    {
+      tab: "Report",
+      Content: () => (
+        <ReportNotes member={dataMember?.findMember} candidate={candidate} />
       ),
     },
     {
