@@ -1,4 +1,5 @@
 schema: "https://soil-api-backend-kgfromai2.up.railway.app/graphql"
+# schema: "http://localhost:5001/graphql"
 hooks:
   afterAllFileWrite:
     - prettier --write

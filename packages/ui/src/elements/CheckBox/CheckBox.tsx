@@ -9,6 +9,7 @@ export type CheckBoxProps = {
   radius?: "default" | "rounded" | "pill";
   bgColorRGB?: string;
   brColorRGB?: string;
+  className?: string;
   // eslint-disable-next-line no-unused-vars
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 } & InputHTMLAttributes<HTMLInputElement>;
@@ -21,12 +22,13 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
   radius = "default",
   bgColorRGB = "",
   brColorRGB = "",
+  className = "py-1 px-3",
   onChange,
 }) => {
-  const inputCls = clsx("font-Inter text-soilBody flex", {
-    "py-1 px-3 rounded-md": radius === "default",
-    "py-1 px-3 rounded-lg": radius === "rounded",
-    "py-1 px-3 rounded-full": radius === "pill",
+  const inputCls = clsx("font-Inter text-soilBody flex", className, {
+    "rounded-md": radius === "default",
+    "rounded-lg": radius === "rounded",
+    "rounded-full": radius === "pill",
   });
 
   return (
@@ -52,6 +54,9 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
           name={name}
           type="checkbox"
           required={required}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           onChange={(e) => {
             onChange(e);
           }}

@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 // import { PositionCandidatesFragment } from "../fragments/positionCandidatesFragment";
 
-export const FIND_POSITION_FULL = gql`
+export const FIND_POSITION_LIGHT = gql`
   query ($fields: findPositionInput!) {
     findPosition(fields: $fields) {
       _id
@@ -15,23 +15,8 @@ export const FIND_POSITION_FULL = gql`
           discordAvatar
           timeZone
           location
-          memberRole {
-            _id
-            title
-          }
           budget {
             perHour
-          }
-          nodes {
-            nodeData {
-              _id
-              name
-              node
-            }
-          }
-          previousProjects {
-            title
-            positionName
           }
           experienceLevel {
             total
@@ -58,6 +43,14 @@ export const FIND_POSITION_FULL = gql`
           score
           reason
         }
+        compareCandidatePosition {
+          CV_ConvoToPositionAverageScore
+          CV_ConvoToPosition {
+            categoryName
+            score
+            reason
+          }
+        }
       }
       talentList {
         _id
@@ -81,6 +74,7 @@ export const FIND_POSITION_FULL = gql`
           }
         }
       }
+      candidatesReadyToDisplay
       nodes {
         nodeData {
           _id

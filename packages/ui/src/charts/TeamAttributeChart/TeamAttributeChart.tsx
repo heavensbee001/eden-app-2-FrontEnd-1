@@ -32,22 +32,32 @@ export interface ITeamAttributeChartProps {
 
 const colors = [
   "#1abc9c60",
-  "#2ecc7160",
-  "#3498db60",
-  "#9b59b660",
-  "#34495e60",
-  "#f1c40f60",
-  "#e67e2260",
-  "#e74c3c60",
-  "#ecf0f160",
-  "#95a5a660",
+  // "#2ecc7160",
+  // "#3498db60",
+  // "#9b59b660",
+  // "#34495e60",
+  // "#f1c40f60",
+  // "#e67e2260",
+  // "#e74c3c60",
+  // "#ecf0f160",
+  // "#95a5a660",
+  "FFD4B260",
+  "FFF6BD60",
+  "CEEDC760",
+  "86C8BC60",
+  "FD8A8A60",
+  "F1F7B560",
+  "A8D1D160",
+  "9EA1D460",
 ];
 
 export const TeamAttributeChart = ({
   members,
   options = {},
 }: ITeamAttributeChartProps) => {
-  const labels = Object.keys(members[0].memberInfo.attributes);
+  const labels = Object.keys(members[0].memberInfo.attributes).map((attr) =>
+    attr.split(" ")
+  );
   const datasets = members.map(({ memberInfo }, i) => {
     return {
       label: memberInfo.discordName,

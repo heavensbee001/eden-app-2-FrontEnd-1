@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
-  FIND_POSITION_FULL,
+  // FIND_POSITION_FULL,
+  FIND_POSITION_LIGHT,
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
@@ -11,19 +12,24 @@ import {
   Button,
   CandidateInfo,
   CandidatesTableList,
-  GridItemSix,
-  GridLayout,
+  // GridItemSix,
+  // GridLayout,
   ListModeEnum,
   SelectList,
   TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
 
 import { NextPageWithLayout } from "../_app";
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 type Question = {
   _id: string;
@@ -64,6 +70,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
+  console.log("candidates totot= ", candidates);
+
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [trainModalOpen, setTrainModalOpen] = useState(false);
@@ -96,7 +104,7 @@ const PositionCRM: NextPageWithLayout = () => {
     data: findPositionData,
     loading: findPositionIsLoading,
     // error: findPositionError,
-  } = useQuery(FIND_POSITION_FULL, {
+  } = useQuery(FIND_POSITION_LIGHT, {
     variables: {
       fields: {
         _id: positionID,
@@ -491,8 +499,13 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   return (
-    <GridLayout className="">
-      <GridItemSix>
+    <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
+      <div
+        className={classNames(
+          `z-20 transition-all duration-200 ease-in-out`,
+          selectedUserId ? "w-[calc(50%-1rem)]" : "w-full"
+        )}
+      >
         <div className="mb-4 flex h-10 items-center">
           <h1 className="mr-6 text-2xl font-medium">
             {findPositionData && findPositionData.findPosition.name
@@ -514,11 +527,22 @@ const PositionCRM: NextPageWithLayout = () => {
             <span className="text-sm text-gray-400">Link copied!</span>
           )}
           <Button
-            className="ml-auto"
+            className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+            radius="pill"
             variant="secondary"
             onClick={handleTrainButtonClick}
           >
             Train Eden AI
+            <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#ff5656]">
+              <div className="h-[40px] w-[40px] min-w-[40px]">
+                <Image
+                  src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                  width={40}
+                  height={40}
+                  alt=""
+                />
+              </div>
+            </div>
           </Button>
           {/* <Button
             variant="secondary"
@@ -612,6 +636,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           </div>
           <CandidatesTableList
+            candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
@@ -647,24 +672,37 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           ) : null}
         </div>
-      </GridItemSix>
-      <GridItemSix className="relative">
-        <div className="scrollbar-hide -my-4 ml-1 h-[calc(100vh-4rem)] w-[calc(100%+1rem)] overflow-y-scroll bg-white shadow-md">
-          {selectedUserId ? (
-            <CandidateInfo
-              memberID={selectedUserId || ""}
-              percentage={selectedUserScore}
-              summaryQuestions={selectedUserSummaryQuestions}
-              mostRelevantMemberNode={mostRelevantMemberNode}
-            />
-          ) : (
+      </div>
+      <div
+        className={classNames(
+          "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+          selectedUserId ? "w-[50vw]" : "w-0"
+        )}
+      >
+        <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
+          {/* {selectedUserId ? ( */}
+          <CandidateInfo
+            key={selectedUserId || ""}
+            memberID={selectedUserId || ""}
+            percentage={selectedUserScore}
+            summaryQuestions={selectedUserSummaryQuestions}
+            mostRelevantMemberNode={mostRelevantMemberNode}
+            candidate={candidates?.find(
+              (candidate) =>
+                candidate?.user?._id?.toString() == selectedUserId?.toString()
+            )}
+            onClose={() => {
+              setSelectedUserId(null);
+            }}
+          />
+          {/* ) : (
             <div className="w-full pt-20 text-center">
               <p className="text-gray-400">Select a candidate</p>
             </div>
-          )}
+          )} */}
         </div>
-      </GridItemSix>
-    </GridLayout>
+      </div>
+    </div>
   );
 };
 

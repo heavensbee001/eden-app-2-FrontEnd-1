@@ -1,11 +1,11 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { Members, SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   BackgroundMatchChart,
   Card,
   PopoverScoreReason,
   TeamAttributeChart,
-  TextHeading2,
+  // TextHeading2,
   TextInputLabel,
   TextLabel1,
 } from "@eden/package-ui";
@@ -32,23 +32,23 @@ const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
   }
 `;
 
-const dataRadarchart = [
-  {
-    memberInfo: {
-      discordName: "Kwame",
-      attributes: {
-        Coordinator: 60,
-        DirectorTP: 70,
-        Helper: 70,
-        Inspirer: 80,
-        Motivator: 70,
-        Observer: 90,
-        Reformer: 50,
-        Supporter: 40,
-      },
-    },
-  },
-];
+// const dataRadarchart = [
+//   {
+//     memberInfo: {
+//       discordName: "Kwame",
+//       attributes: {
+//         Coordinator: 60,
+//         DirectorTP: 70,
+//         Helper: 70,
+//         Inspirer: 80,
+//         Motivator: 70,
+//         Observer: 90,
+//         Reformer: 50,
+//         Supporter: 40,
+//       },
+//     },
+//   },
+// ];
 
 ChartJS.register(ArcElement, Legend, Tooltip);
 
@@ -121,15 +121,14 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           {
             data: dataPT,
             backgroundColor: [
-              "#F44336",
-              "#E91E63",
-              "#9C27B0",
-              "#673AB7",
-              "#3F51B5",
-              "#2196F3",
-              "#00BCD4",
-              "#009688",
-              "#4CAF50",
+              "#FFD4B2",
+              "#FFF6BD",
+              "#CEEDC7",
+              "#86C8BC",
+              "#FD8A8A",
+              "#F1F7B5",
+              "#A8D1D1",
+              "#9EA1D4",
             ],
           },
         ],
@@ -149,6 +148,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const [radioChart, setRadioChart] = useState<radiochartType[]>([]);
 
   const optionsRadar = {
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+    },
     scales: {
       r: {
         suggestedMin: 30,
@@ -188,12 +192,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         } = data.memberRadioChartCharacterAttributes[i];
 
         if (elementT && elementT.attributeName) {
-          let nameAtt = elementT.attributeName;
+          const nameAtt = elementT.attributeName;
 
           // how to make maximum 11 letters on nameAtt
-          if (nameAtt.length > 11) {
-            nameAtt = nameAtt.substring(0, 11) + "...";
-          }
+          // if (nameAtt.length > 11) {
+          //   nameAtt = nameAtt.substring(0, 11) + "...";
+          // }
 
           attributesT[nameAtt] = elementT.score;
 
@@ -232,11 +236,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   useEffect(() => {
     const dataBarChartPr: BarChartQuestions[] = [];
+    const dataBarChartMaxLength: number = 6;
 
     summaryQuestions?.forEach((question: any) => {
       console.log("question = ", question);
 
-      if (question?.score) {
+      if (question?.score && dataBarChartPr.length < dataBarChartMaxLength) {
         dataBarChartPr.push({
           questionID: question?.questionID,
           questionContent: question?.questionContentSmall,
@@ -249,31 +254,62 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     setDataBarChart(dataBarChartPr);
   }, [summaryQuestions]);
 
-  const data = {
-    labels: ["One", "Two", "Three"],
-    datasets: [
-      {
-        data: [3, 6, 9],
-        backgroundColor: ["aqua", "orangered", "purple"],
-      },
-    ],
-  };
+  // const data = {
+  //   labels: ["One", "Two", "Three"],
+  //   datasets: [
+  //     {
+  //       data: [3, 6, 9],
+  //       backgroundColor: ["aqua", "orangered", "purple"],
+  //     },
+  //   ],
+  // };
 
-  const options = {
-    scale: {
-      ticks: {
-        min: 0,
-        max: 100,
-      },
-    },
-  };
+  // const options = {
+  //   scale: {
+  //     ticks: {
+  //       min: 0,
+  //       max: 100,
+  //     },
+  //   },
+  // };
 
   return (
-    <div className="relative pt-4">
-      <div className="mb-8 grid grid-cols-4">
-        <div className="col-span-1"></div>
-        <div className="col-span-2">
+    <div className="relative pb-4 pt-4">
+      <div className="mb-8 grid grid-cols-12">
+        <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
+            <TextLabel1>PieChart</TextLabel1>
+          </p>
+          {/* <Pie data={data} options={options} /> */}
+          <Pie
+            data={pieChartData}
+            options={{
+              layout: {
+                padding: 12,
+              },
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+              },
+            }}
+          />
+        </div>
+        <div className="col-span-6 mb-4">
+          <p className="mb-2 text-center">
+            <TextLabel1>Radar Chart</TextLabel1>
+          </p>
+          {/* <Pie data={data} options={options} /> */}
+          {/* <TeamAttributeChart members={dataRadarchart} /> */}
+          {radioChart?.length > 0 && (
+            <div className="-mt-8">
+              <TeamAttributeChart members={radioChart} options={optionsRadar} />
+            </div>
+          )}
+        </div>
+        <div className="col-span-2"></div>
+        <div className="col-span-8">
+          <p className="mb-4 text-center">
             <TextLabel1>Background match</TextLabel1>
           </p>
           {/* <BackgroundMatchChart
@@ -281,36 +317,21 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             backgroundMatchData={exampleData}
           /> */}
           {dataBarChart.length > 0 && (
-            <BackgroundMatchChart
-              memberName={member?.discordName ?? ""}
-              backgroundMatchData={dataBarChart}
-            />
+            <div className="h-[300px]">
+              <BackgroundMatchChart
+                memberName={member?.discordName ?? ""}
+                backgroundMatchData={dataBarChart}
+              />
+            </div>
           )}
         </div>
-        <div className="col-span-2">
-          <p className="mb-2 text-center">
-            <TextLabel1>PieChart</TextLabel1>
-          </p>
-          {/* <Pie data={data} options={options} /> */}
-          <Pie data={pieChartData} />
-        </div>
-        {radioChart?.length > 0 && (
-          <div className="col-span-2">
-            <p className="mb-2 text-center">
-              <TextLabel1>Radar Chart</TextLabel1>
-            </p>
-            {/* <Pie data={data} options={options} /> */}
-            {/* <TeamAttributeChart members={dataRadarchart} /> */}
-            <TeamAttributeChart members={radioChart} options={optionsRadar} />
-          </div>
-        )}
-        <div className="col-span-1"></div>
+        <div className="col-span-2"></div>
       </div>
       <p className="mb-2 text-center">
         <TextLabel1>Expertise</TextLabel1>
       </p>
       <div
-        className={`mx-auto mb-2 grid grid-cols-3 gap-4`}
+        className={`mx-auto mb-2 grid grid-cols-4 gap-6`}
         // className={`mx-auto grid grid-cols-${
         //   summaryQuestions?.length === 1 ? 3 : summaryQuestions?.length
         // } gap-4`}
@@ -319,11 +340,25 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ? summaryQuestions.map((item, index) => (
               <div
                 key={index}
-                className="z-20 h-full cursor-pointer rounded-md border shadow-sm transition ease-in-out hover:scale-[1.02] hover:bg-lime-50 hover:shadow-lime-200"
-                onClick={() => setSummaryQuestionSelected(item)}
+                className={classNames(
+                  "transition-scale z-10 h-full cursor-pointer rounded-3xl border bg-gray-50 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-white hover:shadow-lime-200",
+                  summaryQuestionSelected?.questionID === item.questionID
+                    ? "border-accentColor scale-[1.02] bg-lime-50"
+                    : ""
+                )}
+                onClick={() => {
+                  setSummaryQuestionSelected(item);
+                  if (document) {
+                    setTimeout(() => {
+                      document
+                        .getElementById("summary-question-chat")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }, 200);
+                  }
+                }}
               >
                 <PopoverScoreReason question={item}>
-                  <div className="px-4 pb-4 pt-2">
+                  <div className="flex min-h-[120px] flex-col items-center justify-evenly py-4">
                     <div className="mx-auto mb-2 flex h-10 items-center justify-center">
                       <p className="text-center">
                         <TextLabel1 className="text-black">
@@ -341,18 +376,14 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                           true
                         )}
                         {item.score ? (
-                          <div className="ml-1 font-black">
-                            <TextHeading2
-                              className={`${
-                                index % 2
-                                  ? "text-soilPurple"
-                                  : index % 3
-                                  ? "text-soilOrange"
-                                  : "text-soilTurquoise"
-                              }`}
+                          <div className="ml-1 text-center text-lg font-black leading-tight">
+                            <p
+                              className={classNames(
+                                `text-${getPercentageColor(item.score * 10)}`
+                              )}
                             >
-                              {item.score * 10}%
-                            </TextHeading2>
+                              {getPercentageText(item.score * 10)}
+                            </p>
                           </div>
                         ) : //  : (
                         //   <TextInputLabel className="text-xs text-black">
@@ -400,61 +431,97 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           : null}
       </div> */}
 
-      <Card
-        border
-        shadow
-        className="my-4 max-h-fit overflow-scroll bg-white pb-4 "
-      >
-        <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3">
-          <div className="my-4">
-            {summaryQuestionSelected &&
-            summaryQuestionSelected.subConversationAnswer
-              ? summaryQuestionSelected.subConversationAnswer.map(
-                  (conversation: any, index: number) => (
-                    <>
-                      <div className="chat-message p-2" key={index}>
+      {summaryQuestionSelected &&
+      summaryQuestionSelected.subConversationAnswer ? (
+        <Card
+          border
+          shadow
+          className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white  pb-4"
+        >
+          <div
+            id="summary-question-chat"
+            className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
+          >
+            <div className="">
+              {summaryQuestionSelected.subConversationAnswer.map(
+                (conversation: any, index: number) => (
+                  <>
+                    <div className="chat-message p-2" key={index}>
+                      <div
+                        className={classNames(
+                          conversation.role == "assistant" ? "" : "justify-end",
+                          "flex items-start"
+                        )}
+                      >
                         <div
                           className={classNames(
                             conversation.role == "assistant"
-                              ? ""
-                              : "justify-end",
-                            "flex items-start"
+                              ? "order-2"
+                              : "order-1",
+                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                           )}
                         >
-                          <div
+                          <span
+                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
                             className={classNames(
                               conversation.role == "assistant"
-                                ? "order-2"
-                                : "order-1",
-                              "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
                             )}
                           >
-                            <span
-                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                              className={classNames(
-                                conversation.role == "assistant"
-                                  ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                  : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
-                              )}
-                            >
-                              {conversation.content}
-                            </span>
-                          </div>
-                          {/* <img
-                          src={Users[chat.user].img}
-                          alt="My profile"
-                          className="order-1 h-6 w-6 rounded-full"
-                        /> */}
+                            {conversation.content}
+                          </span>
                         </div>
+                        <img
+                          src={
+                            conversation.role == "assistant"
+                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                              : member?.discordAvatar || ""
+                          }
+                          className="order-1 h-6 w-6 rounded-full"
+                        />
                       </div>
-                    </>
-                  )
+                    </div>
+                  </>
                 )
-              : null}
+              )}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      ) : null}
     </div>
   );
+};
+
+const getPercentageColor = (percentage: number) => {
+  let color = "";
+
+  if (percentage >= 70) {
+    color = "accentColor";
+  } else if (percentage >= 40) {
+    color = "yellow-400";
+  } else {
+    color = "red-400";
+  }
+
+  return color;
+};
+
+const getPercentageText = (percentage: number) => {
+  let text = "";
+
+  if (percentage >= 90) {
+    text = "very strong answer";
+  } else if (percentage >= 70) {
+    text = "strong answer";
+  } else if (percentage >= 50) {
+    text = "neutral answer";
+  } else if (percentage >= 40) {
+    text = "weak answer";
+  } else {
+    text = "very weak answer";
+  }
+
+  return text;
 };

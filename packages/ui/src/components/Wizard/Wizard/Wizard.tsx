@@ -112,8 +112,10 @@ export const Wizard = ({
         <Button
           className="!border-white !bg-white text-gray-50 hover:!text-gray-200"
           variant="secondary"
-          onClick={handleNextClick}
-          disabled={isNextDisabled()}
+          onClick={() => {
+            setStep(step + 1);
+          }}
+          // disabled={isNextDisabled()}
         >
           Next
         </Button>

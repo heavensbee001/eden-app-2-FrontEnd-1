@@ -29,6 +29,18 @@ export type Ai = {
   serverID?: Maybe<Scalars["String"]>;
 };
 
+export type CvToPositionType = {
+  __typename?: "CVToPositionType";
+  content?: Maybe<Scalars["String"]>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
+export type Cv_ConvoToPositionType = {
+  __typename?: "CV_ConvoToPositionType";
+  content?: Maybe<Scalars["String"]>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
 export type CVtoJobsInput = {
   cvString?: InputMaybe<Scalars["String"]>;
 };
@@ -50,6 +62,8 @@ export type CVtoSummaryOutput = {
 export type CandidateType = {
   __typename?: "CandidateType";
   acceptedOrRejected?: Maybe<Scalars["Boolean"]>;
+  averageScoreNotesInterview?: Maybe<Scalars["Float"]>;
+  compareCandidatePosition?: Maybe<CompareCandidatePositionType>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
   interviewQuestionsForCandidate?: Maybe<
     Array<Maybe<InterviewQuestionsForCandidateType>>
@@ -367,6 +381,7 @@ export type Mutation = {
   autoUpdateUserInfoFromCV?: Maybe<AutoUpdateUserInfoFromCvOutput>;
   calculateReputation?: Maybe<Members>;
   changeTeamMember_Phase_Project?: Maybe<Project>;
+  conversationCVPositionToReport?: Maybe<ConversationCvPositionToReportOutput>;
   createEndorsementLink?: Maybe<EndorsementLink>;
   createError?: Maybe<ErrorLog>;
   createFakeEndorsement?: Maybe<Endorsement>;
@@ -436,6 +451,7 @@ export type Mutation = {
   updateUsersTalentListPosition?: Maybe<Position>;
   uploadUserDataGPT?: Maybe<Members>;
   useAI_OnMessage?: Maybe<UseAi_OnMessageOutput>;
+  websiteToMemoryCompany?: Maybe<WebsiteToMemoryCompanyOutput>;
 };
 
 export type MutationCVtoJobsArgs = {
@@ -544,6 +560,10 @@ export type MutationCalculateReputationArgs = {
 
 export type MutationChangeTeamMember_Phase_ProjectArgs = {
   fields: ChangeTeamMember_Phase_ProjectInput;
+};
+
+export type MutationConversationCvPositionToReportArgs = {
+  fields?: InputMaybe<ConversationCvPositionToReportInput>;
 };
 
 export type MutationCreateEndorsementLinkArgs = {
@@ -822,6 +842,10 @@ export type MutationUseAi_OnMessageArgs = {
   fields?: InputMaybe<UseAi_OnMessageInput>;
 };
 
+export type MutationWebsiteToMemoryCompanyArgs = {
+  fields?: InputMaybe<WebsiteToMemoryCompanyInput>;
+};
+
 export type Node = {
   __typename?: "Node";
   _id?: Maybe<Scalars["ID"]>;
@@ -905,6 +929,7 @@ export type Position = {
   convRecruiterReadyToDisplay?: Maybe<Scalars["Boolean"]>;
   name?: Maybe<Scalars["String"]>;
   nodes?: Maybe<Array<Maybe<NodeDataType>>>;
+  positionsRequirements?: Maybe<PositionsRequirementsType>;
   questionsToAsk?: Maybe<Array<Maybe<QuestionType>>>;
   talentList?: Maybe<Array<Maybe<TalentListType>>>;
   url?: Maybe<Scalars["String"]>;
@@ -960,6 +985,9 @@ export type Query = {
   activeMembersStats?: Maybe<Array<Maybe<ResultCount>>>;
   activeUsersQueryStats?: Maybe<Array<Maybe<ResultCount2>>>;
   adminFindAllSkillsEveryState?: Maybe<Array<Maybe<Skills>>>;
+  candidateNotesComparePositionEdenAI?: Maybe<
+    Array<Maybe<CandidateNotesComparePositionEdenAiOutput>>
+  >;
   candidateNotesEdenAI?: Maybe<Array<Maybe<CandidateNotesEdenAiOutput>>>;
   conversationToSummaryGPT?: Maybe<ConversationToSummaryGptOutput>;
   createProfileExperienceWithChatCVMemory?: Maybe<CreateProfileExperienceWithChatCvMemoryOutput>;
@@ -1081,6 +1109,10 @@ export type QueryActiveUsersQueryStatsArgs = {
 
 export type QueryAdminFindAllSkillsEveryStateArgs = {
   fields?: InputMaybe<FindSkillsInput>;
+};
+
+export type QueryCandidateNotesComparePositionEdenAiArgs = {
+  fields?: InputMaybe<CandidateNotesComparePositionEdenAiInput>;
 };
 
 export type QueryCandidateNotesEdenAiArgs = {
@@ -1989,6 +2021,18 @@ export type CalculateReputationInput = {
   userID?: InputMaybe<Scalars["ID"]>;
 };
 
+export type CandidateNotesComparePositionEdenAiInput = {
+  memberID?: InputMaybe<Scalars["ID"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type CandidateNotesComparePositionEdenAiOutput = {
+  __typename?: "candidateNotesComparePositionEdenAIOutput";
+  categoryName?: Maybe<Scalars["String"]>;
+  reason?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
 export type CandidateNotesEdenAiInput = {
   memberID?: InputMaybe<Scalars["ID"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
@@ -2038,6 +2082,13 @@ export type CollaborationLinksType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export type CompareCandidatePositionType = {
+  __typename?: "compareCandidatePositionType";
+  CVToPosition?: Maybe<CvToPositionType>;
+  CV_ConvoToPosition?: Maybe<Array<Maybe<NotesInterviewType>>>;
+  CV_ConvoToPositionAverageScore?: Maybe<Scalars["Float"]>;
+};
+
 export type Conn_Node_WhType = {
   __typename?: "conn_node_whType";
   nodeConnID?: Maybe<Scalars["String"]>;
@@ -2074,6 +2125,19 @@ export type ConvRecruiterType = {
   user?: Maybe<Members>;
 };
 
+export type ConversationCvPositionToReportInput = {
+  memberID?: InputMaybe<Scalars["ID"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type ConversationCvPositionToReportOutput = {
+  __typename?: "conversationCVPositionToReportOutput";
+  CV_ConvoToPosition?: Maybe<Array<Maybe<NotesInterviewType2>>>;
+  CV_ConvoToPositionAverageScore?: Maybe<Scalars["Float"]>;
+  report?: Maybe<Scalars["String"]>;
+  success?: Maybe<Scalars["Boolean"]>;
+};
+
 export type ConversationInput = {
   content?: InputMaybe<Scalars["String"]>;
   role?: InputMaybe<Scalars["String"]>;
@@ -2092,6 +2156,7 @@ export type ConversationToSummaryGptOutput = {
 export type ConversationType = {
   __typename?: "conversationType";
   content?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["Date"]>;
   role?: Maybe<Scalars["String"]>;
 };
 
@@ -3011,6 +3076,7 @@ export type InterviewEdenAiInput = {
 export type InterviewEdenAiOutput = {
   __typename?: "interviewEdenAIOutput";
   conversationID?: Maybe<Scalars["ID"]>;
+  date?: Maybe<Scalars["Date"]>;
   questionAskingNow?: Maybe<Scalars["String"]>;
   reply?: Maybe<Scalars["String"]>;
   timesAsked?: Maybe<Scalars["Int"]>;
@@ -3255,6 +3321,7 @@ export type Members_AutocompleteInput = {
 
 export type MessageChat = {
   content?: InputMaybe<Scalars["String"]>;
+  date?: InputMaybe<Scalars["Date"]>;
   role?: InputMaybe<Scalars["String"]>;
 };
 
@@ -3397,6 +3464,13 @@ export type NotesInterviewType = {
   score?: Maybe<Scalars["Float"]>;
 };
 
+export type NotesInterviewType2 = {
+  __typename?: "notesInterviewType2";
+  categoryName?: Maybe<Scalars["String"]>;
+  reason?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
 export type OnboardingInput = {
   percentage?: InputMaybe<Scalars["Int"]>;
   signup?: InputMaybe<Scalars["Boolean"]>;
@@ -3434,6 +3508,11 @@ export enum PhaseType {
 export type PositionsAppliedType = {
   __typename?: "positionsAppliedType";
   positionID?: Maybe<Scalars["ID"]>;
+};
+
+export type PositionsRequirementsType = {
+  __typename?: "positionsRequirementsType";
+  content?: Maybe<Scalars["String"]>;
 };
 
 export type PrefPastSearch = {
@@ -3662,7 +3741,10 @@ export type SaveCVtoUserInput = {
 
 export type SaveCVtoUserOutput = {
   __typename?: "saveCVtoUserOutput";
+  cvSummary?: Maybe<Scalars["String"]>;
+  mainSkills?: Maybe<Array<Maybe<Scalars["String"]>>>;
   success?: Maybe<Scalars["Boolean"]>;
+  titleRole?: Maybe<Scalars["String"]>;
 };
 
 export type SaveCoreProductFeatureInterationInput = {
@@ -4085,6 +4167,17 @@ export type UseAi_OnMessageOutput = {
   expertiseIdentified?: Maybe<Array<Maybe<Scalars["String"]>>>;
   keywordsMessage?: Maybe<Array<Maybe<Scalars["String"]>>>;
   mainExpertise?: Maybe<Scalars["String"]>;
+};
+
+export type WebsiteToMemoryCompanyInput = {
+  message?: InputMaybe<Scalars["String"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type WebsiteToMemoryCompanyOutput = {
+  __typename?: "websiteToMemoryCompanyOutput";
+  report?: Maybe<Scalars["String"]>;
+  success?: Maybe<Scalars["Boolean"]>;
 };
 
 export type WeightModulesInput = {

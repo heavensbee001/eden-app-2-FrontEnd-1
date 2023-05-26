@@ -19,22 +19,77 @@ ChartJS.register(
   Legend
 );
 
+function formatLabel(str: string, maxwidth: number) {
+  var sections: any[] = [];
+  var words = str?.split(" ");
+  var temp = "";
+
+  words?.forEach(function (item, index) {
+    if (temp.length > 0) {
+      var concat = temp + " " + item;
+
+      if (concat.length > maxwidth) {
+        sections.push(temp);
+        temp = "";
+      } else {
+        if (index == words.length - 1) {
+          sections.push(concat);
+          return;
+        } else {
+          temp = concat;
+          return;
+        }
+      }
+    }
+
+    if (index == words.length - 1) {
+      sections.push(item);
+      return;
+    }
+
+    if (item.length < maxwidth) {
+      temp = item;
+    } else {
+      sections.push(item);
+    }
+  });
+
+  return sections;
+}
+
 export const options = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
-      // position: "top" as const,
-      display: false,
+      position: "bottom" as const,
+      // display: false,
     },
     // title: {
     //   display: true,
     //   text: "Background Match",
     // },
+    tooltip: {
+      callbacks: {
+        title: (tooltipItems: any[]) => {
+          const res = tooltipItems[0].label.split(",").join(" ");
+
+          return res;
+        },
+      },
+    },
   },
   scales: {
     x: {
       grid: {
         display: false,
+      },
+      ticks: {
+        min: 0,
+        autoSkip: false,
+        display: true,
+        maxRotation: 0,
+        font: { size: 8 },
       },
     },
     y: {
@@ -66,8 +121,8 @@ export const BackgroundMatchChart: FC<BackgroundMatchChartProps> = ({
 
   useMemo(() => {
     if (memberName && backgroundMatchData) {
-      const barsLabels = backgroundMatchData.map(
-        (item) => item.questionContent
+      const barsLabels = backgroundMatchData.map((item) =>
+        formatLabel(item.questionContent, 8)
       );
       const memberData = backgroundMatchData.map((item) => item.userPercentage);
       const averageData = backgroundMatchData.map(
@@ -80,12 +135,12 @@ export const BackgroundMatchChart: FC<BackgroundMatchChartProps> = ({
           {
             label: memberName,
             data: memberData,
-            backgroundColor: "rgba(23, 48, 232)",
+            backgroundColor: "rgba(124, 235, 215)",
           },
           {
             label: "Average Candidate",
             data: averageData,
-            backgroundColor: "rgba(100, 151, 227)",
+            backgroundColor: "rgba(211, 232, 228)",
           },
         ],
       });

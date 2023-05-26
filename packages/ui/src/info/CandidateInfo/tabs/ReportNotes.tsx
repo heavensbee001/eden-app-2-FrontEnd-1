@@ -19,14 +19,13 @@ interface Props {
 type Category = {
   categoryName: string;
   reason: string[];
+  score: number;
 };
 
 type meetingNotesType = Category[];
 
-export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
-  const [meetingNotesData, setMeetingNotesData] = useState<meetingNotesType>(
-    []
-  );
+export const ReportNotes: FC<Props> = ({ member, candidate }) => {
+  const [meetingNotesData, setReportNotesData] = useState<meetingNotesType>([]);
 
   console.log("member = ", member);
 
@@ -40,16 +39,19 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
   //   onCompleted: (data) => {
   //     console.log("data = ", data);
 
-  //     setMeetingNotesData(data.candidateNotesEdenAI);
+  //     setReportNotesData(data.candidateNotesEdenAI);
   //   },
   // });
 
   useEffect(() => {
     // if (dataProject?.findProject) setProject(dataProject?.findProject);
-    console.log("candidate = 2", candidate);
+    console.log(
+      "candidate.compareCandidatePosition = 2",
+      candidate?.compareCandidatePosition
+    );
 
-    if (candidate?.notesInterview)
-      setMeetingNotesData(candidate.notesInterview);
+    if (candidate?.compareCandidatePosition?.CV_ConvoToPosition)
+      setReportNotesData(candidate.compareCandidatePosition.CV_ConvoToPosition);
   }, [candidate]);
 
   return (
@@ -59,8 +61,11 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
           {meetingNotesData
             ? meetingNotesData?.map((d, i) => (
                 <div key={i} className="w-full p-4 md:w-1/2">
-                  <div className="rounded-lg border bg-white p-6 shadow">
-                    <h3 className="mb-4 text-lg font-bold">{d.categoryName}</h3>
+                  <div className="relative rounded-lg border bg-white p-6 shadow">
+                    <div className="absolute right-2 top-2 rounded-full bg-blue-200 px-4 py-2 text-lg font-semibold">
+                      {d.score}
+                    </div>
+                    <p className="mb-4 text-lg font-bold">{d.categoryName}</p>
                     <ul className="list-disc pl-6">
                       {d.reason.map((r, j) => (
                         <li key={j}>{r.replace("- ", "")}</li>
