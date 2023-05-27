@@ -236,11 +236,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   useEffect(() => {
     const dataBarChartPr: BarChartQuestions[] = [];
+    const dataBarChartMaxLength: number = 6;
 
     summaryQuestions?.forEach((question: any) => {
       console.log("question = ", question);
 
-      if (question?.score) {
+      if (question?.score && dataBarChartPr.length < dataBarChartMaxLength) {
         dataBarChartPr.push({
           questionID: question?.questionID,
           questionContent: question?.questionContentSmall,
@@ -274,8 +275,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   return (
     <div className="relative pb-4 pt-4">
-      <div className="mb-8 grid grid-cols-4">
-        <div className="col-span-2 mb-4">
+      <div className="mb-8 grid grid-cols-12">
+        <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
             <TextLabel1>PieChart</TextLabel1>
           </p>
@@ -294,7 +295,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             }}
           />
         </div>
-        <div className="col-span-2 mb-4">
+        <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
             <TextLabel1>Radar Chart</TextLabel1>
           </p>
@@ -306,8 +307,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             </div>
           )}
         </div>
-        <div className="col-span-1"></div>
-        <div className="col-span-2">
+        <div className="col-span-2"></div>
+        <div className="col-span-8">
           <p className="mb-4 text-center">
             <TextLabel1>Background match</TextLabel1>
           </p>
@@ -324,7 +325,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             </div>
           )}
         </div>
-        <div className="col-span-1"></div>
+        <div className="col-span-2"></div>
       </div>
       <p className="mb-2 text-center">
         <TextLabel1>Expertise</TextLabel1>
@@ -435,13 +436,13 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <Card
           border
           shadow
-          className="my-4 max-h-fit overflow-scroll bg-white pb-4 "
+          className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white  pb-4"
         >
           <div
             id="summary-question-chat"
             className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
           >
-            <div className="my-4">
+            <div className="">
               {summaryQuestionSelected.subConversationAnswer.map(
                 (conversation: any, index: number) => (
                   <>
@@ -472,11 +473,14 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                             {conversation.content}
                           </span>
                         </div>
-                        {/* <img
-                          src={Users[chat.user].img}
-                          alt="My profile"
+                        <img
+                          src={
+                            conversation.role == "assistant"
+                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                              : member?.discordAvatar || ""
+                          }
                           className="order-1 h-6 w-6 rounded-full"
-                        /> */}
+                        />
                       </div>
                     </div>
                   </>
