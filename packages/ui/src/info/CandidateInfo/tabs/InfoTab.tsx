@@ -113,9 +113,9 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
             <div className="col-1 p-2">
               <section className="mb-2 w-full text-left">
                 <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
-                <div className="ml-4 inline-flex flex-wrap">
+                <div className="ml-4  flex-wrap">
                   {mostRelevantMemberNode[member?._id].nodes
-                    .slice(0, 10)
+                    .slice(0, 3)
                     .map((node: NodeDisplay, index: number) => (
                       <Badge
                         text={node?.nameRelevantNode || ""}
