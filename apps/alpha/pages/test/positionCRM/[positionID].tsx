@@ -129,6 +129,8 @@ const PositionCRM: React.FC = () => {
     },
   });
 
+  console.log("dataPosition = ", dataPosition);
+
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [trainModalOpen, setTrainModalOpen] = useState(false);
 
