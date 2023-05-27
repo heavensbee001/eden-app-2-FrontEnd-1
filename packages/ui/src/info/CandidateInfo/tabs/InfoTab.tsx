@@ -31,8 +31,6 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
   const [seeMore, setSeeMore] = useState(false);
 
-  console.log("mostRelevantMemberNode 00303003 = ", mostRelevantMemberNode);
-
   return (
     <>
       <div className="mb-4 grid grid-cols-2">
