@@ -31,7 +31,6 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
   const [seeMore, setSeeMore] = useState(false);
 
-
   return (
     <>
       <div className="mb-4 grid grid-cols-2">
@@ -114,9 +113,17 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
                 <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
                 <div className="ml-4  flex-wrap">
                   {mostRelevantMemberNode[member?._id].nodes
-                    .slice(0, 3)
+                    .slice(0, 7)
                     .map((node: NodeDisplay, index: number) => (
-                      <div />
+                      <Badge
+                        text={node?.nameRelevantNode || ""}
+                        key={index}
+                        // className={`bg-soilPurple/20 py-px text-xs`}
+                        // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
+                        // className={`px-2 py-1 text-white rounded bg-purple-400`}
+                        className={`rounded px-1 py-1 text-xs text-white ${node.color}`}
+                        cutText={17}
+                      />
                     ))}
                 </div>
               </section>
