@@ -24,6 +24,9 @@ export const SAVE_CV_TO_USER = gql`
   mutation SaveCVtoUser($fields: saveCVtoUserInput) {
     saveCVtoUser(fields: $fields) {
       success
+      titleRole
+      mainSkills
+      cvSummary
     }
   }
 `;
@@ -33,6 +36,8 @@ export interface ICVUploadGPTProps {
   seed?: string;
   positionID?: string | string[] | undefined;
   handleEnd?: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onDataReceived?: (data: string) => void;
 }
 
 export const CVUploadGPT = ({
@@ -42,6 +47,7 @@ export const CVUploadGPT = ({
   seed,
   positionID,
   handleEnd,
+  onDataReceived,
 }: ICVUploadGPTProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -60,6 +66,8 @@ export const CVUploadGPT = ({
     // },
     onCompleted: (data) => {
       console.log("------>", data);
+      // sendDataToInterview(data);
+      sendDataToInterview(data);
 
       setUploading(false);
       setUploaded(true);
@@ -73,6 +81,12 @@ export const CVUploadGPT = ({
       toast.error(err.message);
     },
   });
+
+  const sendDataToInterview = (data: string) => {
+    if (onDataReceived) {
+      onDataReceived(data);
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -270,7 +284,7 @@ export const CVUploadGPT = ({
                 : ""
             }`}
           >
-            Upload .pdf file
+            Upload Your CV
           </div>
           {uploaded && (
             <BsCheckCircle

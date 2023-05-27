@@ -116,15 +116,7 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
                   {mostRelevantMemberNode[member?._id].nodes
                     .slice(0, 3)
                     .map((node: NodeDisplay, index: number) => (
-                      <Badge
-                        text={node?.nameRelevantNode || ""}
-                        key={index}
-                        // className={`bg-soilPurple/20 py-px text-xs`}
-                        // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
-                        // className={`px-2 py-1 text-white rounded bg-purple-400`}
-                        className={`rounded px-1 py-1 text-xs text-white ${node.color}`}
-                        cutText={17}
-                      />
+                      <div />
                     ))}
                 </div>
               </section>
