@@ -68,7 +68,6 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     setRowObjectData(candidate);
   };
 
-  // console.log("candidatesList = ", candidatesList);
 
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">

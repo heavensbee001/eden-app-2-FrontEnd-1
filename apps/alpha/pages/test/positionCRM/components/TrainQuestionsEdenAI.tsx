@@ -56,8 +56,6 @@ const TrainQuestionsEdenAI = ({
     // skip: positionID == "" || positionID == null,
   });
 
-  console.log("questions = ", questions);
-
   const [newQuestion, setNewQuestion] = useState("");
 
   const handleQuestionAdd = () => {

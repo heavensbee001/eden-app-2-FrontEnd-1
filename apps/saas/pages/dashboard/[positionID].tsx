@@ -70,7 +70,6 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  // console.log("candidates totot= ", candidates);
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
