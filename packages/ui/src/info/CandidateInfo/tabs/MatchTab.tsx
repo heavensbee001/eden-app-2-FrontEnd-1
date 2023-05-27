@@ -12,6 +12,7 @@ import {
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 import { FC, useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
+import { GoGraph } from "react-icons/go";
 
 const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
   query ($fields: memberPieChartNodeCategoriesInput) {
@@ -96,45 +97,48 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     ],
   });
 
-  const {} = useQuery(MEMBER_PIE_CHART_NODE_CATEGORY, {
-    variables: {
-      fields: {
-        memberID: member?._id,
+  const { loading: loadingPieNodeCategory } = useQuery(
+    MEMBER_PIE_CHART_NODE_CATEGORY,
+    {
+      variables: {
+        fields: {
+          memberID: member?._id,
+        },
       },
-    },
-    skip: member?._id == undefined,
-    onCompleted: (data) => {
-      const labels = [];
-      const dataPT = [];
+      skip: member?._id == undefined,
+      onCompleted: (data) => {
+        const labels = [];
+        const dataPT = [];
 
-      for (let i = 0; i < data.memberPieChartNodeCategories.length; i++) {
-        const elementT = data.memberPieChartNodeCategories[i];
+        for (let i = 0; i < data.memberPieChartNodeCategories.length; i++) {
+          const elementT = data.memberPieChartNodeCategories[i];
 
-        labels.push(elementT.categoryName);
+          labels.push(elementT.categoryName);
 
-        dataPT.push(elementT.percentage);
-      }
+          dataPT.push(elementT.percentage);
+        }
 
-      setPieChartData({
-        labels: labels,
-        datasets: [
-          {
-            data: dataPT,
-            backgroundColor: [
-              "#FFD4B2",
-              "#FFF6BD",
-              "#CEEDC7",
-              "#86C8BC",
-              "#FD8A8A",
-              "#F1F7B5",
-              "#A8D1D1",
-              "#9EA1D4",
-            ],
-          },
-        ],
-      });
-    },
-  });
+        setPieChartData({
+          labels: labels,
+          datasets: [
+            {
+              data: dataPT,
+              backgroundColor: [
+                "#FFD4B2",
+                "#FFF6BD",
+                "#CEEDC7",
+                "#86C8BC",
+                "#FD8A8A",
+                "#F1F7B5",
+                "#A8D1D1",
+                "#9EA1D4",
+              ],
+            },
+          ],
+        });
+      },
+    }
+  );
 
   type radiochartType = {
     memberInfo: {
@@ -164,73 +168,77 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     },
   };
 
-  const {} = useQuery(MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES, {
-    variables: {
-      fields: {
-        memberID: member?._id,
+  const { loading: radioChartLoading } = useQuery(
+    MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES,
+    {
+      variables: {
+        fields: {
+          memberID: member?._id,
+        },
       },
-    },
-    skip: member?._id == undefined,
-    onCompleted: (data) => {
-      interface attributesType {
-        [key: string]: any;
-      }
-      const attributesT: attributesType = {};
-
-      let averageScore = 0;
-      let numT = 0;
-
-      for (
-        let i = 0;
-        i < data.memberRadioChartCharacterAttributes.length;
-        i++
-      ) {
-        const elementT: {
-          attributeName: string;
-          score: number;
-          reason: string;
-        } = data.memberRadioChartCharacterAttributes[i];
-
-        if (elementT && elementT.attributeName) {
-          const nameAtt = elementT.attributeName;
-
-          // how to make maximum 11 letters on nameAtt
-          // if (nameAtt.length > 11) {
-          //   nameAtt = nameAtt.substring(0, 11) + "...";
-          // }
-
-          attributesT[nameAtt] = elementT.score;
-
-          averageScore = averageScore + elementT.score;
-          numT = numT + 1;
+      skip: member?._id == undefined,
+      onCompleted: (data) => {
+        interface attributesType {
+          [key: string]: any;
         }
-      }
+        const attributesT: attributesType = {};
 
-      averageScore = averageScore / numT;
+        let averageScore = 0;
+        let numT = 0;
 
-      // male averageScore int
-      averageScore = Math.round(averageScore);
+        for (
+          let i = 0;
+          i < data.memberRadioChartCharacterAttributes.length;
+          i++
+        ) {
+          const elementT: {
+            attributeName: string;
+            score: number;
+            reason: string;
+          } = data.memberRadioChartCharacterAttributes[i];
 
-      setRadioChart([
-        {
-          memberInfo: {
-            discordName:
-              member?.discordName + " - " + averageScore.toString() + "%" ?? "",
-            attributes: attributesT,
+          if (elementT && elementT.attributeName) {
+            const nameAtt = elementT.attributeName;
+
+            // how to make maximum 11 letters on nameAtt
+            // if (nameAtt.length > 11) {
+            //   nameAtt = nameAtt.substring(0, 11) + "...";
+            // }
+
+            attributesT[nameAtt] = elementT.score;
+
+            averageScore = averageScore + elementT.score;
+            numT = numT + 1;
+          }
+        }
+
+        averageScore = averageScore / numT;
+
+        // male averageScore int
+        averageScore = Math.round(averageScore);
+
+        setRadioChart([
+          {
+            memberInfo: {
+              discordName:
+                member?.discordName + " - " + averageScore.toString() + "%" ??
+                "",
+              attributes: attributesT,
+            },
           },
-        },
-      ]);
+        ]);
 
-      console.log("CHANGE Radio Chart", [
-        {
-          memberInfo: {
-            discordName: member?.discordName ?? "",
-            attributes: attributesT,
+        console.log("CHANGE Radio Chart", [
+          {
+            memberInfo: {
+              discordName: member?.discordName ?? "",
+              attributes: attributesT,
+            },
           },
-        },
-      ]);
-    },
-  });
+        ]);
+      },
+    }
+  );
 
   console.log("radioChart = ", radioChart);
 
@@ -281,19 +289,23 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             <TextLabel1>PieChart</TextLabel1>
           </p>
           {/* <Pie data={data} options={options} /> */}
-          <Pie
-            data={pieChartData}
-            options={{
-              layout: {
-                padding: 12,
-              },
-              plugins: {
-                legend: {
-                  position: "bottom",
+          {!!loadingPieNodeCategory ? (
+            <LoadingGraphData />
+          ) : (
+            <Pie
+              data={pieChartData}
+              options={{
+                layout: {
+                  padding: 12,
                 },
-              },
-            }}
-          />
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                  },
+                },
+              }}
+            />
+          )}
         </div>
         <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
@@ -301,10 +313,19 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           </p>
           {/* <Pie data={data} options={options} /> */}
           {/* <TeamAttributeChart members={dataRadarchart} /> */}
-          {radioChart?.length > 0 && (
-            <div className="-mt-8">
-              <TeamAttributeChart members={radioChart} options={optionsRadar} />
-            </div>
+          {radioChartLoading ? (
+            <LoadingGraphData />
+          ) : (
+            <>
+              {radioChart?.length > 0 && (
+                <div className="-mt-8">
+                  <TeamAttributeChart
+                    members={radioChart}
+                    options={optionsRadar}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
         <div className="col-span-2"></div>
@@ -316,13 +337,15 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             memberName={member?.discordName ?? ""}
             backgroundMatchData={exampleData}
           /> */}
-          {dataBarChart.length > 0 && (
+          {dataBarChart.length > 0 ? (
             <div className="h-[300px]">
               <BackgroundMatchChart
                 memberName={member?.discordName ?? ""}
                 backgroundMatchData={dataBarChart}
               />
             </div>
+          ) : (
+            <LoadingGraphData />
           )}
         </div>
         <div className="col-span-2"></div>
@@ -524,4 +547,13 @@ const getPercentageText = (percentage: number) => {
   }
 
   return text;
+};
+
+export const LoadingGraphData: FC = () => {
+  return (
+    <div className="flex w-full flex-col items-center justify-center py-8">
+      <GoGraph size={80} color="#e3e3e3" className="" />
+      <p className="z-10 text-center text-gray-400">Loading data...</p>
+    </div>
+  );
 };
