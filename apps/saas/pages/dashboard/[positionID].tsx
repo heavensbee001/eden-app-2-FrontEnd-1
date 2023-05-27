@@ -330,11 +330,22 @@ const PositionCRM: NextPageWithLayout = () => {
           data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
 
         if (newList) {
-          console.log("33333'");
-          // if (!editTalentListMode)
-          // setTalentListsAvailables([...talentListsAvailables, newList]);
-          setTalentListToShow(newList);
-          // setCandidatesFromTalentList(newList.talent);
+          if (editTalentListMode) {
+            setTalentListSelected(newList);
+            const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] =
+              [];
+
+            for (let i = 0; i < candidates.length; i++) {
+              for (let j = 0; j < newList.talent!.length; j++) {
+                if (candidates[i].user?._id === newList.talent![j]!.user!._id) {
+                  candidatesOnTalentListSelected.push(candidates[i]);
+                }
+              }
+            }
+            setCandidatesFromTalentList(candidatesOnTalentListSelected);
+          } else {
+            setTalentListToShow(newList);
+          }
           setNewTalentListCreationMode(false);
           setEditTalentListMode(false);
           setNewTalentListCandidatesIds([]);
@@ -356,38 +367,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    // if (list._id !== "000") {
-    //   setNewTalentListCreationMode(false);
-    //   setEditTalentListMode(false);
-    //   console.log("444");
-    //   if (talentListToShow) {
-    //     console.log("4444 aaa");
-    //     for (let i = 0; i < candidates.length; i++) {
-    //       for (let j = 0; j < talentListToShow.talent!.length; j++) {
-    //         if (
-    //           candidates[i].user?._id === talentListToShow.talent![j]!.user!._id
-    //         ) {
-    //           candidatesOnTalentListSelected.push(candidates[i]);
-    //         }
-    //       }
-    //     }
-    //     setTalentListSelected(talentListToShow);
-    //     setTalentListToShow(undefined);
-    //   } else {
-    //     console.log("4444 bbbb");
-    //     for (let i = 0; i < candidates.length; i++) {
-    //       for (let j = 0; j < list.talent!.length; j++) {
-    //         if (candidates[i].user?._id === list.talent![j]!.user!._id) {
-    //           candidatesOnTalentListSelected.push(candidates[i]);
-    //         }
-    //       }
-    //     }
-    //     setTalentListSelected(list);
-    //   }
-    // } else {
-    console.log("111");
     if (talentListToShow) {
-      console.log("111 aaa");
+      // console.log("111 aaa");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < talentListToShow.talent!.length; j++) {
           if (
@@ -400,6 +381,7 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(talentListToShow);
       setTalentListToShow(undefined);
     } else if (list._id !== "000") {
+      // console.log("1111 cccc");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -410,7 +392,7 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(list);
     } else {
       candidatesOnTalentListSelected.push(...candidates);
-      console.log("1111 bbbb");
+      // console.log("1111 bbbb");
       setTalentListSelected({ _id: "000", name: "No list selected" });
     }
     // }
@@ -419,7 +401,7 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleCreateNewListButton = () => {
-    console.log("2222");
+    // console.log("2222");
     setTalentListSelected({ _id: "000", name: "No list selected" });
     setNewTalentListCreationMode(true);
     setCandidatesFromTalentList(candidates);
@@ -606,7 +588,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       Save
                     </Button>
                   )
-                ) : !newTalentListCreationMode && !editTalentListMode ? (
+                ) : !editTalentListMode ? (
                   <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
                     <MdIosShare
                       size={36}
