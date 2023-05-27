@@ -70,7 +70,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  console.log("candidates totot= ", candidates);
+  // console.log("candidates totot= ", candidates);
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -331,10 +331,10 @@ const PositionCRM: NextPageWithLayout = () => {
 
         if (newList) {
           console.log("33333'");
-          if (!editTalentListMode)
-            setTalentListsAvailables([...talentListsAvailables, newList]);
+          // if (!editTalentListMode)
+          // setTalentListsAvailables([...talentListsAvailables, newList]);
           setTalentListToShow(newList);
-          setCandidatesFromTalentList(newList.talent);
+          // setCandidatesFromTalentList(newList.talent);
           setNewTalentListCreationMode(false);
           setEditTalentListMode(false);
           setNewTalentListCandidatesIds([]);
@@ -356,55 +356,64 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    if (list._id !== "000") {
-      setNewTalentListCreationMode(false);
-      setEditTalentListMode(false);
-      console.log("444");
-      if (talentListToShow) {
-        console.log("4444 aaa");
-        for (let i = 0; i < candidates.length; i++) {
-          for (let j = 0; j < talentListToShow.talent!.length; j++) {
-            if (
-              candidates[i].user?._id === talentListToShow.talent![j]!.user!._id
-            ) {
-              candidatesOnTalentListSelected.push(candidates[i]);
-            }
+    // if (list._id !== "000") {
+    //   setNewTalentListCreationMode(false);
+    //   setEditTalentListMode(false);
+    //   console.log("444");
+    //   if (talentListToShow) {
+    //     console.log("4444 aaa");
+    //     for (let i = 0; i < candidates.length; i++) {
+    //       for (let j = 0; j < talentListToShow.talent!.length; j++) {
+    //         if (
+    //           candidates[i].user?._id === talentListToShow.talent![j]!.user!._id
+    //         ) {
+    //           candidatesOnTalentListSelected.push(candidates[i]);
+    //         }
+    //       }
+    //     }
+    //     setTalentListSelected(talentListToShow);
+    //     setTalentListToShow(undefined);
+    //   } else {
+    //     console.log("4444 bbbb");
+    //     for (let i = 0; i < candidates.length; i++) {
+    //       for (let j = 0; j < list.talent!.length; j++) {
+    //         if (candidates[i].user?._id === list.talent![j]!.user!._id) {
+    //           candidatesOnTalentListSelected.push(candidates[i]);
+    //         }
+    //       }
+    //     }
+    //     setTalentListSelected(list);
+    //   }
+    // } else {
+    console.log("111");
+    if (talentListToShow) {
+      console.log("111 aaa");
+      for (let i = 0; i < candidates.length; i++) {
+        for (let j = 0; j < talentListToShow.talent!.length; j++) {
+          if (
+            candidates[i].user?._id === talentListToShow.talent![j]!.user!._id
+          ) {
+            candidatesOnTalentListSelected.push(candidates[i]);
           }
         }
-        setTalentListSelected(talentListToShow);
-        setTalentListToShow(undefined);
-      } else {
-        console.log("4444 bbbb");
-        for (let i = 0; i < candidates.length; i++) {
-          for (let j = 0; j < list.talent!.length; j++) {
-            if (candidates[i].user?._id === list.talent![j]!.user!._id) {
-              candidatesOnTalentListSelected.push(candidates[i]);
-            }
-          }
-        }
-        setTalentListSelected(list);
       }
+      setTalentListSelected(talentListToShow);
+      setTalentListToShow(undefined);
+    } else if (list._id !== "000") {
+      for (let i = 0; i < candidates.length; i++) {
+        for (let j = 0; j < list.talent!.length; j++) {
+          if (candidates[i].user?._id === list.talent![j]!.user!._id) {
+            candidatesOnTalentListSelected.push(candidates[i]);
+          }
+        }
+      }
+      setTalentListSelected(list);
     } else {
-      console.log("111");
-      if (talentListToShow) {
-        console.log("111 aaa");
-        for (let i = 0; i < candidates.length; i++) {
-          for (let j = 0; j < talentListToShow.talent!.length; j++) {
-            if (
-              candidates[i].user?._id === talentListToShow.talent![j]!.user!._id
-            ) {
-              candidatesOnTalentListSelected.push(candidates[i]);
-            }
-          }
-        }
-        setTalentListSelected(talentListToShow);
-        setTalentListToShow(undefined);
-      } else {
-        candidatesOnTalentListSelected.push(...candidates);
-        console.log("1111 bbbb");
-        setTalentListSelected({ _id: "000", name: "No list selected" });
-      }
+      candidatesOnTalentListSelected.push(...candidates);
+      console.log("1111 bbbb");
+      setTalentListSelected({ _id: "000", name: "No list selected" });
     }
+    // }
 
     setCandidatesFromTalentList(candidatesOnTalentListSelected);
   };
@@ -575,7 +584,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 />
               )}
               <>
-                {talentListSelected?._id === "000" || !editTalentListMode ? (
+                {talentListSelected?._id === "000" ? (
                   !newTalentListCreationMode ? (
                     <Button
                       className="mb-4 ml-auto"
@@ -597,7 +606,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       Save
                     </Button>
                   )
-                ) : !editTalentListMode ? (
+                ) : !newTalentListCreationMode && !editTalentListMode ? (
                   <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
                     <MdIosShare
                       size={36}
