@@ -70,7 +70,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  console.log("candidates totot= ", candidates);
+  // console.log("candidates totot= ", candidates);
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -97,6 +97,8 @@ const PositionCRM: NextPageWithLayout = () => {
   >([]);
 
   const [newTalentListName, setNewTalentListName] = useState<string>("");
+
+  const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
 
   const {
     data: findPositionData,
@@ -328,9 +330,22 @@ const PositionCRM: NextPageWithLayout = () => {
           data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
 
         if (newList) {
-          setTalentListSelected({ _id: "000", name: "No list selected" });
-          if (!editTalentListMode)
-            setTalentListsAvailables([...talentListsAvailables, newList]);
+          if (editTalentListMode) {
+            setTalentListSelected(newList);
+            const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] =
+              [];
+
+            for (let i = 0; i < candidates.length; i++) {
+              for (let j = 0; j < newList.talent!.length; j++) {
+                if (candidates[i].user?._id === newList.talent![j]!.user!._id) {
+                  candidatesOnTalentListSelected.push(candidates[i]);
+                }
+              }
+            }
+            setCandidatesFromTalentList(candidatesOnTalentListSelected);
+          } else {
+            setTalentListToShow(newList);
+          }
           setNewTalentListCreationMode(false);
           setEditTalentListMode(false);
           setNewTalentListCandidatesIds([]);
@@ -352,9 +367,21 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    if (list._id !== "000") {
-      setNewTalentListCreationMode(false);
-
+    if (talentListToShow) {
+      // console.log("111 aaa");
+      for (let i = 0; i < candidates.length; i++) {
+        for (let j = 0; j < talentListToShow.talent!.length; j++) {
+          if (
+            candidates[i].user?._id === talentListToShow.talent![j]!.user!._id
+          ) {
+            candidatesOnTalentListSelected.push(candidates[i]);
+          }
+        }
+      }
+      setTalentListSelected(talentListToShow);
+      setTalentListToShow(undefined);
+    } else if (list._id !== "000") {
+      // console.log("1111 cccc");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -365,13 +392,16 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(list);
     } else {
       candidatesOnTalentListSelected.push(...candidates);
+      // console.log("1111 bbbb");
       setTalentListSelected({ _id: "000", name: "No list selected" });
     }
+    // }
 
     setCandidatesFromTalentList(candidatesOnTalentListSelected);
   };
 
   const handleCreateNewListButton = () => {
+    // console.log("2222");
     setTalentListSelected({ _id: "000", name: "No list selected" });
     setNewTalentListCreationMode(true);
     setCandidatesFromTalentList(candidates);
