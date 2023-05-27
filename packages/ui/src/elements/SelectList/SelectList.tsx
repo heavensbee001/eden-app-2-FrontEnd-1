@@ -19,6 +19,7 @@ export interface ISelectListProps {
   onChange?: (items?: any) => void;
   // eslint-disable-next-line no-unused-vars
   newValue?: IItems;
+  isDisabled?: boolean;
 }
 
 export const SelectList = ({
@@ -26,6 +27,7 @@ export const SelectList = ({
   onChange,
   btnBGcolor = "bg-gray-200",
   newValue,
+  isDisabled = false,
 }: ISelectListProps) => {
   const [selected, setSelected] = useState<IItems | undefined>(items[0]);
 
@@ -52,7 +54,12 @@ export const SelectList = ({
 
   return (
     <div>
-      <Listbox value={selected} multiple={false} onChange={setSelected}>
+      <Listbox
+        value={selected}
+        multiple={false}
+        onChange={setSelected}
+        disabled={isDisabled}
+      >
         <div className="relative mt-1">
           <Listbox.Button className={btnClasses}>
             <span className="mr-2 block truncate">{selected?.name}</span>

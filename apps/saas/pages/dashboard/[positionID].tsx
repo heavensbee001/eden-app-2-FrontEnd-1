@@ -323,33 +323,51 @@ const PositionCRM: NextPageWithLayout = () => {
     UPDATE_TALENT_LIST_WITH_TALENT,
     {
       onCompleted: (data) => {
-        const lastTalentListIndex =
-          data?.updateUsersTalentListPosition.talentList.length - 1;
+        if (!editTalentListMode) {
+          const lastTalentListIndex =
+            data?.updateUsersTalentListPosition.talentList.length - 1;
 
-        const newList =
-          data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
+          const newList =
+            data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
 
-        if (newList) {
-          if (editTalentListMode) {
-            setTalentListSelected(newList);
-            const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] =
-              [];
+          setTalentListToShow(newList);
+          setNewTalentListCreationMode(false);
+          setNewTalentListCandidatesIds([]);
+          setNewTalentListName("");
+        } else if (editTalentListMode) {
+          const editedTalentListIndex =
+            data?.updateUsersTalentListPosition.talentList.findIndex(
+              (talentList: TalentListType) =>
+                talentList._id === talentListSelected?._id
+            );
 
-            for (let i = 0; i < candidates.length; i++) {
-              for (let j = 0; j < newList.talent!.length; j++) {
-                if (candidates[i].user?._id === newList.talent![j]!.user!._id) {
-                  candidatesOnTalentListSelected.push(candidates[i]);
-                }
+          const editedTalentList =
+            data?.updateUsersTalentListPosition.talentList[
+              editedTalentListIndex
+            ];
+
+          setTalentListSelected(editedTalentList);
+
+          const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
+
+          for (let i = 0; i < candidates.length; i++) {
+            for (let j = 0; j < editedTalentList?.talent?.length!; j++) {
+              if (
+                candidates[i].user?._id ===
+                editedTalentList?.talent![j]!.user!._id
+              ) {
+                candidatesOnTalentListSelected.push(candidates[i]);
               }
             }
-            setCandidatesFromTalentList(candidatesOnTalentListSelected);
-          } else {
-            setTalentListToShow(newList);
           }
-          setNewTalentListCreationMode(false);
+          setCandidatesFromTalentList(candidatesOnTalentListSelected);
           setEditTalentListMode(false);
           setNewTalentListCandidatesIds([]);
           setNewTalentListName("");
+        } else {
+          console.log(
+            "can't land here, something is wrong! there isn't any exception to the rule :P"
+          );
         }
       },
     }
@@ -555,6 +573,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   ]}
                   onChange={handleSelectedTalentList}
                   newValue={talentListSelected ? talentListSelected : undefined}
+                  isDisabled={editTalentListMode}
                 />
               ) : (
                 <TextField
