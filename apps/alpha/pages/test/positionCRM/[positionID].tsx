@@ -131,10 +131,6 @@ const PositionCRM: React.FC = () => {
 
   console.log("dataPosition = ", dataPosition);
 
-  console.log("positionID = ", positionID);
-
-  console.log("questions = ", questions);
-
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [trainModalOpen, setTrainModalOpen] = useState(false);
 

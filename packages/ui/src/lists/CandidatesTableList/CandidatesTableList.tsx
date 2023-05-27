@@ -68,6 +68,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     setRowObjectData(candidate);
   };
 
+
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md relative w-full">
@@ -80,11 +81,12 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
               Name
             </th>
             <th className="border-b border-gray-300 py-2">Match</th>
+            <th className="border-b border-gray-300 py-2">Skill Match</th>
+            <th className="border-b border-gray-300 py-2">Report Match</th>
             <th className="border-b border-gray-300 py-2 pr-2 text-right">
               $/hour
             </th>
             <th className="border-b border-gray-300 py-2">Level</th>
-            <th className="border-b border-gray-300 py-2">Skill Match</th>
             <th
               className={classNames(
                 "border-b border-gray-300 py-2",
@@ -146,6 +148,17 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     <TextHeading2 className="text-colorFFA9F1 font-black">{`${candidate.overallScore}%`}</TextHeading2>
                   ) : null}
                 </ColumnStyled>
+                <ColumnStyled textColor="text-[#86C8BC] text-center">
+                  {candidate.skillMatch ? (
+                    <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
+                  ) : null}
+                </ColumnStyled>
+                <ColumnStyled textColor="text-[#EDBFB7] text-center">
+                  {candidate?.compareCandidatePosition
+                    ?.CV_ConvoToPositionAverageScore ? (
+                    <TextHeading2 className="text-blue font-black">{`${candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore}%`}</TextHeading2>
+                  ) : null}
+                </ColumnStyled>
                 <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
                     <TextHeading2 className="text-colorFFD02B font-black">
@@ -172,11 +185,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     />
                   ) : null}
                 </ColumnStyled>
-                <ColumnStyled textColor="text-[#86C8BC] text-center">
-                  {candidate.skillMatch ? (
-                    <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
-                  ) : null}
-                </ColumnStyled>
+
                 <ColumnStyled
                   textColor="text-center"
                   extraCssClass={classNames(

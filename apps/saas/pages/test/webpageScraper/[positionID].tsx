@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 // import { UserContext } from "@eden/package-context";
 import { Button, TextArea } from "@eden/package-ui";
+import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 export const WEBPAGE_TO_MEMORY = gql`
@@ -15,6 +16,9 @@ const LinkedInScraper = () => {
   const [webpageLink, setWebpageLink] = useState("");
   const [pastedText, setPastedText] = useState("");
 
+  const router = useRouter();
+  const { positionID } = router.query;
+
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,9 +28,6 @@ const LinkedInScraper = () => {
 
   const [websiteToMemoryCompany] = useMutation(WEBPAGE_TO_MEMORY, {
     onCompleted({ websiteToMemoryCompany }) {
-      console.log("Memory Recorded");
-      console.log(websiteToMemoryCompany);
-      console.log("websiteToMemoryCompany.data", websiteToMemoryCompany.data);
       console.log(
         "websiteToMemoryCompany.report",
         websiteToMemoryCompany.report
@@ -87,7 +88,10 @@ const LinkedInScraper = () => {
       websiteToMemoryCompany({
         variables: {
           // fields: { message: textResponse, userID: currentUser?._id },
-          fields: { message: textResponse, userID: "361194148063215616" },
+          fields: {
+            message: textResponse,
+            positionID: positionID,
+          },
         },
       });
 
@@ -110,7 +114,7 @@ const LinkedInScraper = () => {
 
     websiteToMemoryCompany({
       variables: {
-        fields: { message: pastedText, userID: "361194148063215616" },
+        fields: { message: pastedText, positionID: positionID },
       },
     });
     setPastedText("");

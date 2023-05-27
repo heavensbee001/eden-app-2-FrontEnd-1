@@ -52,7 +52,6 @@
     "html-to-text": "^9.0.5",
     "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^3.4.120",
-    "pupeteer": "^0.0.1",
     "puppeteer": "^20.1.2",
     "react-chartjs-2": "^4.3.1",
     "react-compound-slider": "^3.4.0",

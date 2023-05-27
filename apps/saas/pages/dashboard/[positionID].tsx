@@ -70,7 +70,6 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  console.log("candidates totot= ", candidates);
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -97,6 +96,8 @@ const PositionCRM: NextPageWithLayout = () => {
   >([]);
 
   const [newTalentListName, setNewTalentListName] = useState<string>("");
+
+  const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
 
   const {
     data: findPositionData,
@@ -321,20 +322,51 @@ const PositionCRM: NextPageWithLayout = () => {
     UPDATE_TALENT_LIST_WITH_TALENT,
     {
       onCompleted: (data) => {
-        const lastTalentListIndex =
-          data?.updateUsersTalentListPosition.talentList.length - 1;
+        if (!editTalentListMode) {
+          const lastTalentListIndex =
+            data?.updateUsersTalentListPosition.talentList.length - 1;
 
-        const newList =
-          data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
+          const newList =
+            data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
 
-        if (newList) {
-          setTalentListSelected({ _id: "000", name: "No list selected" });
-          if (!editTalentListMode)
-            setTalentListsAvailables([...talentListsAvailables, newList]);
+          setTalentListToShow(newList);
           setNewTalentListCreationMode(false);
+          setNewTalentListCandidatesIds([]);
+          setNewTalentListName("");
+        } else if (editTalentListMode) {
+          const editedTalentListIndex =
+            data?.updateUsersTalentListPosition.talentList.findIndex(
+              (talentList: TalentListType) =>
+                talentList._id === talentListSelected?._id
+            );
+
+          const editedTalentList =
+            data?.updateUsersTalentListPosition.talentList[
+              editedTalentListIndex
+            ];
+
+          setTalentListSelected(editedTalentList);
+
+          const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
+
+          for (let i = 0; i < candidates.length; i++) {
+            for (let j = 0; j < editedTalentList?.talent?.length!; j++) {
+              if (
+                candidates[i].user?._id ===
+                editedTalentList?.talent![j]!.user!._id
+              ) {
+                candidatesOnTalentListSelected.push(candidates[i]);
+              }
+            }
+          }
+          setCandidatesFromTalentList(candidatesOnTalentListSelected);
           setEditTalentListMode(false);
           setNewTalentListCandidatesIds([]);
           setNewTalentListName("");
+        } else {
+          console.log(
+            "can't land here, something is wrong! there isn't any exception to the rule :P"
+          );
         }
       },
     }
@@ -352,9 +384,21 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    if (list._id !== "000") {
-      setNewTalentListCreationMode(false);
-
+    if (talentListToShow) {
+      // console.log("111 aaa");
+      for (let i = 0; i < candidates.length; i++) {
+        for (let j = 0; j < talentListToShow.talent!.length; j++) {
+          if (
+            candidates[i].user?._id === talentListToShow.talent![j]!.user!._id
+          ) {
+            candidatesOnTalentListSelected.push(candidates[i]);
+          }
+        }
+      }
+      setTalentListSelected(talentListToShow);
+      setTalentListToShow(undefined);
+    } else if (list._id !== "000") {
+      // console.log("1111 cccc");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -365,13 +409,16 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(list);
     } else {
       candidatesOnTalentListSelected.push(...candidates);
+      // console.log("1111 bbbb");
       setTalentListSelected({ _id: "000", name: "No list selected" });
     }
+    // }
 
     setCandidatesFromTalentList(candidatesOnTalentListSelected);
   };
 
   const handleCreateNewListButton = () => {
+    // console.log("2222");
     setTalentListSelected({ _id: "000", name: "No list selected" });
     setNewTalentListCreationMode(true);
     setCandidatesFromTalentList(candidates);
@@ -525,6 +572,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   ]}
                   onChange={handleSelectedTalentList}
                   newValue={talentListSelected ? talentListSelected : undefined}
+                  isDisabled={editTalentListMode}
                 />
               ) : (
                 <TextField

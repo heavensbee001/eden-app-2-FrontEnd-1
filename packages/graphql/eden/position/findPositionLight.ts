@@ -43,6 +43,14 @@ export const FIND_POSITION_LIGHT = gql`
           score
           reason
         }
+        compareCandidatePosition {
+          CV_ConvoToPositionAverageScore
+          CV_ConvoToPosition {
+            categoryName
+            score
+            reason
+          }
+        }
       }
       talentList {
         _id
