@@ -13,6 +13,7 @@ import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 import { FC, useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { GoGraph } from "react-icons/go";
+import { TbViewfinderOff } from "react-icons/tb";
 
 const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
   query ($fields: memberPieChartNodeCategoriesInput) {
@@ -291,7 +292,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           {/* <Pie data={data} options={options} /> */}
           {!!loadingPieNodeCategory ? (
             <LoadingGraphData />
-          ) : (
+          ) : pieChartData.datasets[0]?.data.length > 0 ? (
             <Pie
               data={pieChartData}
               options={{
@@ -305,6 +306,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 },
               }}
             />
+          ) : (
+            <NoGraphData />
           )}
         </div>
         <div className="col-span-6 mb-4">
@@ -317,13 +320,15 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             <LoadingGraphData />
           ) : (
             <>
-              {radioChart?.length > 0 && (
+              {radioChart?.length > 0 ? (
                 <div className="-mt-8">
                   <TeamAttributeChart
                     members={radioChart}
                     options={optionsRadar}
                   />
                 </div>
+              ) : (
+                <NoGraphData />
               )}
             </>
           )}
@@ -559,6 +564,15 @@ export const LoadingGraphData: FC = () => {
     <div className="flex w-full flex-col items-center justify-center py-8">
       <GoGraph size={80} color="#e3e3e3" className="" />
       <p className="z-10 text-center text-gray-400">Loading data...</p>
+    </div>
+  );
+};
+
+export const NoGraphData: FC = () => {
+  return (
+    <div className="flex w-full flex-col items-center justify-center py-8">
+      <TbViewfinderOff size={50} color="#e3e3e3" className="" />
+      <p className="z-10 text-center text-gray-400">No data found</p>
     </div>
   );
 };
