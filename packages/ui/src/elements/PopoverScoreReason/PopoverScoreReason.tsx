@@ -32,7 +32,7 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
     return (
       <div>
         <>
-          {question.score ? (
+          {question.score != undefined ? (
             <TextHeading2 className="mb-2 text-center">
               Why{" "}
               <span className="text-colorFFA9F1 font-extrabold">
