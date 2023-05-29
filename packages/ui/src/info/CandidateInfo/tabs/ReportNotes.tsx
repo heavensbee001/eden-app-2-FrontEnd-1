@@ -1,5 +1,6 @@
 // import { gql, useQuery } from "@apollo/client";
 import { Members } from "@eden/package-graphql/generated";
+import { PopoverScoreReason } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
 // const CANDIDATE_NOTES_EDENAI = gql`
@@ -16,66 +17,114 @@ interface Props {
   candidate: any;
 }
 
-type Category = {
+interface DatabaseItem {
   categoryName: string;
-  reason: string[];
+  title: string;
   score: number;
-};
+  reason: string;
+  IDb: string;
+}
 
-type meetingNotesType = Category[];
+// interface DatabaseProps = DatabaseItem[];
 
-export const ReportNotes: FC<Props> = ({ member, candidate }) => {
-  const [meetingNotesData, setReportNotesData] = useState<meetingNotesType>([]);
+type meetingNotesType = DatabaseItem[];
 
-  console.log("member = ", member);
+export const ReportNotes: FC<Props> = ({ candidate }) => {
+  const [meetingNotesData, setReportNotesData] = useState<{
+    [key: string]: meetingNotesType;
+  }>({});
 
-  // const {} = useQuery(CANDIDATE_NOTES_EDENAI, {
-  //   variables: {
-  //     fields: {
-  //       memberID: member?._id,
-  //     },
-  //   },
-  //   skip: !member?._id,
-  //   onCompleted: (data) => {
-  //     console.log("data = ", data);
+  // const [items, setItems] = useState(data);
 
-  //     setReportNotesData(data.candidateNotesEdenAI);
-  //   },
-  // });
+  // const handleScoreChange = (IDb: string, score: number) => {
+  //   // Update the score for the item with the given IDb
+  //   const updatedItems = items.map((item) =>
+  //     item.IDb === IDb ? { ...item, score } : item
+  //   );
+
+  //   setItems(updatedItems);
+
+  //   // Call the onScoreChange callback, if provided
+  //   if (onScoreChange) {
+  //     onScoreChange(IDb, score);
+  //   }
+  // };
 
   useEffect(() => {
-    // if (dataProject?.findProject) setProject(dataProject?.findProject);
-    console.log(
-      "candidate.compareCandidatePosition = 2",
-      candidate?.compareCandidatePosition
-    );
+    if (candidate?.compareCandidatePosition?.reportPassFail) {
+      // const categories: meetingNotesType = [];
+      const categories: { [key: string]: meetingNotesType } = {};
 
-    if (candidate?.compareCandidatePosition?.CV_ConvoToPosition)
-      setReportNotesData(candidate.compareCandidatePosition.CV_ConvoToPosition);
+      candidate?.compareCandidatePosition?.reportPassFail.forEach(
+        (item: DatabaseItem) => {
+          if (!categories[item.categoryName]) {
+            categories[item.categoryName] = [];
+          }
+          categories[item.categoryName].push(item);
+        }
+      );
+
+      // console.log("categories w2= ", categories);
+
+      setReportNotesData(categories);
+    }
+
+    // if (candidate?.compareCandidatePosition?.reportPassFail)
+    //   setReportNotesData(candidate.compareCandidatePosition.reportPassFail);
   }, [candidate]);
+
+  console.log("meetingNotesData = ", meetingNotesData);
 
   return (
     <>
-      <div className="container mx-auto px-4">
-        <div className="-mx-4 flex flex-wrap">
-          {meetingNotesData
-            ? meetingNotesData?.map((d, i) => (
-                <div key={i} className="w-full p-4 md:w-1/2">
-                  <div className="relative rounded-lg border bg-white p-6 shadow">
-                    <div className="absolute right-2 top-2 rounded-full bg-blue-200 px-4 py-2 text-lg font-semibold">
-                      {d.score}
-                    </div>
-                    <p className="mb-4 text-lg font-bold">{d.categoryName}</p>
-                    <ul className="list-disc pl-6">
-                      {d.reason.map((r, j) => (
-                        <li key={j}>{r.replace("- ", "")}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))
-            : null}
-        </div>
+      <div className="space-y-4 rounded-lg p-4 py-12">
+        {/* Render each category */}
+        {Object.entries(meetingNotesData).map(([categoryName, items]) => (
+          <div key={categoryName}>
+            <h2 className="text-lg font-medium">{categoryName}</h2>
+            <ul className="list-disc space-y-2 pl-7">
+              {/* Render each item in the category */}
+
+              {items.map((item) => {
+                const score = item.score || 0;
+                const hasPassed = score >= 5;
+
+                return (
+                  // eslint-disable-next-line react/jsx-key
+                  <PopoverScoreReason
+                    question={{
+                      score: item.score,
+                      reason: item.reason,
+                    }}
+                  >
+                    <li
+                      key={item.IDb}
+                      className="flex cursor-pointer items-center justify-between py-2 hover:bg-gray-200"
+                      title={
+                        item.title.trim().split(" ").slice(0, 25).join(" ") +
+                        (item.title.split(" ").length > 25 ? "..." : "")
+                      }
+                      onClick={() => {
+                        // handleScoreChange(item.IDb, newScore);
+                      }}
+                    >
+                      <span className="mr-2">
+                        •{" "}
+                        {item.title.trim().split(" ").slice(0, 25).join(" ") +
+                          (item.title.split(" ").length > 25 ? "..." : "")}
+                      </span>
+                      {hasPassed ? (
+                        <span className="text-green-500">&#x2714;</span>
+                      ) : (
+                        <span className="text-red-500">&#x2718;</span>
+                      )}
+                    </li>
+                  </PopoverScoreReason>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </div>
     </>
   );
