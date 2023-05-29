@@ -556,6 +556,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     setSubmitting(true);
     const fields: UpdateMemberInput = {};
 
+    if (userState?._id) fields._id = userState?._id;
     if (userState?.budget?.perHour)
       fields.budget = { perHour: Number(userState?.budget?.perHour || 0) };
     if (userState?.hoursPerWeek)
