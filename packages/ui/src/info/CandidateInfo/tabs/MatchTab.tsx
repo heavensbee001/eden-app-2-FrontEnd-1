@@ -351,7 +351,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <div className="col-span-2"></div>
       </div>
       <p className="mb-2 text-center">
-        <TextLabel1>Expertise</TextLabel1>
+        <TextLabel1>INTERVIEW ANALYSIS</TextLabel1>
       </p>
       <div
         className={`mx-auto mb-2 grid grid-cols-4 gap-6`}
@@ -364,7 +364,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               <div
                 key={index}
                 className={classNames(
-                  "transition-scale z-10 h-full cursor-pointer rounded-3xl border bg-gray-50 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-white hover:shadow-lime-200",
+                  "transition-scale z-10 h-full cursor-pointer rounded-3xl border-none bg-gray-50 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
                   summaryQuestionSelected?.questionID === item.questionID
                     ? "border-accentColor scale-[1.02] bg-lime-50"
                     : ""
@@ -381,12 +381,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 }}
               >
                 <PopoverScoreReason question={item}>
-                  <div className="flex min-h-[120px] flex-col items-center justify-evenly py-4">
-                    <div className="mx-auto mb-2 flex h-10 items-center justify-center">
+                  <div className="flex min-h-[120px] flex-col items-center justify-between py-4">
+                    <div className="mx-auto mb-2 flex h-10 justify-center">
                       <p className="text-center">
-                        <TextLabel1 className="text-black">
+                        <p className="font-semibold">
                           {item.questionContentSmall?.replace(".", "")}
-                        </TextLabel1>
+                        </p>
                       </p>
                     </div>
                     <div className="">
@@ -399,7 +399,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                           true
                         )}
                         {item.score ? (
-                          <div className="ml-1 text-center text-lg font-black leading-tight">
+                          <div className="ml-1 text-center text-lg font-bold leading-tight">
+                            <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div>
                             <p
                               className={classNames(
                                 `text-${getPercentageColor(item.score * 10)}`
@@ -520,12 +521,16 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 const getPercentageColor = (percentage: number) => {
   let color = "";
 
-  if (percentage >= 70) {
-    color = "accentColor";
+  if (percentage >= 90) {
+    color = "[#12A321]";
+  } else if (percentage >= 70) {
+    color = "[#8CE136]";
+  } else if (percentage >= 50) {
+    color = "[#FFCF25]";
   } else if (percentage >= 40) {
-    color = "yellow-400";
+    color = "[#FF6847]";
   } else {
-    color = "red-400";
+    color = "[#E40000]";
   }
 
   return color;
@@ -535,18 +540,18 @@ const getPercentageText = (percentage: number) => {
   let text = "";
 
   if (percentage >= 90) {
-    text = "very strong answer";
+    text = "very strong";
   } else if (percentage >= 70) {
-    text = "strong answer";
+    text = "strong";
   } else if (percentage >= 50) {
-    text = "neutral answer";
+    text = "neutral";
   } else if (percentage >= 40) {
-    text = "weak answer";
+    text = "weak";
   } else {
-    text = "very weak answer";
+    text = "very weak";
   }
 
-  return text;
+  return text.toUpperCase();
 };
 
 export const LoadingGraphData: FC = () => {
