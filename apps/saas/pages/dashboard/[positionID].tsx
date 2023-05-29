@@ -524,7 +524,7 @@ const PositionCRM: NextPageWithLayout = () => {
           </h1>
           <Button
             size="sm"
-            className="bg-soilBlue border-soilBlue mr-2 flex items-center !text-sm text-white"
+            className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
             variant="default"
             onClick={handleCopyLink}
           >
