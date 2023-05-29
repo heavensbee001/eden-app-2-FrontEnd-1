@@ -68,28 +68,33 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     setRowObjectData(candidate);
   };
 
-
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md relative w-full">
         <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
           <tr>
             {listMode !== ListModeEnum.list ? (
-              <th className="border-b border-gray-300 py-2">{/* Select */}</th>
+              <th className="border-b border-gray-300 py-2 font-medium">
+                {/* Select */}
+              </th>
             ) : null}
-            <th className="min-w-min border-b border-gray-300 py-2 pl-4 text-start">
+            <th className="min-w-min border-b border-gray-300 py-2 pl-4 text-start font-medium">
               Name
             </th>
-            <th className="border-b border-gray-300 py-2">Match</th>
-            <th className="border-b border-gray-300 py-2">Skill Match</th>
-            <th className="border-b border-gray-300 py-2">Report Match</th>
-            <th className="border-b border-gray-300 py-2 pr-2 text-right">
+            <th className="border-b border-gray-300 py-2 font-medium">Match</th>
+            <th className="border-b border-gray-300 py-2 font-medium">
+              Skill Match
+            </th>
+            <th className="border-b border-gray-300 py-2 font-medium">
+              Report Match
+            </th>
+            <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
               $/hour
             </th>
-            <th className="border-b border-gray-300 py-2">Level</th>
+            <th className="border-b border-gray-300 py-2 font-medium">Level</th>
             <th
               className={classNames(
-                "border-b border-gray-300 py-2",
+                "border-b border-gray-300 py-2 font-medium",
                 !candidateIDRowSelected
                   ? "w-auto"
                   : "hidden w-0 overflow-hidden"

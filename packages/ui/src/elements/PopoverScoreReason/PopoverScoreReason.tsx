@@ -21,6 +21,10 @@ type PopoverScoreReasonProps = {
     | "left-end";
 };
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
   children,
   question,
@@ -33,10 +37,15 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
       <div>
         <>
           {question.score != undefined ? (
-            <TextHeading2 className="mb-2 text-center">
+            <TextHeading2 className="mb-2 text-center !text-lg">
               Why{" "}
-              <span className="text-colorFFA9F1 font-extrabold">
-                {question.score * 10}%
+              <span
+                className={classNames(
+                  "font-bold",
+                  `text-${getPercentageColor(question.score * 10)}`
+                )}
+              >
+                {getPercentageText(question.score * 10)}
               </span>
               ?
             </TextHeading2>
@@ -61,4 +70,40 @@ export const PopoverScoreReason: FC<PopoverScoreReasonProps> = ({
       {children}
     </PopoverOnHover>
   );
+};
+
+const getPercentageColor = (percentage: number) => {
+  let color = "";
+
+  if (percentage >= 90) {
+    color = "[#12A321]";
+  } else if (percentage >= 70) {
+    color = "[#8CE136]";
+  } else if (percentage >= 50) {
+    color = "[#FFCF25]";
+  } else if (percentage >= 40) {
+    color = "[#FF6847]";
+  } else {
+    color = "[#E40000]";
+  }
+
+  return color;
+};
+
+const getPercentageText = (percentage: number) => {
+  let text = "";
+
+  if (percentage >= 90) {
+    text = "very strong";
+  } else if (percentage >= 70) {
+    text = "strong";
+  } else if (percentage >= 50) {
+    text = "neutral";
+  } else if (percentage >= 40) {
+    text = "weak";
+  } else {
+    text = "very weak";
+  }
+
+  return text.toUpperCase();
 };
