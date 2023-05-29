@@ -22,6 +22,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
 
@@ -69,7 +70,6 @@ const PositionCRM: NextPageWithLayout = () => {
   );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
-
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -561,9 +561,9 @@ const PositionCRM: NextPageWithLayout = () => {
             Train AI
           </Button> */}
         </div>
-        <div className="grid grid-flow-row">
-          <div className="grid grid-flow-col grid-cols-3">
-            <div className="col-span-2 grid grid-flow-row grid-cols-2 grid-rows-1">
+        <div className="">
+          <div className="mb-4 flex items-center">
+            <div className="mr-4 max-w-[200px]">
               {!newTalentListCreationMode ? (
                 <SelectList
                   items={[
@@ -580,23 +580,27 @@ const PositionCRM: NextPageWithLayout = () => {
                   placeholder="Name your custom list"
                   radius="pill-shadow"
                   required={true}
-                  className="-mt-2"
+                  className="mt-0 h-[30px] !px-2 !py-1"
                 />
               )}
-              <>
-                {talentListSelected?._id === "000" ? (
-                  !newTalentListCreationMode ? (
+            </div>
+            <>
+              {talentListSelected?._id === "000" ? (
+                !newTalentListCreationMode ? (
+                  <Button
+                    className=""
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleCreateNewListButton}
+                  >
+                    Create New List
+                  </Button>
+                ) : (
+                  <>
                     <Button
-                      className="mb-4 ml-auto"
-                      variant="secondary"
-                      onClick={handleCreateNewListButton}
-                    >
-                      Create New List
-                    </Button>
-                  ) : (
-                    <Button
-                      className="mb-4 ml-auto"
-                      variant="secondary"
+                      className="mr-2 px-4"
+                      size="sm"
+                      variant="primary"
                       onClick={handleSaveNewTalentListButton}
                       disabled={
                         newTalentListName === "" ||
@@ -605,45 +609,58 @@ const PositionCRM: NextPageWithLayout = () => {
                     >
                       Save
                     </Button>
-                  )
-                ) : !editTalentListMode ? (
-                  <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
-                    <MdIosShare
-                      size={36}
-                      className="mt-1 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+
+                    {/* close button */}
+                    <FaTimes
+                      size={26}
+                      className="cursor-pointer text-gray-400 hover:text-gray-600"
+                      onClick={() => {
+                        setNewTalentListName("");
+                        setNewTalentListCandidatesIds([]);
+                        setNewTalentListCreationMode(false);
+                      }}
                     />
-                    <Button
-                      className="mb-4 ml-auto pt-2"
-                      variant="secondary"
-                      size="md"
-                      onClick={handleEditTalentListButton}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      className="pl-auto mb-4 ml-auto w-32 min-w-fit pt-2 text-xs"
-                      variant="secondary"
-                      onClick={handleCreateNewListButton}
-                    >
-                      Create new
-                    </Button>
-                  </div>
-                ) : (
+                  </>
+                )
+              ) : !editTalentListMode ? (
+                <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
+                  <MdIosShare
+                    size={36}
+                    className="mt-1 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+                  />
                   <Button
-                    className="mb-4 ml-auto"
+                    className="mb-4 ml-auto pt-2"
                     variant="secondary"
-                    onClick={handleSaveNewTalentListButton}
-                    disabled={
-                      newTalentListName === "" ||
-                      newTalentListCandidatesIds.length === 0
-                    }
+                    size="md"
+                    onClick={handleEditTalentListButton}
                   >
-                    Save
+                    Edit
                   </Button>
-                )}
-              </>
-            </div>
+                  <Button
+                    className="pl-auto mb-4 ml-auto w-32 min-w-fit pt-2 text-xs"
+                    variant="secondary"
+                    onClick={handleCreateNewListButton}
+                  >
+                    Create new
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  className="mb-4 ml-auto"
+                  variant="secondary"
+                  onClick={handleSaveNewTalentListButton}
+                  disabled={
+                    newTalentListName === "" ||
+                    newTalentListCandidatesIds.length === 0
+                  }
+                >
+                  Save
+                </Button>
+              )}
+            </>
           </div>
+        </div>
+        <div className="grid grid-flow-row">
           <CandidatesTableList
             candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}

@@ -60,7 +60,7 @@ export const SelectList = ({
         onChange={setSelected}
         disabled={isDisabled}
       >
-        <div className="relative mt-1">
+        <div className="relative">
           <Listbox.Button className={btnClasses}>
             <span className="mr-2 block truncate">{selected?.name}</span>
             <ChevronDownIcon width={12} />
