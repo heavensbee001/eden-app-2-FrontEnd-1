@@ -46,7 +46,7 @@ export const TextField: React.FC<TextFieldProps> = ({
       >
         {label}
       </label>
-      <div className={"mt-1"}>
+      <div className={""}>
         <input
           {...rest}
           id={name}
@@ -60,7 +60,7 @@ export const TextField: React.FC<TextFieldProps> = ({
           onChange={(e) => {
             onChange(e);
           }}
-          className={`${inputCls} ${className} focus:border-accentColor focus:ring-soilGreen-500 block w-full border border-zinc-400/50 py-1 px-2 text-base shadow-sm focus:outline-transparent focus:ring focus:ring-opacity-50 disabled:text-slate-300`}
+          className={`${inputCls} ${className} focus:border-accentColor focus:ring-soilGreen-500 block w-full border border-zinc-400/50 px-2 py-1 text-base shadow-sm focus:outline-transparent focus:ring focus:ring-opacity-50 disabled:text-slate-300`}
           disabled={disabled}
         />
       </div>
