@@ -70,7 +70,7 @@ function classNames(...classes: string[]) {
 }
 
 export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
-  // console.log("summaryQuestions = 22", summaryQuestions);
+  console.log("summaryQuestions = 22", summaryQuestions);
 
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 

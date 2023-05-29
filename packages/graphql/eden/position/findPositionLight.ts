@@ -50,6 +50,13 @@ export const FIND_POSITION_LIGHT = gql`
             score
             reason
           }
+          reportPassFail {
+            categoryName
+            title
+            score
+            reason
+            IDb
+          }
         }
       }
       talentList {
