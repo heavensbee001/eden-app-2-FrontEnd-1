@@ -25,6 +25,7 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
+import { toast } from "react-toastify";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -468,6 +469,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleSaveNewTalentListButton = async () => {
     if (!editTalentListMode) {
+      toast.info("Saving new talent list..");
       const result = await createTalentListPosition({
         variables: {
           fields: {
@@ -493,7 +495,9 @@ const PositionCRM: NextPageWithLayout = () => {
           },
         },
       });
+      toast.success("New talent list created!");
     } else {
+      toast.info("Saving changes on talent list");
       await updateUsersTalentListPosition({
         variables: {
           fields: {
@@ -503,6 +507,7 @@ const PositionCRM: NextPageWithLayout = () => {
           },
         },
       });
+      toast.success("Talent list updated correctly!");
     }
   };
 
