@@ -82,6 +82,20 @@ const HomePage: NextPageWithLayout = () => {
     setTopSkills(skills);
   };
 
+  const randomPercentage = () => {
+    const min = 5;
+    const max = 100;
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    console.log("randomNumber ", randomNumber);
+
+    console.log("randomNumber > 50", randomNumber > 50);
+
+    return randomNumber;
+  };
+
+  const percentage = randomPercentage();
+
   return (
     <>
       <Head>
@@ -209,7 +223,15 @@ const HomePage: NextPageWithLayout = () => {
                       </div>
                       <br />
                       <p>Probability Of Passing:</p>
-                      <p className="text-[50px] text-lime-400">73%</p>
+                      {percentage > 50 ? (
+                        <p className="text-[50px] text-lime-400">
+                          {`${percentage}%`}
+                        </p>
+                      ) : (
+                        <p className="text-[50px] text-red-600">
+                          {`${percentage}%`}
+                        </p>
+                      )}
                       <p className="text-gray-400">
                         Rock this interview and increase your
                       </p>
