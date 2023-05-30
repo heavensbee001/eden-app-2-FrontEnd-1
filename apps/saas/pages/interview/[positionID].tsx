@@ -200,9 +200,11 @@ const HomePage: NextPageWithLayout = () => {
                           {topSkills !== null &&
                             topSkills.map((skill: any, index: number) => (
                               <Badge
+                                className="text-white"
                                 key={index}
                                 text={skill}
-                                colorRGB="190, 140, 255"
+                                colorRGB="168, 85, 247"
+                                cutText={20}
                               />
                             ))}
                         </div>
