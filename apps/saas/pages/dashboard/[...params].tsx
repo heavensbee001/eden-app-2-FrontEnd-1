@@ -3,6 +3,7 @@ import {
   CREATE_NEW_TALENT_LIST,
   // FIND_POSITION_FULL,
   FIND_POSITION_LIGHT,
+  FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
@@ -17,11 +18,13 @@ import {
   ListModeEnum,
   SelectList,
   TextField,
+  TextHeading2,
+  TextLabel2,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
@@ -58,7 +61,16 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
-  const { positionID } = router.query;
+  const { params } = router.query;
+  const [positionID, setPositionID] = useState<string>("");
+  const [talentListID, setTalentListID] = useState<string>("");
+
+  useEffect(() => {
+    if (params) {
+      setPositionID(params[0] as string);
+      if (params[1]) setTalentListID(params[1] as string);
+    }
+  }, [params]);
 
   const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
 
@@ -144,6 +156,26 @@ const PositionCRM: NextPageWithLayout = () => {
       setQuestions(questionPrep);
     },
   });
+
+  const {} = useQuery(FIND_TALENT_LIST, {
+    variables: {
+      fields: {
+        _id: talentListID,
+      },
+    },
+    skip: !Boolean(talentListID),
+    ssr: false,
+    onCompleted: (data: any) => {
+      setTalentListsAvailables(data.findUserTalentListPosition);
+      setTalentListToShow(data.findUserTalentListPosition);
+    },
+  });
+
+  useEffect(() => {
+    if (talentListID && talentListToShow) {
+      setTalentListSelected(talentListToShow);
+    }
+  }, [talentListID, talentListToShow]);
 
   const handleRowClick = (user: CandidateType) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
@@ -569,7 +601,7 @@ const PositionCRM: NextPageWithLayout = () => {
         <div className="">
           <div className="mb-4 flex items-center">
             <div className="mr-4 max-w-[200px]">
-              {!newTalentListCreationMode ? (
+              {!newTalentListCreationMode && !talentListID ? (
                 <SelectList
                   items={[
                     { _id: "000", name: "No list selected" },
@@ -694,7 +726,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-xl">
                   <TrainQuestionsEdenAI
                     questions={questions}
-                    positionID={positionID}
+                    positionID={[params![0]]}
                     setQuestions={setQuestions}
                     setTrainModalOpen={setTrainModalOpen}
                   />
