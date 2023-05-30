@@ -91,6 +91,7 @@ const PositionCRM: NextPageWithLayout = () => {
     useState<boolean>(false);
 
   const [editTalentListMode, setEditTalentListMode] = useState<boolean>(false);
+  const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
     string[]
@@ -434,6 +435,15 @@ const PositionCRM: NextPageWithLayout = () => {
     );
   };
 
+  const handleAddCandidatesToList = () => {
+    setEditTalentListMode(true);
+    setNewTalentListName(talentListSelected?.name!);
+    setCandidatesFromTalentList(candidates);
+    setNewTalentListCandidatesIds(
+      talentListSelected?.talent!.map((t) => t?.user?._id!)!
+    );
+  };
+
   const handleCopyLink = () => {
     // const url = window.location.href;
     const url = window.location.origin + "/interview/" + positionID;
@@ -628,25 +638,26 @@ const PositionCRM: NextPageWithLayout = () => {
                   </>
                 )
               ) : !editTalentListMode ? (
-                <div className="grid grid-cols-3 grid-rows-1 justify-items-center gap-4">
+                <div className="flex">
                   <MdIosShare
-                    size={36}
-                    className="mt-1 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+                    size={24}
+                    className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
                   />
                   <Button
-                    className="mb-4 ml-auto pt-2"
+                    className="mr-2"
                     variant="secondary"
-                    size="md"
+                    size="sm"
                     onClick={handleEditTalentListButton}
                   >
                     Edit
                   </Button>
                   <Button
-                    className="pl-auto mb-4 ml-auto w-32 min-w-fit pt-2 text-xs"
+                    className="mr-2"
                     variant="secondary"
+                    size="sm"
                     onClick={handleCreateNewListButton}
                   >
-                    Create new
+                    Create New List
                   </Button>
                 </div>
               ) : (
@@ -663,6 +674,64 @@ const PositionCRM: NextPageWithLayout = () => {
                 </Button>
               )}
             </>
+            {/* <select
+              name="add-to-list"
+              id="add-to-list"
+              className="ml-auto cursor-pointer text-xs text-gray-600 underline hover:text-gray-500"
+              value=""
+              onSelect={() => {
+                console.log("new list");
+              }}
+            >
+              <option value="" disabled hidden>
+                Add to list
+              </option>
+              <option value="asd">New list</option>
+            </select> */}
+            {newTalentListCandidatesIds.length > 0 && (
+              <div className="relative ml-10 mr-3">
+                <span
+                  onClick={() => {
+                    setAddToListOpen(true);
+                  }}
+                  className="cursor-pointer text-xs text-gray-600 underline hover:text-gray-500"
+                >
+                  Add to list
+                </span>
+                {addToListOpen && (
+                  <div
+                    className="fixed left-0 top-0 z-30 h-full w-full"
+                    onClick={() => {
+                      setAddToListOpen(false);
+                    }}
+                  ></div>
+                )}
+                {addToListOpen && (
+                  <div
+                    className={classNames(
+                      "scrollbar-hide absolute left-0 top-6 z-40 max-h-[100px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                      addToListOpen ? "" : "h-0"
+                    )}
+                  >
+                    <div
+                      className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                      onClick={() => {}}
+                    >
+                      <p className="">New list</p>
+                    </div>
+                    {talentListsAvailables.map((list, index) => (
+                      <div
+                        key={index}
+                        className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                        onClick={handleAddCandidatesToList}
+                      >
+                        <p className="">{list.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="grid grid-flow-row">
