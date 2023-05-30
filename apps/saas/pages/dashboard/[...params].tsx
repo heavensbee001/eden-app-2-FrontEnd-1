@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
-  // FIND_POSITION_FULL,
   FIND_POSITION_LIGHT,
   FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
@@ -13,18 +12,14 @@ import {
   Button,
   CandidateInfo,
   CandidatesTableList,
-  // GridItemSix,
-  // GridLayout,
   ListModeEnum,
   SelectList,
   TextField,
-  TextHeading2,
-  TextLabel2,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
@@ -166,16 +161,18 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(talentListID),
     ssr: false,
     onCompleted: (data: any) => {
-      setTalentListsAvailables(data.findUserTalentListPosition);
+      // setTalentListsAvailables(data.findUserTalentListPosition);
       setTalentListToShow(data.findUserTalentListPosition);
     },
   });
 
   useEffect(() => {
-    if (talentListID && talentListToShow) {
+    if (talentListID && talentListToShow && talentListsAvailables.length) {
+      console.log("kakak");
       setTalentListSelected(talentListToShow);
+      // setNewTalentListName(talentListToShow?.name!);
     }
-  }, [talentListID, talentListToShow]);
+  }, [talentListID, talentListToShow, talentListsAvailables]);
 
   const handleRowClick = (user: CandidateType) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
@@ -418,7 +415,7 @@ const PositionCRM: NextPageWithLayout = () => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     if (talentListToShow) {
-      // console.log("111 aaa");
+      console.log("111 aaa");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < talentListToShow.talent!.length; j++) {
           if (
@@ -430,8 +427,10 @@ const PositionCRM: NextPageWithLayout = () => {
       }
       setTalentListSelected(talentListToShow);
       setTalentListToShow(undefined);
+      console.log({ talentListToShow });
+      console.log({ talentListsAvailables });
     } else if (list._id !== "000") {
-      // console.log("1111 cccc");
+      console.log("1111 cccc");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -442,7 +441,7 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(list);
     } else {
       candidatesOnTalentListSelected.push(...candidates);
-      // console.log("1111 bbbb");
+      console.log("1111 bbbb");
       setTalentListSelected({ _id: "000", name: "No list selected" });
     }
     // }
@@ -543,6 +542,18 @@ const PositionCRM: NextPageWithLayout = () => {
     }
   };
 
+  const handleShareTalentListButton = async () => {
+    const url =
+      window.location.origin +
+      "/dashboard/" +
+      positionID +
+      "/" +
+      talentListSelected?._id!;
+
+    navigator.clipboard.writeText(url);
+    toast.success("Link copied to clipboard!");
+  };
+
   return (
     <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
       <div
@@ -601,7 +612,7 @@ const PositionCRM: NextPageWithLayout = () => {
         <div className="">
           <div className="mb-4 flex items-center">
             <div className="mr-4 max-w-[200px]">
-              {!newTalentListCreationMode && !talentListID ? (
+              {!newTalentListCreationMode ? (
                 <SelectList
                   items={[
                     { _id: "000", name: "No list selected" },
@@ -664,6 +675,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   <MdIosShare
                     size={36}
                     className="mt-1 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+                    onClick={handleShareTalentListButton}
                   />
                   <Button
                     className="mb-4 ml-auto pt-2"
