@@ -4,24 +4,26 @@ import { Card } from "@eden/package-ui";
 import React from "react";
 
 type Props = {
-  memberID: string;
   memberImg?: string;
+  conversationID?: string;
 };
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const EdenChatTab: React.FC<Props> = ({ memberID, memberImg }) => {
+export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
   const { data: findConversationsData } = useQuery(FIND_CONVERSATIONS, {
     variables: {
       fields: {
-        userID: memberID,
+        _id: [conversationID],
       },
     },
-    skip: !Boolean(memberID),
+    skip: conversationID == undefined,
     ssr: false,
   });
+
+  // console.log("conversationID = ", conversationID);
 
   return (
     <>
