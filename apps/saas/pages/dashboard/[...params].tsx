@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
-  // FIND_POSITION_FULL,
   FIND_POSITION_LIGHT,
+  FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
@@ -12,8 +12,6 @@ import {
   Button,
   CandidateInfo,
   CandidatesTableList,
-  // GridItemSix,
-  // GridLayout,
   ListModeEnum,
   SelectList,
   TextField,
@@ -21,7 +19,7 @@ import {
 } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
@@ -58,7 +56,16 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
-  const { positionID } = router.query;
+  const { params } = router.query;
+  const [positionID, setPositionID] = useState<string>("");
+  const [talentListID, setTalentListID] = useState<string>("");
+
+  useEffect(() => {
+    if (params) {
+      setPositionID(params[0] as string);
+      if (params[1]) setTalentListID(params[1] as string);
+    }
+  }, [params]);
 
   const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
 
@@ -144,6 +151,28 @@ const PositionCRM: NextPageWithLayout = () => {
       setQuestions(questionPrep);
     },
   });
+
+  const {} = useQuery(FIND_TALENT_LIST, {
+    variables: {
+      fields: {
+        _id: talentListID,
+      },
+    },
+    skip: !Boolean(talentListID),
+    ssr: false,
+    onCompleted: (data: any) => {
+      // setTalentListsAvailables(data.findUserTalentListPosition);
+      setTalentListToShow(data.findUserTalentListPosition);
+    },
+  });
+
+  useEffect(() => {
+    if (talentListID && talentListToShow && talentListsAvailables.length) {
+      console.log("kakak");
+      setTalentListSelected(talentListToShow);
+      // setNewTalentListName(talentListToShow?.name!);
+    }
+  }, [talentListID, talentListToShow, talentListsAvailables]);
 
   const handleRowClick = (user: CandidateType) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
@@ -386,7 +415,7 @@ const PositionCRM: NextPageWithLayout = () => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     if (talentListToShow) {
-      // console.log("111 aaa");
+      console.log("111 aaa");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < talentListToShow.talent!.length; j++) {
           if (
@@ -398,8 +427,10 @@ const PositionCRM: NextPageWithLayout = () => {
       }
       setTalentListSelected(talentListToShow);
       setTalentListToShow(undefined);
+      console.log({ talentListToShow });
+      console.log({ talentListsAvailables });
     } else if (list._id !== "000") {
-      // console.log("1111 cccc");
+      console.log("1111 cccc");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -410,7 +441,7 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(list);
     } else {
       candidatesOnTalentListSelected.push(...candidates);
-      // console.log("1111 bbbb");
+      console.log("1111 bbbb");
       setTalentListSelected({ _id: "000", name: "No list selected" });
     }
     // }
@@ -509,6 +540,18 @@ const PositionCRM: NextPageWithLayout = () => {
       });
       toast.success("Talent list updated correctly!");
     }
+  };
+
+  const handleShareTalentListButton = async () => {
+    const url =
+      window.location.origin +
+      "/dashboard/" +
+      positionID +
+      "/" +
+      talentListSelected?._id!;
+
+    navigator.clipboard.writeText(url);
+    toast.success("Link copied to clipboard!");
   };
 
   return (
@@ -632,6 +675,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   <MdIosShare
                     size={36}
                     className="mt-1 cursor-pointer rounded-full p-1 hover:border-2 hover:border-gray-500 "
+                    onClick={handleShareTalentListButton}
                   />
                   <Button
                     className="mb-4 ml-auto pt-2"
@@ -694,7 +738,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-xl">
                   <TrainQuestionsEdenAI
                     questions={questions}
-                    positionID={positionID}
+                    positionID={[params![0]]}
                     setQuestions={setQuestions}
                     setTrainModalOpen={setTrainModalOpen}
                   />
