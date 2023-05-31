@@ -63,7 +63,7 @@ export const Avatar = ({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={`${imageSrc}`}
-          className=""
+          className="h-full"
           alt={alt}
           onError={() => {
             setImageSrc("");
