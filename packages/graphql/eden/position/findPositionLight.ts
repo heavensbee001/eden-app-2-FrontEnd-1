@@ -9,6 +9,7 @@ export const FIND_POSITION_LIGHT = gql`
       name
       candidates {
         overallScore
+        conversationID
         user {
           _id
           discordName
