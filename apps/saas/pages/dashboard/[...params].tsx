@@ -72,7 +72,6 @@ const PositionCRM: NextPageWithLayout = () => {
   const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
 
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
-  const [notificationOpen, setNotificationOpen] = useState(false);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
@@ -81,9 +80,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  const [questions, setQuestions] = useState<Question[]>([]);
-
+  const [notificationOpen, setNotificationOpen] = useState(false);
   const [trainModalOpen, setTrainModalOpen] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   const [talentListsAvailables, setTalentListsAvailables] = useState<
     TalentListType[]
@@ -455,12 +454,12 @@ const PositionCRM: NextPageWithLayout = () => {
     setCandidatesFromTalentList(candidatesOnTalentListSelected);
   };
 
-  const handleCreateNewListButton = () => {
-    // console.log("2222");
-    setTalentListSelected({ _id: "000", name: "All candidates" });
-    setNewTalentListCreationMode(true);
-    setCandidatesFromTalentList(candidates);
-  };
+  // const handleCreateNewListButton = () => {
+  //   // console.log("2222");
+  //   setTalentListSelected({ _id: "000", name: "All candidates" });
+  //   setNewTalentListCreationMode(true);
+  //   setCandidatesFromTalentList(candidates);
+  // };
 
   const handleCreateNewList = () => {
     // console.log("2222");
@@ -473,14 +472,14 @@ const PositionCRM: NextPageWithLayout = () => {
     handleSaveNewTalentList();
   };
 
-  const handleEditTalentListButton = () => {
-    setEditTalentListMode(true);
-    setNewTalentListName(talentListSelected?.name!);
-    setCandidatesFromTalentList(candidates);
-    setNewTalentListCandidatesIds(
-      talentListSelected?.talent!.map((t) => t?.user?._id!)!
-    );
-  };
+  // const handleEditTalentListButton = () => {
+  //   setEditTalentListMode(true);
+  //   setNewTalentListName(talentListSelected?.name!);
+  //   setCandidatesFromTalentList(candidates);
+  //   setNewTalentListCandidatesIds(
+  //     talentListSelected?.talent!.map((t) => t?.user?._id!)!
+  //   );
+  // };
 
   const handleAddCandidatesToList = async (listID: string) => {
     setAddToListOpen(false);
@@ -556,55 +555,55 @@ const PositionCRM: NextPageWithLayout = () => {
     });
   };
 
-  const handleNewTalentListNameChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNewTalentListName(e.target.value);
-  };
+  // const handleNewTalentListNameChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setNewTalentListName(e.target.value);
+  // };
 
-  const handleSaveNewTalentListButton = async () => {
-    if (!editTalentListMode) {
-      toast.info("Saving new talent list..");
-      const result = await createTalentListPosition({
-        variables: {
-          fields: {
-            positionID: positionID,
-            name: newTalentListName,
-          },
-        },
-      });
+  // const handleSaveNewTalentListButton = async () => {
+  //   if (!editTalentListMode) {
+  //     toast.info("Saving new talent list..");
+  //     const result = await createTalentListPosition({
+  //       variables: {
+  //         fields: {
+  //           positionID: positionID,
+  //           name: newTalentListName,
+  //         },
+  //       },
+  //     });
 
-      const lastTalentListIndex =
-        result.data?.createTalentListPosition.talentList.length - 1;
+  //     const lastTalentListIndex =
+  //       result.data?.createTalentListPosition.talentList.length - 1;
 
-      const newTalentListID =
-        result.data?.createTalentListPosition.talentList[lastTalentListIndex]
-          ._id;
+  //     const newTalentListID =
+  //       result.data?.createTalentListPosition.talentList[lastTalentListIndex]
+  //         ._id;
 
-      await updateUsersTalentListPosition({
-        variables: {
-          fields: {
-            positionID: positionID,
-            talentListID: newTalentListID,
-            usersTalentList: newTalentListCandidatesIds,
-          },
-        },
-      });
-      toast.success("New talent list created!");
-    } else {
-      toast.info("Saving changes on talent list");
-      await updateUsersTalentListPosition({
-        variables: {
-          fields: {
-            positionID: positionID,
-            talentListID: talentListSelected?._id!,
-            usersTalentList: newTalentListCandidatesIds,
-          },
-        },
-      });
-      toast.success("Talent list updated correctly!");
-    }
-  };
+  //     await updateUsersTalentListPosition({
+  //       variables: {
+  //         fields: {
+  //           positionID: positionID,
+  //           talentListID: newTalentListID,
+  //           usersTalentList: newTalentListCandidatesIds,
+  //         },
+  //       },
+  //     });
+  //     toast.success("New talent list created!");
+  //   } else {
+  //     toast.info("Saving changes on talent list");
+  //     await updateUsersTalentListPosition({
+  //       variables: {
+  //         fields: {
+  //           positionID: positionID,
+  //           talentListID: talentListSelected?._id!,
+  //           usersTalentList: newTalentListCandidatesIds,
+  //         },
+  //       },
+  //     });
+  //     toast.success("Talent list updated correctly!");
+  //   }
+  // };
 
   const handleSaveNewTalentList = async () => {
     const result = await createTalentListPosition({
@@ -635,17 +634,17 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("New talent list created!");
   };
 
-  const handleShareTalentListButton = async () => {
-    const url =
-      window.location.origin +
-      "/dashboard/" +
-      positionID +
-      "/" +
-      talentListSelected?._id!;
+  // const handleShareTalentListButton = async () => {
+  //   const url =
+  //     window.location.origin +
+  //     "/dashboard/" +
+  //     positionID +
+  //     "/" +
+  //     talentListSelected?._id!;
 
-    navigator.clipboard.writeText(url);
-    toast.success("Link copied to clipboard!");
-  };
+  //   navigator.clipboard.writeText(url);
+  //   toast.success("Link copied to clipboard!");
+  // };
 
   return (
     <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
@@ -705,17 +704,17 @@ const PositionCRM: NextPageWithLayout = () => {
         <div className="">
           <div className="mb-4 flex items-center">
             <div className="mr-4 max-w-[200px]">
-              {!newTalentListCreationMode ? (
-                <SelectList
-                  items={[
-                    { _id: "000", name: "All candidates" },
-                    ...talentListsAvailables,
-                  ]}
-                  onChange={handleSelectedTalentList}
-                  newValue={talentListSelected ? talentListSelected : undefined}
-                  isDisabled={editTalentListMode}
-                />
-              ) : (
+              {/* {!newTalentListCreationMode ? ( */}
+              <SelectList
+                items={[
+                  { _id: "000", name: "All candidates" },
+                  ...talentListsAvailables,
+                ]}
+                onChange={handleSelectedTalentList}
+                newValue={talentListSelected ? talentListSelected : undefined}
+                // isDisabled={editTalentListMode}
+              />
+              {/* ) : (
                 <TextField
                   onChange={handleNewTalentListNameChange}
                   placeholder="Name your custom list"
@@ -723,9 +722,9 @@ const PositionCRM: NextPageWithLayout = () => {
                   required={true}
                   className="mt-0 h-[30px] !px-2 !py-1"
                 />
-              )}
+              )} */}
             </div>
-            <>
+            {/* <>
               {talentListSelected?._id === "000" ? (
                 !newTalentListCreationMode ? (
                   <Button
@@ -751,7 +750,6 @@ const PositionCRM: NextPageWithLayout = () => {
                       Save
                     </Button>
 
-                    {/* close button */}
                     <FaTimes
                       size={26}
                       className="cursor-pointer text-gray-400 hover:text-gray-600"
@@ -800,7 +798,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   Save
                 </Button>
               )}
-            </>
+            </> */}
             {/* <select
               name="add-to-list"
               id="add-to-list"
