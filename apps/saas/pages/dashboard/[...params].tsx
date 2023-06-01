@@ -446,7 +446,7 @@ const PositionCRM: NextPageWithLayout = () => {
     } else {
       candidatesOnTalentListSelected.push(...candidates);
       // console.log("1111 bbbb");
-      setTalentListSelected({ _id: "000", name: "No list selected" });
+      setTalentListSelected({ _id: "000", name: "All candidates" });
     }
     // }
 
@@ -457,14 +457,14 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleCreateNewListButton = () => {
     // console.log("2222");
-    setTalentListSelected({ _id: "000", name: "No list selected" });
+    setTalentListSelected({ _id: "000", name: "All candidates" });
     setNewTalentListCreationMode(true);
     setCandidatesFromTalentList(candidates);
   };
 
   const handleCreateNewList = () => {
     // console.log("2222");
-    // setTalentListSelected({ _id: "000", name: "No list selected" });
+    // setTalentListSelected({ _id: "000", name: "All candidates" });
     // setCandidatesFromTalentList(candidates);
     setNewTalentListCandidatesIds(candidates.map((c) => c.user?._id!));
 
@@ -677,7 +677,7 @@ const PositionCRM: NextPageWithLayout = () => {
               {!newTalentListCreationMode ? (
                 <SelectList
                   items={[
-                    { _id: "000", name: "No list selected" },
+                    { _id: "000", name: "All candidates" },
                     ...talentListsAvailables,
                   ]}
                   onChange={handleSelectedTalentList}
