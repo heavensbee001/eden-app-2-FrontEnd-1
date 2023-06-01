@@ -21,9 +21,11 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-// import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
-// import { MdIosShare } from "react-icons/md";
+// import { FaTimes } from "react-icons/fa";
+import { HiOutlineDocumentPlus } from "react-icons/hi2";
+import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
+import { MdCompare, MdIosShare } from "react-icons/md";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 
@@ -635,17 +637,17 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("New talent list created!");
   };
 
-  // const handleShareTalentListButton = async () => {
-  //   const url =
-  //     window.location.origin +
-  //     "/dashboard/" +
-  //     positionID +
-  //     "/" +
-  //     talentListSelected?._id!;
+  const handleShareTalentListButton = async () => {
+    const url =
+      window.location.origin +
+      "/dashboard/" +
+      positionID +
+      "/" +
+      talentListSelected?._id!;
 
-  //   navigator.clipboard.writeText(url);
-  //   toast.success("Link copied to clipboard!");
-  // };
+    navigator.clipboard.writeText(url);
+    toast.success("Link copied to clipboard!");
+  };
 
   return (
     <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
@@ -763,13 +765,13 @@ const PositionCRM: NextPageWithLayout = () => {
                   </>
                 )
               ) : !editTalentListMode ? (
-                <div className="flex">
-                  <MdIosShare
-                    size={24}
-                    className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
-                    onClick={handleShareTalentListButton}
-                  />
-                  <Button
+                <div className="flex"> */}
+            <MdIosShare
+              size={24}
+              className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
+              onClick={handleShareTalentListButton}
+            />
+            {/* <Button
                     className="mr-2"
                     variant="secondary"
                     size="sm"
@@ -825,8 +827,9 @@ const PositionCRM: NextPageWithLayout = () => {
                       onClick={() => {
                         setAddToListOpen(true);
                       }}
-                      className="cursor-pointer text-xs text-gray-600 underline hover:text-gray-500"
+                      className="cursor-pointer text-xs text-gray-600 hover:text-gray-400"
                     >
+                      <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
                       Add to list
                     </span>
                     {addToListOpen && (
@@ -840,7 +843,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     {addToListOpen && (
                       <div
                         className={classNames(
-                          "scrollbar-hide absolute left-0 top-6 z-40 max-h-[100px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                          "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
                           addToListOpen ? "" : "h-0"
                         )}
                       >
@@ -848,7 +851,13 @@ const PositionCRM: NextPageWithLayout = () => {
                           className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
                           onClick={handleCreateNewList}
                         >
-                          <p className="">New list</p>
+                          <p className="">
+                            <HiOutlineDocumentPlus
+                              size={16}
+                              className="mb-1 mr-1 inline"
+                            />
+                            New list
+                          </p>
                         </div>
                         {talentListsAvailables.map((list, index) => (
                           <div
@@ -874,6 +883,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       handleRemoveCandidatesFromList(talentListSelected?._id!);
                     }}
                   >
+                    <IoMdRemoveCircle size={16} className="mb-1 mr-1 inline" />
                     Remove from list
                   </span>
                 </div>
@@ -884,7 +894,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   data-tip="Select only 2 candidates to compare"
                   data-for={`badgeTip-compare`}
                   className={classNames(
-                    "ml-4 mr-4 text-xs text-gray-600 hover:text-gray-400",
+                    "ml-8 mr-4 text-xs text-gray-600 hover:text-gray-400",
                     newTalentListCandidatesIds.length !== 2
                       ? "cursor-default hover:line-through"
                       : "cursor-pointer"
@@ -905,6 +915,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     );
                   }}
                 >
+                  <MdCompare size={16} className="mb-1 mr-1 inline" />
                   Compare
                 </span>
                 {newTalentListCandidatesIds.length !== 2 && (
