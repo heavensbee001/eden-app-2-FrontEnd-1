@@ -73,11 +73,11 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
       <table className="text-md relative w-full">
         <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
           <tr>
-            {listMode !== ListModeEnum.list ? (
-              <th className="border-b border-gray-300 py-2 font-medium">
-                {/* Select */}
-              </th>
-            ) : null}
+            {/* {listMode !== ListModeEnum.list ? ( */}
+            <th className="border-b border-gray-300 py-2 font-medium">
+              {/* Select */}
+            </th>
+            {/* ) : null} */}
             <th className="min-w-min border-b border-gray-300 py-2 pl-4 text-start font-medium">
               Name
             </th>
@@ -122,22 +122,22 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     : "even:bg-slate-100"
                 } group cursor-pointer  hover:bg-lime-50 focus:outline-none focus:ring focus:ring-gray-300 active:bg-gray-300`}
               >
-                {listMode !== ListModeEnum.list ? (
-                  <ColumnStyled className="-mr-1 px-0 py-0">
-                    <CheckBox
-                      className="-mr-1 pl-2"
-                      name={candidate.user?._id!}
-                      checked={
-                        selectedIds
-                          ? selectedIds.includes(candidate.user?._id!)
-                          : false
-                      }
-                      onChange={() =>
-                        handleChkSelection && handleChkSelection(candidate)
-                      }
-                    />
-                  </ColumnStyled>
-                ) : null}
+                {/* {listMode !== ListModeEnum.list ? ( */}
+                <ColumnStyled className="-mr-1 px-0 py-0">
+                  <CheckBox
+                    className="-mr-1 pl-2"
+                    name={candidate.user?._id!}
+                    checked={
+                      selectedIds
+                        ? selectedIds.includes(candidate.user?._id!)
+                        : false
+                    }
+                    onChange={() =>
+                      handleChkSelection && handleChkSelection(candidate)
+                    }
+                  />
+                </ColumnStyled>
+                {/* ) : null} */}
                 <ColumnStyled extraCssClass="border-r-0 pr-0">
                   <div className="flex flex-nowrap items-center">
                     <Avatar
