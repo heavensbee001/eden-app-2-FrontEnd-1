@@ -13,6 +13,7 @@ import {
   CandidateInfo,
   CandidatesTableList,
   ListModeEnum,
+  Loading,
   SelectList,
   TextField,
   TrainQuestionsEdenAI,
@@ -348,61 +349,62 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  const [createTalentListPosition] = useMutation(CREATE_NEW_TALENT_LIST);
+  const [
+    createTalentListPosition,
+    { loading: createTalentListPositionLoading },
+  ] = useMutation(CREATE_NEW_TALENT_LIST);
 
-  const [updateUsersTalentListPosition] = useMutation(
-    UPDATE_TALENT_LIST_WITH_TALENT,
-    {
-      onCompleted: (data) => {
-        if (!editTalentListMode) {
-          const lastTalentListIndex =
-            data?.updateUsersTalentListPosition.talentList.length - 1;
+  const [
+    updateUsersTalentListPosition,
+    { loading: updateUsersTalentListPositionLoading },
+  ] = useMutation(UPDATE_TALENT_LIST_WITH_TALENT, {
+    onCompleted: (data) => {
+      if (!editTalentListMode) {
+        const lastTalentListIndex =
+          data?.updateUsersTalentListPosition.talentList.length - 1;
 
-          const newList =
-            data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
+        const newList =
+          data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
 
-          setTalentListToShow(newList);
-          setNewTalentListCreationMode(false);
-          setNewTalentListCandidatesIds([]);
-          setNewTalentListName("");
-        } else if (editTalentListMode) {
-          const editedTalentListIndex =
-            data?.updateUsersTalentListPosition.talentList.findIndex(
-              (talentList: TalentListType) =>
-                talentList._id === talentListSelected?._id
-            );
+        setTalentListToShow(newList);
+        setNewTalentListCreationMode(false);
+        setNewTalentListCandidatesIds([]);
+        setNewTalentListName("");
+      } else if (editTalentListMode) {
+        const editedTalentListIndex =
+          data?.updateUsersTalentListPosition.talentList.findIndex(
+            (talentList: TalentListType) =>
+              talentList._id === talentListSelected?._id
+          );
 
-          const editedTalentList =
-            data?.updateUsersTalentListPosition.talentList[
-              editedTalentListIndex
-            ];
+        const editedTalentList =
+          data?.updateUsersTalentListPosition.talentList[editedTalentListIndex];
 
-          setTalentListSelected(editedTalentList);
+        setTalentListSelected(editedTalentList);
 
-          const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
+        const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-          for (let i = 0; i < candidates.length; i++) {
-            for (let j = 0; j < editedTalentList?.talent?.length!; j++) {
-              if (
-                candidates[i].user?._id ===
-                editedTalentList?.talent![j]!.user!._id
-              ) {
-                candidatesOnTalentListSelected.push(candidates[i]);
-              }
+        for (let i = 0; i < candidates.length; i++) {
+          for (let j = 0; j < editedTalentList?.talent?.length!; j++) {
+            if (
+              candidates[i].user?._id ===
+              editedTalentList?.talent![j]!.user!._id
+            ) {
+              candidatesOnTalentListSelected.push(candidates[i]);
             }
           }
-          setCandidatesFromTalentList(candidatesOnTalentListSelected);
-          setEditTalentListMode(false);
-          setNewTalentListCandidatesIds([]);
-          setNewTalentListName("");
-        } else {
-          console.log(
-            "can't land here, something is wrong! there isn't any exception to the rule :P"
-          );
         }
-      },
-    }
-  );
+        setCandidatesFromTalentList(candidatesOnTalentListSelected);
+        setEditTalentListMode(false);
+        setNewTalentListCandidatesIds([]);
+        setNewTalentListName("");
+      } else {
+        console.log(
+          "can't land here, something is wrong! there isn't any exception to the rule :P"
+        );
+      }
+    },
+  });
 
   // console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
@@ -458,6 +460,15 @@ const PositionCRM: NextPageWithLayout = () => {
     setCandidatesFromTalentList(candidates);
   };
 
+  const handleCreateNewList = () => {
+    // console.log("2222");
+    // setTalentListSelected({ _id: "000", name: "No list selected" });
+    // setCandidatesFromTalentList(candidates);
+    setNewTalentListCandidatesIds(candidates.map((c) => c.user?._id!));
+
+    handleSaveNewTalentList();
+  };
+
   const handleEditTalentListButton = () => {
     setEditTalentListMode(true);
     setNewTalentListName(talentListSelected?.name!);
@@ -467,13 +478,22 @@ const PositionCRM: NextPageWithLayout = () => {
     );
   };
 
-  const handleAddCandidatesToList = () => {
-    setEditTalentListMode(true);
-    setNewTalentListName(talentListSelected?.name!);
-    setCandidatesFromTalentList(candidates);
-    setNewTalentListCandidatesIds(
-      talentListSelected?.talent!.map((t) => t?.user?._id!)!
-    );
+  const handleAddCandidatesToList = async (listID: string) => {
+    const _prevTalent = findPositionData?.findPosition.talentList
+      .find((_list: any) => _list._id === listID)
+      .talent.map((t: any) => t.user._id);
+
+    await updateUsersTalentListPosition({
+      variables: {
+        fields: {
+          positionID: positionID,
+          talentListID: listID,
+          usersTalentList: [..._prevTalent, ...newTalentListCandidatesIds],
+        },
+      },
+    });
+
+    toast.success("Candidate added to list!");
   };
 
   const handleCopyLink = () => {
@@ -551,6 +571,35 @@ const PositionCRM: NextPageWithLayout = () => {
       });
       toast.success("Talent list updated correctly!");
     }
+  };
+
+  const handleSaveNewTalentList = async () => {
+    const result = await createTalentListPosition({
+      variables: {
+        fields: {
+          positionID: positionID,
+          name: "New List",
+        },
+      },
+    });
+
+    const lastTalentListIndex =
+      result.data?.createTalentListPosition.talentList.length - 1;
+
+    const newTalentListID =
+      result.data?.createTalentListPosition.talentList[lastTalentListIndex]._id;
+
+    await updateUsersTalentListPosition({
+      variables: {
+        fields: {
+          positionID: positionID,
+          talentListID: newTalentListID,
+          usersTalentList: newTalentListCandidatesIds,
+        },
+      },
+    });
+
+    toast.success("New talent list created!");
   };
 
   const handleShareTalentListButton = async () => {
@@ -734,48 +783,55 @@ const PositionCRM: NextPageWithLayout = () => {
               <option value="asd">New list</option>
             </select> */}
             {newTalentListCandidatesIds.length > 0 && (
-              <div className="relative ml-10 mr-3">
-                <span
-                  onClick={() => {
-                    setAddToListOpen(true);
-                  }}
-                  className="cursor-pointer text-xs text-gray-600 underline hover:text-gray-500"
-                >
-                  Add to list
-                </span>
-                {addToListOpen && (
-                  <div
-                    className="fixed left-0 top-0 z-30 h-full w-full"
-                    onClick={() => {
-                      setAddToListOpen(false);
-                    }}
-                  ></div>
-                )}
-                {addToListOpen && (
-                  <div
-                    className={classNames(
-                      "scrollbar-hide absolute left-0 top-6 z-40 max-h-[100px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
-                      addToListOpen ? "" : "h-0"
-                    )}
-                  >
-                    <div
-                      className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                      onClick={() => {}}
+              <>
+                {createTalentListPositionLoading ||
+                updateUsersTalentListPositionLoading ? (
+                  <Loading title="" />
+                ) : (
+                  <div className="relative ml-10 mr-3">
+                    <span
+                      onClick={() => {
+                        setAddToListOpen(true);
+                      }}
+                      className="cursor-pointer text-xs text-gray-600 underline hover:text-gray-500"
                     >
-                      <p className="">New list</p>
-                    </div>
-                    {talentListsAvailables.map((list, index) => (
+                      Add to list
+                    </span>
+                    {addToListOpen && (
                       <div
-                        key={index}
-                        className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                        onClick={handleAddCandidatesToList}
+                        className="fixed left-0 top-0 z-30 h-full w-full"
+                        onClick={() => {
+                          setAddToListOpen(false);
+                        }}
+                      ></div>
+                    )}
+                    {addToListOpen && (
+                      <div
+                        className={classNames(
+                          "scrollbar-hide absolute left-0 top-6 z-40 max-h-[100px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                          addToListOpen ? "" : "h-0"
+                        )}
                       >
-                        <p className="">{list.name}</p>
+                        <div
+                          className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                          onClick={handleCreateNewList}
+                        >
+                          <p className="">New list</p>
+                        </div>
+                        {talentListsAvailables.map((list, index) => (
+                          <div
+                            key={index}
+                            className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                            onClick={() => handleAddCandidatesToList(list._id!)}
+                          >
+                            <p className="">{list.name}</p>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
                 )}
-              </div>
+              </>
             )}
             {newTalentListCandidatesIds.length > 0 && (
               <div className="relative">
