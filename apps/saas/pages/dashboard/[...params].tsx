@@ -23,7 +23,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 // import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
-// import { MdIosShare } from "react-icons/md";
+import { MdIosShare } from "react-icons/md";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 
@@ -635,17 +635,17 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("New talent list created!");
   };
 
-  // const handleShareTalentListButton = async () => {
-  //   const url =
-  //     window.location.origin +
-  //     "/dashboard/" +
-  //     positionID +
-  //     "/" +
-  //     talentListSelected?._id!;
+  const handleShareTalentListButton = async () => {
+    const url =
+      window.location.origin +
+      "/dashboard/" +
+      positionID +
+      "/" +
+      talentListSelected?._id!;
 
-  //   navigator.clipboard.writeText(url);
-  //   toast.success("Link copied to clipboard!");
-  // };
+    navigator.clipboard.writeText(url);
+    toast.success("Link copied to clipboard!");
+  };
 
   return (
     <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
@@ -763,13 +763,13 @@ const PositionCRM: NextPageWithLayout = () => {
                   </>
                 )
               ) : !editTalentListMode ? (
-                <div className="flex">
-                  <MdIosShare
-                    size={24}
-                    className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
-                    onClick={handleShareTalentListButton}
-                  />
-                  <Button
+                <div className="flex"> */}
+            <MdIosShare
+              size={24}
+              className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
+              onClick={handleShareTalentListButton}
+            />
+            {/* <Button
                     className="mr-2"
                     variant="secondary"
                     size="sm"
