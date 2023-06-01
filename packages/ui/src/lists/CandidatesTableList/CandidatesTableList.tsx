@@ -27,7 +27,7 @@ const ColumnStyled: FC<InputGroupProps> = ({
   ...otherProps
 }) => (
   <td
-    className={clsx("text-md px-4 py-1", textColor, extraCssClass)}
+    className={clsx("text-md px-2 py-1", textColor, extraCssClass)}
     {...otherProps}
   >
     {children}
@@ -80,7 +80,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
               {/* Select */}
             </th>
             {/* ) : null} */}
-            <th className="min-w-min border-b border-gray-300 py-2 pl-4 text-start font-medium">
+            <th className="min-w-min border-b border-gray-300 py-2 pl-2 text-start font-medium">
               Name
             </th>
             <th className="border-b border-gray-300 py-2 font-medium">
@@ -148,7 +148,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 } group cursor-pointer  hover:bg-lime-50 focus:outline-none focus:ring focus:ring-gray-300 active:bg-gray-300`}
               >
                 {/* {listMode !== ListModeEnum.list ? ( */}
-                <ColumnStyled className="-mr-1 px-0 py-0">
+                <ColumnStyled className="-mr-1 w-8 px-0 py-0">
                   <CheckBox
                     className="-mr-1 pl-2"
                     name={candidate.user?._id!}
