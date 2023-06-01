@@ -73,27 +73,40 @@ export const TrainQuestionsEdenAI = ({
   };
 
   const handleSaveChanges = () => {
-    updateQuestionsPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          questionsToAsk: questions.map((question) => {
-            if (question._id) {
-              return {
-                questionID: question._id,
-                bestAnswer: question.bestAnswer,
-                questionContent: question.content,
-              };
-            } else {
-              return {
-                bestAnswer: question.bestAnswer,
-                questionContent: question.content,
-              };
-            }
-          }),
+    let positionID_ = "";
+
+    if (Array.isArray(positionID)) {
+      if (positionID.length > 0) {
+        positionID_ = positionID[0];
+      }
+    } else {
+      if (positionID != undefined) {
+        positionID_ = positionID;
+      }
+    }
+    if (positionID_ != "") {
+      updateQuestionsPosition({
+        variables: {
+          fields: {
+            positionID: positionID_,
+            questionsToAsk: questions.map((question) => {
+              if (question._id) {
+                return {
+                  questionID: question._id,
+                  bestAnswer: question.bestAnswer,
+                  questionContent: question.content,
+                };
+              } else {
+                return {
+                  bestAnswer: question.bestAnswer,
+                  questionContent: question.content,
+                };
+              }
+            }),
+          },
         },
-      },
-    });
+      });
+    }
     setTrainModalOpen(false);
   };
 

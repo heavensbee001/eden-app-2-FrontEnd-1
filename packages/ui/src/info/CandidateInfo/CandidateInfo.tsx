@@ -76,6 +76,12 @@ export const CandidateInfo = ({
       ),
     },
     {
+      tab: "Report",
+      Content: () => (
+        <ReportNotes member={dataMember?.findMember} candidate={candidate} />
+      ),
+    },
+    {
       tab: "Match",
       Content: () => (
         <MatchTab
@@ -95,21 +101,17 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Report",
-      Content: () => (
-        <ReportNotes member={dataMember?.findMember} candidate={candidate} />
-      ),
-    },
-    {
       tab: "Interview",
       Content: () => (
         <EdenChatTab
-          memberID={dataMember?.findMember._id}
           memberImg={dataMember?.findMember.discordAvatar}
+          conversationID={candidate.conversationID}
         />
       ),
     },
   ];
+
+  console.log("candidate = ", candidate);
 
   return (
     <>

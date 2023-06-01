@@ -24,6 +24,7 @@ import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
 import { MdIosShare } from "react-icons/md";
 import { toast } from "react-toastify";
+import ReactTooltip from "react-tooltip";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -776,6 +777,45 @@ const PositionCRM: NextPageWithLayout = () => {
                 )}
               </div>
             )}
+            {newTalentListCandidatesIds.length > 0 && (
+              <div className="relative">
+                <span
+                  data-tip="Select only 2 candidates to compare"
+                  data-for={`badgeTip-compare`}
+                  className={classNames(
+                    "ml-4 text-xs text-gray-400 hover:text-gray-600",
+                    newTalentListCandidatesIds.length !== 2
+                      ? "cursor-default hover:line-through"
+                      : "cursor-pointer"
+                  )}
+                  onClick={() => {
+                    if (newTalentListCandidatesIds.length !== 2) return;
+
+                    router.push(
+                      {
+                        pathname: "/dashboard/" + positionID,
+                        query: {
+                          candidate1: newTalentListCandidatesIds[0],
+                          candidate2: newTalentListCandidatesIds[1],
+                        },
+                      },
+                      undefined,
+                      { shallow: true }
+                    );
+                  }}
+                >
+                  compare
+                </span>
+                {newTalentListCandidatesIds.length !== 2 && (
+                  <ReactTooltip
+                    id="badgeTip-compare"
+                    place="top"
+                    effect="solid"
+                    backgroundColor="#f87171"
+                  />
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="grid grid-flow-row">
@@ -846,6 +886,77 @@ const PositionCRM: NextPageWithLayout = () => {
           )} */}
         </div>
       </div>
+      <div
+        className={classNames(
+          "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+          router.query.candidate1 && router.query.candidate2
+            ? "w-[100vw]"
+            : "w-0"
+        )}
+      >
+        {router.query.candidate1 && router.query.candidate2 && (
+          <>
+            <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+              {/* {router.query.candidate1 ? ( */}
+              <CandidateInfo
+                key={(router.query.candidate1 as string) || ""}
+                memberID={(router.query.candidate1 as string) || ""}
+                percentage={selectedUserScore}
+                summaryQuestions={selectedUserSummaryQuestions}
+                mostRelevantMemberNode={mostRelevantMemberNode}
+                candidate={candidates?.find(
+                  (candidate) =>
+                    candidate?.user?._id?.toString() ==
+                    router.query.candidate1?.toString()
+                )}
+                onClose={() => {
+                  router.push(
+                    {
+                      pathname: "/dashboard/" + positionID,
+                    },
+                    undefined,
+                    { shallow: true }
+                  );
+                }}
+              />
+              {/* ) : (
+            <div className="w-full pt-20 text-center">
+              <p className="text-gray-400">Select a candidate</p>
+            </div>
+          )} */}
+            </div>
+            <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll bg-white">
+              {/* {router.query.candidate2 ? ( */}
+              <CandidateInfo
+                key={(router.query.candidate2 as string) || ""}
+                memberID={(router.query.candidate2 as string) || ""}
+                percentage={selectedUserScore}
+                summaryQuestions={selectedUserSummaryQuestions}
+                mostRelevantMemberNode={mostRelevantMemberNode}
+                candidate={candidates?.find(
+                  (candidate) =>
+                    candidate?.user?._id?.toString() ==
+                    router.query.candidate2?.toString()
+                )}
+                onClose={() => {
+                  router.push(
+                    {
+                      pathname: "/dashboard/" + positionID,
+                    },
+                    undefined,
+                    { shallow: true }
+                  );
+                }}
+              />
+              {/* ) : (
+            <div className="w-full pt-20 text-center">
+              <p className="text-gray-400">Select a candidate</p>
+            </div>
+          )} */}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
@@ -853,3 +964,28 @@ const PositionCRM: NextPageWithLayout = () => {
 PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default PositionCRM;
+
+import { IncomingMessage, ServerResponse } from "http";
+import { getSession } from "next-auth/react";
+
+export async function getServerSideProps(ctx: {
+  req: IncomingMessage;
+  res: ServerResponse;
+}) {
+  const session = await getSession(ctx);
+
+  const url = ctx.req.url?.replace("/", "");
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/login?redirect=${url}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

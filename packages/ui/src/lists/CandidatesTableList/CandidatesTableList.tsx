@@ -7,6 +7,7 @@ import {
   TextHeading2,
 } from "@eden/package-ui";
 import clsx from "clsx";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { ComponentPropsWithoutRef, FC, ReactNode, useState } from "react";
 
 function classNames(...classes: string[]) {
@@ -67,6 +68,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
   };
+  const [showMatchDetails, setShowMatchDetails] = useState(false);
 
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
@@ -81,13 +83,36 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             <th className="min-w-min border-b border-gray-300 py-2 pl-2 text-start font-medium">
               Name
             </th>
-            <th className="border-b border-gray-300 py-2 font-medium">Match</th>
             <th className="border-b border-gray-300 py-2 font-medium">
-              Skill Match
+              Match
+              {showMatchDetails ? (
+                <AiOutlineEyeInvisible
+                  size={24}
+                  className="ml-2 inline cursor-pointer text-gray-600 hover:text-gray-400"
+                  onClick={() => setShowMatchDetails(false)}
+                />
+              ) : (
+                <AiOutlineEye
+                  size={24}
+                  className="ml-2 inline cursor-pointer text-gray-600 hover:text-gray-400"
+                  onClick={() => setShowMatchDetails(true)}
+                />
+              )}
             </th>
-            <th className="border-b border-gray-300 py-2 font-medium">
-              Report Match
-            </th>
+            {showMatchDetails && (
+              <th
+                className={
+                  "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
+                }
+              >
+                Skill Match
+              </th>
+            )}
+            {showMatchDetails && (
+              <th className={"border-b border-gray-300 py-2 font-medium"}>
+                Report Match
+              </th>
+            )}
             <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
               $/hour
             </th>
@@ -153,17 +178,21 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     <TextHeading2 className="text-colorFFA9F1 font-black">{`${candidate.overallScore}%`}</TextHeading2>
                   ) : null}
                 </ColumnStyled>
-                <ColumnStyled textColor="text-[#86C8BC] text-center">
-                  {candidate.skillMatch ? (
-                    <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
-                  ) : null}
-                </ColumnStyled>
-                <ColumnStyled textColor="text-[#EDBFB7] text-center">
-                  {candidate?.compareCandidatePosition
-                    ?.CV_ConvoToPositionAverageScore ? (
-                    <TextHeading2 className="text-blue font-black">{`${candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore}%`}</TextHeading2>
-                  ) : null}
-                </ColumnStyled>
+                {showMatchDetails && (
+                  <ColumnStyled textColor="text-[#86C8BC] text-center">
+                    {candidate.skillMatch ? (
+                      <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
+                    ) : null}
+                  </ColumnStyled>
+                )}
+                {showMatchDetails && (
+                  <ColumnStyled textColor="text-[#EDBFB7] text-center">
+                    {candidate?.compareCandidatePosition
+                      ?.CV_ConvoToPositionAverageScore ? (
+                      <TextHeading2 className="text-blue font-black">{`${candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore}%`}</TextHeading2>
+                    ) : null}
+                  </ColumnStyled>
+                )}
                 <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
                     <TextHeading2 className="text-colorFFD02B font-black">
