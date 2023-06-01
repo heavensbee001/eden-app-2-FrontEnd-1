@@ -15,15 +15,15 @@ import {
   ListModeEnum,
   Loading,
   SelectList,
-  TextField,
+  // TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { FaTimes } from "react-icons/fa";
+// import { FaTimes } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
-import { MdIosShare } from "react-icons/md";
+// import { MdIosShare } from "react-icons/md";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 
@@ -105,6 +105,7 @@ const PositionCRM: NextPageWithLayout = () => {
     string[]
   >([]);
 
+  // eslint-disable-next-line no-unused-vars
   const [newTalentListName, setNewTalentListName] = useState<string>("");
 
   const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
