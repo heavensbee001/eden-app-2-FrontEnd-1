@@ -496,7 +496,7 @@ const PositionCRM: NextPageWithLayout = () => {
           usersTalentList: [
             ..._prevTalent,
             ...newTalentListCandidatesIds.filter(
-              (t: any) => !newTalentListCandidatesIds.includes(t)
+              (t: any) => !_prevTalent.includes(t)
             ),
           ],
         },
