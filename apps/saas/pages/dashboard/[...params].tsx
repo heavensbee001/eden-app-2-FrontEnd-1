@@ -466,6 +466,8 @@ const PositionCRM: NextPageWithLayout = () => {
     // console.log("2222");
     // setTalentListSelected({ _id: "000", name: "All candidates" });
     // setCandidatesFromTalentList(candidates);
+    setAddToListOpen(false);
+
     setNewTalentListCandidatesIds(candidates.map((c) => c.user?._id!));
 
     handleSaveNewTalentList();
@@ -481,6 +483,8 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleAddCandidatesToList = async (listID: string) => {
+    setAddToListOpen(false);
+
     const _prevTalent = findPositionData?.findPosition.talentList
       .find((_list: any) => _list._id === listID)
       .talent.map((t: any) => t.user._id);
@@ -490,12 +494,39 @@ const PositionCRM: NextPageWithLayout = () => {
         fields: {
           positionID: positionID,
           talentListID: listID,
-          usersTalentList: [..._prevTalent, ...newTalentListCandidatesIds],
+          usersTalentList: [
+            ..._prevTalent,
+            ...newTalentListCandidatesIds.filter(
+              (t: any) => !newTalentListCandidatesIds.includes(t)
+            ),
+          ],
         },
       },
     });
 
     toast.success("Candidate added to list!");
+  };
+
+  const handleRemoveCandidatesFromList = async (listID: string) => {
+    const _prevTalent = findPositionData?.findPosition.talentList
+      .find((_list: any) => _list._id === listID)
+      .talent.map((t: any) => t.user._id);
+
+    const _filteredTalent = _prevTalent.filter(
+      (t: any) => !newTalentListCandidatesIds.includes(t)
+    );
+
+    await updateUsersTalentListPosition({
+      variables: {
+        fields: {
+          positionID: positionID,
+          talentListID: listID,
+          usersTalentList: _filteredTalent,
+        },
+      },
+    });
+
+    toast.success("Candidates removed from list");
   };
 
   const handleCopyLink = () => {
@@ -580,7 +611,7 @@ const PositionCRM: NextPageWithLayout = () => {
       variables: {
         fields: {
           positionID: positionID,
-          name: "New List",
+          name: "List",
         },
       },
     });
@@ -835,13 +866,26 @@ const PositionCRM: NextPageWithLayout = () => {
                 )}
               </>
             )}
+            {newTalentListCandidatesIds.length > 0 &&
+              talentListSelected?._id !== "000" && (
+                <div className="relative">
+                  <span
+                    className="ml-4 cursor-pointer text-xs text-gray-600 hover:text-gray-400"
+                    onClick={() => {
+                      handleRemoveCandidatesFromList(talentListSelected?._id!);
+                    }}
+                  >
+                    Remove from list
+                  </span>
+                </div>
+              )}
             {newTalentListCandidatesIds.length > 0 && (
               <div className="relative">
                 <span
                   data-tip="Select only 2 candidates to compare"
                   data-for={`badgeTip-compare`}
                   className={classNames(
-                    "ml-4 text-xs text-gray-400 hover:text-gray-600",
+                    "ml-4 mr-4 text-xs text-gray-600 hover:text-gray-400",
                     newTalentListCandidatesIds.length !== 2
                       ? "cursor-default hover:line-through"
                       : "cursor-pointer"
@@ -862,7 +906,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     );
                   }}
                 >
-                  compare
+                  Compare
                 </span>
                 {newTalentListCandidatesIds.length !== 2 && (
                   <ReactTooltip
