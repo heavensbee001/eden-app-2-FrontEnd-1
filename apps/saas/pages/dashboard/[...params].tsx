@@ -419,7 +419,7 @@ const PositionCRM: NextPageWithLayout = () => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     if (talentListToShow) {
-      console.log("111 aaa");
+      // console.log("111 aaa");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < talentListToShow.talent!.length; j++) {
           if (
@@ -431,10 +431,10 @@ const PositionCRM: NextPageWithLayout = () => {
       }
       setTalentListSelected(talentListToShow);
       setTalentListToShow(undefined);
-      console.log({ talentListToShow });
-      console.log({ talentListsAvailables });
+      // console.log({ talentListToShow });
+      // console.log({ talentListsAvailables });
     } else if (list._id !== "000") {
-      console.log("1111 cccc");
+      // console.log("1111 cccc");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -445,10 +445,12 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(list);
     } else {
       candidatesOnTalentListSelected.push(...candidates);
-      console.log("1111 bbbb");
+      // console.log("1111 bbbb");
       setTalentListSelected({ _id: "000", name: "No list selected" });
     }
     // }
+
+    setNewTalentListCandidatesIds([]);
 
     setCandidatesFromTalentList(candidatesOnTalentListSelected);
   };
