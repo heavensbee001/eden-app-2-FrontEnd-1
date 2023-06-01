@@ -18,11 +18,33 @@ export const UserBackground = ({
   experienceOpen,
   setExperienceOpen,
 }: IUserBackgroundProps) => {
+  console.log("background", background);
+
+  const newArray = background.map((obj) => {
+    // This function will be called for each object in the array.
+
+    // Make a copy of the object so we don't modify the original array.
+    const newObj = { ...obj };
+
+    const splitTitle = newObj.title.split(",");
+
+    newObj.title = { jobTitle: splitTitle[0], companyName: splitTitle[1] };
+    // Modify the string.
+    newObj.description = newObj.description.split(" • ");
+
+    console.log("newObj", newObj);
+
+    // Return the modified object.
+    return newObj;
+  });
+
+  console.log("newArray", newArray);
+
   return (
     <div>
       <div className="">
         {/* <TextLabel1>🎡 Background</TextLabel1> */}
-        {background?.map((item, index) => {
+        {newArray?.map((item, index) => {
           const empty =
             !item?.description && !item?.startDate && !item?.endDate;
 
@@ -44,7 +66,8 @@ export const UserBackground = ({
                   {!empty && index === experienceOpen ? "▼" : "▶"}
                 </span>
                 <div className=" flex h-fit justify-center break-words  !rounded-full border-0 bg-[#DEFEFF] px-4 text-center outline-0">
-                  {item?.title}
+                  <p className="font-bold">{item?.title.jobTitle}</p>,
+                  {item?.title.companyName}
                 </div>
                 {/* {index < 2 && <span className="ml-3 text-xl">⭐️</span>} */}
               </div>
