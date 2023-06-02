@@ -65,6 +65,7 @@ export type CandidateType = {
   averageScoreNotesInterview?: Maybe<Scalars["Float"]>;
   compareCandidatePosition?: Maybe<CompareCandidatePositionType>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
+  conversationID?: Maybe<Scalars["ID"]>;
   interviewQuestionsForCandidate?: Maybe<
     Array<Maybe<InterviewQuestionsForCandidateType>>
   >;
@@ -112,6 +113,7 @@ export type Company = {
   employees?: Maybe<Array<Maybe<EmployeeType>>>;
   name?: Maybe<Scalars["String"]>;
   positions?: Maybe<Array<Maybe<Position>>>;
+  slug?: Maybe<Scalars["String"]>;
   url?: Maybe<Scalars["String"]>;
 };
 
@@ -1016,6 +1018,7 @@ export type Query = {
   findChat?: Maybe<Chats>;
   findCompanies?: Maybe<Array<Maybe<Company>>>;
   findCompany?: Maybe<Company>;
+  findCompanyFromSlug?: Maybe<Company>;
   findConversation?: Maybe<Conversation>;
   findConversations?: Maybe<Array<Maybe<Conversation>>>;
   findEndorsementLink?: Maybe<Array<Maybe<EndorsementLink>>>;
@@ -1054,6 +1057,7 @@ export type Query = {
   findSkillSubCategory?: Maybe<SkillSubCategory>;
   findSkills?: Maybe<Array<Maybe<Skills>>>;
   findTeams?: Maybe<Array<Maybe<Team>>>;
+  findUserTalentListPosition?: Maybe<TalentListType>;
   interviewEdenAI?: Maybe<InterviewEdenAiOutput>;
   lurkersContributorsQuery?: Maybe<LurkersAndContributors>;
   matchMembersToProject?: Maybe<Array<Maybe<MatchMembersToProjectOutput>>>;
@@ -1219,6 +1223,10 @@ export type QueryFindCompanyArgs = {
   fields?: InputMaybe<FindCompanyInput>;
 };
 
+export type QueryFindCompanyFromSlugArgs = {
+  fields?: InputMaybe<FindCompanyFromSlugInput>;
+};
+
 export type QueryFindConversationArgs = {
   fields?: InputMaybe<FindConversationInput>;
 };
@@ -1369,6 +1377,10 @@ export type QueryFindSkillsArgs = {
 
 export type QueryFindTeamsArgs = {
   fields?: InputMaybe<FindTeamsInput>;
+};
+
+export type QueryFindUserTalentListPositionArgs = {
+  fields?: InputMaybe<FindUserTalentListPositionInput>;
 };
 
 export type QueryInterviewEdenAiArgs = {
@@ -2087,6 +2099,7 @@ export type CompareCandidatePositionType = {
   CVToPosition?: Maybe<CvToPositionType>;
   CV_ConvoToPosition?: Maybe<Array<Maybe<NotesInterviewType>>>;
   CV_ConvoToPositionAverageScore?: Maybe<Scalars["Float"]>;
+  reportPassFail?: Maybe<Array<Maybe<ReportPassFailType2>>>;
 };
 
 export type Conn_Node_WhType = {
@@ -2135,6 +2148,7 @@ export type ConversationCvPositionToReportOutput = {
   CV_ConvoToPosition?: Maybe<Array<Maybe<NotesInterviewType2>>>;
   CV_ConvoToPositionAverageScore?: Maybe<Scalars["Float"]>;
   report?: Maybe<Scalars["String"]>;
+  reportPassFail?: Maybe<Array<Maybe<ReportPassFailType>>>;
   success?: Maybe<Scalars["Boolean"]>;
 };
 
@@ -2781,6 +2795,10 @@ export type FindCompaniesInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
+export type FindCompanyFromSlugInput = {
+  slug?: InputMaybe<Scalars["String"]>;
+};
+
 export type FindCompanyInput = {
   _id?: InputMaybe<Scalars["ID"]>;
 };
@@ -3037,6 +3055,10 @@ export type FindTeamsInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   projectID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   serverID?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+};
+
+export type FindUserTalentListPositionInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type GardenUpdateType = {
@@ -3659,6 +3681,24 @@ export type ReplyType = {
   sender?: Maybe<Scalars["Boolean"]>;
 };
 
+export type ReportPassFailType = {
+  __typename?: "reportPassFailType";
+  IDb?: Maybe<Scalars["String"]>;
+  categoryName?: Maybe<Scalars["String"]>;
+  reason?: Maybe<Scalars["String"]>;
+  score?: Maybe<Scalars["Int"]>;
+  title?: Maybe<Scalars["String"]>;
+};
+
+export type ReportPassFailType2 = {
+  __typename?: "reportPassFailType2";
+  IDb?: Maybe<Scalars["String"]>;
+  categoryName?: Maybe<Scalars["String"]>;
+  reason?: Maybe<Scalars["String"]>;
+  score?: Maybe<Scalars["Int"]>;
+  title?: Maybe<Scalars["String"]>;
+};
+
 export type ResourcesInput = {
   name?: InputMaybe<Scalars["String"]>;
   url?: InputMaybe<Scalars["String"]>;
@@ -3960,6 +4000,7 @@ export type UpdateChatResultInput = {
 export type UpdateCompanyInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   name?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]>;
 };
 
 export type UpdateConvSummariesInput = {
@@ -4176,6 +4217,7 @@ export type WebsiteToMemoryCompanyInput = {
 
 export type WebsiteToMemoryCompanyOutput = {
   __typename?: "websiteToMemoryCompanyOutput";
+  nodes?: Maybe<Array<Maybe<Node>>>;
   report?: Maybe<Scalars["String"]>;
   success?: Maybe<Scalars["Boolean"]>;
 };
