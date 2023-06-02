@@ -8,9 +8,9 @@ interface Props {
 export const GridLayout: FC<Props> = ({ children, className = "" }) => {
   return (
     <div
-      className={`bg-background container mx-auto max-w-screen-2xl flex-grow py-8 px-2 sm:px-5 ${className}`}
+      className={`bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5 ${className}`}
     >
-      <div className="grid grid-cols-12 gap-4 xl:gap-8">{children}</div>
+      <div className="grid grid-cols-12 gap-4">{children}</div>
     </div>
   );
 };
@@ -74,7 +74,7 @@ export const GridItemTwelve: FC<Props> = ({ children, className = "" }) => {
 export const CardGrid: FC<Props> = ({ children, className = "" }) => {
   return (
     <div
-      className={`grid gap-5 pt-2 pb-6 md:grid-cols-2 2xl:grid-cols-3 ${className}`}
+      className={`grid gap-5 pb-6 pt-2 md:grid-cols-2 2xl:grid-cols-3 ${className}`}
     >
       {children}
     </div>

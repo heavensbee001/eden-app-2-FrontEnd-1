@@ -10,3 +10,5 @@ export * from "./grants";
 export * from "./match";
 export * from "./nodes";
 export * from "./searchSkill";
+export * from "./position";
+export * from "./talentlist";

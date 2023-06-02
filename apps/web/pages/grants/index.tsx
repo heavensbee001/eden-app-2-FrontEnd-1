@@ -62,7 +62,6 @@ const GrantsPage: NextPageWithLayout = () => {
         // serverID: selectedServerID,
       },
     },
-    context: { serviceName: "soilservice" },
   });
 
   // if (dataGrants) console.log("dataGrants", dataGrants);
@@ -101,10 +100,8 @@ const GrantsPage: NextPageWithLayout = () => {
         fields: {
           nodeType: type,
           nodesID: val,
-          memberID: currentUser?._id,
         },
       },
-      context: { serviceName: "soilservice" },
     });
   };
 

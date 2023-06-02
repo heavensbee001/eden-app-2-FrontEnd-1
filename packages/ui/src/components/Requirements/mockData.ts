@@ -1,9 +1,9 @@
-import { ICompany } from "../../charts";
+import { IPosition } from "../../charts";
 
-export const mockCompanyData: ICompany[] = [
+export const mockPositionData: IPosition[] = [
   {
-    companyInfo: {
-      discordName: "Company 1",
+    positionInfo: {
+      discordName: "Position 1",
       attributes: {
         experience: 3,
         availability: 10,
@@ -13,8 +13,8 @@ export const mockCompanyData: ICompany[] = [
     },
   },
   {
-    companyInfo: {
-      discordName: "Company 2",
+    positionInfo: {
+      discordName: "Position 2",
       attributes: {
         experience: 8,
         availability: 4,
@@ -24,8 +24,8 @@ export const mockCompanyData: ICompany[] = [
     },
   },
   {
-    companyInfo: {
-      discordName: "Company 3",
+    positionInfo: {
+      discordName: "Position 3",
       attributes: {
         experience: 2,
         availability: 4,
@@ -35,8 +35,8 @@ export const mockCompanyData: ICompany[] = [
     },
   },
   {
-    companyInfo: {
-      discordName: "Company 4",
+    positionInfo: {
+      discordName: "Position 4",
       attributes: {
         experience: 4,
         availability: 3,

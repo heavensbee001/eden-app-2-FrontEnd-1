@@ -5,6 +5,14 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
+    "build:saas": {
+      "dependsOn": ["^build:saas"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "build:landing": {
+      "dependsOn": ["^build:landing"],
+      "outputs": ["dist/**", ".next/**"]
+    },
     "build:alpha": {
       "dependsOn": ["^build:alpha"],
       "outputs": ["dist/**", ".next/**"]
@@ -28,6 +36,12 @@
     "dev": {
       "cache": false
     },
+    "dev:saas": {
+      "cache": false
+    },
+    "dev:landing": {
+      "cache": false
+    },
     "dev:alpha": {
       "cache": false
     },
@@ -43,7 +57,7 @@
     "clean-windows": {
       "cache": false
     },
-    "codegen:eden": { "cache": false }
+    "codegen": { "cache": false }
   },
   "globalDependencies": [".env", "tsconfig.json"]
 }

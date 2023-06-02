@@ -1,39 +1,34 @@
 import {
-  Endorsements,
+  // Endorsements,
   Maybe,
-  PreviusProjectsType,
+  PreviousProjectsType,
 } from "@eden/package-graphql/generated";
-import {
-  Card,
-  EndorsementList,
-  // TextHeading3,
-  TextLabel1,
-} from "@eden/package-ui";
 import React from "react";
 
 export interface IUserBackgroundProps {
-  background: Array<Maybe<PreviusProjectsType>>;
-  initialEndorsements: Array<Maybe<Endorsements>>;
+  background: Array<Maybe<PreviousProjectsType>>;
+  // initialEndorsements: Array<Maybe<Endorsements>>;
   experienceOpen: number | null;
   setExperienceOpen: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export const UserBackground = ({
   background,
-  initialEndorsements,
+  // initialEndorsements,
   experienceOpen,
   setExperienceOpen,
 }: IUserBackgroundProps) => {
   return (
     <div>
-      <div className="mb-6">
-        <TextLabel1>🎡 Background</TextLabel1>
+      <div className="">
+        {/* <TextLabel1>🎡 Background</TextLabel1> */}
         {background?.map((item, index) => {
           const empty =
             !item?.description && !item?.startDate && !item?.endDate;
 
+          if (!item?.title) return null;
           return (
-            <div key={index} className="my-4">
+            <div key={index} className="my-4" id="user-background">
               <div className="mb-2 flex items-center">
                 <span
                   className={`mr-3 ${
@@ -48,19 +43,15 @@ export const UserBackground = ({
                 >
                   {!empty && index === experienceOpen ? "▼" : "▶"}
                 </span>
-                <div className="min-w-30 flex h-8 w-1/2 items-center !rounded-full border-0 bg-cyan-200 px-4 outline-0">
+                <div className=" flex h-fit justify-center break-words  !rounded-full border-0 bg-[#DEFEFF] px-4 text-center outline-0">
                   {item?.title}
                 </div>
-                {index < 2 && <span className="ml-3 text-xl">⭐️</span>}
+                {/* {index < 2 && <span className="ml-3 text-xl">⭐️</span>} */}
               </div>
               {index === experienceOpen && (
-                <Card border className="grid grid-cols-2 py-4 px-6">
-                  <div className="col-span-1">
-                    <TextLabel1>Description</TextLabel1>
-                    <p>{item?.description}</p>
-                  </div>
-                  <div className="col-span-1">
-                    <TextLabel1>Timeline</TextLabel1>
+                <div className="pl-8">
+                  <div className="text-gray-500">
+                    {/* <TextLabel1>Timeline</TextLabel1> */}
                     {item?.startDate && (
                       <p>
                         {`${new Date(Number(item?.startDate)).toLocaleString(
@@ -83,17 +74,23 @@ export const UserBackground = ({
                       </p>
                     )}
                   </div>
-                </Card>
+                  <div className="">
+                    {/* <TextLabel1>Description</TextLabel1> */}
+                    <p className="whitespace-pre-wrap">{item?.description}</p>
+                  </div>
+                </div>
               )}
             </div>
           );
         })}
       </div>
-      {initialEndorsements && initialEndorsements.length > 0 && (
+      {/* MEMEBER.ENDORSEMENT NO LONGER EXISTS */}
+
+      {/* {initialEndorsements && initialEndorsements.length > 0 && (
         <div className="mt-3">
           <EndorsementList endorsements={initialEndorsements} />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

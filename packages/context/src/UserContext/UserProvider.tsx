@@ -2,7 +2,7 @@ import { gql, useQuery, useSubscription } from "@apollo/client";
 import { FIND_CURRENTUSER, FIND_CURRENTUSER_SUB } from "@eden/package-graphql";
 import { ServerTemplate } from "@eden/package-graphql/generated";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 // import { isAllServers, isEdenStaff } from "../../data";
 import { UserContext } from "./UserContext";
@@ -44,7 +44,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         },
       },
       skip: !id,
-      context: { serviceName: "soilservice" },
+      // context: { serviceName: "soilservice" },
       ssr: false,
       onCompleted: (data) => {
         // console.log("dataMember", data);
@@ -61,7 +61,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       },
     },
     skip: !id,
-    context: { serviceName: "soilservice" },
+    // context: { serviceName: "soilservice" },
   });
 
   useQuery(FIND_SERVERS, {
@@ -71,7 +71,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       },
     },
     skip: memberServerIDs.length === 0,
-    context: { serviceName: "soilservice" },
+    // context: { serviceName: "soilservice" },
     onCompleted: (data) => {
       setMemberServers([...data.findServers]);
       // setSelectedServer(data.findServers[0]);
@@ -80,7 +80,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   // if (dataServers) console.log("dataServers", dataServers?.findServers);
 
-  useEffect(() => {
+  useMemo(() => {
     if (dataMember) {
       setMemberServerIDs(dataMember.findMember?.serverID || []);
       setSelectedServerID(dataMember.findMember?.serverID || []);
@@ -92,14 +92,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       console.log(`==== ----------- ====`);
     }
   }, [dataMember]);
-
-  // useEffect(() => {
-  //   if (selectedServer && process.env.NODE_ENV === "development") {
-  //     console.log(`==== current SERVER ====`);
-  //     console.log(selectedServer);
-  //     console.log(`==== ----------- ====`);
-  //   }
-  // }, [selectedServer]);
 
   const injectContext = {
     currentUser: dataMember?.findMember || undefined,

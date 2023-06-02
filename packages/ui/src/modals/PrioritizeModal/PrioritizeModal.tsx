@@ -129,9 +129,12 @@ export const PrioritizeModal = ({
           </div>
           <div className="col-span-1">
             <UserAttributeChart
-              companies={[
+              positions={[
                 {
-                  companyInfo: { attributes: range, discordName: "priorities" },
+                  positionInfo: {
+                    attributes: range,
+                    discordName: "priorities",
+                  },
                 },
               ]}
             />

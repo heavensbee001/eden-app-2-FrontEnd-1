@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import { mockCompanyData } from "./mockData";
+import { mockPositionData } from "./mockData";
 import { Requirements } from "./Requirements";
 
 export default {
@@ -23,7 +23,7 @@ export const Default = Template.bind({});
 Default.args = {
   openModal: true,
   matchesNumber: 29,
-  companies: mockCompanyData,
+  positions: mockPositionData,
   salaryData: rangeNumbers,
   onPrev: () => {},
   onSubmit: (data: any) => {

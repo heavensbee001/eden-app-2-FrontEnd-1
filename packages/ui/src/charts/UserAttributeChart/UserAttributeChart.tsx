@@ -27,15 +27,15 @@ type AttributesType = {
   accountability: number;
 };
 
-export interface ICompany {
-  companyInfo: {
+export interface IPosition {
+  positionInfo: {
     discordName: string;
     attributes: AttributesType;
   };
 }
 
 export interface IUserAttributeChartProps {
-  companies: ICompany[];
+  positions: IPosition[];
 }
 
 const colors = ["#98FF87B0", "#A2EDFDB0", "#FF9BE9B0", "#E5ADFFB0"];
@@ -78,15 +78,15 @@ const options: ChartOptions<"radar"> = {
   },
 };
 
-export const UserAttributeChart = ({ companies }: IUserAttributeChartProps) => {
-  const labels = Object.keys(companies[0].companyInfo.attributes).map((item) =>
+export const UserAttributeChart = ({ positions }: IUserAttributeChartProps) => {
+  const labels = Object.keys(positions[0].positionInfo.attributes).map((item) =>
     startCase(item)
   );
-  const datasets = companies.map(({ companyInfo }, i) => {
+  const datasets = positions.map(({ positionInfo }, i) => {
     return {
-      label: companyInfo.discordName,
-      data: Object.keys(companyInfo.attributes).map(
-        (key) => companyInfo.attributes[key as keyof AttributesType]
+      label: positionInfo.discordName,
+      data: Object.keys(positionInfo.attributes).map(
+        (key) => positionInfo.attributes[key as keyof AttributesType]
       ),
       fill: true,
       borderWidth: 0,

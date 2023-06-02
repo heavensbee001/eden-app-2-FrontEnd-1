@@ -101,12 +101,13 @@ export const MemberInfo = ({
           />
         </div>
       </div>
-      {((member?.previusProjects && member?.previusProjects.length) ||
-        (member?.endorsements && member?.endorsements.length > 0)) && (
+      {/* MEMEBER.ENDORSEMENT NO LONGER EXISTS */}
+
+      {member?.previousProjects && member?.previousProjects.length && (
         <div className={`my-4`}>
           <UserBackground
-            background={member?.previusProjects || []}
-            initialEndorsements={member?.endorsements || []}
+            background={member?.previousProjects || []}
+            // initialEndorsements={member?.endorsements || []}
             setExperienceOpen={setExperienceOpen!}
             experienceOpen={experienceOpen!}
           />
