@@ -32,5 +32,7 @@ jobs:
       #   run: yarn build:alpha
       - name: Build saas
         run: yarn build:saas
+      - name: Build landing
+        run: yarn build:landing
       # - name: Build web
       #   run: yarn build
