@@ -941,7 +941,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 ? ListModeEnum.creation
                 : editTalentListMode
                 ? ListModeEnum.edit
-                : ListModeEnum.list
+                : ListModeEnum.selectable
             }
             selectedIds={newTalentListCandidatesIds}
             handleChkSelection={handleCandidateCheckboxSelection}

@@ -1,39 +1,24 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   FIND_POSITION_LIGHT,
+  // FIND_POSITION_LIGHT,
   FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
-  UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
 import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
   CandidateInfo,
   CandidatesTableList,
   ListModeEnum,
-  TrainQuestionsEdenAI,
 } from "@eden/package-ui";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { HiOutlineLink } from "react-icons/hi";
-// import { FaTimes } from "react-icons/fa";
-import { HiOutlineDocumentPlus } from "react-icons/hi2";
-import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
-import { MdCompare, MdIosShare } from "react-icons/md";
-import { toast } from "react-toastify";
-import ReactTooltip from "react-tooltip";
+import React, { useState } from "react";
 
 import { NextPageWithLayout } from "../_app";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
-
-type Question = {
-  _id: string;
-  content: string;
-  bestAnswer: string;
-};
 
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
@@ -52,7 +37,7 @@ type relevantNodeObj = {
   };
 };
 
-const PositionCRM: NextPageWithLayout = () => {
+const TalentListPublicPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { talentListID } = router.query;
 
@@ -71,64 +56,56 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  const [trainModalOpen, setTrainModalOpen] = useState(false);
-  const [questions, setQuestions] = useState<Question[]>([]);
-
   const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
     CandidateTypeSkillMatch[]
-  >([]);
-
-  const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
-    string[]
   >([]);
 
   // eslint-disable-next-line no-unused-vars
   const [newTalentListName, setNewTalentListName] = useState<string>("");
 
-  // const {
-  //   data: findPositionData,
-  //   loading: findPositionIsLoading,
-  //   // error: findPositionError,
-  // } = useQuery(FIND_POSITION_LIGHT, {
-  //   variables: {
-  //     fields: {
-  //       _id: positionID,
-  //     },
-  //   },
-  //   skip: !Boolean(positionID),
-  //   ssr: false,
-  //   onCompleted: (data: any) => {
-  //     const talentListsNames: TalentListType[] =
-  //       data.findPosition.talentList.map((list: TalentListType) => list);
+  const {
+    data: findPositionData,
+    loading: findPositionIsLoading,
+    // error: findPositionError,
+  } = useQuery(FIND_POSITION_LIGHT, {
+    variables: {
+      fields: {
+        _id: positionID,
+      },
+    },
+    skip: !Boolean(positionID),
+    ssr: false,
+    onCompleted: (data: any) => {
+      console.log({ posdata: data });
+      const talentListsNames: TalentListType[] =
+        data.findPosition.talentList.map((list: TalentListType) => list);
 
-  //     setTalentListsAvailables(talentListsNames);
+      setCandidates(data.findPosition.candidates);
 
-  //     setCandidates(data.findPosition.candidates);
+      setCandidatesFromTalentList(data.findPosition.candidates);
 
-  //     setCandidatesFromTalentList(data.findPosition.candidates);
+      const questionPrep: Question[] = [];
 
-  //     const questionPrep: Question[] = [];
+      data.findPosition.questionsToAsk.map((question: any) => {
+        if (question.question == null) {
+        } else {
+          questionPrep.push({
+            _id: question.question._id,
+            content: question.question.content,
+            bestAnswer: question.bestAnswer,
+          });
+        }
+      });
 
-  //     data.findPosition.questionsToAsk.map((question: any) => {
-  //       if (question.question == null) {
-  //       } else {
-  //         questionPrep.push({
-  //           _id: question.question._id,
-  //           content: question.question.content,
-  //           bestAnswer: question.bestAnswer,
-  //         });
-  //       }
-  //     });
+      const nodesID = data.findPosition?.nodes?.map((node: any) => {
+        return node?.nodeData?._id;
+      });
 
-  //     const nodesID = data.findPosition?.nodes?.map((node: any) => {
-  //       return node?.nodeData?._id;
-  //     });
+      setNodeIDsPosition(nodesID);
 
-  //     setNodeIDsPosition(nodesID);
-
-  //     setQuestions(questionPrep);
-  //   },
-  // });
+      setQuestions(questionPrep);
+    },
+  });
 
   const {} = useQuery(FIND_TALENT_LIST, {
     variables: {
@@ -155,8 +132,6 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
-
-  // console.log("nodeIDsPosition,candidates = ", nodeIDsPosition, candidates);
 
   const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
     variables: {
@@ -339,10 +314,9 @@ const PositionCRM: NextPageWithLayout = () => {
           <CandidatesTableList
             candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}
-            fetchIsLoading={false}
+            fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
             listMode={ListModeEnum.list}
-            selectedIds={newTalentListCandidatesIds}
           />
         </div>
       </div>
@@ -450,29 +424,4 @@ const PositionCRM: NextPageWithLayout = () => {
   );
 };
 
-export default PositionCRM;
-
-import { IncomingMessage, ServerResponse } from "http";
-import { getSession } from "next-auth/react";
-
-export async function getServerSideProps(ctx: {
-  req: IncomingMessage;
-  res: ServerResponse;
-}) {
-  const session = await getSession(ctx);
-
-  const url = ctx.req.url?.replace("/", "");
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?redirect=${url}`,
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-}
+export default TalentListPublicPage;
