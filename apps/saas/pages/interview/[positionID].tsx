@@ -32,7 +32,7 @@ const HomePage: NextPageWithLayout = () => {
   const [titleRole, setTitleRole] = useState(null);
   const [topSkills, setTopSkills] = useState([]);
 
-  console.log("cvEnded = ", cvEnded);
+  // console.log("cvEnded = ", cvEnded);
   const {
     data: findPositionData,
     // error: findPositionError,
