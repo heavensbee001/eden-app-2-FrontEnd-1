@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
+import { Members, Mutation } from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
@@ -29,6 +30,30 @@ export const WEBPAGE_TO_MEMORY = gql`
         originalQuestionID
         originalContent
         personalizedContent
+      }
+    }
+  }
+`;
+
+const ADD_QUESTIONS_TO_POSITION = gql`
+  mutation ($fields: addQuestionsToAskPositionInput) {
+    addQuestionsToAskPosition(fields: $fields) {
+      _id
+      name
+      candidates {
+        overallScore
+        user {
+          _id
+          discordName
+          discordAvatar
+        }
+      }
+      questionsToAsk {
+        bestAnswer
+        question {
+          _id
+          content
+        }
       }
     }
   }
@@ -296,12 +321,16 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               <WizardStep label={"profile"}>
-                <p className="mb-8 text-center">Just a few questions missing</p>
+                <p className="mb-8 text-center">
+                  Recalculate the Criteria for perfect fit
+                </p>
                 <ProfileQuestionsContainer />
               </WizardStep>
 
               <WizardStep label={"createQuestions"}>
-                <p className="mb-8 text-center">Just a few questions missing</p>
+                <p className="mb-8 text-center">
+                  Suggest for Interview with User
+                </p>
                 <CreateQuestions />
               </WizardStep>
 
@@ -518,7 +547,6 @@ const InterviewEdenAIContainer = ({
   );
 };
 
-import { Members } from "@eden/package-graphql/generated";
 import Head from "next/head";
 import { useForm } from "react-hook-form";
 
@@ -596,7 +624,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         onClick={handleClick}
         loading={scraping}
       >
-        Submit Link
+        Recalculate Criteria
       </Button>
 
       {report && <div className="whitespace-pre-wrap">{report}</div>}
@@ -630,6 +658,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   const router = useRouter();
 
   const [scraping, setScraping] = useState<boolean>(false);
+  const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
   // const [questionsSuggest, setQuestionsSuggest] = useState<QuestionSuggest[]>(
   //   []
@@ -721,6 +750,44 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 
   // console.log("questionsSuggest = ", questionsSuggest);
 
+  const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
+    onCompleted({ updateNodesToMember }: Mutation) {
+      console.log("updateNodesToMember = ", updateNodesToMember);
+      setScrapingSave(false);
+    },
+    // skip: positionID == "" || positionID == null,
+  });
+
+  const handleSaveChanges = () => {
+    let positionID_ = "";
+
+    if (Array.isArray(positionID)) {
+      if (positionID.length > 0) {
+        positionID_ = positionID[0];
+      }
+    } else {
+      if (positionID != undefined) {
+        positionID_ = positionID;
+      }
+    }
+    if (positionID_ != "") {
+      setScrapingSave(true);
+      updateQuestionsPosition({
+        variables: {
+          fields: {
+            positionID: positionID_,
+            questionsToAsk: questions.map((question) => {
+              return {
+                bestAnswer: "",
+                questionContent: question.question,
+              };
+            }),
+          },
+        },
+      });
+    }
+  };
+
   return (
     <div className="w-full">
       {/* <button
@@ -736,7 +803,15 @@ const CreateQuestions = ({}: ICreateQuestions) => {
         onClick={handleClick}
         loading={scraping}
       >
-        Submit Link
+        Suggest Questions
+      </Button>
+      <Button
+        className="mx-auto"
+        variant={"primary"}
+        loading={scrapingSave}
+        onClick={handleSaveChanges}
+      >
+        Save Changes
       </Button>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {questions.map((question, index) => (
