@@ -109,6 +109,8 @@ export const InterviewEdenAI = ({
   const [edenAIsentMessage, setEdenAIsentMessage] = useState<boolean>(false); // sets if response is pending (TODO => change logic to query based)
   const [numMessageLongTermMem, setNumMessageLongTermMem] = useState<any>(0);
 
+  console.log("questions = 223 ", questions);
+
   // const [previusTaskDoneID, setPreviusTaskDoneID] = useState<String>("");
 
   // const [executedTasks, setExecutedTasks] = useState<Task[]>([
