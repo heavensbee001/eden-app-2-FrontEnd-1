@@ -236,6 +236,11 @@ const HomePage: NextPageWithLayout = () => {
     setPastedText("");
   };
 
+  console.log(
+    "interviewQuestionsForPosition  =  223 0",
+    interviewQuestionsForPosition
+  );
+
   console.log("progress = ", progress);
   return (
     <>
@@ -438,7 +443,7 @@ const InterviewEdenAIContainer = ({
   const [questions, setQuestions] = useState<Question[]>([]);
 
   console.log(
-    "interviewQuestionsForPosition = ",
+    "interviewQuestionsForPosition = 223 ",
     interviewQuestionsForPosition
   );
 
@@ -465,7 +470,9 @@ const InterviewEdenAIContainer = ({
         return question._id != null;
       });
 
-      setQuestions(questionsChange);
+      if (questionsChange.length > 0) {
+        setQuestions(questionsChange);
+      }
     },
   });
 
@@ -486,9 +493,12 @@ const InterviewEdenAIContainer = ({
       interviewQuestionsForPosition &&
       interviewQuestionsForPosition?.length > 0
     ) {
+      console.log("Yea I am here = 223");
       setQuestions(interviewQuestionsForPosition);
     }
   }, [interviewQuestionsForPosition]);
+
+  console.log("questions = 223 -1", questions);
 
   return (
     <div className="w-full">
