@@ -122,7 +122,7 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
                         // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
                         // className={`px-2 py-1 text-white rounded bg-purple-400`}
                         className={`rounded px-1 py-1 text-xs text-white ${node.color}`}
-                        cutText={17}
+                        cutText={100}
                       />
                     ))}
                 </div>
