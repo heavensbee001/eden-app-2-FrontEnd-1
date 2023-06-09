@@ -649,6 +649,7 @@ export const POSITION_SUGGEST_QUESTIONS = gql`
       questionSuggest {
         question
         IDCriteria
+        category
       }
     }
   }
@@ -658,6 +659,15 @@ type QuestionSuggest = {
   question: String;
   IDCriteria: String;
 };
+type QuestionGroupedByCategory = {
+  [category: string]: QuestionSuggest[];
+};
+
+interface QuestionSuSQL {
+  category: string;
+  question: string;
+  IDCriteria: string;
+}
 
 interface ICreateQuestions {}
 
@@ -670,54 +680,39 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   const [scraping, setScraping] = useState<boolean>(false);
   const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
-  // const [questionsSuggest, setQuestionsSuggest] = useState<QuestionSuggest[]>(
-  //   []
-  // );
+  const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
-  const [questions, setQuestions] = useState<QuestionSuggest[]>([]);
-
-  // const handleQuestionChange = (event, index) => {
-  //   const { name, value } = event.target;
-
-  //   setQuestions((prevQuestions) => {
-  //     const newQuestions = [...prevQuestions];
-
-  //     newQuestions[index][name] = value;
-  //     return newQuestions;
-  //   });
-  // // };
-  // const handleQuestionChange = (
-  //   event: React.ChangeEvent<HTMLTextAreaElement>,
-  //   index: number
-  // ): void => {
-  //   const { name, value } = event.target;
-
-  //   setQuestions((prevQuestions) => {
-  //     const newQuestions: Question[] = [...prevQuestions];
-
-  //     newQuestions[index][name as keyof Question] = value;
-  //     return newQuestions;
-  //   });
-  // };
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
-    index: number
+    index: number,
+    category: string
   ): void => {
     const { name, value } = event.target;
 
     setQuestions((prevQuestions) => {
-      const newQuestions: QuestionSuggest[] = [...prevQuestions];
+      const newQuestions: QuestionGroupedByCategory = { ...prevQuestions };
 
-      newQuestions[index][name as keyof QuestionSuggest] = value;
+      newQuestions[category] = newQuestions[category].map((question, i) => {
+        if (i === index) {
+          return {
+            ...question,
+            [name]: value,
+          };
+        }
+        return question;
+      });
+
       return newQuestions;
     });
   };
-
-  const handleAddQuestion = () => {
-    setQuestions((prevQuestions) => [
+  const handleAddQuestion = (category: string) => {
+    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
       ...prevQuestions,
-      { question: "", IDCriteria: `b${prevQuestions.length + 1}` },
-    ]);
+      [category]: [
+        ...prevQuestions[category],
+        { question: "", IDCriteria: `b${prevQuestions[category].length + 1}` },
+      ],
+    }));
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -738,7 +733,26 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 
         setScraping(false);
 
-        setQuestions(positionSuggestQuestionsAskCandidate.questionSuggest);
+        // setQuestions(positionSuggestQuestionsAskCandidate.questionSuggest);
+
+        const questionsWithCategory: QuestionGroupedByCategory = {};
+
+        positionSuggestQuestionsAskCandidate.questionSuggest.forEach(
+          (q: QuestionSuSQL) => {
+            if (questionsWithCategory[q.category] == undefined) {
+              questionsWithCategory[q.category] = [];
+            }
+
+            questionsWithCategory[q.category].push({
+              question: q.question,
+              IDCriteria: q.IDCriteria,
+            });
+          }
+        );
+
+        console.log("questionsWithCategory = ", questionsWithCategory);
+
+        setQuestions(questionsWithCategory);
       },
     }
   );
@@ -782,21 +796,34 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     }
     if (positionID_ != "") {
       setScrapingSave(true);
+
+      const questionsToAsk: any[] = [];
+
+      // Object.keys(questions).forEach((category) => {
+      for (const category in questions) {
+        const categoryQuestions = questions[category];
+
+        for (let j = 0; j < categoryQuestions.length; j++) {
+          const question = categoryQuestions[j];
+
+          questionsToAsk.push({
+            questionContent: question.question,
+            bestAnswer: "",
+          });
+        }
+      }
       updateQuestionsPosition({
         variables: {
           fields: {
             positionID: positionID_,
-            questionsToAsk: questions.map((question) => {
-              return {
-                bestAnswer: "",
-                questionContent: question.question,
-              };
-            }),
+            questionsToAsk: questionsToAsk,
           },
         },
       });
     }
   };
+
+  console.log("questions 1001= ", questions);
 
   return (
     <div className="w-full">
@@ -823,33 +850,36 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       >
         Save Changes
       </Button>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {questions.map((question, index) => (
-          <div
-            key={question.question.toString()}
-            className="rounded-lg bg-white p-4 shadow"
-          >
-            <div className="mb-4">
-              <h2 className="mb-2 text-xl font-bold">Question {index + 1}</h2>
-              <textarea
-                name="question"
-                value={question.question.toString()}
-                onChange={(event) => handleQuestionChange(event, index)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                rows={3}
-              />
-            </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-1">
+        {Object.keys(questions).map((category) => (
+          <div key={category}>
+            <h2 className="text-3xl font-bold">{category}</h2>
+            {questions[category].map((question, index) => (
+              <div key={`${category}_${index}`} className="mb-4">
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <div className="mb-4 text-lg">
+                    <textarea
+                      name="question"
+                      value={question.question.toString()}
+                      onChange={(event) =>
+                        handleQuestionChange(event, index, category)
+                      }
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      rows={1}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => handleAddQuestion(category)}
+              className="mt-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+            >
+              +
+            </button>
           </div>
         ))}
-        {questions.length === 0 ? null : (
-          <button
-            type="button"
-            onClick={handleAddQuestion}
-            className="mt-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          >
-            Add Question
-          </button>
-        )}
       </div>
     </div>
   );
