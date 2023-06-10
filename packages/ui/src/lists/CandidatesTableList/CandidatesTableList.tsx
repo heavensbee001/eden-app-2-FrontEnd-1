@@ -8,7 +8,13 @@ import {
 } from "@eden/package-ui";
 import clsx from "clsx";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { ComponentPropsWithoutRef, FC, ReactNode, useState } from "react";
+import {
+  ComponentPropsWithoutRef,
+  FC,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -34,8 +40,39 @@ const ColumnStyled: FC<InputGroupProps> = ({
   </td>
 );
 
+type Grade = {
+  letter: string;
+  color: string;
+};
+
+const getGrade = (percentage: number, mainColumn: boolean): Grade => {
+  let grade: Grade = { letter: "", color: "" };
+
+  if (percentage >= 85) {
+    grade = { letter: "A", color: "text-green-500" };
+  } else if (percentage >= 75) {
+    grade = { letter: "B", color: "text-green-200" };
+  } else if (percentage >= 65) {
+    if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
+    else grade = { letter: "C", color: "text-black" };
+  } else {
+    if (mainColumn) grade = { letter: "D", color: "text-red-300" };
+    else grade = { letter: "D", color: "text-black" };
+  }
+
+  return grade;
+};
+
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
+  flagSkill?: boolean;
+  totalMatchPerc?: number;
+  letterAndColor?: {
+    totalMatchPerc?: Grade;
+    culture?: Grade;
+    skill?: Grade;
+    requirements?: Grade;
+  };
 }
 
 export enum ListModeEnum {
@@ -46,6 +83,8 @@ export enum ListModeEnum {
 
 type CandidatesTableListProps = {
   candidatesList: CandidateTypeSkillMatch[];
+  // eslint-disable-next-line no-unused-vars
+  setCandidatesList: (candidates: CandidateTypeSkillMatch[]) => void;
   fetchIsLoading: boolean;
   // eslint-disable-next-line no-unused-vars
   setRowObjectData: (candidate: CandidateTypeSkillMatch) => void;
@@ -58,6 +97,7 @@ type CandidatesTableListProps = {
 
 export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   candidatesList,
+  setCandidatesList,
   fetchIsLoading,
   setRowObjectData,
   candidateIDRowSelected = null,
@@ -69,6 +109,99 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     setRowObjectData(candidate);
   };
   const [showMatchDetails, setShowMatchDetails] = useState(false);
+
+  useEffect(() => {
+    // console.log("candidatesList 00 0 = ", candidatesList);
+    if (
+      candidatesList.length > 0 &&
+      (candidatesList[0]?.totalMatchPerc == undefined ||
+        (candidatesList[0]?.flagSkill != true &&
+          candidatesList[0]?.skillMatch != undefined))
+    ) {
+      // calculate the average score of the percentages for each candidatesList and save it on setCandidatesList
+      const candidatesListWithSkillMatch = candidatesList.map((candidate) => {
+        let totalMatchPerc = 0;
+        let totalMatchPercCount = 0;
+
+        let letterAndColor = {};
+
+        let flagSkill = false;
+
+        console.log("candidate?.skillMatch", candidate?.skillMatch);
+
+        if (candidate?.skillMatch != undefined && candidate?.skillMatch > 0) {
+          totalMatchPerc += candidate.skillMatch;
+          totalMatchPercCount++;
+          flagSkill = true;
+
+          letterAndColor = {
+            ...letterAndColor,
+            skill: getGrade(candidate.skillMatch, false),
+          };
+        }
+
+        if (candidate?.overallScore) {
+          totalMatchPerc += candidate.overallScore;
+          totalMatchPercCount++;
+
+          letterAndColor = {
+            ...letterAndColor,
+            culture: getGrade(candidate.overallScore, false),
+          };
+        }
+
+        if (
+          candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore
+        ) {
+          totalMatchPerc +=
+            candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore;
+          totalMatchPercCount++;
+
+          letterAndColor = {
+            ...letterAndColor,
+            requirements: getGrade(
+              candidate?.compareCandidatePosition
+                ?.CV_ConvoToPositionAverageScore,
+              false
+            ),
+          };
+        }
+
+        totalMatchPerc = totalMatchPerc / totalMatchPercCount;
+
+        totalMatchPerc = parseInt(totalMatchPerc.toFixed(1));
+
+        letterAndColor = {
+          ...letterAndColor,
+          totalMatchPerc: getGrade(totalMatchPerc, true),
+        };
+
+        return {
+          ...candidate,
+          totalMatchPerc,
+          flagSkill: flagSkill,
+          letterAndColor,
+        };
+      });
+
+      // sort the candidatesList by the totalMatchPerc
+      const sortedCandidatesList = candidatesListWithSkillMatch.sort((a, b) => {
+        if (a.totalMatchPerc > b.totalMatchPerc) {
+          return -1;
+        }
+        if (a.totalMatchPerc < b.totalMatchPerc) {
+          return 1;
+        }
+        return 0;
+      });
+
+      // console.log("candidatesList = 23", sortedCandidatesList);
+
+      setCandidatesList(sortedCandidatesList);
+    }
+  }, [candidatesList]);
+
+  console.log("candidatesList 00 0 = ", candidatesList);
 
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
@@ -84,7 +217,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
               Name
             </th>
             <th className="border-b border-gray-300 py-2 font-medium">
-              Match
+              Total
               {showMatchDetails ? (
                 <AiOutlineEyeInvisible
                   size={24}
@@ -105,12 +238,21 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
                 }
               >
-                Skill Match
+                Culture
+              </th>
+            )}
+            {showMatchDetails && (
+              <th
+                className={
+                  "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
+                }
+              >
+                Skills
               </th>
             )}
             {showMatchDetails && (
               <th className={"border-b border-gray-300 py-2 font-medium"}>
-                Report Match
+                Requirements
               </th>
             )}
             <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
@@ -174,28 +316,50 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   </div>
                 </ColumnStyled>
                 <ColumnStyled textColor="text-fuchsia-600 text-center">
-                  {candidate.overallScore ? (
-                    <TextHeading2 className="text-colorFFA9F1 font-black">{`${candidate.overallScore}%`}</TextHeading2>
+                  {candidate.totalMatchPerc &&
+                  candidate.letterAndColor?.totalMatchPerc ? (
+                    <TextHeading2
+                      className={` ${candidate.letterAndColor.totalMatchPerc.color} font-black`}
+                    >
+                      {`${candidate.letterAndColor.totalMatchPerc.letter}`}
+                    </TextHeading2>
                   ) : null}
                 </ColumnStyled>
-                {showMatchDetails && (
+                {showMatchDetails && candidate.overallScore && (
                   <ColumnStyled textColor="text-[#86C8BC] text-center">
-                    {candidate.skillMatch ? (
-                      <TextHeading2 className="text-blue font-black">{`${candidate.skillMatch}%`}</TextHeading2>
-                    ) : null}
+                    <TextHeading2
+                      className={` ${candidate?.letterAndColor?.culture?.color} font-black`}
+                    >
+                      {`${candidate?.letterAndColor?.culture?.letter}`}
+                    </TextHeading2>
                   </ColumnStyled>
                 )}
-                {showMatchDetails && (
-                  <ColumnStyled textColor="text-[#EDBFB7] text-center">
-                    {candidate?.compareCandidatePosition
-                      ?.CV_ConvoToPositionAverageScore ? (
-                      <TextHeading2 className="text-blue font-black">{`${candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore}%`}</TextHeading2>
-                    ) : null}
+
+                {showMatchDetails && candidate.skillMatch && (
+                  <ColumnStyled textColor="text-[#86C8BC] text-center">
+                    <TextHeading2
+                      className={` ${candidate?.letterAndColor?.skill?.color} font-black`}
+                    >
+                      {`${candidate?.letterAndColor?.skill?.letter}`}
+                    </TextHeading2>
                   </ColumnStyled>
                 )}
+
+                {showMatchDetails &&
+                  candidate?.compareCandidatePosition
+                    ?.CV_ConvoToPositionAverageScore && (
+                    <ColumnStyled textColor="text-[#EDBFB7] text-center">
+                      <TextHeading2
+                        className={` ${candidate?.letterAndColor?.requirements?.color} font-black`}
+                      >
+                        {`${candidate?.letterAndColor?.requirements?.letter}`}
+                      </TextHeading2>
+                    </ColumnStyled>
+                  )}
+
                 <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
-                    <TextHeading2 className="text-colorFFD02B font-black">
+                    <TextHeading2 className="font-black text-yellow-500">
                       ${candidate.user?.budget?.perHour}
                     </TextHeading2>
                   ) : // <span className="text-gray-400">-</span>
