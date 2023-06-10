@@ -130,6 +130,11 @@ const PositionCRM: NextPageWithLayout = () => {
 
       setTalentListsAvailables(talentListsNames);
 
+      console.log(
+        "data.findPosition.candidates = ",
+        data.findPosition.candidates
+      );
+
       setCandidates(data.findPosition.candidates);
 
       setCandidatesFromTalentList(data.findPosition.candidates);
@@ -934,6 +939,7 @@ const PositionCRM: NextPageWithLayout = () => {
           <CandidatesTableList
             candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}
+            setCandidatesList={setCandidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
             listMode={
