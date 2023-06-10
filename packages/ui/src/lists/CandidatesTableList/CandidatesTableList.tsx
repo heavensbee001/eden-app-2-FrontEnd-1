@@ -49,9 +49,9 @@ const getGrade = (percentage: number, mainColumn: boolean): Grade => {
   let grade: Grade = { letter: "", color: "" };
 
   if (percentage >= 85) {
-    grade = { letter: "A", color: "text-green-600" };
+    grade = { letter: "A", color: "text-green-500" };
   } else if (percentage >= 75) {
-    grade = { letter: "B", color: "text-green-300" };
+    grade = { letter: "B", color: "text-green-200" };
   } else if (percentage >= 65) {
     if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
     else grade = { letter: "C", color: "text-black" };
