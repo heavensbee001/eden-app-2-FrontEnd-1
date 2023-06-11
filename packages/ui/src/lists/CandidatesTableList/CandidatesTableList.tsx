@@ -233,12 +233,17 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
               )}
             </th>
             {showMatchDetails && (
+              <th className={"border-b border-gray-300 py-2 font-medium"}>
+                Requir.
+              </th>
+            )}
+            {showMatchDetails && (
               <th
                 className={
                   "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
                 }
               >
-                Culture
+                Stats
               </th>
             )}
             {showMatchDetails && (
@@ -248,11 +253,6 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 }
               >
                 Skills
-              </th>
-            )}
-            {showMatchDetails && (
-              <th className={"border-b border-gray-300 py-2 font-medium"}>
-                Requirements
               </th>
             )}
             <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
@@ -325,6 +325,18 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     </TextHeading2>
                   ) : null}
                 </ColumnStyled>
+
+                {showMatchDetails &&
+                  candidate?.compareCandidatePosition
+                    ?.CV_ConvoToPositionAverageScore && (
+                    <ColumnStyled textColor="text-[#EDBFB7] text-center">
+                      <TextHeading2
+                        className={` ${candidate?.letterAndColor?.requirements?.color} font-black`}
+                      >
+                        {`${candidate?.letterAndColor?.requirements?.letter}`}
+                      </TextHeading2>
+                    </ColumnStyled>
+                  )}
                 {showMatchDetails && candidate.overallScore && (
                   <ColumnStyled textColor="text-[#86C8BC] text-center">
                     <TextHeading2
@@ -344,18 +356,6 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     </TextHeading2>
                   </ColumnStyled>
                 )}
-
-                {showMatchDetails &&
-                  candidate?.compareCandidatePosition
-                    ?.CV_ConvoToPositionAverageScore && (
-                    <ColumnStyled textColor="text-[#EDBFB7] text-center">
-                      <TextHeading2
-                        className={` ${candidate?.letterAndColor?.requirements?.color} font-black`}
-                      >
-                        {`${candidate?.letterAndColor?.requirements?.letter}`}
-                      </TextHeading2>
-                    </ColumnStyled>
-                  )}
 
                 <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (

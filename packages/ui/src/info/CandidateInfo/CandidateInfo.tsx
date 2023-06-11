@@ -36,6 +36,7 @@ export interface ICandidateInfoProps {
   summaryQuestions?: SummaryQuestionType[];
   mostRelevantMemberNode?: relevantNodeObj;
   candidate?: any;
+  selectedUserScoreLetter?: any;
   onClose?: () => void;
 }
 
@@ -48,6 +49,7 @@ export const CandidateInfo = ({
   percentage,
   summaryQuestions,
   mostRelevantMemberNode,
+  selectedUserScoreLetter,
   candidate,
   onClose,
 }: ICandidateInfoProps) => {
@@ -63,39 +65,50 @@ export const CandidateInfo = ({
     ssr: false,
   });
 
-  // console.log("candidate 000f0f0 = ", candidate);
+  console.log("selectedUserScoreLetter 000f0f0 = ", selectedUserScoreLetter);
 
   const tabs = [
     {
-      tab: "Info",
+      tab: "Bio",
       Content: () => (
         <InfoTab
           member={dataMember?.findMember}
           mostRelevantMemberNode={mostRelevantMemberNode}
+          selectedUserScoreLetter={selectedUserScoreLetter}
         />
       ),
     },
     {
-      tab: "Report",
+      tab: "Requirements",
       Content: () => (
-        <ReportNotes member={dataMember?.findMember} candidate={candidate} />
+        <ReportNotes
+          member={dataMember?.findMember}
+          candidate={candidate}
+          selectedUserScoreLetter={selectedUserScoreLetter}
+        />
       ),
     },
     {
-      tab: "Match",
+      tab: "Stats",
       Content: () => (
         <MatchTab
           member={dataMember?.findMember}
           summaryQuestions={summaryQuestions}
+          selectedUserScoreLetter={selectedUserScoreLetter}
         />
       ),
     },
     {
-      tab: "Graph",
-      Content: () => <GraphTab member={dataMember?.findMember} />,
+      tab: "Skill Graph",
+      Content: () => (
+        <GraphTab
+          member={dataMember?.findMember}
+          selectedUserScoreLetter={selectedUserScoreLetter}
+        />
+      ),
     },
     {
-      tab: "Notes",
+      tab: "Highlights",
       Content: () => (
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
       ),

@@ -15,6 +15,7 @@ import { FC, useEffect, useState } from "react";
 interface Props {
   member?: Members;
   candidate: any;
+  selectedUserScoreLetter?: any;
 }
 
 interface DatabaseItem {
@@ -29,7 +30,10 @@ interface DatabaseItem {
 
 type meetingNotesType = DatabaseItem[];
 
-export const ReportNotes: FC<Props> = ({ candidate }) => {
+export const ReportNotes: FC<Props> = ({
+  candidate,
+  selectedUserScoreLetter,
+}) => {
   const [meetingNotesData, setReportNotesData] = useState<{
     [key: string]: meetingNotesType;
   }>({});
@@ -77,8 +81,21 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
 
   return (
     <>
-      <div className="space-y-4 rounded-lg p-4 py-12">
+      {selectedUserScoreLetter?.requirements?.letter && (
+        <div className="relative">
+          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
+            <p className="text-lg font-bold">Requirements Score:</p>
+            <p
+              className={` ${selectedUserScoreLetter?.requirements?.color} text-4xl font-black`}
+            >
+              {`${selectedUserScoreLetter?.requirements?.letter}`}
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="space-y-4 rounded-lg p-4 py-24">
         {/* Render each category */}
+
         {Object.entries(meetingNotesData).map(([categoryName, items]) => (
           <div key={categoryName}>
             <h2 className="text-lg font-medium">{categoryName}</h2>

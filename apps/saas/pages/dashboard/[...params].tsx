@@ -41,8 +41,19 @@ type Question = {
   bestAnswer: string;
 };
 
+type Grade = {
+  letter: string;
+  color: string;
+};
+
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
+  letterAndColor?: {
+    totalMatchPerc?: Grade;
+    culture?: Grade;
+    skill?: Grade;
+    requirements?: Grade;
+  };
 }
 
 type NodeDisplay = {
@@ -81,6 +92,8 @@ const PositionCRM: NextPageWithLayout = () => {
   );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
+
+  const [selectedUserScoreLetter, setSelectedUserScoreLetter] = useState({});
 
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [trainModalOpen, setTrainModalOpen] = useState(false);
@@ -162,6 +175,8 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
+  console.log("candidatesFromTalentList = 2", candidatesFromTalentList);
+
   const {} = useQuery(FIND_TALENT_LIST, {
     variables: {
       fields: {
@@ -184,13 +199,18 @@ const PositionCRM: NextPageWithLayout = () => {
     }
   }, [talentListID, talentListToShow, talentListsAvailables]);
 
-  const handleRowClick = (user: CandidateType) => {
+  const handleRowClick = (user: CandidateTypeSkillMatch) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
     if (user.overallScore) setSelectedUserScore(user.overallScore);
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
+
+    if (user.letterAndColor) setSelectedUserScoreLetter(user.letterAndColor);
+
+    console.log("user 2202 = ", user);
   };
 
+  console.log("selectedUserScoreLetter = 020 ", selectedUserScoreLetter);
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
 
@@ -989,6 +1009,7 @@ const PositionCRM: NextPageWithLayout = () => {
             percentage={selectedUserScore}
             summaryQuestions={selectedUserSummaryQuestions}
             mostRelevantMemberNode={mostRelevantMemberNode}
+            selectedUserScoreLetter={selectedUserScoreLetter}
             candidate={candidates?.find(
               (candidate) =>
                 candidate?.user?._id?.toString() == selectedUserId?.toString()
@@ -1022,6 +1043,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 percentage={selectedUserScore}
                 summaryQuestions={selectedUserSummaryQuestions}
                 mostRelevantMemberNode={mostRelevantMemberNode}
+                selectedUserScoreLetter={selectedUserScoreLetter}
                 candidate={candidates?.find(
                   (candidate) =>
                     candidate?.user?._id?.toString() ==
@@ -1051,6 +1073,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 percentage={selectedUserScore}
                 summaryQuestions={selectedUserSummaryQuestions}
                 mostRelevantMemberNode={mostRelevantMemberNode}
+                selectedUserScoreLetter={selectedUserScoreLetter}
                 candidate={candidates?.find(
                   (candidate) =>
                     candidate?.user?._id?.toString() ==
