@@ -266,50 +266,36 @@ const HomePage: NextPageWithLayout = () => {
         shadow
       >
         {currentUser && (
-          <div className="h-full w-full p-8">
+          <div className="mt-32 h-full w-full p-8">
             <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
             </div>
             <Wizard canPrev={false} onStepChange={handleProgress}>
               <WizardStep label={"welcome0"}>
-                <div className="flex flex-col items-center space-y-6">
+                <div className=" flex  flex-col items-center justify-center space-y-6">
                   <form
-                    className=" flex flex-col items-center  space-y-2"
+                    className=" flex flex-col  items-center space-y-2 "
                     onSubmit={handleLinkSubmit}
                   >
-                    <label>Extract Text From Page</label>
-                    <input
-                      className="w-96 border-2 border-black pl-1"
-                      onChange={handleWebpageLinkChange}
-                      placeholder="https://www.example.com"
-                    />
-                    <Button
-                      variant="primary"
-                      className="w-fit"
-                      type="submit"
-                      loading={scraping}
-                    >
-                      Submit Link
-                    </Button>
+                    <label>Hi - {currentUser.discordName}.</label>
+
                     {report && (
                       <div className="whitespace-pre-wrap">{report}</div>
                     )}
                     {error && <div className="text-red-500">{error}</div>}
                   </form>
                   <form
-                    className="flex w-3/12 flex-col items-center  space-y-2"
+                    className="flex w-4/12 flex-col items-center  space-y-2"
                     onSubmit={handleTextSubmit}
                   >
-                    <label>Paste the text from the Position Page Here</label>
+                    <label>Tell me about your opportunity.👀</label>
 
                     <TextArea
                       value={pastedText}
-                      rows={15}
                       onChange={handlePastedTextChange}
+                      placeholder="Copy/paste your job description here."
+                      className="pb-20 pl-4 pt-32 text-sm"
                     />
-                    <Button variant="primary" type="submit">
-                      Submit Text
-                    </Button>
                   </form>
                 </div>
               </WizardStep>
