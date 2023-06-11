@@ -57,6 +57,7 @@ ChartJS.register(ArcElement, Legend, Tooltip);
 type Props = {
   member?: Members;
   summaryQuestions?: SummaryQuestionType[];
+  selectedUserScoreLetter?: any;
 };
 
 type BarChartQuestions = {
@@ -70,9 +71,11 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
-  console.log("summaryQuestions = 22", summaryQuestions);
-
+export const MatchTab: FC<Props> = ({
+  member,
+  summaryQuestions,
+  selectedUserScoreLetter,
+}) => {
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
@@ -284,6 +287,19 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   return (
     <div className="relative pb-4 pt-4">
+      {selectedUserScoreLetter?.culture?.letter && (
+        <div className="relative">
+          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
+            <p className="text-lg font-bold">Stats Score:</p>
+            <p
+              className={` ${selectedUserScoreLetter?.culture?.color} text-4xl font-black`}
+            >
+              {`${selectedUserScoreLetter?.culture?.letter}`}
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="mb-8 grid grid-cols-12">
         <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">

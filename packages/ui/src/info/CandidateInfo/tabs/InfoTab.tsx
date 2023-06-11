@@ -25,15 +25,32 @@ type relevantNodeObj = {
 interface Props {
   member?: Members;
   mostRelevantMemberNode?: relevantNodeObj;
+  selectedUserScoreLetter?: any;
 }
 
-export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
+export const InfoTab: FC<Props> = ({
+  member,
+  mostRelevantMemberNode,
+  selectedUserScoreLetter,
+}) => {
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
   const [seeMore, setSeeMore] = useState(false);
 
   return (
     <>
-      <div className="mb-4 grid grid-cols-2">
+      {selectedUserScoreLetter?.totalMatchPerc?.letter && (
+        <div className="relative">
+          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
+            <p className="text-lg font-bold">Total Score:</p>
+            <p
+              className={` ${selectedUserScoreLetter?.totalMatchPerc?.color} text-4xl font-black`}
+            >
+              {`${selectedUserScoreLetter?.totalMatchPerc?.letter}`}
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="mb-4 grid grid-cols-2 py-24">
         <div className="col-span-2 p-2">
           <div className="my-4 flex flex-col items-start justify-center">
             <TextLabel1>🌸 Short bio</TextLabel1>
