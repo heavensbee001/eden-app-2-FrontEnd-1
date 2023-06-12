@@ -20,6 +20,12 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+type Question = {
+  _id: string;
+  content: string;
+  bestAnswer: string;
+};
+
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
 }
@@ -42,8 +48,6 @@ const TalentListPublicPage: NextPageWithLayout = () => {
   const { talentListID } = router.query;
 
   const [positionID, setPositionID] = useState<string | null>(null);
-
-  const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
 
   const [candidates, setCandidates] = useState<CandidateTypeSkillMatch[]>([]);
 
@@ -84,26 +88,11 @@ const TalentListPublicPage: NextPageWithLayout = () => {
 
       setCandidatesFromTalentList(data.findPosition.candidates);
 
-      const questionPrep: Question[] = [];
-
-      data.findPosition.questionsToAsk.map((question: any) => {
-        if (question.question == null) {
-        } else {
-          questionPrep.push({
-            _id: question.question._id,
-            content: question.question.content,
-            bestAnswer: question.bestAnswer,
-          });
-        }
-      });
-
       const nodesID = data.findPosition?.nodes?.map((node: any) => {
         return node?.nodeData?._id;
       });
 
       setNodeIDsPosition(nodesID);
-
-      setQuestions(questionPrep);
     },
   });
 
@@ -118,7 +107,6 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     onCompleted: (data: any) => {
       console.log({ data });
 
-      setTalentListToShow(data.findUserTalentListPosition);
       setPositionID(data.findUserTalentListPosition.positionID);
     },
   });
