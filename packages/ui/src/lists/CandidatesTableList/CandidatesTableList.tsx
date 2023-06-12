@@ -347,12 +347,25 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   </ColumnStyled>
                 )}
 
+                {/* Temp replacement*/}
+                {showMatchDetails && (
+                  <tr>
+                    <td></td>
+                  </tr>
+                )}
+                {/* Temp replacement*/}
+                {showMatchDetails && (
+                  <tr>
+                    <td></td>
+                  </tr>
+                )}
+
                 {showMatchDetails && candidate.skillMatch && (
-                  <ColumnStyled textColor="text-[#86C8BC] text-center">
+                  <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
                     <TextHeading2
                       className={` ${candidate?.letterAndColor?.skill?.color} font-black`}
                     >
-                      {`${candidate?.letterAndColor?.skill?.letter}`}
+                      {candidate?.letterAndColor?.skill?.letter}
                     </TextHeading2>
                   </ColumnStyled>
                 )}
