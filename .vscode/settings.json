@@ -22,5 +22,6 @@
     "titleBar.inactiveBackground": "#1a231d99",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#1A231D"
+  "peacock.color": "#1A231D",
+  "cSpell.words": ["Perc"]
 }
