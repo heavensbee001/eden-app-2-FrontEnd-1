@@ -112,7 +112,6 @@ const HomePage: NextPageWithLayout = () => {
     }
   };
 
-  const [webpageLink, setWebpageLink] = useState("");
   const [pastedText, setPastedText] = useState("");
 
   // const [webPageText, setWebPageText] = useState("");
