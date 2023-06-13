@@ -291,6 +291,21 @@ const HomePage: NextPageWithLayout = () => {
               <ProgressBarGeneric progress={progress} />
             </div>
             <Wizard canPrev={false} onStepChange={handleProgress}>
+              <WizardStep label={"createQuestions"}>
+                <div className="mx-auto h-full max-w-lg">
+                  <h2 className="mb-4 text-xl font-medium">
+                    Eden&apos;s suggested interview questions
+                  </h2>
+                  <p className="mb-8 text-sm leading-tight text-gray-500">
+                    Here&apos;s a list of all the questions Eden will ask to
+                    understand the candidate. These questions might get adapted
+                    in real time based on the information that the candidate
+                    already gives to ensure getting the most out of the
+                    conversation.
+                  </p>
+                  <CreateQuestions />
+                </div>
+              </WizardStep>
               <WizardStep label={"welcome0"}>
                 <div className="flex h-full items-center justify-center">
                   <form className="w-4/12" onSubmit={handleTextSubmit}>
@@ -790,7 +805,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
   const handleQuestionChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLTextAreaElement>,
     index: number,
     category: string
   ): void => {
@@ -812,6 +827,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       return newQuestions;
     });
   };
+
   const handleAddQuestion = (category: string) => {
     setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
       ...prevQuestions,
@@ -819,6 +835,17 @@ const CreateQuestions = ({}: ICreateQuestions) => {
         ...prevQuestions[category],
         { question: "", IDCriteria: `b${prevQuestions[category].length + 1}` },
       ],
+    }));
+  };
+
+  const handleDeleteQuestion = (category: string, position: number) => {
+    const _newArr = [...questions[category]];
+
+    _newArr.splice(position, 1);
+
+    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
+      ...prevQuestions,
+      [category]: _newArr,
     }));
   };
 
@@ -858,7 +885,6 @@ const CreateQuestions = ({}: ICreateQuestions) => {
         );
 
         // console.log("questionsWithCategory = ", questionsWithCategory);
-
         setQuestions(questionsWithCategory);
       },
     }
@@ -947,7 +973,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     }
   };
 
-  // console.log("questions 1001= ", questions);
+  console.log("questions 1001= ", questions);
 
   return (
     <div className="w-full">
@@ -999,30 +1025,33 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       >
         Save Changes
       </Button>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-1">
+      <div className="">
         {Object.keys(questions).map((category) => (
-          <div key={category}>
-            <h2 className="text-3xl font-bold">{category}</h2>
+          <div key={category + questions[category].length}>
+            <h2 className="mb-2 text-xl font-medium">{category}</h2>
             {questions[category].map((question, index) => (
-              <div key={`${category}_${index}`} className="mb-4">
-                <div className="rounded-lg bg-white p-4 shadow">
-                  <div className="mb-4 text-lg">
-                    <input
-                      name="question"
-                      defaultValue={question.question.toString()}
-                      onChange={(event) =>
-                        handleQuestionChange(event, index, category)
-                      }
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
+              <div key={`${category}_${index}`} className="relative mb-2">
+                <textarea
+                  name="question"
+                  defaultValue={question.question.toString()}
+                  onChange={(event) =>
+                    handleQuestionChange(event, index, category)
+                  }
+                  className="w-full resize-none hover:resize focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDeleteQuestion(category, index)}
+                  className="absolute -left-10 top-1 flex h-4 w-4 rotate-45 cursor-pointer items-center justify-center rounded-full border-[2px] border-[#ff5656] bg-white pb-[2px] font-bold text-[#ff5656] hover:bg-[#ff5656] hover:text-white hover:opacity-80"
+                >
+                  +
+                </button>
               </div>
             ))}
             <button
               type="button"
               onClick={() => handleAddQuestion(category)}
-              className="mt-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              className="bg-accentColor mx-auto mb-2 block h-8 w-8 rounded-full font-bold text-white hover:opacity-80"
             >
               +
             </button>
