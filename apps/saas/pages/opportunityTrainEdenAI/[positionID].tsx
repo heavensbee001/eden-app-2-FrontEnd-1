@@ -9,6 +9,7 @@ import {
   ChatMessage,
   CountdownTimer,
   InterviewEdenAI,
+  Modal,
   ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -16,8 +17,12 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { HiBadgeCheck } from "react-icons/hi";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../_app";
@@ -69,6 +74,7 @@ const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { positionID } = router.query;
+  // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
   // const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
@@ -112,11 +118,14 @@ const HomePage: NextPageWithLayout = () => {
     }
   };
 
+  // const [webpageLink, setWebpageLink] = useState("");
   const [pastedText, setPastedText] = useState("");
 
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState<string | null>(null);
+  // eslint-disable-next-line no-unused-vars
   const [report, setReport] = useState<string | null>(null);
 
   const [interviewQuestionsForPosition, setInterviewQuestionsForPosition] =
@@ -158,6 +167,7 @@ const HomePage: NextPageWithLayout = () => {
     },
   });
 
+  // eslint-disable-next-line no-unused-vars
   // const handleWebpageLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
   //   setWebpageLink(e.target.value);
   // };
@@ -246,12 +256,12 @@ const HomePage: NextPageWithLayout = () => {
     }
   };
 
-  console.log(
-    "interviewQuestionsForPosition  =  223 0",
-    interviewQuestionsForPosition
-  );
+  // console.log(
+  //   "interviewQuestionsForPosition  =  223 0",
+  //   interviewQuestionsForPosition
+  // );
 
-  console.log("progress = ", progress);
+  // console.log("progress = ", progress);
   return (
     <>
       <Head>
@@ -272,7 +282,7 @@ const HomePage: NextPageWithLayout = () => {
       </Head>
       <SEO />
       <Card
-        className="mx-auto mt-3 w-full max-w-5xl overflow-y-scroll bg-white"
+        className="mx-auto mt-2 h-[90vh] w-full max-w-5xl overflow-y-scroll bg-white"
         shadow
       >
         {currentUser && (
@@ -288,11 +298,6 @@ const HomePage: NextPageWithLayout = () => {
                     onSubmit={handleTextSubmit}
                   >
                     <label>Hi - {currentUser.discordName}.</label>
-
-                    {report && (
-                      <div className="whitespace-pre-wrap">{report}</div>
-                    )}
-                    {error && <div className="text-red-500">{error}</div>}
 
                     <label>Tell me about your opportunity.👀</label>
 
@@ -311,10 +316,48 @@ const HomePage: NextPageWithLayout = () => {
                       Submit Your Description
                     </Button>
                   </form>
+                  {/* {report && (
+                      <div className="whitespace-pre-wrap">{report}</div>
+                    )} */}
+                  <div>
+                    {report && (
+                      <p className="text-gray-500">
+                        Job description was processed successfully.{" "}
+                        <HiBadgeCheck
+                          className="inline-block"
+                          size={24}
+                          color="#40f837"
+                        />
+                        <br />
+                        Click Next to continue.
+                      </p>
+                    )}
+                    {error && <div className="text-red-500">{error}</div>}
+                  </div>
+                  <Modal open={scraping} closeOnEsc={false}>
+                    <div className="px-20 py-10 text-center">
+                      <Image
+                        width={80}
+                        height={80}
+                        className="mx-auto mb-4"
+                        src="/eden-logo.png"
+                        alt=""
+                      />
+                      <p>
+                        Give me 30 seconds!
+                        <br />
+                        <br />
+                        I&apos;m reading your job description, writing down
+                        additional questions I have for you so I can draft the
+                        ideal interview for your candidates!
+                      </p>
+                    </div>
+                  </Modal>
                 </div>
               </WizardStep>
 
-              <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
+              {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
+              <WizardStep label={"chat"}>
                 <div className="mx-auto h-[70vh] max-w-lg">
                   <InterviewEdenAIContainer
                     handleEnd={handleInterviewEnd}
@@ -326,17 +369,34 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               <WizardStep label={"profile"}>
-                <p className="mb-8 text-center">
-                  Recalculate the Criteria for perfect fit
-                </p>
-                <ProfileQuestionsContainer />
+                <div className="mx-auto h-full max-w-lg">
+                  <h2 className="mb-4 text-xl font-medium">
+                    Complete Checks & Balances List
+                  </h2>
+                  <p className="mb-8 text-sm leading-tight text-gray-500">
+                    Here&apos;s a list of all the must & nice to haves that I
+                    will look for in the candidate based in the info you&apos;ve
+                    provided to me. Feel free to edit any line by changing,
+                    deleting or adding elements that might be missing.
+                  </p>
+                  <ProfileQuestionsContainer />
+                </div>
               </WizardStep>
 
               <WizardStep label={"createQuestions"}>
-                <p className="mb-8 text-center">
-                  Suggest for Interview with User
-                </p>
-                <CreateQuestions />
+                <div className="mx-auto h-full max-w-lg">
+                  <h2 className="mb-4 text-xl font-medium">
+                    Eden&apos;s suggested interview questions
+                  </h2>
+                  <p className="mb-8 text-sm leading-tight text-gray-500">
+                    Here&apos;s a list of all the questions Eden will ask to
+                    understand the candidate. These questions might get adapted
+                    in real time based on the information that the candidate
+                    already gives to ensure getting the most out of the
+                    conversation.
+                  </p>
+                  <CreateQuestions />
+                </div>
               </WizardStep>
 
               {/* <WizardStep label={"end"}>
@@ -434,7 +494,7 @@ const InterviewEdenAIContainer = ({
   // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
 
-  console.log("currentUser = ", currentUser?._id);
+  // console.log("currentUser = ", currentUser?._id);
 
   const router = useRouter();
   const { positionID } = router.query;
@@ -442,10 +502,10 @@ const InterviewEdenAIContainer = ({
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  console.log(
-    "interviewQuestionsForPosition = 223 ",
-    interviewQuestionsForPosition
-  );
+  // console.log(
+  //   "interviewQuestionsForPosition = 223 ",
+  //   interviewQuestionsForPosition
+  // );
 
   const { data: findPositionData } = useQuery(FIND_POSITION, {
     variables: {
@@ -482,11 +542,12 @@ const InterviewEdenAIContainer = ({
 
   const [experienceTypeID] = useState<string>("");
 
+  // eslint-disable-next-line no-unused-vars
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  console.log("chatN = ", chatN);
+  // console.log("chatN = ", chatN);
 
-  console.log("conversationID = ", conversationID);
+  // console.log("conversationID = ", conversationID);
 
   useEffect(() => {
     if (
@@ -498,7 +559,12 @@ const InterviewEdenAIContainer = ({
     }
   }, [interviewQuestionsForPosition]);
 
-  console.log("questions = 223 -1", questions);
+  // console.log("questions = 223 -1", questions);
+  // console.log(
+  //   findPositionData?.findPosition?.questionsToAsk.length,
+  //   questions.length,
+  //   findPositionData?.findPosition?.questionsToAsk.length
+  // );
 
   return (
     <div className="w-full">
@@ -557,9 +623,6 @@ const InterviewEdenAIContainer = ({
   );
 };
 
-import Head from "next/head";
-import { useForm } from "react-hook-form";
-
 export const POSITION_TEXT_CONVO_TO_REPORT = gql`
   mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
     positionTextAndConvoToReportCriteria(fields: $fields) {
@@ -610,9 +673,22 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     }
   );
 
-  const handleClick = () => {
-    console.log("change =");
+  // const handleClick = () => {
+  //   console.log("change =");
 
+  //   setScraping(true);
+
+  //   positionTextAndConvoToReportCriteria({
+  //     variables: {
+  //       // fields: { message: textResponse, userID: currentUser?._id },
+  //       fields: {
+  //         positionID: positionID,
+  //       },
+  //     },
+  //   });
+  // };
+
+  useEffect(() => {
     setScraping(true);
 
     positionTextAndConvoToReportCriteria({
@@ -623,11 +699,14 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         },
       },
     });
-  };
+    return () => {
+      setScraping(false);
+    };
+  }, []);
 
   return (
     <div className="w-full">
-      <Button
+      {/* <Button
         variant="primary"
         className="w-fit"
         type="submit"
@@ -635,8 +714,33 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         loading={scraping}
       >
         Recalculate Criteria
-      </Button>
+      </Button> */}
 
+      {scraping && (
+        <p className="text-center text-gray-400">
+          Recalculating criteria{" "}
+          <svg
+            className="inline-block animate-spin"
+            xmlns="http://www.w3.org/2000/svg"
+            width="21px"
+            height="21px"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              opacity="0.2"
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+              fill="#000000"
+            />
+            <path
+              d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
+              fill="#000000"
+            />
+          </svg>
+        </p>
+      )}
       {report && <div className="whitespace-pre-wrap">{report}</div>}
     </div>
   );
@@ -683,7 +787,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
   const handleQuestionChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
+    event: React.ChangeEvent<HTMLInputElement>,
     index: number,
     category: string
   ): void => {
@@ -726,10 +830,10 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     POSITION_SUGGEST_QUESTIONS,
     {
       onCompleted({ positionSuggestQuestionsAskCandidate }) {
-        console.log(
-          "positionSuggestQuestionsAskCandidate = ",
-          positionSuggestQuestionsAskCandidate
-        );
+        // console.log(
+        //   "positionSuggestQuestionsAskCandidate = ",
+        //   positionSuggestQuestionsAskCandidate
+        // );
 
         setScraping(false);
 
@@ -750,13 +854,14 @@ const CreateQuestions = ({}: ICreateQuestions) => {
           }
         );
 
-        console.log("questionsWithCategory = ", questionsWithCategory);
+        // console.log("questionsWithCategory = ", questionsWithCategory);
 
         setQuestions(questionsWithCategory);
       },
     }
   );
 
+  // eslint-disable-next-line no-unused-vars
   const handleClick = () => {
     console.log("change =");
 
@@ -771,6 +876,22 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       },
     });
   };
+
+  useEffect(() => {
+    setScraping(true);
+
+    positionSuggestQuestionsAskCandidate({
+      variables: {
+        // fields: { message: textResponse, userID: currentUser?._id },
+        fields: {
+          positionID: positionID,
+        },
+      },
+    });
+    return () => {
+      setScraping(false);
+    };
+  }, []);
 
   // console.log("questionsSuggest = ", questionsSuggest);
 
@@ -823,7 +944,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     }
   };
 
-  console.log("questions 1001= ", questions);
+  // console.log("questions 1001= ", questions);
 
   return (
     <div className="w-full">
@@ -833,7 +954,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       >
         Click me
       </button> */}
-      <Button
+      {/* <Button
         variant="primary"
         className="w-fit"
         type="submit"
@@ -841,9 +962,34 @@ const CreateQuestions = ({}: ICreateQuestions) => {
         loading={scraping}
       >
         Suggest Questions
-      </Button>
+      </Button> */}
+      {scraping && (
+        <p className="text-center text-gray-400">
+          Loading questions{" "}
+          <svg
+            className="inline-block animate-spin"
+            xmlns="http://www.w3.org/2000/svg"
+            width="21px"
+            height="21px"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              opacity="0.2"
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+              fill="#000000"
+            />
+            <path
+              d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
+              fill="#000000"
+            />
+          </svg>
+        </p>
+      )}
       <Button
-        className="mx-auto"
+        className="absolute bottom-8 right-8 z-30 mx-auto"
         variant={"primary"}
         loading={scrapingSave}
         onClick={handleSaveChanges}
@@ -858,14 +1004,13 @@ const CreateQuestions = ({}: ICreateQuestions) => {
               <div key={`${category}_${index}`} className="mb-4">
                 <div className="rounded-lg bg-white p-4 shadow">
                   <div className="mb-4 text-lg">
-                    <textarea
+                    <input
                       name="question"
-                      value={question.question.toString()}
+                      defaultValue={question.question.toString()}
                       onChange={(event) =>
                         handleQuestionChange(event, index, category)
                       }
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      rows={1}
                     />
                   </div>
                 </div>

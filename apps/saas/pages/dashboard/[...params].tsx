@@ -143,6 +143,8 @@ const PositionCRM: NextPageWithLayout = () => {
       const talentListsNames: TalentListType[] =
         data.findPosition.talentList.map((list: TalentListType) => list);
 
+      console.log("data = ", data);
+
       setTalentListsAvailables(talentListsNames);
 
       // console.log(
