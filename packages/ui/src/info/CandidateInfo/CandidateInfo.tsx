@@ -14,6 +14,7 @@ import {
   TextHeading3,
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
@@ -54,6 +55,8 @@ export const CandidateInfo = ({
   onClose,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
+
+  const router = useRouter();
 
   const { data: dataMember } = useQuery(FIND_MEMBER, {
     variables: {
@@ -135,14 +138,16 @@ export const CandidateInfo = ({
         />
         <div className="grid w-full grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full py-2 text-center">
-            <div className="flex w-full justify-end">
-              <Button
-                className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
-                radius="pill"
-              >
-                REJECT
-              </Button>
-            </div>
+            {!router.pathname.includes("/talentlist") ? (
+              <div className="flex w-full justify-end">
+                <Button
+                  className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
+                  radius="pill"
+                >
+                  REJECT
+                </Button>
+              </div>
+            ) : null}
           </div>
           <div className="col-2 p-2 pb-1">
             <div className="flex w-full justify-center">
@@ -150,15 +155,17 @@ export const CandidateInfo = ({
             </div>
           </div>
           <div className="col-3 mt-5 w-full py-2 text-center text-sm">
-            <div className="flex w-full justify-start">
-              <Button
-                variant="primary"
-                radius="pill"
-                className="border-none font-bold text-white"
-              >
-                APPROVE
-              </Button>
-            </div>
+            {!router.pathname.includes("/talentlist") ? (
+              <div className="flex w-full justify-start">
+                <Button
+                  variant="primary"
+                  radius="pill"
+                  className="border-none font-bold text-white"
+                >
+                  APPROVE
+                </Button>
+              </div>
+            ) : null}
           </div>
         </div>
 

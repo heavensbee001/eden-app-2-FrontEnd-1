@@ -115,9 +115,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     // console.log("candidatesList 00 0 = ", candidatesList);
     if (
       candidatesList.length > 0 &&
-      (candidatesList[0]?.totalMatchPerc == undefined ||
-        (candidatesList[0]?.flagSkill != true &&
-          candidatesList[0]?.skillMatch != undefined))
+      (candidatesList[0]?.totalMatchPerc === undefined ||
+        (candidatesList[0]?.flagSkill !== true &&
+          candidatesList[0]?.skillMatch !== undefined))
     ) {
       // calculate the average score of the percentages for each candidatesList and save it on setCandidatesList
       const candidatesListWithSkillMatch = candidatesList.map((candidate) => {
@@ -202,7 +202,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     }
   }, [candidatesList]);
 
-  console.log("candidatesList 00 0 = ", candidatesList);
+  // console.log("candidatesList 00 0 = ", candidatesList);
 
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">

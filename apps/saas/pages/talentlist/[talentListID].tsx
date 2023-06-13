@@ -5,7 +5,7 @@ import {
   FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
 } from "@eden/package-graphql";
-import { CandidateType } from "@eden/package-graphql/generated";
+import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
   CandidateInfo,
   CandidatesTableList,
@@ -59,7 +59,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
   >([]);
 
   // eslint-disable-next-line no-unused-vars
-  const [newTalentListName, setNewTalentListName] = useState<string>("");
+  const [currentTalentList, setCurrentTalentList] = useState<TalentListType>();
 
   const {
     // data: findPositionData,
@@ -76,9 +76,9 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     onCompleted: (data: any) => {
       console.log("FIND_POSITION_LIGHT ", { data });
 
-      setCandidates(data.findPosition.candidates);
+      // setCandidates(data.findPosition.candidates);
 
-      setCandidatesFromTalentList(data.findPosition.candidates);
+      // setCandidatesFromTalentList(data.findPosition.candidates);
 
       const nodesID = data.findPosition?.nodes?.map((node: any) => {
         return node?.nodeData?._id;
@@ -99,6 +99,10 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     onCompleted: (data: any) => {
       console.log("find talent list data = ", data);
       setPositionID(data.findUserTalentListPosition.positionID);
+      setCandidates(data.findUserTalentListPosition.talent);
+      setCurrentTalentList(data.findUserTalentListPosition);
+
+      setCandidatesFromTalentList(data.findUserTalentListPosition.talent);
     },
   });
 
@@ -131,8 +135,8 @@ const TalentListPublicPage: NextPageWithLayout = () => {
         ],
       },
     },
-    skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
-
+    skip: candidatesFromTalentList.length === 0 || nodeIDsPosition.length === 0,
+    ssr: false,
     onCompleted: (data) => {
       console.log("match nodes memmbers ai4 data = ", data);
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
@@ -169,6 +173,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
         }
       }
       setCandidatesFromTalentList(candidatesNew);
+      setCandidates(candidatesNew);
       // -------------- Get the Candidates of the page ------------
 
       // --------------- Find the related nodes Score and color -----------
@@ -204,7 +209,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
           let mostRelevantMemberNode = null;
 
           if (
-            node?.mostRelevantMemberNodes != undefined &&
+            node?.mostRelevantMemberNodes !== undefined &&
             node?.mostRelevantMemberNodes?.length > 0
           ) {
             let i = 0;
@@ -283,11 +288,9 @@ const TalentListPublicPage: NextPageWithLayout = () => {
       >
         <div className="mb-4 flex h-10 items-center">
           <h1 className="mr-6 text-2xl font-medium">
-            {/* {findPositionData && findPositionData.findPosition.name
-              ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
-                findPositionData.findPosition.name.slice(1)
-              : ""}{" "} */}
-            Dashboard
+            {currentTalentList?.name
+              ? `Talent List: ${currentTalentList?.name}`
+              : "Talent List"}
           </h1>
         </div>
         <div className="grid grid-flow-row">
