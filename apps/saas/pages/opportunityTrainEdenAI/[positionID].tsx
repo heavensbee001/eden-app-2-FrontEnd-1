@@ -286,32 +286,31 @@ const HomePage: NextPageWithLayout = () => {
         shadow
       >
         {currentUser && (
-          <div className="mt-32 h-full w-full p-8">
+          <div className="h-full w-full p-8">
             <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
             </div>
             <Wizard canPrev={false} onStepChange={handleProgress}>
               <WizardStep label={"welcome0"}>
-                <div className=" flex  flex-col items-center justify-center space-y-6">
-                  <form
-                    className=" flex w-4/12  flex-col  items-center space-y-2 "
-                    onSubmit={handleTextSubmit}
-                  >
-                    <label>Hi - {currentUser.discordName}.</label>
-
-                    <label>Tell me about your opportunity.👀</label>
+                <div className="flex h-full items-center justify-center">
+                  <form className="w-4/12" onSubmit={handleTextSubmit}>
+                    <p className="mb-4 text-center">
+                      Hi - {currentUser.discordName}.<br />
+                      Tell me about your opportunity. 👀
+                    </p>
 
                     <TextArea
                       value={pastedText}
                       onChange={handlePastedTextChange}
                       placeholder="Copy/paste your job description here."
-                      className="pb-20 pl-4 pt-32 text-sm"
+                      className="mb-4 pb-20 pl-4 pt-32 text-sm"
                     />
 
                     <Button
                       loading={scraping}
                       variant="secondary"
                       type="submit"
+                      className="mx-auto"
                     >
                       Submit Your Description
                     </Button>
