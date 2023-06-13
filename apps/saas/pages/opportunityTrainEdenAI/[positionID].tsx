@@ -740,7 +740,11 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           </svg>
         </p>
       )}
-      {report && <div className="whitespace-pre-wrap">{report}</div>}
+      {report && (
+        <div className="whitespace-pre-wrap">
+          {convertTextCategoriesToHTML(report)}
+        </div>
+      )}
     </div>
   );
 };
@@ -1028,3 +1032,61 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     </div>
   );
 };
+
+function convertTextCategoriesToHTML(text: string): JSX.Element {
+  interface Category {
+    name: string;
+    bullets: string[];
+  }
+  const categories: Category[] = [];
+
+  // Split the text into lines
+  const lines = text.split("\n");
+
+  let currentCategory: Category | null = null;
+
+  // Process each line
+  lines.forEach((line) => {
+    // Remove leading/trailing white spaces and colons
+    const trimmedLine = line.trim();
+
+    // Check if it's a category line
+    if (trimmedLine.startsWith("Category")) {
+      const categoryName = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+
+      currentCategory = { name: categoryName, bullets: [] };
+      categories.push(currentCategory);
+    }
+
+    // Check if it's a bullet point line
+    if (trimmedLine.startsWith("•")) {
+      if (currentCategory) {
+        const bulletText = trimmedLine
+          .replace("•", "")
+          .substring(trimmedLine.indexOf(":") + 1)
+          .trim();
+
+        currentCategory.bullets.push(bulletText);
+      }
+    }
+  });
+
+  // Render the elements
+  const elements = categories.map((category, index) => (
+    <div key={index} className="mb-4">
+      <h3 className="text-xl font-medium">{category.name}</h3>
+      <ul>
+        {category.bullets.map((bullet: string, bulletIndex: number) => (
+          <li className="list-disc" key={bulletIndex}>
+            {bullet}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ));
+
+  // Render the elements inside a div
+  return <div>{elements}</div>;
+}
