@@ -7,7 +7,7 @@ import {
   Button,
   Card,
   ChatMessage,
-  CountdownTimer,
+  // CountdownTimer,
   InterviewEdenAI,
   Modal,
   ProgressBarGeneric,
@@ -77,7 +77,7 @@ const HomePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
   // const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
+  // const [progress, setProgress] = useState<number>(0);
   // const [titleRole, setTitleRole] = useState(null);
   // const [topSkills, setTopSkills] = useState([]);
 
@@ -100,23 +100,23 @@ const HomePage: NextPageWithLayout = () => {
     setInterviewEnded(true);
   };
 
-  const handleProgress = (_step: any) => {
-    switch (_step) {
-      case 1:
-        setProgress(25);
-        break;
-      case 2:
-        setProgress(50);
-        break;
-      case 3:
-        setProgress(75);
-        break;
-      case 4:
-        setProgress(100);
-        break;
-      default:
-    }
-  };
+  // const handleProgress = (_step: any) => {
+  //   switch (_step) {
+  //     case 1:
+  //       setProgress(25);
+  //       break;
+  //     case 2:
+  //       setProgress(50);
+  //       break;
+  //     case 3:
+  //       setProgress(75);
+  //       break;
+  //     case 4:
+  //       setProgress(100);
+  //       break;
+  //     default:
+  //   }
+  // };
 
   // const [webpageLink, setWebpageLink] = useState("");
   const [pastedText, setPastedText] = useState("");
@@ -286,12 +286,16 @@ const HomePage: NextPageWithLayout = () => {
         shadow
       >
         {currentUser && (
-          <div className="h-full w-full p-8">
-            <div className="absolute left-0 top-0 w-full">
+          <div className="h-full w-full px-8">
+            {/* <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
-            </div>
-            <Wizard canPrev={false} onStepChange={handleProgress}>
-              <WizardStep label={"welcome0"}>
+            </div> */}
+            <Wizard
+              showStepsHeader
+              canPrev={false}
+              // onStepChange={handleProgress}
+            >
+              <WizardStep label={"Upload Description"}>
                 <div className="flex h-full items-center justify-center">
                   <form className="w-4/12" onSubmit={handleTextSubmit}>
                     <p className="mb-4 text-center">
@@ -356,7 +360,7 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-              <WizardStep label={"chat"}>
+              <WizardStep label={"Eden Convo"}>
                 <div className="mx-auto h-[70vh] max-w-lg">
                   <InterviewEdenAIContainer
                     handleEnd={handleInterviewEnd}
@@ -367,7 +371,7 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"profile"}>
+              <WizardStep label={"Eden Intake"}>
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">
                     Complete Checks & Balances List
@@ -382,7 +386,7 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"createQuestions"}>
+              <WizardStep label={"Edit Eden’s Suggestions"}>
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">
                     Eden&apos;s suggested interview questions
@@ -397,6 +401,8 @@ const HomePage: NextPageWithLayout = () => {
                   <CreateQuestions />
                 </div>
               </WizardStep>
+              <WizardStep label={"Final Details"}> </WizardStep>
+              <WizardStep label={"Share Interview Link"}> </WizardStep>
 
               {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
@@ -568,7 +574,7 @@ const InterviewEdenAIContainer = ({
   return (
     <div className="w-full">
       <div className="relative h-[68vh]">
-        <div className="absolute left-0 top-2 z-20 w-full">
+        <div className="flex justify-center">
           <ProgressBarGeneric
             color="accentColor"
             progress={
@@ -607,8 +613,8 @@ const InterviewEdenAIContainer = ({
             }}
           />
         }
+        {/* <CountdownTimer /> */}
       </div>
-      <CountdownTimer />
       {/* <div className="absolute right-0 top-32 pr-6">
         <span>
           progress{" "}
