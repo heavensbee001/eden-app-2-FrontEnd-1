@@ -93,7 +93,7 @@ export const ReportNotes: FC<Props> = ({
           </div>
         </div>
       )}
-      <div className="space-y-4 rounded-lg p-4 py-24">
+      <div className="space-y-4 rounded-lg p-4 py-36">
         {/* Render each category */}
 
         {Object.entries(meetingNotesData).map(([categoryName, items]) => (
@@ -106,6 +106,43 @@ export const ReportNotes: FC<Props> = ({
                 const score = item.score || 0;
                 const hasPassed = score >= 5;
 
+                let result, color, symbol;
+
+                // if (score >= 8) {
+                //   result = "Excellent";
+                //   color = "text-blue-600";
+                //   symbol = "\u2B50";
+                // } else if (score >= 4) {
+                //   result = "Pass";
+                //   color = "text-green-600";
+                //   symbol = "\u2714";
+                // } else if (score >= 1) {
+                //   result = "Neutral";
+                //   color = "text-yellow-400";
+                //   symbol = "";
+                // } else {
+                //   result = "Fail";
+                //   color = "text-red-600";
+                //   symbol = "\u2718";
+                // }
+                if (score >= 8) {
+                  result = "";
+                  color = "text-blue-600";
+                  symbol = "🤩";
+                } else if (score >= 4) {
+                  result = "";
+                  color = "text-green-600";
+                  symbol = "\u2714";
+                } else if (score >= 1) {
+                  result = "";
+                  color = "text-yellow-400";
+                  symbol = "😐";
+                } else {
+                  result = "    ━";
+                  color = "text-gray-600";
+                  symbol = "";
+                }
+
                 return (
                   // eslint-disable-next-line react/jsx-key
                   <PopoverScoreReason
@@ -114,7 +151,7 @@ export const ReportNotes: FC<Props> = ({
                       reason: item.reason,
                     }}
                   >
-                    <li
+                    {/* <li
                       key={item.IDb}
                       className="flex cursor-pointer items-center justify-between py-2 hover:bg-gray-200"
                       title={
@@ -130,11 +167,33 @@ export const ReportNotes: FC<Props> = ({
                         {item.title.trim().split(" ").slice(0, 25).join(" ") +
                           (item.title.split(" ").length > 25 ? "..." : "")}
                       </span>
-                      {hasPassed ? (
+                      <span className={color}>
+                        {symbol} {result}
+                      </span> */}
+
+                    {/* {hasPassed ? (
                         <span className="text-green-500">&#x2714;</span>
                       ) : (
                         <span className="text-red-500">&#x2718;</span>
-                      )}
+                      )} */}
+                    <li
+                      key={item.IDb}
+                      className="flex cursor-pointer items-center py-2 hover:bg-gray-200"
+                      // title={
+                      //   item.title.trim().split(" ").slice(0, 25).join(" ") +
+                      //   (item.title.split(" ").length > 25 ? "..." : "")
+                      // }
+                    >
+                      <span
+                        className={color}
+                        style={{ marginRight: "1.2rem", fontSize: "1.4rem" }}
+                      >
+                        {symbol} {result}
+                      </span>
+                      <span className="ml-2">
+                        {item.title.trim().split(" ").slice(0, 25).join(" ") +
+                          (item.title.split(" ").length > 25 ? "..." : "")}
+                      </span>
                     </li>
                   </PopoverScoreReason>
                 );
