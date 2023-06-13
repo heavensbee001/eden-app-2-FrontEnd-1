@@ -5,6 +5,7 @@ export const FIND_TALENT_LIST = gql`
     findUserTalentListPosition(fields: $fields) {
       _id
       name
+      positionID
       talent {
         user {
           _id

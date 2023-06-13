@@ -138,6 +138,8 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
+      console.log("FIND_POSITION_LIGHT ", { data });
+
       const talentListsNames: TalentListType[] =
         data.findPosition.talentList.map((list: TalentListType) => list);
 
@@ -145,10 +147,10 @@ const PositionCRM: NextPageWithLayout = () => {
 
       setTalentListsAvailables(talentListsNames);
 
-      console.log(
-        "data.findPosition.candidates = ",
-        data.findPosition.candidates
-      );
+      // console.log(
+      //   "data.findPosition.candidates = ",
+      //   data.findPosition.candidates
+      // );
 
       setCandidates(data.findPosition.candidates);
 
@@ -177,7 +179,7 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  console.log("candidatesFromTalentList = 2", candidatesFromTalentList);
+  // console.log("candidatesFromTalentList = 2", candidatesFromTalentList);
 
   const {} = useQuery(FIND_TALENT_LIST, {
     variables: {
@@ -188,6 +190,8 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(talentListID),
     ssr: false,
     onCompleted: (data: any) => {
+      console.log("find talent list data = ", data);
+
       // setTalentListsAvailables(data.findUserTalentListPosition);
       setTalentListToShow(data.findUserTalentListPosition);
     },
@@ -212,7 +216,7 @@ const PositionCRM: NextPageWithLayout = () => {
     console.log("user 2202 = ", user);
   };
 
-  console.log("selectedUserScoreLetter = 020 ", selectedUserScoreLetter);
+  // console.log("selectedUserScoreLetter = 020 ", selectedUserScoreLetter);
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
 
@@ -240,6 +244,8 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
 
     onCompleted: (data) => {
+      console.log("match nodes memmbers ai4 data = ", data);
+
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
       // console.log(
@@ -666,11 +672,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleShareTalentListButton = async () => {
     const url =
-      window.location.origin +
-      "/dashboard/" +
-      positionID +
-      "/" +
-      talentListSelected?._id!;
+      window.location.origin + "/talentlist/" + talentListSelected?._id!;
 
     navigator.clipboard.writeText(url);
     toast.success("Link copied to clipboard!");
@@ -969,7 +971,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 ? ListModeEnum.creation
                 : editTalentListMode
                 ? ListModeEnum.edit
-                : ListModeEnum.list
+                : ListModeEnum.selectable
             }
             selectedIds={newTalentListCandidatesIds}
             handleChkSelection={handleCandidateCheckboxSelection}
