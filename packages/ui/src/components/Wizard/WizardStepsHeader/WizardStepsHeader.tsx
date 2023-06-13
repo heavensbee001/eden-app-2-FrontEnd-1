@@ -42,7 +42,7 @@ export const WizardStepsHeader = ({
               if (currentStep != index) setStep(index);
             }}
           >
-            <span className="whitespace-nowrap">{step}</span>
+            <span className="whitespace-nowrap text-sm">{step}</span>
           </div>
           {index < steps.length - 1 && (
             <div className="h-0 w-[15px] border-b-2 border-slate-500"></div>

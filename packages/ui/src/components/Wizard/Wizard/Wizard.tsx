@@ -115,7 +115,6 @@ export const Wizard = ({
           onClick={() => {
             setStep(step + 1);
           }}
-          // disabled={isNextDisabled()}
         >
           Next
         </Button>
