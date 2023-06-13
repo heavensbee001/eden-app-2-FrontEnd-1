@@ -291,21 +291,6 @@ const HomePage: NextPageWithLayout = () => {
               <ProgressBarGeneric progress={progress} />
             </div>
             <Wizard canPrev={false} onStepChange={handleProgress}>
-              <WizardStep label={"createQuestions"}>
-                <div className="mx-auto h-full max-w-lg">
-                  <h2 className="mb-4 text-xl font-medium">
-                    Eden&apos;s suggested interview questions
-                  </h2>
-                  <p className="mb-8 text-sm leading-tight text-gray-500">
-                    Here&apos;s a list of all the questions Eden will ask to
-                    understand the candidate. These questions might get adapted
-                    in real time based on the information that the candidate
-                    already gives to ensure getting the most out of the
-                    conversation.
-                  </p>
-                  <CreateQuestions />
-                </div>
-              </WizardStep>
               <WizardStep label={"welcome0"}>
                 <div className="flex h-full items-center justify-center">
                   <form className="w-4/12" onSubmit={handleTextSubmit}>
