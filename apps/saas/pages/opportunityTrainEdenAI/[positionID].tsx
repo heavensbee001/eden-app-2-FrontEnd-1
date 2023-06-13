@@ -316,24 +316,24 @@ const HomePage: NextPageWithLayout = () => {
                       Submit Your Description
                     </Button>
                   </form>
+                  {/* {report && (
+                      <div className="whitespace-pre-wrap">{report}</div>
+                    )} */}
                   <div>
-                    {/* {report && (
-                    <div className="whitespace-pre-wrap">{report}</div>
-                  )} */}
-                    {/* {report && ( */}
-                    <p className="text-gray-500">
-                      Job description was processed successfully.{" "}
-                      <HiBadgeCheck
-                        className="inline-block"
-                        size={24}
-                        color="#40f837"
-                      />
-                      <br />
-                      Click Next to continue.
-                    </p>
+                    {report && (
+                      <p className="text-gray-500">
+                        Job description was processed successfully.{" "}
+                        <HiBadgeCheck
+                          className="inline-block"
+                          size={24}
+                          color="#40f837"
+                        />
+                        <br />
+                        Click Next to continue.
+                      </p>
+                    )}
+                    {error && <div className="text-red-500">{error}</div>}
                   </div>
-                  {/* )} */}
-                  {error && <div className="text-red-500">{error}</div>}
                   <Modal open={scraping} closeOnEsc={false}>
                     <div className="px-20 py-10 text-center">
                       <Image
