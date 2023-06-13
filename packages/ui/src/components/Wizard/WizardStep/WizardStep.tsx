@@ -12,5 +12,5 @@ export const WizardStep = ({
   // eslint-disable-next-line no-unused-vars
   nextDisabled = false,
 }: IWizardStepProps) => {
-  return <section className="h-full">{children}</section>;
+  return <section className="h-full overflow-y-scroll">{children}</section>;
 };
