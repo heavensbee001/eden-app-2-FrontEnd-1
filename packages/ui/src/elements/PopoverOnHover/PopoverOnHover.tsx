@@ -1,50 +1,32 @@
 import { Float } from "@headlessui-float/react";
 import { FC, useRef, useState } from "react";
 
-function useHover(delay = 150) {
+function useHover(delay = 500) {
   const [show, setShow] = useState(false);
   const timer = useRef<number | null>(null);
 
-  function open() {
+  function handleMouseEnter() {
     if (timer.current !== null) {
       clearTimeout(timer.current);
       timer.current = null;
     }
-    setShow(true);
-  }
 
-  function close() {
-    setShow(false);
-  }
-
-  function delayClose() {
     timer.current = setTimeout(() => {
-      setShow(false);
+      setShow(true);
     }, delay) as any;
   }
 
-  return { show, setShow, timer, open, close, delayClose };
-}
-// Ref: https://headlessui-float.vercel.app/react/floatingui-options.html#placement
+  function handleMouseLeave() {
+    if (timer.current !== null) {
+      clearTimeout(timer.current);
+      timer.current = null;
+    }
 
-type PopoverOnHoverProps = {
-  children: React.ReactNode;
-  Content: () => JSX.Element;
-  size?: "sm" | "md" | "lg";
-  ubication?:
-    | "top"
-    | "top-start"
-    | "top-end"
-    | "right"
-    | "right-start"
-    | "right-end"
-    | "bottom"
-    | "bottom-start"
-    | "bottom-end"
-    | "left"
-    | "left-start"
-    | "left-end";
-};
+    setShow(false);
+  }
+
+  return { show, handleMouseEnter, handleMouseLeave };
+}
 
 export const PopoverOnHover: FC<PopoverOnHoverProps> = ({
   children,
@@ -52,11 +34,15 @@ export const PopoverOnHover: FC<PopoverOnHoverProps> = ({
   size,
   ubication = "top",
 }) => {
-  const { show, open, delayClose } = useHover();
+  const { show, handleMouseEnter, handleMouseLeave } = useHover();
 
   return (
     <Float show={show} placement={ubication} offset={15} arrow={5}>
-      <div className={``} onMouseEnter={open} onMouseLeave={delayClose}>
+      <div
+        className={``}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {children}
       </div>
 
@@ -70,8 +56,8 @@ export const PopoverOnHover: FC<PopoverOnHoverProps> = ({
               : "80"
             : "[calc(100%+1rem)]"
         } rounded-md border border-gray-200 bg-white shadow-lg`}
-        onMouseEnter={open}
-        onMouseLeave={delayClose}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <Float.Arrow className="absolute h-5 w-5 rotate-45 bg-white" />
 
