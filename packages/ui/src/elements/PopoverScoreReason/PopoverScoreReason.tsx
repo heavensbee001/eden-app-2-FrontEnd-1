@@ -2,7 +2,7 @@ import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import { PopoverOnHover, TextHeading2 } from "@eden/package-ui";
 import { FC } from "react";
 
-type PopoverScoreReasonProps = {
+export type PopoverScoreReasonProps = {
   children: React.ReactNode;
   question: SummaryQuestionType;
   size?: "sm" | "md" | "lg";
