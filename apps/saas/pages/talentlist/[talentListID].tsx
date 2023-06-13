@@ -5,7 +5,7 @@ import {
   FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
 } from "@eden/package-graphql";
-import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
+import { CandidateType } from "@eden/package-graphql/generated";
 import {
   CandidateInfo,
   CandidatesTableList,
@@ -19,12 +19,6 @@ import { NextPageWithLayout } from "../_app";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
-
-type Question = {
-  _id: string;
-  content: string;
-  bestAnswer: string;
-};
 
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
@@ -68,7 +62,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
   const [newTalentListName, setNewTalentListName] = useState<string>("");
 
   const {
-    data: findPositionData,
+    // data: findPositionData,
     loading: findPositionIsLoading,
     // error: findPositionError,
   } = useQuery(FIND_POSITION_LIGHT, {
@@ -80,9 +74,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
-      console.log({ posdata: data });
-      const talentListsNames: TalentListType[] =
-        data.findPosition.talentList.map((list: TalentListType) => list);
+      console.log("FIND_POSITION_LIGHT ", { data });
 
       setCandidates(data.findPosition.candidates);
 
@@ -105,8 +97,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     skip: !Boolean(talentListID),
     ssr: false,
     onCompleted: (data: any) => {
-      console.log({ data });
-
+      console.log("find talent list data = ", data);
       setPositionID(data.findUserTalentListPosition.positionID);
     },
   });
@@ -143,6 +134,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
 
     onCompleted: (data) => {
+      console.log("match nodes memmbers ai4 data = ", data);
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
       // console.log(
@@ -302,6 +294,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
           <CandidatesTableList
             candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}
+            setCandidatesList={setCandidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
             listMode={ListModeEnum.list}
