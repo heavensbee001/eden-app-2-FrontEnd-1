@@ -473,18 +473,18 @@ export const InterviewEdenAI = ({
 
   return (
     <>
-      <div className="flex flex-col items-center p-4">
-        {/* <div className="mb-4 text-4xl font-bold text-gray-800">
+      {/* <div className="mb-4 text-4xl font-bold text-gray-800">
           {formatTime(elapsedTime)}
         </div> */}
-        {elapsedTime > 15000 && (
+      {elapsedTime > 15000 && (
+        <div className="flex flex-col items-center p-4">
           <div className="rounded-md bg-pink-400 p-2">
             <h3 className="text-center font-bold text-white">
               EdenAI is sleeping ➡️ Say hi Again
             </h3>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <ChatSimple
         chatN={chatN}
