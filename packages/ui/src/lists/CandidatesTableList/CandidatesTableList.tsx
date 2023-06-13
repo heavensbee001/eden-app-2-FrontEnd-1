@@ -326,34 +326,45 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   ) : null}
                 </ColumnStyled>
 
-                {showMatchDetails &&
-                  candidate?.compareCandidatePosition
-                    ?.CV_ConvoToPositionAverageScore && (
-                    <ColumnStyled textColor="text-[#EDBFB7] text-center">
+                {showMatchDetails && (
+                  <ColumnStyled textColor="text-[#EDBFB7] text-center">
+                    {candidate?.compareCandidatePosition
+                      ?.CV_ConvoToPositionAverageScore ? (
                       <TextHeading2
                         className={` ${candidate?.letterAndColor?.requirements?.color} font-black`}
                       >
                         {`${candidate?.letterAndColor?.requirements?.letter}`}
                       </TextHeading2>
-                    </ColumnStyled>
-                  )}
-                {showMatchDetails && candidate.overallScore && (
+                    ) : (
+                      <div></div>
+                    )}
+                  </ColumnStyled>
+                )}
+                {showMatchDetails && (
                   <ColumnStyled textColor="text-[#86C8BC] text-center">
-                    <TextHeading2
-                      className={` ${candidate?.letterAndColor?.culture?.color} font-black`}
-                    >
-                      {`${candidate?.letterAndColor?.culture?.letter}`}
-                    </TextHeading2>
+                    {candidate.overallScore ? (
+                      <TextHeading2
+                        className={` ${candidate?.letterAndColor?.culture?.color} font-black`}
+                      >
+                        {`${candidate?.letterAndColor?.culture?.letter}`}
+                      </TextHeading2>
+                    ) : (
+                      <div></div>
+                    )}
                   </ColumnStyled>
                 )}
 
-                {showMatchDetails && candidate.skillMatch && (
-                  <ColumnStyled textColor="text-[#86C8BC] text-center">
-                    <TextHeading2
-                      className={` ${candidate?.letterAndColor?.skill?.color} font-black`}
-                    >
-                      {`${candidate?.letterAndColor?.skill?.letter}`}
-                    </TextHeading2>
+                {showMatchDetails && (
+                  <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
+                    {candidate.skillMatch ? (
+                      <TextHeading2
+                        className={` ${candidate?.letterAndColor?.skill?.color} font-black`}
+                      >
+                        {candidate?.letterAndColor?.skill?.letter}
+                      </TextHeading2>
+                    ) : (
+                      <div></div>
+                    )}
                   </ColumnStyled>
                 )}
 
