@@ -1,7 +1,6 @@
 import { useQuery } from "@apollo/client";
 import {
   FIND_POSITION_LIGHT,
-  // FIND_POSITION_LIGHT,
   FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
 } from "@eden/package-graphql";
@@ -10,6 +9,7 @@ import {
   CandidateInfo,
   CandidatesTableList,
   ListModeEnum,
+  Question,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -58,7 +58,6 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     CandidateTypeSkillMatch[]
   >([]);
 
-  // eslint-disable-next-line no-unused-vars
   const [currentTalentList, setCurrentTalentList] = useState<TalentListType>();
 
   const {
@@ -74,11 +73,22 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
-      console.log("FIND_POSITION_LIGHT ", { data });
+      setCandidates(data.findPosition.candidates);
 
-      // setCandidates(data.findPosition.candidates);
+      setCandidatesFromTalentList(data.findPosition.candidates);
 
-      // setCandidatesFromTalentList(data.findPosition.candidates);
+      const questionPrep: Question[] = [];
+
+      data.findPosition.questionsToAsk.map((question: any) => {
+        if (question.question == null) {
+        } else {
+          questionPrep.push({
+            _id: question.question._id,
+            content: question.question.content,
+            bestAnswer: question.bestAnswer,
+          });
+        }
+      });
 
       const nodesID = data.findPosition?.nodes?.map((node: any) => {
         return node?.nodeData?._id;
@@ -97,7 +107,6 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     skip: !Boolean(talentListID),
     ssr: false,
     onCompleted: (data: any) => {
-      console.log("find talent list data = ", data);
       setPositionID(data.findUserTalentListPosition.positionID);
       setCandidates(data.findUserTalentListPosition.talent);
       setCurrentTalentList(data.findUserTalentListPosition);
@@ -138,7 +147,6 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     skip: candidatesFromTalentList.length === 0 || nodeIDsPosition.length === 0,
     ssr: false,
     onCompleted: (data) => {
-      console.log("match nodes memmbers ai4 data = ", { data });
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
       // -------------- Get the Candidates of the page ------------
