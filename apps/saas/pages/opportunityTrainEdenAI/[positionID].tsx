@@ -17,9 +17,12 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { HiBadgeCheck } from "react-icons/hi";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../_app";
@@ -71,6 +74,7 @@ const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { positionID } = router.query;
+  // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
   // const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
@@ -172,7 +176,6 @@ const HomePage: NextPageWithLayout = () => {
     setPastedText(e.target.value);
   };
 
-  // eslint-disable-next-line no-unused-vars
   // const handleLinkSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
   //   setScraping(true);
@@ -220,26 +223,37 @@ const HomePage: NextPageWithLayout = () => {
   //     // setReport(textResponse);
   //   } catch (error) {
   //     setError(
-  //       `An error occurred while fetching the LinkedIn profile: ${
-  //         (error as Error).message
-  //       }
+  //   `An error occurred while fetching the LinkedIn profile: ${
+  //     (error as Error).message
+  //   }
 
-  //       Please copy the text from the job post page manually and paste it in the textfield below`
-  //     );
+  //   Please copy the text from the job post page manually and paste it in the textfield below`
+  // );
   //   }
   // };
 
   const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setScraping(true);
-    // console.log("pastedText", pastedText);
+    if (pastedText !== "") {
+      try {
+        console.log("pastedText", pastedText);
 
-    websiteToMemoryCompany({
-      variables: {
-        fields: { message: pastedText, positionID: positionID },
-      },
-    });
-    setPastedText("");
+        websiteToMemoryCompany({
+          variables: {
+            fields: { message: pastedText, positionID: positionID },
+          },
+        });
+        setPastedText("");
+        setScraping(true);
+      } catch (error) {
+        setScraping(false);
+        setError(
+          ` Error:  ${(error as Error).message}
+  
+          Please try again`
+        );
+      }
+    }
   };
 
   // console.log(
@@ -272,57 +286,60 @@ const HomePage: NextPageWithLayout = () => {
         shadow
       >
         {currentUser && (
-          <div className="h-full w-full p-8">
+          <div className="mt-32 h-full w-full p-8">
             <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
             </div>
             <Wizard canPrev={false} onStepChange={handleProgress}>
               <WizardStep label={"welcome0"}>
-                <div className="flex flex-col items-center space-y-6">
+                <div className=" flex  flex-col items-center justify-center space-y-6">
                   <form
-                    className=" flex flex-col items-center  space-y-2"
-                    onSubmit={handleLinkSubmit}
-                  >
-                    <label>Extract Text From Page</label>
-                    <input
-                      className="w-96 border-2 border-black pl-1"
-                      onChange={handleWebpageLinkChange}
-                      placeholder="https://www.example.com"
-                    />
-                    <Button
-                      variant="primary"
-                      className="w-fit"
-                      type="submit"
-                      loading={scraping}
-                    >
-                      Submit Link
-                    </Button>
-                    {report && (
-                      <div className="whitespace-pre-wrap">{report}</div>
-                    )}
-                    {error && <div className="text-red-500">{error}</div>}
-                  </form>
-                  <form
-                    className="flex w-3/12 flex-col items-center  space-y-2"
+                    className=" flex w-4/12  flex-col  items-center space-y-2 "
                     onSubmit={handleTextSubmit}
                   >
-                    <label>Paste the text from the Position Page Here</label>
+                    <label>Hi - {currentUser.discordName}.</label>
+
+                    <label>Tell me about your opportunity.👀</label>
 
                     <TextArea
                       value={pastedText}
-                      rows={15}
                       onChange={handlePastedTextChange}
+                      placeholder="Copy/paste your job description here."
+                      className="pb-20 pl-4 pt-32 text-sm"
                     />
-                    <Button variant="primary" type="submit">
-                      Submit Text
+
+                    <Button
+                      loading={scraping}
+                      variant="secondary"
+                      type="submit"
+                    >
+                      Submit Your Description
                     </Button>
                   </form>
+                  <div>
+                    {/* {report && (
+                    <div className="whitespace-pre-wrap">{report}</div>
+                  )} */}
+                    {/* {report && ( */}
+                    <p className="text-gray-500">
+                      Job description was processed successfully.{" "}
+                      <HiBadgeCheck
+                        className="inline-block"
+                        size={24}
+                        color="#40f837"
+                      />
+                      <br />
+                      Click Next to continue.
+                    </p>
+                  </div>
+                  {/* )} */}
+                  {error && <div className="text-red-500">{error}</div>}
                   <Modal open={scraping} closeOnEsc={false}>
                     <div className="px-20 py-10 text-center">
                       <Image
                         width={80}
                         height={80}
-                        className="mx-auto"
+                        className="mx-auto mb-4"
                         src="/eden-logo.png"
                         alt=""
                       />
@@ -525,6 +542,7 @@ const InterviewEdenAIContainer = ({
 
   const [experienceTypeID] = useState<string>("");
 
+  // eslint-disable-next-line no-unused-vars
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
   // console.log("chatN = ", chatN);
@@ -604,9 +622,6 @@ const InterviewEdenAIContainer = ({
     </div>
   );
 };
-
-import Head from "next/head";
-import { useForm } from "react-hook-form";
 
 export const POSITION_TEXT_CONVO_TO_REPORT = gql`
   mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
@@ -846,6 +861,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     }
   );
 
+  // eslint-disable-next-line no-unused-vars
   const handleClick = () => {
     console.log("change =");
 
@@ -990,7 +1006,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
                   <div className="mb-4 text-lg">
                     <input
                       name="question"
-                      defaultalue={question.question.toString()}
+                      defaultValue={question.question.toString()}
                       onChange={(event) =>
                         handleQuestionChange(event, index, category)
                       }
