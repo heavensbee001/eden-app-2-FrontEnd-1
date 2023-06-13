@@ -1,6 +1,25 @@
 import { Float } from "@headlessui-float/react";
 import { FC, useRef, useState } from "react";
 
+type PopoverOnHoverProps = {
+  children: React.ReactNode;
+  Content: () => JSX.Element;
+  size?: "sm" | "md" | "lg";
+  ubication?:
+    | "top"
+    | "top-start"
+    | "top-end"
+    | "right"
+    | "right-start"
+    | "right-end"
+    | "bottom"
+    | "bottom-start"
+    | "bottom-end"
+    | "left"
+    | "left-start"
+    | "left-end";
+};
+
 function useHover(delay = 500) {
   const [show, setShow] = useState(false);
   const timer = useRef<number | null>(null);
