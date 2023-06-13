@@ -138,13 +138,9 @@ const TalentListPublicPage: NextPageWithLayout = () => {
     skip: candidatesFromTalentList.length === 0 || nodeIDsPosition.length === 0,
     ssr: false,
     onCompleted: (data) => {
-      console.log("match nodes memmbers ai4 data = ", data);
+      console.log("match nodes memmbers ai4 data = ", { data });
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
-      // console.log(
-      //   "data.matchNodesToMembers_AI4 = ",
-      //   data.matchNodesToMembers_AI4
-      // );
       // -------------- Get the Candidates of the page ------------
       const memberScoreObj: { [key: string]: number } = {};
 
@@ -152,6 +148,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
         const keyN = memberT?.member?._id;
 
         if (memberScoreObj[keyN] == undefined) {
+          console.log(keyN + " was undefined");
           memberScoreObj[keyN] = memberT?.matchPercentage?.totalPercentage;
         }
       });
@@ -162,6 +159,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
         const userID = candidatesFromTalentList[i]?.user?._id;
 
         if (userID && memberScoreObj[userID]) {
+          console.log({ userID, mem: memberScoreObj[userID] });
           candidatesNew.push({
             ...candidatesFromTalentList[i],
             skillMatch: memberScoreObj[userID],
