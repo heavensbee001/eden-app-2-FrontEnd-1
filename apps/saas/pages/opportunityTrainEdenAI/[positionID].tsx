@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   ChatMessage,
+  FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
   Modal,
@@ -415,7 +416,14 @@ const HomePage: NextPageWithLayout = () => {
                   <CreateQuestions />
                 </div>
               </WizardStep>
-              <WizardStep label={"Final Details"}> </WizardStep>
+              <WizardStep label={"Final Details"}>
+                <div className="mx-auto max-w-3xl">
+                  <h2 className="mb-4 text-xl font-medium">
+                    Final Important Details
+                  </h2>
+                  <FinalFormContainer />
+                </div>
+              </WizardStep>
               <WizardStep label={"Share Interview Link"}>
                 <div className="flex h-full flex-col items-center justify-center pb-28">
                   <div className="max-w-lg">
@@ -1025,7 +1033,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     }
   };
 
-  console.log("questions 1001= ", questions);
+  // console.log("questions 1001= ", questions);
 
   return (
     <div className="w-full">
@@ -1171,3 +1179,66 @@ function convertTextCategoriesToHTML(text: string): JSX.Element {
   // Render the elements inside a div
   return <div>{elements}</div>;
 }
+
+interface IFinalFormContainerProps {}
+
+const FinalFormContainer = ({}: IFinalFormContainerProps) => {
+  return (
+    <form className="grid grid-cols-2 gap-16">
+      <div className="col-span-1">
+        <div className="mb-2 flex items-center justify-between">
+          <label>Targetted Start Date</label>
+          <input
+            type="text"
+            name="targettedStartDate"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+          />
+        </div>
+        <div className="mb-2 flex items-center justify-between">
+          <label>Visa Requirements</label>
+          <input
+            type="text"
+            name="visaRequirements"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+          />
+        </div>
+        <div className="mb-2 flex items-center justify-between">
+          <label>Office Locations</label>
+          <input
+            type="text"
+            name="officeLocations"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+          />
+        </div>
+        <div className="mb-2 flex items-center justify-between">
+          <label>Office Policy</label>
+          <input
+            type="text"
+            name="officePolicy"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+          />
+        </div>
+        <div className="mb-2 flex items-center justify-between">
+          <label>Contract Type</label>
+          <input
+            type="text"
+            name="contractType"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+          />
+        </div>
+        <div className="mb-2 flex items-center justify-between">
+          <label>Contract Duration</label>
+          <input
+            type="text"
+            name="contractDuration"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+          />
+        </div>
+      </div>
+      <div className="col-span-1">
+        <label>Key Company Links</label>
+        <FillSocialLinks />
+      </div>
+    </form>
+  );
+};
