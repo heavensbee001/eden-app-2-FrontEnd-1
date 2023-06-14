@@ -262,6 +262,20 @@ const HomePage: NextPageWithLayout = () => {
   // );
 
   // console.log("progress = ", progress);
+
+  const [notificationOpen, setNotificationOpen] = useState(false);
+
+  const handleCopyLink = (positionID: string) => {
+    // const url = window.location.href;
+    const url = window.location.origin + "/interview/" + positionID;
+
+    navigator.clipboard.writeText(url);
+    setNotificationOpen(true);
+    setTimeout(() => {
+      setNotificationOpen(false);
+    }, 3000);
+  };
+
   return (
     <>
       <Head>
@@ -402,7 +416,53 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
               <WizardStep label={"Final Details"}> </WizardStep>
-              <WizardStep label={"Share Interview Link"}> </WizardStep>
+              <WizardStep label={"Share Interview Link"}>
+                <div className="flex h-full flex-col items-center justify-center pb-28">
+                  <div className="max-w-lg">
+                    <h2 className="mb-4 text-center text-xl font-medium">
+                      Let&apos;s get the interviews rolling! 🎉
+                    </h2>
+                    <p className="mb-8 text-center">
+                      Copy & share this link wherever you want candidates to
+                      kickoff their first interview.
+                    </p>
+                  </div>
+                  <div className="flex w-2/3 justify-center">
+                    <div className="mr-2 flex w-full items-center overflow-x-scroll rounded-md border border-gray-400 bg-gray-200 px-2 text-sm text-gray-500">
+                      {window.location.origin + "/interview/" + positionID}
+                    </div>
+                    <Button
+                      size="md"
+                      className="bg-soilBlue border-soilBlue scrollbar-hide relative flex h-10 items-center whitespace-nowrap !text-sm text-white"
+                      variant="default"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCopyLink(positionID as string);
+                      }}
+                    >
+                      <div className="flex w-full items-center justify-center">
+                        {!notificationOpen ? (
+                          <>
+                            <HiOutlineLink className="mr-1" />
+                            <span>interview link</span>
+                          </>
+                        ) : (
+                          <span className="text-sm">Link copied!</span>
+                        )}
+                      </div>
+                    </Button>
+                  </div>
+                </div>
+                <Button
+                  className="absolute bottom-8 right-8 z-30 mx-auto"
+                  variant={"primary"}
+                  onClick={() => {
+                    router.push(`/dashboard/${positionID}`);
+                  }}
+                >
+                  Continue to Dashboard
+                </Button>
+              </WizardStep>
 
               {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
@@ -423,6 +483,7 @@ export default HomePage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
+import { HiOutlineLink } from "react-icons/hi2";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
