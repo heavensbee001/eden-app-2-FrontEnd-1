@@ -1,7 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
-import { Members, SummaryQuestionType } from "@eden/package-graphql/generated";
+import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   BackgroundMatchChart,
+  CandidateTypeSkillMatch,
   Card,
   PopoverScoreReason,
   TeamAttributeChart,
@@ -55,9 +56,8 @@ const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
 ChartJS.register(ArcElement, Legend, Tooltip);
 
 type Props = {
-  member?: Members;
+  member?: CandidateTypeSkillMatch;
   summaryQuestions?: SummaryQuestionType[];
-  selectedUserScoreLetter?: any;
 };
 
 type BarChartQuestions = {
@@ -71,11 +71,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const MatchTab: FC<Props> = ({
-  member,
-  summaryQuestions,
-  selectedUserScoreLetter,
-}) => {
+export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
@@ -106,10 +102,10 @@ export const MatchTab: FC<Props> = ({
     {
       variables: {
         fields: {
-          memberID: member?._id,
+          memberID: member?.user?._id,
         },
       },
-      skip: member?._id == undefined,
+      skip: member?.user?._id == undefined,
       onCompleted: (data) => {
         const labels = [];
         const dataPT = [];
@@ -177,10 +173,10 @@ export const MatchTab: FC<Props> = ({
     {
       variables: {
         fields: {
-          memberID: member?._id,
+          memberID: member?.user?._id,
         },
       },
-      skip: member?._id == undefined,
+      skip: member?.user?._id == undefined,
       onCompleted: (data) => {
         interface attributesType {
           [key: string]: any;
@@ -225,8 +221,10 @@ export const MatchTab: FC<Props> = ({
           {
             memberInfo: {
               discordName:
-                member?.discordName + " - " + averageScore.toString() + "%" ??
-                "",
+                member?.user?.discordName +
+                  " - " +
+                  averageScore.toString() +
+                  "%" ?? "",
               attributes: attributesT,
             },
           },
@@ -235,7 +233,7 @@ export const MatchTab: FC<Props> = ({
         console.log("CHANGE Radio Chart", [
           {
             memberInfo: {
-              discordName: member?.discordName ?? "",
+              discordName: member?.user?.discordName ?? "",
               attributes: attributesT,
             },
           },
@@ -287,14 +285,14 @@ export const MatchTab: FC<Props> = ({
 
   return (
     <div className="relative pb-4 pt-4">
-      {selectedUserScoreLetter?.culture?.letter && (
+      {member?.letterAndColor?.culture?.letter && (
         <div className="relative">
           <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
             <p className="text-lg font-bold">Stats Score:</p>
             <p
-              className={` ${selectedUserScoreLetter?.culture?.color} text-4xl font-black`}
+              className={`${member?.letterAndColor?.culture?.color} text-4xl font-black`}
             >
-              {`${selectedUserScoreLetter?.culture?.letter}`}
+              {`${member?.letterAndColor?.culture?.letter}`}
             </p>
           </div>
         </div>
@@ -361,7 +359,7 @@ export const MatchTab: FC<Props> = ({
           {dataBarChart.length > 0 ? (
             <div className="h-[300px]">
               <BackgroundMatchChart
-                memberName={member?.discordName ?? ""}
+                memberName={member?.user?.discordName ?? ""}
                 backgroundMatchData={dataBarChart}
               />
             </div>
@@ -522,7 +520,7 @@ export const MatchTab: FC<Props> = ({
                           src={
                             conversation.role == "assistant"
                               ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                              : member?.discordAvatar || ""
+                              : member?.user?.discordAvatar || ""
                           }
                           className="order-1 h-6 w-6 rounded-full"
                         />

@@ -12,6 +12,7 @@ import {
   ComponentPropsWithoutRef,
   FC,
   ReactNode,
+  use,
   useEffect,
   useState,
 } from "react";
@@ -45,25 +46,8 @@ type Grade = {
   color: string;
 };
 
-const getGrade = (percentage: number, mainColumn: boolean): Grade => {
-  let grade: Grade = { letter: "", color: "" };
-
-  if (percentage >= 85) {
-    grade = { letter: "A", color: "text-green-500" };
-  } else if (percentage >= 75) {
-    grade = { letter: "B", color: "text-green-200" };
-  } else if (percentage >= 65) {
-    if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
-    else grade = { letter: "C", color: "text-black" };
-  } else {
-    if (mainColumn) grade = { letter: "D", color: "text-red-300" };
-    else grade = { letter: "D", color: "text-black" };
-  }
-
-  return grade;
-};
-
-interface CandidateTypeSkillMatch extends CandidateType {
+// This can be refactored to util function and processed with useMemo inside the component
+export interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
   flagSkill?: boolean;
   totalMatchPerc?: number;
@@ -85,7 +69,6 @@ export enum ListModeEnum {
 type CandidatesTableListProps = {
   candidatesList: CandidateTypeSkillMatch[];
   // eslint-disable-next-line no-unused-vars
-  setCandidatesList: (candidates: CandidateTypeSkillMatch[]) => void;
   fetchIsLoading: boolean;
   // eslint-disable-next-line no-unused-vars
   setRowObjectData: (candidate: CandidateTypeSkillMatch) => void;
@@ -98,7 +81,6 @@ type CandidatesTableListProps = {
 
 export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   candidatesList,
-  setCandidatesList,
   fetchIsLoading,
   setRowObjectData,
   candidateIDRowSelected = null,
@@ -110,97 +92,6 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     setRowObjectData(candidate);
   };
   const [showMatchDetails, setShowMatchDetails] = useState(false);
-
-  useEffect(() => {
-    // console.log("candidatesList 00 0 = ", candidatesList);
-    if (
-      candidatesList.length > 0 &&
-      (candidatesList[0]?.totalMatchPerc === undefined ||
-        (candidatesList[0]?.flagSkill !== true &&
-          candidatesList[0]?.skillMatch !== undefined))
-    ) {
-      // calculate the average score of the percentages for each candidatesList and save it on setCandidatesList
-      const candidatesListWithSkillMatch = candidatesList.map((candidate) => {
-        let totalMatchPerc = 0;
-        let totalMatchPercCount = 0;
-
-        let letterAndColor = {};
-
-        let flagSkill = false;
-
-        console.log("candidate?.skillMatch", candidate?.skillMatch);
-
-        if (candidate?.skillMatch != undefined && candidate?.skillMatch > 0) {
-          totalMatchPerc += candidate.skillMatch;
-          totalMatchPercCount++;
-          flagSkill = true;
-
-          letterAndColor = {
-            ...letterAndColor,
-            skill: getGrade(candidate.skillMatch, false),
-          };
-        }
-
-        if (candidate?.overallScore) {
-          totalMatchPerc += candidate.overallScore;
-          totalMatchPercCount++;
-
-          letterAndColor = {
-            ...letterAndColor,
-            culture: getGrade(candidate.overallScore, false),
-          };
-        }
-
-        if (
-          candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore
-        ) {
-          totalMatchPerc +=
-            candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore;
-          totalMatchPercCount++;
-
-          letterAndColor = {
-            ...letterAndColor,
-            requirements: getGrade(
-              candidate?.compareCandidatePosition
-                ?.CV_ConvoToPositionAverageScore,
-              false
-            ),
-          };
-        }
-
-        totalMatchPerc = totalMatchPerc / totalMatchPercCount;
-
-        totalMatchPerc = parseInt(totalMatchPerc.toFixed(1));
-
-        letterAndColor = {
-          ...letterAndColor,
-          totalMatchPerc: getGrade(totalMatchPerc, true),
-        };
-
-        return {
-          ...candidate,
-          totalMatchPerc,
-          flagSkill: flagSkill,
-          letterAndColor,
-        };
-      });
-
-      // sort the candidatesList by the totalMatchPerc
-      const sortedCandidatesList = candidatesListWithSkillMatch.sort((a, b) => {
-        if (a.totalMatchPerc > b.totalMatchPerc) {
-          return -1;
-        }
-        if (a.totalMatchPerc < b.totalMatchPerc) {
-          return 1;
-        }
-        return 0;
-      });
-
-      // console.log("candidatesList = 23", sortedCandidatesList);
-
-      setCandidatesList(sortedCandidatesList);
-    }
-  }, [candidatesList]);
 
   // console.log("candidatesList 00 0 = ", candidatesList);
 
@@ -320,7 +211,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   {candidate.totalMatchPerc &&
                   candidate.letterAndColor?.totalMatchPerc ? (
                     <TextHeading2
-                      className={` ${candidate.letterAndColor.totalMatchPerc.color} font-black`}
+                      className={`${candidate.letterAndColor.totalMatchPerc.color} font-black`}
                     >
                       {`${candidate.letterAndColor.totalMatchPerc.letter}`}
                     </TextHeading2>
@@ -332,7 +223,15 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     {candidate?.compareCandidatePosition
                       ?.CV_ConvoToPositionAverageScore ? (
                       <TextHeading2
-                        className={` ${candidate?.letterAndColor?.requirements?.color} font-black`}
+                        className={classNames(
+                          candidate?.letterAndColor?.requirements?.letter ==
+                            "A" ||
+                            candidate?.letterAndColor?.requirements?.letter ==
+                              "B"
+                            ? candidate?.letterAndColor?.requirements?.color
+                            : "text-black",
+                          "font-black"
+                        )}
                       >
                         {`${candidate?.letterAndColor?.requirements?.letter}`}
                       </TextHeading2>
@@ -345,7 +244,13 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   <ColumnStyled textColor="text-[#86C8BC] text-center">
                     {candidate.overallScore ? (
                       <TextHeading2
-                        className={` ${candidate?.letterAndColor?.culture?.color} font-black`}
+                        className={classNames(
+                          candidate?.letterAndColor?.culture?.letter == "A" ||
+                            candidate?.letterAndColor?.culture?.letter == "B"
+                            ? candidate?.letterAndColor?.culture?.color
+                            : "text-black",
+                          "font-black"
+                        )}
                       >
                         {`${candidate?.letterAndColor?.culture?.letter}`}
                       </TextHeading2>
@@ -359,7 +264,13 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
                     {candidate.skillMatch ? (
                       <TextHeading2
-                        className={` ${candidate?.letterAndColor?.skill?.color} font-black`}
+                        className={classNames(
+                          candidate?.letterAndColor?.skill?.letter == "A" ||
+                            candidate?.letterAndColor?.skill?.letter == "B"
+                            ? candidate?.letterAndColor?.skill?.color
+                            : "text-black",
+                          "font-black"
+                        )}
                       >
                         {candidate?.letterAndColor?.skill?.letter}
                       </TextHeading2>

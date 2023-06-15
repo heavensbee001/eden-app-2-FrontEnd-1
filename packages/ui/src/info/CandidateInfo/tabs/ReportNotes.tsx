@@ -1,6 +1,6 @@
 // import { gql, useQuery } from "@apollo/client";
-import { Members } from "@eden/package-graphql/generated";
-import { PopoverScoreReason } from "@eden/package-ui";
+// import { Members } from "@eden/package-graphql/generated";
+import { CandidateTypeSkillMatch, PopoverScoreReason } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
 // const CANDIDATE_NOTES_EDENAI = gql`
@@ -13,9 +13,8 @@ import { FC, useEffect, useState } from "react";
 // `;
 
 interface Props {
-  member?: Members;
+  member?: CandidateTypeSkillMatch;
   candidate: any;
-  selectedUserScoreLetter?: any;
 }
 
 interface DatabaseItem {
@@ -30,10 +29,7 @@ interface DatabaseItem {
 
 type meetingNotesType = DatabaseItem[];
 
-export const ReportNotes: FC<Props> = ({
-  candidate,
-  selectedUserScoreLetter,
-}) => {
+export const ReportNotes: FC<Props> = ({ candidate, member }) => {
   const [meetingNotesData, setReportNotesData] = useState<{
     [key: string]: meetingNotesType;
   }>({});
@@ -81,14 +77,14 @@ export const ReportNotes: FC<Props> = ({
 
   return (
     <>
-      {selectedUserScoreLetter?.requirements?.letter && (
+      {member?.letterAndColor?.requirements?.letter && (
         <div className="relative">
           <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
             <p className="text-lg font-bold">Requirements Score:</p>
             <p
-              className={` ${selectedUserScoreLetter?.requirements?.color} text-4xl font-black`}
+              className={` ${member?.letterAndColor?.requirements?.color} text-4xl font-black`}
             >
-              {`${selectedUserScoreLetter?.requirements?.letter}`}
+              {`${member?.letterAndColor?.requirements?.letter}`}
             </p>
           </div>
         </div>
@@ -104,6 +100,7 @@ export const ReportNotes: FC<Props> = ({
 
               {items.map((item) => {
                 const score = item.score || 0;
+                // eslint-disable-next-line no-unused-vars
                 const hasPassed = score >= 5;
 
                 let result, color, symbol;
