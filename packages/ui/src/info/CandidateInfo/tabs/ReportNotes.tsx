@@ -100,8 +100,7 @@ export const ReportNotes: FC<Props> = ({ candidate, member }) => {
 
               {items.map((item) => {
                 const score = item.score || 0;
-                // eslint-disable-next-line no-unused-vars
-                const hasPassed = score >= 5;
+                // const hasPassed = score >= 5;
 
                 let result, color, symbol;
 
@@ -147,6 +146,7 @@ export const ReportNotes: FC<Props> = ({ candidate, member }) => {
                       score: item.score,
                       reason: item.reason,
                     }}
+                    ubication="top-start"
                   >
                     {/* <li
                       key={item.IDb}
@@ -175,7 +175,7 @@ export const ReportNotes: FC<Props> = ({ candidate, member }) => {
                       )} */}
                     <li
                       key={item.IDb}
-                      className="flex cursor-pointer items-center py-2 hover:bg-gray-200"
+                      className="w- hover: flex w-fit cursor-pointer items-center rounded-md px-4 py-2 transition-all duration-200 ease-out hover:scale-[102%]  hover:shadow-md hover:shadow-[rgba(116,250,109,0.4)]  "
                       // title={
                       //   item.title.trim().split(" ").slice(0, 25).join(" ") +
                       //   (item.title.split(" ").length > 25 ? "..." : "")
