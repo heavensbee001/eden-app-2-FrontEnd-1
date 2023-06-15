@@ -93,8 +93,6 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  const [selectedUserScoreLetter, setSelectedUserScoreLetter] = useState({});
-
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [trainModalOpen, setTrainModalOpen] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -147,14 +145,106 @@ const PositionCRM: NextPageWithLayout = () => {
 
       setTalentListsAvailables(talentListsNames);
 
-      // console.log(
-      //   "data.findPosition.candidates = ",
-      //   data.findPosition.candidates
-      // );
+      // console.log("candidatesList 00 0 = ", candidatesList);
+      if (
+        data.findPosition.candidates.length > 0 &&
+        (data.findPosition.candidates[0]?.totalMatchPerc === undefined ||
+          (data.findPosition.candidates[0]?.flagSkill !== true &&
+            data.findPosition.candidates[0]?.skillMatch !== undefined))
+      ) {
+        // calculate the average score of the percentages for each candidatesList and save it on setCandidatesList
+        const candidatesListWithSkillMatch = data.findPosition.candidates.map(
+          (candidate: any) => {
+            let totalMatchPerc = 0;
+            let totalMatchPercCount = 0;
 
-      setCandidates(data.findPosition.candidates);
+            let letterAndColor = {};
 
-      setCandidatesFromTalentList(data.findPosition.candidates);
+            let flagSkill = false;
+
+            console.log("candidate?.skillMatch", candidate?.skillMatch);
+            if (
+              candidate?.skillMatch != undefined &&
+              candidate?.skillMatch > 0
+            ) {
+              totalMatchPerc += candidate.skillMatch;
+              totalMatchPercCount++;
+              flagSkill = true;
+
+              letterAndColor = {
+                ...letterAndColor,
+                skill: getGrade(candidate.skillMatch, false),
+              };
+            }
+
+            if (candidate?.overallScore) {
+              totalMatchPerc += candidate.overallScore;
+              totalMatchPercCount++;
+
+              letterAndColor = {
+                ...letterAndColor,
+                culture: getGrade(candidate.overallScore, false),
+              };
+            }
+
+            if (
+              candidate?.compareCandidatePosition
+                ?.CV_ConvoToPositionAverageScore
+            ) {
+              totalMatchPerc +=
+                candidate?.compareCandidatePosition
+                  ?.CV_ConvoToPositionAverageScore;
+              totalMatchPercCount++;
+
+              letterAndColor = {
+                ...letterAndColor,
+                requirements: getGrade(
+                  candidate?.compareCandidatePosition
+                    ?.CV_ConvoToPositionAverageScore,
+                  false
+                ),
+              };
+            }
+
+            totalMatchPerc = totalMatchPerc / totalMatchPercCount;
+
+            totalMatchPerc = parseInt(totalMatchPerc.toFixed(1));
+
+            letterAndColor = {
+              ...letterAndColor,
+              totalMatchPerc: getGrade(totalMatchPerc, true),
+            };
+
+            return {
+              ...candidate,
+              totalMatchPerc,
+              flagSkill: flagSkill,
+              letterAndColor,
+            };
+          }
+        );
+
+        // sort the candidatesList by the totalMatchPerc
+        const sortedCandidatesList = candidatesListWithSkillMatch.sort(
+          (a: any, b: any) => {
+            if (a.totalMatchPerc > b.totalMatchPerc) {
+              return -1;
+            }
+            if (a.totalMatchPerc < b.totalMatchPerc) {
+              return 1;
+            }
+            return 0;
+          }
+        );
+
+        // console.log("candidatesList = 23", sortedCandidatesList);
+
+        // setCandidatesList(sortedCandidatesList);
+
+        setCandidates(sortedCandidatesList);
+
+        setCandidatesFromTalentList(sortedCandidatesList);
+      }
 
       const questionPrep: Question[] = [];
 
@@ -211,9 +301,28 @@ const PositionCRM: NextPageWithLayout = () => {
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
 
-    if (user.letterAndColor) setSelectedUserScoreLetter(user.letterAndColor);
+    // console.log("user 2202 = ", user);
+  };
 
-    console.log("user 2202 = ", user);
+  // eslint-disable-next-line no-unused-vars
+  const getGrade = (percentage: number, mainColumn: boolean): Grade => {
+    let grade: Grade = { letter: "", color: "" };
+
+    if (percentage >= 85) {
+      grade = { letter: "A", color: "text-green-500" };
+    } else if (percentage >= 75) {
+      grade = { letter: "B", color: "text-green-200" };
+    } else if (percentage >= 65) {
+      grade = { letter: "C", color: "text-orange-300" };
+      // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
+      // else grade = { letter: "C", color: "text-black" };
+    } else {
+      grade = { letter: "D", color: "text-red-300" };
+      // if (mainColumn) grade = { letter: "D", color: "text-red-300" };
+      // else grade = { letter: "D", color: "text-black" };
+    }
+
+    return grade;
   };
 
   // console.log("selectedUserScoreLetter = 020 ", selectedUserScoreLetter);
@@ -279,7 +388,21 @@ const PositionCRM: NextPageWithLayout = () => {
           });
         }
       }
-      setCandidatesFromTalentList(candidatesNew);
+
+      const _candidatesNew = candidatesNew.map((candidate: any) => {
+        const _candidateWithSkillLetter = {
+          ...candidate,
+          letterAndColor: {
+            ...candidate.letterAndColor,
+            skill: getGrade(candidate.skillMatch, false),
+          },
+        };
+
+        return _candidateWithSkillLetter;
+      });
+
+      setCandidates(_candidatesNew);
+      setCandidatesFromTalentList(_candidatesNew);
       // -------------- Get the Candidates of the page ------------
 
       // --------------- Find the related nodes Score and color -----------
@@ -963,7 +1086,6 @@ const PositionCRM: NextPageWithLayout = () => {
           <CandidatesTableList
             candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}
-            setCandidatesList={setCandidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
             listMode={
@@ -1013,7 +1135,6 @@ const PositionCRM: NextPageWithLayout = () => {
             percentage={selectedUserScore}
             summaryQuestions={selectedUserSummaryQuestions}
             mostRelevantMemberNode={mostRelevantMemberNode}
-            selectedUserScoreLetter={selectedUserScoreLetter}
             candidate={candidates?.find(
               (candidate) =>
                 candidate?.user?._id?.toString() == selectedUserId?.toString()
@@ -1047,7 +1168,6 @@ const PositionCRM: NextPageWithLayout = () => {
                 percentage={selectedUserScore}
                 summaryQuestions={selectedUserSummaryQuestions}
                 mostRelevantMemberNode={mostRelevantMemberNode}
-                selectedUserScoreLetter={selectedUserScoreLetter}
                 candidate={candidates?.find(
                   (candidate) =>
                     candidate?.user?._id?.toString() ==
@@ -1077,7 +1197,6 @@ const PositionCRM: NextPageWithLayout = () => {
                 percentage={selectedUserScore}
                 summaryQuestions={selectedUserSummaryQuestions}
                 mostRelevantMemberNode={mostRelevantMemberNode}
-                selectedUserScoreLetter={selectedUserScoreLetter}
                 candidate={candidates?.find(
                   (candidate) =>
                     candidate?.user?._id?.toString() ==

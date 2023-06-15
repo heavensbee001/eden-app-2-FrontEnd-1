@@ -303,7 +303,6 @@ const TalentListPublicPage: NextPageWithLayout = () => {
           <CandidatesTableList
             candidateIDRowSelected={selectedUserId || null}
             candidatesList={candidatesFromTalentList}
-            setCandidatesList={setCandidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
             listMode={ListModeEnum.list}

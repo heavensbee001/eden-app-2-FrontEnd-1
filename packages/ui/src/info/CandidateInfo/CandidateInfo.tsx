@@ -5,6 +5,7 @@ import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   Avatar,
   Button,
+  CandidateTypeSkillMatch,
   EdenChatTab,
   GraphTab,
   InfoTab,
@@ -36,8 +37,7 @@ export interface ICandidateInfoProps {
   percentage: number | null;
   summaryQuestions?: SummaryQuestionType[];
   mostRelevantMemberNode?: relevantNodeObj;
-  candidate?: any;
-  selectedUserScoreLetter?: any;
+  candidate?: CandidateTypeSkillMatch;
   onClose?: () => void;
 }
 
@@ -50,7 +50,6 @@ export const CandidateInfo = ({
   percentage,
   summaryQuestions,
   mostRelevantMemberNode,
-  selectedUserScoreLetter,
   candidate,
   onClose,
 }: ICandidateInfoProps) => {
@@ -68,16 +67,20 @@ export const CandidateInfo = ({
     ssr: false,
   });
 
-  console.log("selectedUserScoreLetter 000f0f0 = ", selectedUserScoreLetter);
+  // console.log("selectedUserScoreLetter 000f0f0 = ", selectedUserScoreLetter);
 
   const tabs = [
     {
       tab: "Bio",
       Content: () => (
         <InfoTab
-          member={dataMember?.findMember}
+          member={
+            {
+              ...candidate,
+              user: dataMember?.findMember,
+            } as CandidateTypeSkillMatch
+          }
           mostRelevantMemberNode={mostRelevantMemberNode}
-          selectedUserScoreLetter={selectedUserScoreLetter}
         />
       ),
     },
@@ -85,9 +88,13 @@ export const CandidateInfo = ({
       tab: "Requirements",
       Content: () => (
         <ReportNotes
-          member={dataMember?.findMember}
+          member={
+            {
+              ...candidate,
+              user: dataMember?.findMember,
+            } as CandidateTypeSkillMatch
+          }
           candidate={candidate}
-          selectedUserScoreLetter={selectedUserScoreLetter}
         />
       ),
     },
@@ -95,9 +102,13 @@ export const CandidateInfo = ({
       tab: "Stats",
       Content: () => (
         <MatchTab
-          member={dataMember?.findMember}
+          member={
+            {
+              ...candidate,
+              user: dataMember?.findMember,
+            } as CandidateTypeSkillMatch
+          }
           summaryQuestions={summaryQuestions}
-          selectedUserScoreLetter={selectedUserScoreLetter}
         />
       ),
     },
@@ -105,8 +116,12 @@ export const CandidateInfo = ({
       tab: "Skill Graph",
       Content: () => (
         <GraphTab
-          member={dataMember?.findMember}
-          selectedUserScoreLetter={selectedUserScoreLetter}
+          member={
+            {
+              ...candidate,
+              user: dataMember?.findMember,
+            } as CandidateTypeSkillMatch
+          }
         />
       ),
     },
@@ -121,7 +136,7 @@ export const CandidateInfo = ({
       Content: () => (
         <EdenChatTab
           memberImg={dataMember?.findMember.discordAvatar}
-          conversationID={candidate.conversationID}
+          conversationID={candidate?.conversationID || undefined}
         />
       ),
     },
