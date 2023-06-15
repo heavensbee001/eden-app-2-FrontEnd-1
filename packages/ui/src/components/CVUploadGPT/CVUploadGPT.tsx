@@ -188,6 +188,7 @@ export const CVUploadGPT = ({
               // cvString: text
               userID: currentUser?._id,
               cvContent: data.ParsedResults[0].ParsedText,
+              positionID: positionID,
             },
           },
         });
