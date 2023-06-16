@@ -91,8 +91,12 @@ export const Modal = ({
                     className={
                       "rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
                     }
-                    onClick={() => {
-                      setIsOpen(false);
+                    onClick={(event: any) => {
+                      event.stopPropagation();
+                      if (onClose) {
+                        onCloseModal();
+                      }
+                      if (closeOnEsc) setIsOpen(false);
                       onClose && onClose();
                     }}
                   >
