@@ -41,6 +41,7 @@ export interface ICandidateInfoProps {
   onClose?: () => void;
   rejectCandidateFn?: (memberID: string) => void;
   approveCandidateFn?: (memberID: string) => void;
+  qualified?: boolean;
 }
 
 function classNames(...classes: any[]) {
@@ -56,6 +57,7 @@ export const CandidateInfo = ({
   onClose,
   rejectCandidateFn,
   approveCandidateFn,
+  qualified = false,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
 
@@ -70,8 +72,6 @@ export const CandidateInfo = ({
     skip: !Boolean(memberID),
     ssr: false,
   });
-
-  // console.log("selectedUserScoreLetter 000f0f0 = ", selectedUserScoreLetter);
 
   const tabs = [
     {
@@ -147,13 +147,10 @@ export const CandidateInfo = ({
   ];
 
   const handleRejectCandidate = () => {
-    console.log("reject candidate");
-    console.log({ memberID });
     rejectCandidateFn && rejectCandidateFn(memberID);
   };
 
   const handleApproveCandidate = () => {
-    console.log("approve candidate");
     approveCandidateFn && approveCandidateFn(memberID);
   };
 
@@ -166,7 +163,7 @@ export const CandidateInfo = ({
         />
         <div className="grid w-full grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full py-2 text-center">
-            {!router.pathname.includes("/talentlist") ? (
+            {!router.pathname.includes("/talentlist") && !qualified ? (
               <div className="flex w-full justify-end">
                 <Button
                   className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
@@ -184,7 +181,7 @@ export const CandidateInfo = ({
             </div>
           </div>
           <div className="col-3 mt-5 w-full py-2 text-center text-sm">
-            {!router.pathname.includes("/talentlist") ? (
+            {!router.pathname.includes("/talentlist") && !qualified ? (
               <div className="flex w-full justify-start">
                 <Button
                   variant="primary"
