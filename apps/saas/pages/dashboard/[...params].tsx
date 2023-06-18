@@ -127,9 +127,6 @@ const PositionCRM: NextPageWithLayout = () => {
     string[]
   >([]);
 
-  // eslint-disable-next-line no-unused-vars
-  const [newTalentListName, setNewTalentListName] = useState<string>("");
-
   const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
 
   const {
@@ -537,7 +534,6 @@ const PositionCRM: NextPageWithLayout = () => {
           }
           setCandidatesFromTalentList(candidatesOnTalentListSelected);
           setNewTalentListCandidatesIds([]);
-          setNewTalentListName("");
         }
       }
       setQuickActionButtonUsed(false);
