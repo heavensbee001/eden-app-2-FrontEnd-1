@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
   FIND_POSITION_LIGHT,
@@ -31,6 +31,16 @@ import ReactTooltip from "react-tooltip";
 
 import { NextPageWithLayout } from "../_app";
 
+const CREATE_FAKE_USER_CV = gql`
+  mutation CreateFakeUserCVnew($fields: createFakeUserCVnewInput) {
+    createFakeUserCVnew(fields: $fields) {
+      _id
+      discordName
+      discordAvatar
+    }
+  }
+`;
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -41,8 +51,19 @@ type Question = {
   bestAnswer: string;
 };
 
+type Grade = {
+  letter: string;
+  color: string;
+};
+
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
+  letterAndColor?: {
+    totalMatchPerc?: Grade;
+    culture?: Grade;
+    skill?: Grade;
+    requirements?: Grade;
+  };
 }
 
 type NodeDisplay = {
@@ -125,14 +146,115 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
+      console.log("FIND_POSITION_LIGHT ", { data });
+
       const talentListsNames: TalentListType[] =
         data.findPosition.talentList.map((list: TalentListType) => list);
 
+      console.log("data = ", data);
+
       setTalentListsAvailables(talentListsNames);
 
-      setCandidates(data.findPosition.candidates);
+      // console.log("candidatesList 00 0 = ", candidatesList);
+      if (
+        data.findPosition.candidates.length > 0 &&
+        (data.findPosition.candidates[0]?.totalMatchPerc === undefined ||
+          (data.findPosition.candidates[0]?.flagSkill !== true &&
+            data.findPosition.candidates[0]?.skillMatch !== undefined))
+      ) {
+        // calculate the average score of the percentages for each candidatesList and save it on setCandidatesList
+        const candidatesListWithSkillMatch = data.findPosition.candidates.map(
+          (candidate: any) => {
+            let totalMatchPerc = 0;
+            let totalMatchPercCount = 0;
 
-      setCandidatesFromTalentList(data.findPosition.candidates);
+            let letterAndColor = {};
+
+            let flagSkill = false;
+
+            console.log("candidate?.skillMatch", candidate?.skillMatch);
+            if (
+              candidate?.skillMatch != undefined &&
+              candidate?.skillMatch > 0
+            ) {
+              totalMatchPerc += candidate.skillMatch;
+              totalMatchPercCount++;
+              flagSkill = true;
+
+              letterAndColor = {
+                ...letterAndColor,
+                skill: getGrade(candidate.skillMatch, false),
+              };
+            }
+
+            if (candidate?.overallScore) {
+              totalMatchPerc += candidate.overallScore;
+              totalMatchPercCount++;
+
+              letterAndColor = {
+                ...letterAndColor,
+                culture: getGrade(candidate.overallScore, false),
+              };
+            }
+
+            if (
+              candidate?.compareCandidatePosition
+                ?.CV_ConvoToPositionAverageScore
+            ) {
+              totalMatchPerc +=
+                candidate?.compareCandidatePosition
+                  ?.CV_ConvoToPositionAverageScore;
+              totalMatchPercCount++;
+
+              letterAndColor = {
+                ...letterAndColor,
+                requirements: getGrade(
+                  candidate?.compareCandidatePosition
+                    ?.CV_ConvoToPositionAverageScore,
+                  false
+                ),
+              };
+            }
+
+            totalMatchPerc = totalMatchPerc / totalMatchPercCount;
+
+            totalMatchPerc = parseInt(totalMatchPerc.toFixed(1));
+
+            letterAndColor = {
+              ...letterAndColor,
+              totalMatchPerc: getGrade(totalMatchPerc, true),
+            };
+
+            return {
+              ...candidate,
+              totalMatchPerc,
+              flagSkill: flagSkill,
+              letterAndColor,
+            };
+          }
+        );
+
+        // sort the candidatesList by the totalMatchPerc
+        const sortedCandidatesList = candidatesListWithSkillMatch.sort(
+          (a: any, b: any) => {
+            if (a.totalMatchPerc > b.totalMatchPerc) {
+              return -1;
+            }
+            if (a.totalMatchPerc < b.totalMatchPerc) {
+              return 1;
+            }
+            return 0;
+          }
+        );
+
+        // console.log("candidatesList = 23", sortedCandidatesList);
+
+        // setCandidatesList(sortedCandidatesList);
+
+        setCandidates(sortedCandidatesList);
+
+        setCandidatesFromTalentList(sortedCandidatesList);
+      }
 
       const questionPrep: Question[] = [];
 
@@ -157,6 +279,8 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
+  // console.log("candidatesFromTalentList = 2", candidatesFromTalentList);
+
   const {} = useQuery(FIND_TALENT_LIST, {
     variables: {
       fields: {
@@ -166,6 +290,8 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(talentListID),
     ssr: false,
     onCompleted: (data: any) => {
+      console.log("find talent list data = ", data);
+
       // setTalentListsAvailables(data.findUserTalentListPosition);
       setTalentListToShow(data.findUserTalentListPosition);
     },
@@ -179,13 +305,37 @@ const PositionCRM: NextPageWithLayout = () => {
     }
   }, [talentListID, talentListToShow, talentListsAvailables]);
 
-  const handleRowClick = (user: CandidateType) => {
+  const handleRowClick = (user: CandidateTypeSkillMatch) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
     if (user.overallScore) setSelectedUserScore(user.overallScore);
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
+
+    // console.log("user 2202 = ", user);
   };
 
+  // eslint-disable-next-line no-unused-vars
+  const getGrade = (percentage: number, mainColumn: boolean): Grade => {
+    let grade: Grade = { letter: "", color: "" };
+
+    if (percentage >= 85) {
+      grade = { letter: "A", color: "text-green-500" };
+    } else if (percentage >= 75) {
+      grade = { letter: "B", color: "text-green-200" };
+    } else if (percentage >= 65) {
+      grade = { letter: "C", color: "text-orange-300" };
+      // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
+      // else grade = { letter: "C", color: "text-black" };
+    } else {
+      grade = { letter: "D", color: "text-red-300" };
+      // if (mainColumn) grade = { letter: "D", color: "text-red-300" };
+      // else grade = { letter: "D", color: "text-black" };
+    }
+
+    return grade;
+  };
+
+  // console.log("selectedUserScoreLetter = 020 ", selectedUserScoreLetter);
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
 
@@ -213,6 +363,8 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
 
     onCompleted: (data) => {
+      console.log("match nodes memmbers ai4 data = ", data);
+
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
       // console.log(
@@ -246,7 +398,21 @@ const PositionCRM: NextPageWithLayout = () => {
           });
         }
       }
-      setCandidatesFromTalentList(candidatesNew);
+
+      const _candidatesNew = candidatesNew.map((candidate: any) => {
+        const _candidateWithSkillLetter = {
+          ...candidate,
+          letterAndColor: {
+            ...candidate.letterAndColor,
+            skill: getGrade(candidate.skillMatch, false),
+          },
+        };
+
+        return _candidateWithSkillLetter;
+      });
+
+      setCandidates(_candidatesNew);
+      setCandidatesFromTalentList(_candidatesNew);
       // -------------- Get the Candidates of the page ------------
 
       // --------------- Find the related nodes Score and color -----------
@@ -411,6 +577,22 @@ const PositionCRM: NextPageWithLayout = () => {
   // console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
+  };
+
+  const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
+
+  const handleFindBestTalentClick = () => {
+    // setTrainModalOpen(true);
+
+    console.log("find Fake User my G = ");
+
+    createFakeUserCV({
+      variables: {
+        fields: {
+          positionID: positionID,
+        },
+      },
+    });
   };
 
   const handleCloseTrainModal = () => {
@@ -639,11 +821,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleShareTalentListButton = async () => {
     const url =
-      window.location.origin +
-      "/dashboard/" +
-      positionID +
-      "/" +
-      talentListSelected?._id!;
+      window.location.origin + "/talentlist/" + talentListSelected?._id!;
 
     navigator.clipboard.writeText(url);
     toast.success("Link copied to clipboard!");
@@ -695,6 +873,25 @@ const PositionCRM: NextPageWithLayout = () => {
               </div>
             </div>
           </Button>
+          <Button
+            className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+            radius="pill"
+            variant="secondary"
+            onClick={handleFindBestTalentClick}
+          >
+            Find Best Talent
+            <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#007bff]">
+              <div className="h-[40px] w-[40px] min-w-[40px]">
+                <Image
+                  src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                  width={40}
+                  height={40}
+                  alt=""
+                />
+              </div>
+            </div>
+          </Button>
+
           {/* <Button
             variant="secondary"
             onClick={() => {
@@ -941,7 +1138,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 ? ListModeEnum.creation
                 : editTalentListMode
                 ? ListModeEnum.edit
-                : ListModeEnum.list
+                : ListModeEnum.selectable
             }
             selectedIds={newTalentListCandidatesIds}
             handleChkSelection={handleCandidateCheckboxSelection}

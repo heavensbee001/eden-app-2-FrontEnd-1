@@ -6,6 +6,7 @@ import {
   FaBriefcase,
   FaDiscord,
   FaGithub,
+  FaLink,
   FaLinkedin,
   FaQuestionCircle,
   FaTelegram,
@@ -42,7 +43,11 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
     "http://t.me/",
     "https://www.lensfrens.xyz/",
     "http://www.lensfrens.xyz/",
+    "https://www.linkedin.com/",
+    "https://www.linkedin.com/",
     "@",
+    "https://",
+    "http://",
     "https://",
     "http://",
   ];
@@ -74,8 +79,20 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         { ...(cleanLink("github") ?? { name: "github", url: "" }) },
         { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
         {
+          ...(cleanLink("linkedIn") ?? {
+            name: "linkedIn",
+            url: "",
+          }),
+        },
+        {
           ...(cleanLink("portfolio") ?? {
             name: "portfolio",
+            url: "",
+          }),
+        },
+        {
+          ...(cleanLink("custom") ?? {
+            name: "custom",
             url: "",
           }),
         },
@@ -121,11 +138,22 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
                 ? `https://www.lensfrens.xyz/${getHandle(link.url)}`
                 : "",
             };
+          case "linkedIn":
+            return {
+              name: link.name,
+              url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
+            };
           case "portfolio":
             return {
               name: link.name,
               url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
             };
+          case "custom":
+            return {
+              name: link.name,
+              url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
+            };
+
           default:
             return link;
         }
@@ -147,7 +175,11 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         return "https://t.me/";
       case "lens":
         return "https://www.lensfrens.xyz/";
+      case "linkedIn":
+        return "https://www.linkedin.com/";
       case "portfolio":
+        return "https://";
+      case "custom":
         return "https://";
       default:
         return "";
@@ -168,10 +200,14 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         return <FaTelegram size="24px" color="#BCBCBC" />;
       case "lens":
         return <LensIcon />;
-      case "portfolio":
-        return <FaBriefcase size="24px" color="#BCBCBC" />;
+      case "linkedIn":
+        return <FaLinkedin size="24px" color="#BCBCBC" />;
       default:
         return <FaQuestionCircle size="24px" color="#00acee" />;
+      case "portfolio":
+        return <FaBriefcase size="24px" color="#BCBCBC" />;
+      case "custom":
+        return <FaLink size="24px" color="#BCBCBC" />;
     }
   };
 
@@ -195,7 +231,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
                   className={`w-full border-none pl-0.5 outline-none`}
                   type="text"
                   placeholder={
-                    field.name === "portfolio"
+                    field.name === "portfolio" || "custom"
                       ? `your ${field.name} url`
                       : `${field.name} handle`
                   }

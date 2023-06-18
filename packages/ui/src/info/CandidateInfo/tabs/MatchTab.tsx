@@ -1,9 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
-import { Members, SummaryQuestionType } from "@eden/package-graphql/generated";
+import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   BackgroundMatchChart,
+  CandidateTypeSkillMatch,
   Card,
-  PopoverScoreReason,
+  Modal,
+  // PopoverScoreReason,
   TeamAttributeChart,
   // TextHeading2,
   TextInputLabel,
@@ -55,7 +57,7 @@ const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
 ChartJS.register(ArcElement, Legend, Tooltip);
 
 type Props = {
-  member?: Members;
+  member?: CandidateTypeSkillMatch;
   summaryQuestions?: SummaryQuestionType[];
 };
 
@@ -71,8 +73,6 @@ function classNames(...classes: string[]) {
 }
 
 export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
-  console.log("summaryQuestions = 22", summaryQuestions);
-
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
@@ -103,10 +103,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     {
       variables: {
         fields: {
-          memberID: member?._id,
+          memberID: member?.user?._id,
         },
       },
-      skip: member?._id == undefined,
+      skip: member?.user?._id == undefined,
       onCompleted: (data) => {
         const labels = [];
         const dataPT = [];
@@ -174,10 +174,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     {
       variables: {
         fields: {
-          memberID: member?._id,
+          memberID: member?.user?._id,
         },
       },
-      skip: member?._id == undefined,
+      skip: member?.user?._id == undefined,
       onCompleted: (data) => {
         interface attributesType {
           [key: string]: any;
@@ -222,8 +222,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           {
             memberInfo: {
               discordName:
-                member?.discordName + " - " + averageScore.toString() + "%" ??
-                "",
+                member?.user?.discordName +
+                  " - " +
+                  averageScore.toString() +
+                  "%" ?? "",
               attributes: attributesT,
             },
           },
@@ -232,7 +234,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         console.log("CHANGE Radio Chart", [
           {
             memberInfo: {
-              discordName: member?.discordName ?? "",
+              discordName: member?.user?.discordName ?? "",
               attributes: attributesT,
             },
           },
@@ -284,6 +286,19 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   return (
     <div className="relative pb-4 pt-4">
+      {member?.letterAndColor?.culture?.letter && (
+        <div className="relative">
+          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
+            <p className="text-lg font-bold">Stats Score:</p>
+            <p
+              className={`${member?.letterAndColor?.culture?.color} text-4xl font-black`}
+            >
+              {`${member?.letterAndColor?.culture?.letter}`}
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="mb-8 grid grid-cols-12">
         <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
@@ -345,7 +360,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           {dataBarChart.length > 0 ? (
             <div className="h-[300px]">
               <BackgroundMatchChart
-                memberName={member?.discordName ?? ""}
+                memberName={member?.user?.discordName ?? ""}
                 backgroundMatchData={dataBarChart}
               />
             </div>
@@ -359,7 +374,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <TextLabel1>INTERVIEW ANALYSIS</TextLabel1>
       </p>
       <div
-        className={`mx-auto mb-2 grid grid-cols-4 gap-6`}
+        className={`mx-auto mb-2 px-4`}
         // className={`mx-auto grid grid-cols-${
         //   summaryQuestions?.length === 1 ? 3 : summaryQuestions?.length
         // } gap-4`}
@@ -369,7 +384,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               <div
                 key={index}
                 className={classNames(
-                  "transition-scale z-10 h-full cursor-pointer rounded-3xl border-none bg-gray-50 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
+                  "transition-scale z-10 mb-2 h-full cursor-pointer rounded-sm border-none bg-gray-50 px-4 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
                   summaryQuestionSelected?.questionID === item.questionID
                     ? "border-accentColor scale-[1.02] bg-lime-50"
                     : ""
@@ -385,45 +400,111 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                   }
                 }}
               >
-                <PopoverScoreReason question={item}>
-                  <div className="flex min-h-[120px] flex-col items-center justify-between py-4">
-                    <div className="mx-auto mb-2 flex h-10 justify-center">
-                      <p className="text-center">
-                        <p className="font-semibold">
-                          {item.questionContentSmall?.replace(".", "")}
-                        </p>
-                      </p>
+                <div className="py-4">
+                  <p className="mb-2 font-semibold">
+                    {item.questionContentSmall?.replace(".", "")}
+                  </p>
+                  <div className="flex w-full">
+                    <div className="w-1/4 pt-2">
+                      {!item.score ? (
+                        <TextInputLabel className="mr-auto text-center text-xs text-black">
+                          {item.answerContentSmall?.replace(".", "")}
+                        </TextInputLabel>
+                      ) : null}
+                      {item.score ? (
+                        <div className="text-center text-lg font-bold leading-tight">
+                          <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div>
+                          <p
+                            className={classNames(
+                              `text-${getPercentageColor(item.score * 10)}`
+                            )}
+                          >
+                            {getPercentageText(item.score * 10)}
+                          </p>
+                        </div>
+                      ) : //  : (
+                      //   <TextInputLabel className="text-xs text-black">
+                      //     {item.answerContentSmall.replace(".", "")}
+                      //   </TextInputLabel>
+                      // )
+                      null}
                     </div>
-                    <div className="">
-                      <div className="flex h-full items-center justify-center">
-                        {!item.score ? (
-                          <TextInputLabel className="mr-auto text-center text-xs text-black">
-                            {item.answerContentSmall?.replace(".", "")}
-                          </TextInputLabel>
-                        ) : (
-                          true
-                        )}
-                        {item.score ? (
-                          <div className="ml-1 text-center text-lg font-bold leading-tight">
-                            <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div>
-                            <p
-                              className={classNames(
-                                `text-${getPercentageColor(item.score * 10)}`
-                              )}
-                            >
-                              {getPercentageText(item.score * 10)}
-                            </p>
-                          </div>
-                        ) : //  : (
-                        //   <TextInputLabel className="text-xs text-black">
-                        //     {item.answerContentSmall.replace(".", "")}
-                        //   </TextInputLabel>
-                        // )
-                        null}
-                      </div>
+                    <div className="w-3/4 pl-2">
+                      <p className="whitespace-pre-wrap">{item.reason}</p>
                     </div>
                   </div>
-                </PopoverScoreReason>
+                </div>
+                {summaryQuestionSelected?.questionID}
+                <Modal
+                  open={summaryQuestionSelected?.questionID === item.questionID}
+                  onClose={() => {
+                    setSummaryQuestionSelected(undefined);
+                  }}
+                  closeOnEsc
+                >
+                  <h3 className="mb-4 text-xl font-medium">Candidate chat</h3>
+                  {summaryQuestionSelected &&
+                  summaryQuestionSelected.subConversationAnswer ? (
+                    <Card
+                      border
+                      shadow
+                      className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white  pb-4"
+                    >
+                      <div
+                        id="summary-question-chat"
+                        className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
+                      >
+                        <div className="">
+                          {summaryQuestionSelected.subConversationAnswer.map(
+                            (conversation: any, index: number) => (
+                              <>
+                                <div className="chat-message p-2" key={index}>
+                                  <div
+                                    className={classNames(
+                                      conversation.role == "assistant"
+                                        ? ""
+                                        : "justify-end",
+                                      "flex items-start"
+                                    )}
+                                  >
+                                    <div
+                                      className={classNames(
+                                        conversation.role == "assistant"
+                                          ? "order-2"
+                                          : "order-1",
+                                        "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                                      )}
+                                    >
+                                      <span
+                                        // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                                        className={classNames(
+                                          conversation.role == "assistant"
+                                            ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                            : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                                          "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                                        )}
+                                      >
+                                        {conversation.content}
+                                      </span>
+                                    </div>
+                                    <img
+                                      src={
+                                        conversation.role == "assistant"
+                                          ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                                          : member?.user?.discordAvatar || ""
+                                      }
+                                      className="order-1 h-6 w-6 rounded-full"
+                                    />
+                                  </div>
+                                </div>
+                              </>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ) : null}
+                </Modal>
               </div>
             ))
           : null}
@@ -459,66 +540,6 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             ))
           : null}
       </div> */}
-
-      {summaryQuestionSelected &&
-      summaryQuestionSelected.subConversationAnswer ? (
-        <Card
-          border
-          shadow
-          className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white  pb-4"
-        >
-          <div
-            id="summary-question-chat"
-            className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
-          >
-            <div className="">
-              {summaryQuestionSelected.subConversationAnswer.map(
-                (conversation: any, index: number) => (
-                  <>
-                    <div className="chat-message p-2" key={index}>
-                      <div
-                        className={classNames(
-                          conversation.role == "assistant" ? "" : "justify-end",
-                          "flex items-start"
-                        )}
-                      >
-                        <div
-                          className={classNames(
-                            conversation.role == "assistant"
-                              ? "order-2"
-                              : "order-1",
-                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
-                          )}
-                        >
-                          <span
-                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                            className={classNames(
-                              conversation.role == "assistant"
-                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
-                            )}
-                          >
-                            {conversation.content}
-                          </span>
-                        </div>
-                        <img
-                          src={
-                            conversation.role == "assistant"
-                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                              : member?.discordAvatar || ""
-                          }
-                          className="order-1 h-6 w-6 rounded-full"
-                        />
-                      </div>
-                    </div>
-                  </>
-                )
-              )}
-            </div>
-          </div>
-        </Card>
-      ) : null}
     </div>
   );
 };

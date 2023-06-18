@@ -1,6 +1,7 @@
-import { Members } from "@eden/package-graphql/generated";
+// import { Members } from "@eden/package-graphql/generated";
 import {
   Badge,
+  CandidateTypeSkillMatch,
   NodeList,
   // SocialMediaComp,
   TextLabel1,
@@ -23,7 +24,7 @@ type relevantNodeObj = {
 };
 
 interface Props {
-  member?: Members;
+  member?: CandidateTypeSkillMatch; // This was formerly accepting Members but now it needs the score letter; Definitely not good approach. Have to refactor this into util functions
   mostRelevantMemberNode?: relevantNodeObj;
 }
 
@@ -33,20 +34,32 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
 
   return (
     <>
-      <div className="mb-4 grid grid-cols-2">
+      {member?.letterAndColor?.totalMatchPerc?.letter && (
+        <div className="relative">
+          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
+            <p className="text-lg font-bold">Total Score:</p>
+            <p
+              className={` ${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
+            >
+              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="mb-4 grid grid-cols-2 py-24">
         <div className="col-span-2 p-2">
           <div className="my-4 flex flex-col items-start justify-center">
             <TextLabel1>🌸 Short bio</TextLabel1>
-            {member?.bio ? (
+            {member?.user?.bio ? (
               <>
                 <p className="text-soilBody font-Inter whitespace-pre-wrap font-normal">
                   {seeMore
-                    ? member.bio
-                    : member.bio.length > 600
-                    ? member.bio.substring(0, 600) + "..."
-                    : member.bio}
+                    ? member?.user.bio
+                    : member?.user.bio.length > 600
+                    ? member?.user.bio.substring(0, 600) + "..."
+                    : member?.user.bio}
                 </p>
-                {member.bio.length > 600 && (
+                {member?.user.bio.length > 600 && (
                   <p
                     className="mt-1 w-full cursor-pointer text-center text-sm"
                     onClick={() => setSeeMore(!seeMore)}
@@ -104,15 +117,15 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
       <div className="mb-4 grid grid-cols-2">
         {mostRelevantMemberNode &&
         member &&
-        member?._id &&
+        member?.user?._id &&
         Object.keys(mostRelevantMemberNode).length > 0 &&
-        mostRelevantMemberNode[member?._id] ? (
+        mostRelevantMemberNode[member?.user._id] ? (
           <>
             <div className="col-1 p-2">
               <section className="mb-2 w-full text-left">
                 <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
                 <div className="ml-4  flex-wrap">
-                  {mostRelevantMemberNode[member?._id].nodes
+                  {mostRelevantMemberNode[member?.user._id].nodes
                     .slice(0, 7)
                     .map((node: NodeDisplay, index: number) => (
                       <Badge
@@ -122,7 +135,7 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
                         // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
                         // className={`px-2 py-1 text-white rounded bg-purple-400`}
                         className={`rounded px-1 py-1 text-xs text-white ${node.color}`}
-                        cutText={17}
+                        cutText={100}
                       />
                     ))}
                 </div>
@@ -134,10 +147,10 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
             <section className="mb-2 w-full text-left">
               <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
               <div className="ml-4 inline-flex flex-wrap">
-                {member?.nodes && member?.nodes.length > 0 && (
+                {member?.user?.nodes && member?.user.nodes.length > 0 && (
                   <NodeList
                     overflowNumber={3}
-                    nodes={member?.nodes}
+                    nodes={member?.user.nodes}
                     colorRGB={`224,151,232`}
                   />
                 )}
@@ -151,15 +164,15 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
             <section className="mb-2 w-full text-left">
               <TextLabel1 className="mb-2 text-xs">⏳️ AVAILABILITY</TextLabel1>
               <p className="ml-4 font-bold text-slate-600">
-                {member?.hoursPerWeek
-                  ? `${member?.hoursPerWeek} hrs\\week`
+                {member?.user?.hoursPerWeek
+                  ? `${member?.user.hoursPerWeek} hrs\\week`
                   : "unavailable"}
               </p>
             </section>
             <section className="mb-2 w-full text-left">
               <TextLabel1 className="mb-2 text-xs">🌍 Location</TextLabel1>
               <p className="ml-4 font-bold text-slate-600">
-                {member?.location ? `${member?.location}` : "-"}
+                {member?.user?.location ? `${member?.user.location}` : "-"}
               </p>
             </section>
             <section className="mb-2 w-full text-left">
@@ -168,7 +181,7 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
               </p>
               <div className="ml-4 inline-flex">
                 <p className="font-bold text-slate-600">
-                  {member?.timeZone ? `${member?.timeZone}` : "-"}
+                  {member?.user?.timeZone ? `${member?.user.timeZone}` : "-"}
                 </p>
               </div>
             </section>
@@ -180,12 +193,12 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
                 <TextLabel1 className="text-xs">💰 Hourly rate</TextLabel1>
               </p>
               <div>
-                {member?.budget?.perHour !== null &&
-                member?.budget?.perHour !== undefined &&
-                member?.budget?.perHour >= 0 ? (
+                {member?.user?.budget?.perHour !== null &&
+                member?.user?.budget?.perHour !== undefined &&
+                member?.user.budget?.perHour >= 0 ? (
                   <p className="ml-4 text-sm">
                     <span className="text-xl font-bold text-[#fcba03]">
-                      ${member.budget.perHour}
+                      ${member.user.budget.perHour}
                     </span>{" "}
                     / hour
                   </p>
@@ -199,14 +212,14 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
                 <TextLabel1 className="text-xs">⭐ Level</TextLabel1>
               </p>
               <div>
-                {member?.experienceLevel?.total ? (
+                {member?.user?.experienceLevel?.total ? (
                   <Badge
                     className="ml-4 text-sm"
                     colorRGB="151,232,163"
                     text={
-                      member?.experienceLevel?.total <= 3
+                      member?.user.experienceLevel?.total <= 3
                         ? "Junior"
-                        : member?.experienceLevel?.total <= 6
+                        : member?.user.experienceLevel?.total <= 6
                         ? "Mid"
                         : "Senior"
                     }
@@ -223,11 +236,12 @@ export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
           </div>
         </div>
       </div>
-      {member?.previousProjects && member?.previousProjects.length ? (
-        <section className="w-full pb-4 text-left">
+      {member?.user?.previousProjects &&
+      member?.user.previousProjects.length ? (
+        <section className=" w-9/12 pb-4 text-left">
           <TextLabel1 className="text-xs">🍒 BACKGROUND</TextLabel1>
           <UserBackground
-            background={member?.previousProjects || []}
+            background={member?.user.previousProjects || []}
             setExperienceOpen={setExperienceOpen!}
             experienceOpen={experienceOpen!}
           />
