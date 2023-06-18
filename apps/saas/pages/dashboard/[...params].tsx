@@ -579,8 +579,7 @@ const PositionCRM: NextPageWithLayout = () => {
     setTrainModalOpen(true);
   };
 
-  const [createFakeUserCV, { loading: createFakeUserCVLoading }] =
-    useMutation(CREATE_FAKE_USER_CV);
+  const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
 
   const handleFindBestTalentClick = () => {
     // setTrainModalOpen(true);
