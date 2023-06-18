@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
   FIND_POSITION_LIGHT,
@@ -30,6 +30,16 @@ import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 
 import { NextPageWithLayout } from "../_app";
+
+const CREATE_FAKE_USER_CV = gql`
+  mutation CreateFakeUserCVnew($fields: createFakeUserCVnewInput) {
+    createFakeUserCVnew(fields: $fields) {
+      _id
+      discordName
+      discordAvatar
+    }
+  }
+`;
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -569,6 +579,23 @@ const PositionCRM: NextPageWithLayout = () => {
     setTrainModalOpen(true);
   };
 
+  const [createFakeUserCV, { loading: createFakeUserCVLoading }] =
+    useMutation(CREATE_FAKE_USER_CV);
+
+  const handleFindBestTalentClick = () => {
+    // setTrainModalOpen(true);
+
+    console.log("find Fake User my G = ");
+
+    createFakeUserCV({
+      variables: {
+        fields: {
+          positionID: positionID,
+        },
+      },
+    });
+  };
+
   const handleCloseTrainModal = () => {
     setTrainModalOpen(false);
   };
@@ -847,6 +874,25 @@ const PositionCRM: NextPageWithLayout = () => {
               </div>
             </div>
           </Button>
+          <Button
+            className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+            radius="pill"
+            variant="secondary"
+            onClick={handleFindBestTalentClick}
+          >
+            Find Best Talent
+            <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#007bff]">
+              <div className="h-[40px] w-[40px] min-w-[40px]">
+                <Image
+                  src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                  width={40}
+                  height={40}
+                  alt=""
+                />
+              </div>
+            </div>
+          </Button>
+
           {/* <Button
             variant="secondary"
             onClick={() => {
