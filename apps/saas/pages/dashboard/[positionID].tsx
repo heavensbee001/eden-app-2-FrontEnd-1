@@ -250,13 +250,27 @@ const PositionCRM: NextPageWithLayout = () => {
 
         setCandidatesFromTalentList(sortedCandidatesList);
 
-        const rejectedCandidatesIDs = data.findPosition.talentList
-          .find((list: TalentListType) => list.name === "Rejected")
-          ?.talent.map((candidate: any) => candidate?.user?._id);
+        const rejectedCandidatesIDs = data.findPosition.talentList.find(
+          (list: TalentListType) => list.name === "Rejected"
+        )?.talent.length
+          ? data.findPosition.talentList
+              .find((list: TalentListType) => list.name === "Rejected")
+              ?.talent.map((candidate: any) => candidate?.user?._id)
+          : [];
 
-        const approvedCandidatesIDs = data.findPosition.talentList
-          .find((list: TalentListType) => list.name === "Accepted")
-          ?.talent.map((candidate: any) => candidate?.user?._id);
+        const approvedCandidatesIDs = data.findPosition.talentList.find(
+          (list: TalentListType) => list.name === "Accepted"
+        )?.talent.length
+          ? data.findPosition.talentList
+              .find((list: TalentListType) => list.name === "Accepted")
+              ?.talent.map((candidate: any) => candidate?.user?._id)
+          : [];
+
+        console.log({
+          sortedCandidatesList,
+          rejectedCandidatesIDs,
+          approvedCandidatesIDs,
+        });
 
         setCandidatesUnqualifiedList(
           sortedCandidatesList
