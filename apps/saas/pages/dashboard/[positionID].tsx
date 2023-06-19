@@ -18,7 +18,7 @@ import {
 } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
@@ -250,23 +250,15 @@ const PositionCRM: NextPageWithLayout = () => {
 
         setCandidatesFromTalentList(sortedCandidatesList);
 
-        const rejectedCandidatesIDs = data.findPosition.talentList
-          .find((list: TalentListType) => list.name === "Rejected")
-          ?.talent.map((candidate: any) => candidate?.user?._id);
-
-        const approvedCandidatesIDs = data.findPosition.talentList
-          .find((list: TalentListType) => list.name === "Accepted")
-          ?.talent.map((candidate: any) => candidate?.user?._id);
-
         setCandidatesUnqualifiedList(
           sortedCandidatesList
             .filter(
               (candidate: any) =>
-                !rejectedCandidatesIDs.includes(candidate.user._id)
+                !approvedTalentListCandidatesList.includes(candidate)
             )
             .filter(
               (candidate: any) =>
-                !approvedCandidatesIDs.includes(candidate.user._id)
+                !rejectedTalentListCandidatesList.includes(candidate)
             )
         );
       }
@@ -294,7 +286,7 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  useEffect(() => {
+  useMemo(() => {
     if (findPositionData?.findPosition?.talentList) {
       setApprovedTalentListID(
         findPositionData.findPosition.talentList.find(
@@ -320,7 +312,7 @@ const PositionCRM: NextPageWithLayout = () => {
         )?.talent
       );
     }
-  }, [findPositionData?.findPosition?.talentList]);
+  }, [findPositionData]);
 
   useEffect(() => {
     if (talentListToShow && talentListsAvailables.length) {
@@ -566,52 +558,12 @@ const PositionCRM: NextPageWithLayout = () => {
           clientOptions?.variables?.fields.talentListID ===
             approvedTalentListID ||
           clientOptions?.variables?.fields.talentListID === rejectedTalentListID
-            ? "000" // this is not the actual "working talent list" per se, but is the one to be redirected to
+            ? "000"
             : clientOptions?.variables?.fields.talentListID;
 
         if (workingTalentListID === "000") {
-          if (
-            clientOptions?.variables?.fields.talentListID ===
-              approvedTalentListID ||
-            clientOptions?.variables?.fields.talentListID ===
-              rejectedTalentListID
-          ) {
-            const rejectedCandidatesIDs =
-              data.updateUsersTalentListPosition.talentList
-                .find((list: TalentListType) => list.name === "Rejected")
-                ?.talent.map((candidate: any) => candidate?.user?._id);
-
-            const approvedCandidatesIDs =
-              data.updateUsersTalentListPosition.talentList
-                .find((list: TalentListType) => list.name === "Accepted")
-                ?.talent.map((candidate: any) => candidate?.user?._id);
-
-            setCandidatesUnqualifiedList(
-              candidatesOriginalList
-                .filter(
-                  (candidate: any) =>
-                    !rejectedCandidatesIDs.includes(candidate.user._id)
-                )
-                .filter(
-                  (candidate: any) =>
-                    !approvedCandidatesIDs.includes(candidate.user._id)
-                )
-            );
-            setCandidatesFromTalentList(
-              candidatesOriginalList
-                .filter(
-                  (candidate: any) =>
-                    !rejectedCandidatesIDs.includes(candidate.user._id)
-                )
-                .filter(
-                  (candidate: any) =>
-                    !approvedCandidatesIDs.includes(candidate.user._id)
-                )
-            );
-            setTalentListSelected({ _id: "000", name: "All candidates" });
-          } else {
-            setCandidatesFromTalentList(candidatesUnqualifiedList);
-          }
+          setTalentListSelected({ _id: "000", name: "All candidates" });
+          setCandidatesFromTalentList(candidatesUnqualifiedList);
         } else {
           const editedTalentListIndex =
             data?.updateUsersTalentListPosition.talentList.findIndex(
@@ -624,6 +576,7 @@ const PositionCRM: NextPageWithLayout = () => {
               editedTalentListIndex
             ];
 
+          setTalentListSelected(editedTalentList);
           const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
           for (let i = 0; i < candidatesOriginalList.length; i++) {
@@ -636,47 +589,9 @@ const PositionCRM: NextPageWithLayout = () => {
               }
             }
           }
-
           setCandidatesFromTalentList(candidatesOnTalentListSelected);
-          setTalentListSelected(editedTalentList);
           setNewTalentListCandidatesIds([]);
         }
-      } else {
-        const rejectedCandidatesIDs =
-          data.updateUsersTalentListPosition.talentList
-            .find((list: TalentListType) => list.name === "Rejected")
-            ?.talent.map((candidate: any) => candidate?.user?._id);
-
-        const approvedCandidatesIDs =
-          data.updateUsersTalentListPosition.talentList
-            .find((list: TalentListType) => list.name === "Accepted")
-            ?.talent.map((candidate: any) => candidate?.user?._id);
-
-        setCandidatesUnqualifiedList(
-          candidatesOriginalList
-            .filter(
-              (candidate: any) =>
-                !rejectedCandidatesIDs.includes(candidate.user._id)
-            )
-            .filter(
-              (candidate: any) =>
-                !approvedCandidatesIDs.includes(candidate.user._id)
-            )
-        );
-
-        setCandidatesFromTalentList(
-          candidatesOriginalList
-            .filter(
-              (candidate: any) =>
-                !rejectedCandidatesIDs.includes(candidate.user._id)
-            )
-            .filter(
-              (candidate: any) =>
-                !approvedCandidatesIDs.includes(candidate.user._id)
-            )
-        );
-
-        setTalentListSelected({ _id: "000", name: "All candidates" });
       }
       setQuickActionButtonUsed(false);
     },
@@ -735,6 +650,7 @@ const PositionCRM: NextPageWithLayout = () => {
       candidatesOnTalentListSelected.push(...candidatesUnqualifiedList);
       setTalentListSelected({ _id: "000", name: "All candidates" });
     }
+    // }
 
     setNewTalentListCandidatesIds([]);
 
@@ -1253,7 +1169,6 @@ const PositionCRM: NextPageWithLayout = () => {
       >
         <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
           {/* {selectedUserId ? ( */}
-
           <CandidateInfo
             key={selectedUserId || ""}
             memberID={selectedUserId || ""}
@@ -1269,22 +1184,6 @@ const PositionCRM: NextPageWithLayout = () => {
             }}
             rejectCandidateFn={handleRejectCandidate}
             approveCandidateFn={handleApproveCandidate}
-            qualified={
-              Boolean(
-                approvedTalentListCandidatesList.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              ) ||
-              Boolean(
-                rejectedTalentListCandidatesList.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              )
-            }
           />
           {/* ) : (
             <div className="w-full pt-20 text-center">
