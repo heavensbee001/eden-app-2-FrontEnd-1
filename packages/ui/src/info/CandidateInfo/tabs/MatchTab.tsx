@@ -434,7 +434,6 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                     </div>
                   </div>
                 </div>
-                {summaryQuestionSelected?.questionID}
                 <Modal
                   open={summaryQuestionSelected?.questionID === item.questionID}
                   onClose={() => {

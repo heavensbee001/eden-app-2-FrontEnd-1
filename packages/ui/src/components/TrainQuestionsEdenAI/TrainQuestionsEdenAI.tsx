@@ -80,7 +80,7 @@ export const TrainQuestionsEdenAI = ({
         positionID_ = positionID[0];
       }
     } else {
-      if (positionID !== undefined) {
+      if (positionID != undefined) {
         positionID_ = positionID;
       }
     }

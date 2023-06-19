@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useQuery } from "@apollo/client";
 import { FIND_MEMBER } from "@eden/package-graphql";
 import { SummaryQuestionType } from "@eden/package-graphql/generated";
@@ -17,7 +16,7 @@ import {
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
 
 type NodeDisplay = {
   nameRelevantNode: string;
@@ -34,12 +33,14 @@ type relevantNodeObj = {
 
 export interface ICandidateInfoProps {
   memberID: string;
-  percentage: number | null;
+  percentage?: number | null;
   summaryQuestions?: SummaryQuestionType[];
   mostRelevantMemberNode?: relevantNodeObj;
   candidate?: CandidateTypeSkillMatch;
   onClose?: () => void;
+  // eslint-disable-next-line no-unused-vars
   rejectCandidateFn?: (memberID: string) => void;
+  // eslint-disable-next-line no-unused-vars
   approveCandidateFn?: (memberID: string) => void;
   qualified?: boolean;
 }
@@ -50,7 +51,6 @@ function classNames(...classes: any[]) {
 
 export const CandidateInfo = ({
   memberID,
-  percentage,
   summaryQuestions,
   mostRelevantMemberNode,
   candidate,

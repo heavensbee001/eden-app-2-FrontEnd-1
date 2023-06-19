@@ -266,12 +266,6 @@ const PositionCRM: NextPageWithLayout = () => {
               ?.talent.map((candidate: any) => candidate?.user?._id)
           : [];
 
-        console.log({
-          sortedCandidatesList,
-          rejectedCandidatesIDs,
-          approvedCandidatesIDs,
-        });
-
         setCandidatesUnqualifiedList(
           sortedCandidatesList
             .filter(
@@ -1271,7 +1265,7 @@ const PositionCRM: NextPageWithLayout = () => {
           <CandidateInfo
             key={selectedUserId || ""}
             memberID={selectedUserId || ""}
-            percentage={selectedUserScore}
+            // percentage={selectedUserScore}
             summaryQuestions={selectedUserSummaryQuestions}
             mostRelevantMemberNode={mostRelevantMemberNode}
             candidate={candidatesOriginalList?.find(
