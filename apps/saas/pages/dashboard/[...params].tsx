@@ -2,6 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
   FIND_POSITION_LIGHT,
+  FIND_TALENT_LIST,
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
@@ -14,12 +15,14 @@ import {
   ListModeEnum,
   Loading,
   SelectList,
+  // TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { HiOutlineLink } from "react-icons/hi";
+// import { FaTimes } from "react-icons/fa";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
 import { MdCompare, MdIosShare } from "react-icons/md";
@@ -82,12 +85,6 @@ const PositionCRM: NextPageWithLayout = () => {
   const [positionID, setPositionID] = useState<string>("");
   const [talentListID, setTalentListID] = useState<string>("");
 
-  const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
-  const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
-
-  const [quickActionButtonUsed, setQuickActionButtonUsed] =
-    useState<boolean>(false);
-
   useEffect(() => {
     if (params) {
       setPositionID(params[0] as string);
@@ -121,6 +118,10 @@ const PositionCRM: NextPageWithLayout = () => {
     CandidateTypeSkillMatch[]
   >([]);
 
+  const [newTalentListCreationMode, setNewTalentListCreationMode] =
+    useState<boolean>(false);
+
+  const [editTalentListMode, setEditTalentListMode] = useState<boolean>(false);
   const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
@@ -145,22 +146,16 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
-      setApprovedTalentListID(
-        data.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Accepted"
-        )?._id
-      );
-      setRejectedTalentListID(
-        data.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Rejected"
-        )?._id
-      );
+      console.log("FIND_POSITION_LIGHT ", { data });
 
       const talentListsNames: TalentListType[] =
         data.findPosition.talentList.map((list: TalentListType) => list);
 
+      console.log("data = ", data);
+
       setTalentListsAvailables(talentListsNames);
 
+      // console.log("candidatesList 00 0 = ", candidatesList);
       if (
         data.findPosition.candidates.length > 0 &&
         (data.findPosition.candidates[0]?.totalMatchPerc === undefined ||
@@ -177,6 +172,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
             let flagSkill = false;
 
+            console.log("candidate?.skillMatch", candidate?.skillMatch);
             if (
               candidate?.skillMatch != undefined &&
               candidate?.skillMatch > 0
@@ -251,6 +247,8 @@ const PositionCRM: NextPageWithLayout = () => {
           }
         );
 
+        // console.log("candidatesList = 23", sortedCandidatesList);
+
         // setCandidatesList(sortedCandidatesList);
 
         setCandidates(sortedCandidatesList);
@@ -281,8 +279,27 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
+  // console.log("candidatesFromTalentList = 2", candidatesFromTalentList);
+
+  const {} = useQuery(FIND_TALENT_LIST, {
+    variables: {
+      fields: {
+        _id: talentListID,
+      },
+    },
+    skip: !Boolean(talentListID),
+    ssr: false,
+    onCompleted: (data: any) => {
+      console.log("find talent list data = ", data);
+
+      // setTalentListsAvailables(data.findUserTalentListPosition);
+      setTalentListToShow(data.findUserTalentListPosition);
+    },
+  });
+
   useEffect(() => {
     if (talentListID && talentListToShow && talentListsAvailables.length) {
+      console.log("kakak");
       setTalentListSelected(talentListToShow);
       // setNewTalentListName(talentListToShow?.name!);
     }
@@ -293,6 +310,8 @@ const PositionCRM: NextPageWithLayout = () => {
     if (user.overallScore) setSelectedUserScore(user.overallScore);
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
+
+    // console.log("user 2202 = ", user);
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -316,8 +335,11 @@ const PositionCRM: NextPageWithLayout = () => {
     return grade;
   };
 
+  // console.log("selectedUserScoreLetter = 020 ", selectedUserScoreLetter);
   const [mostRelevantMemberNode, setMostRelevantMemberNode] =
     useState<relevantNodeObj>({});
+
+  // console.log("nodeIDsPosition,candidates = ", nodeIDsPosition, candidates);
 
   const {} = useQuery(MATCH_NODES_MEMBERS_AI4, {
     variables: {
@@ -341,8 +363,14 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
 
     onCompleted: (data) => {
+      console.log("match nodes memmbers ai4 data = ", data);
+
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
 
+      // console.log(
+      //   "data.matchNodesToMembers_AI4 = ",
+      //   data.matchNodesToMembers_AI4
+      // );
       // -------------- Get the Candidates of the page ------------
       const memberScoreObj: { [key: string]: number } = {};
 
@@ -383,7 +411,7 @@ const PositionCRM: NextPageWithLayout = () => {
         return _candidateWithSkillLetter;
       });
 
-      // setCandidates(_candidatesNew);
+      setCandidates(_candidatesNew);
       setCandidatesFromTalentList(_candidatesNew);
       // -------------- Get the Candidates of the page ------------
 
@@ -498,52 +526,55 @@ const PositionCRM: NextPageWithLayout = () => {
     updateUsersTalentListPosition,
     { loading: updateUsersTalentListPositionLoading },
   ] = useMutation(UPDATE_TALENT_LIST_WITH_TALENT, {
-    onCompleted: (data, clientOptions) => {
-      if (!quickActionButtonUsed) {
-        const workingTalentListID =
-          clientOptions?.variables?.fields.talentListID ===
-            approvedTalentListID ||
-          clientOptions?.variables?.fields.talentListID === rejectedTalentListID
-            ? "000"
-            : clientOptions?.variables?.fields.talentListID;
+    onCompleted: (data) => {
+      if (!editTalentListMode) {
+        const lastTalentListIndex =
+          data?.updateUsersTalentListPosition.talentList.length - 1;
 
-        if (workingTalentListID === "000") {
-          setTalentListSelected({ _id: "000", name: "All candidates" });
-          setCandidatesFromTalentList(candidates);
-        } else {
-          const editedTalentListIndex =
-            data?.updateUsersTalentListPosition.talentList.findIndex(
-              (talentList: TalentListType) =>
-                talentList._id === workingTalentListID
-            );
+        const newList =
+          data?.updateUsersTalentListPosition.talentList[lastTalentListIndex];
 
-          const editedTalentList =
-            data?.updateUsersTalentListPosition.talentList[
-              editedTalentListIndex
-            ];
+        setTalentListToShow(newList);
+        setNewTalentListCreationMode(false);
+        setNewTalentListCandidatesIds([]);
+        setNewTalentListName("");
+      } else if (editTalentListMode) {
+        const editedTalentListIndex =
+          data?.updateUsersTalentListPosition.talentList.findIndex(
+            (talentList: TalentListType) =>
+              talentList._id === talentListSelected?._id
+          );
 
-          setTalentListSelected(editedTalentList);
-          const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
+        const editedTalentList =
+          data?.updateUsersTalentListPosition.talentList[editedTalentListIndex];
 
-          for (let i = 0; i < candidates.length; i++) {
-            for (let j = 0; j < editedTalentList?.talent?.length!; j++) {
-              if (
-                candidates[i].user?._id ===
-                editedTalentList?.talent![j]!.user!._id
-              ) {
-                candidatesOnTalentListSelected.push(candidates[i]);
-              }
+        setTalentListSelected(editedTalentList);
+
+        const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
+
+        for (let i = 0; i < candidates.length; i++) {
+          for (let j = 0; j < editedTalentList?.talent?.length!; j++) {
+            if (
+              candidates[i].user?._id ===
+              editedTalentList?.talent![j]!.user!._id
+            ) {
+              candidatesOnTalentListSelected.push(candidates[i]);
             }
           }
-          setCandidatesFromTalentList(candidatesOnTalentListSelected);
-          setNewTalentListCandidatesIds([]);
-          setNewTalentListName("");
         }
+        setCandidatesFromTalentList(candidatesOnTalentListSelected);
+        setEditTalentListMode(false);
+        setNewTalentListCandidatesIds([]);
+        setNewTalentListName("");
+      } else {
+        console.log(
+          "can't land here, something is wrong! there isn't any exception to the rule :P"
+        );
       }
-      setQuickActionButtonUsed(false);
     },
   });
 
+  // console.log("mostRelevantMemberNode = ", mostRelevantMemberNode);
   const handleTrainButtonClick = () => {
     setTrainModalOpen(true);
   };
@@ -572,6 +603,7 @@ const PositionCRM: NextPageWithLayout = () => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     if (talentListToShow) {
+      // console.log("111 aaa");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < talentListToShow.talent!.length; j++) {
           if (
@@ -583,7 +615,10 @@ const PositionCRM: NextPageWithLayout = () => {
       }
       setTalentListSelected(talentListToShow);
       setTalentListToShow(undefined);
+      // console.log({ talentListToShow });
+      // console.log({ talentListsAvailables });
     } else if (list._id !== "000") {
+      // console.log("1111 cccc");
       for (let i = 0; i < candidates.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (candidates[i].user?._id === list.talent![j]!.user!._id) {
@@ -594,6 +629,7 @@ const PositionCRM: NextPageWithLayout = () => {
       setTalentListSelected(list);
     } else {
       candidatesOnTalentListSelected.push(...candidates);
+      // console.log("1111 bbbb");
       setTalentListSelected({ _id: "000", name: "All candidates" });
     }
     // }
@@ -604,12 +640,14 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   // const handleCreateNewListButton = () => {
+  //   // console.log("2222");
   //   setTalentListSelected({ _id: "000", name: "All candidates" });
   //   setNewTalentListCreationMode(true);
   //   setCandidatesFromTalentList(candidates);
   // };
 
   const handleCreateNewList = () => {
+    // console.log("2222");
     // setTalentListSelected({ _id: "000", name: "All candidates" });
     // setCandidatesFromTalentList(candidates);
     setAddToListOpen(false);
@@ -787,52 +825,6 @@ const PositionCRM: NextPageWithLayout = () => {
 
     navigator.clipboard.writeText(url);
     toast.success("Link copied to clipboard!");
-  };
-
-  const handleRejectCandidate = async (candidateID: string) => {
-    setQuickActionButtonUsed(true);
-    const _prevTalent = findPositionData?.findPosition.talentList
-      .find((_list: any) => _list._id === rejectedTalentListID)
-      .talent.map((t: any) => t.user._id);
-
-    const newTalentListCandidatesIds = _prevTalent.length
-      ? [..._prevTalent, candidateID]
-      : [candidateID];
-
-    await updateUsersTalentListPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          talentListID: rejectedTalentListID,
-          usersTalentList: newTalentListCandidatesIds,
-        },
-      },
-    });
-
-    toast.success("Candidate added to Rejected Candidates list!");
-  };
-
-  const handleApproveCandidate = async (candidateID: string) => {
-    setQuickActionButtonUsed(true);
-    const _prevTalent = findPositionData?.findPosition.talentList
-      .find((_list: any) => _list._id === approvedTalentListID)
-      .talent.map((t: any) => t.user._id);
-
-    const newTalentListCandidatesIds = _prevTalent.length
-      ? [..._prevTalent, candidateID]
-      : [candidateID];
-
-    await updateUsersTalentListPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          talentListID: approvedTalentListID,
-          usersTalentList: newTalentListCandidatesIds,
-        },
-      },
-    });
-
-    toast.success("Candidate added to Approved Candidates list!");
   };
 
   return (
@@ -1141,7 +1133,13 @@ const PositionCRM: NextPageWithLayout = () => {
             candidatesList={candidatesFromTalentList}
             fetchIsLoading={findPositionIsLoading}
             setRowObjectData={handleRowClick}
-            listMode={ListModeEnum.selectable}
+            listMode={
+              newTalentListCreationMode
+                ? ListModeEnum.creation
+                : editTalentListMode
+                ? ListModeEnum.edit
+                : ListModeEnum.selectable
+            }
             selectedIds={newTalentListCandidatesIds}
             handleChkSelection={handleCandidateCheckboxSelection}
           />
@@ -1189,8 +1187,6 @@ const PositionCRM: NextPageWithLayout = () => {
             onClose={() => {
               setSelectedUserId(null);
             }}
-            rejectCandidateFn={handleRejectCandidate}
-            approveCandidateFn={handleApproveCandidate}
           />
           {/* ) : (
             <div className="w-full pt-20 text-center">

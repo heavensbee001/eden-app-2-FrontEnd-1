@@ -39,8 +39,6 @@ export interface ICandidateInfoProps {
   mostRelevantMemberNode?: relevantNodeObj;
   candidate?: CandidateTypeSkillMatch;
   onClose?: () => void;
-  rejectCandidateFn?: (memberID: string) => void;
-  approveCandidateFn?: (memberID: string) => void;
 }
 
 function classNames(...classes: any[]) {
@@ -54,8 +52,6 @@ export const CandidateInfo = ({
   mostRelevantMemberNode,
   candidate,
   onClose,
-  rejectCandidateFn,
-  approveCandidateFn,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
 
@@ -146,16 +142,7 @@ export const CandidateInfo = ({
     },
   ];
 
-  const handleRejectCandidate = () => {
-    console.log("reject candidate");
-    console.log({ memberID });
-    rejectCandidateFn && rejectCandidateFn(memberID);
-  };
-
-  const handleApproveCandidate = () => {
-    console.log("approve candidate");
-    approveCandidateFn && approveCandidateFn(memberID);
-  };
+  console.log("candidate = ", candidate);
 
   return (
     <>
@@ -171,7 +158,6 @@ export const CandidateInfo = ({
                 <Button
                   className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
                   radius="pill"
-                  onClick={handleRejectCandidate}
                 >
                   REJECT
                 </Button>
@@ -190,7 +176,6 @@ export const CandidateInfo = ({
                   variant="primary"
                   radius="pill"
                   className="border-none font-bold text-white"
-                  onClick={handleApproveCandidate}
                 >
                   APPROVE
                 </Button>
