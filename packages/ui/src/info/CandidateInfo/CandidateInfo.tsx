@@ -39,9 +39,6 @@ export interface ICandidateInfoProps {
   mostRelevantMemberNode?: relevantNodeObj;
   candidate?: CandidateTypeSkillMatch;
   onClose?: () => void;
-  rejectCandidateFn?: (memberID: string) => void;
-  approveCandidateFn?: (memberID: string) => void;
-  qualified?: boolean;
 }
 
 function classNames(...classes: any[]) {
@@ -55,9 +52,6 @@ export const CandidateInfo = ({
   mostRelevantMemberNode,
   candidate,
   onClose,
-  rejectCandidateFn,
-  approveCandidateFn,
-  qualified = false,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
 
@@ -72,6 +66,8 @@ export const CandidateInfo = ({
     skip: !Boolean(memberID),
     ssr: false,
   });
+
+  // console.log("selectedUserScoreLetter 000f0f0 = ", selectedUserScoreLetter);
 
   const tabs = [
     {
@@ -146,13 +142,7 @@ export const CandidateInfo = ({
     },
   ];
 
-  const handleRejectCandidate = () => {
-    rejectCandidateFn && rejectCandidateFn(memberID);
-  };
-
-  const handleApproveCandidate = () => {
-    approveCandidateFn && approveCandidateFn(memberID);
-  };
+  console.log("candidate = ", candidate);
 
   return (
     <>
@@ -163,12 +153,11 @@ export const CandidateInfo = ({
         />
         <div className="grid w-full grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full py-2 text-center">
-            {!router.pathname.includes("/talentlist") && !qualified ? (
+            {!router.pathname.includes("/talentlist") ? (
               <div className="flex w-full justify-end">
                 <Button
                   className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
                   radius="pill"
-                  onClick={handleRejectCandidate}
                 >
                   REJECT
                 </Button>
@@ -181,13 +170,12 @@ export const CandidateInfo = ({
             </div>
           </div>
           <div className="col-3 mt-5 w-full py-2 text-center text-sm">
-            {!router.pathname.includes("/talentlist") && !qualified ? (
+            {!router.pathname.includes("/talentlist") ? (
               <div className="flex w-full justify-start">
                 <Button
                   variant="primary"
                   radius="pill"
                   className="border-none font-bold text-white"
-                  onClick={handleApproveCandidate}
                 >
                   APPROVE
                 </Button>
