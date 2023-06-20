@@ -708,7 +708,7 @@ const InterviewEdenAIContainer = ({
   );
 };
 
-export const FIND_priorities_TRAIN_EDEN_AI = gql`
+export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
   mutation FindPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
     findPrioritiesTrainEdenAI(fields: $fields) {
       success
@@ -747,8 +747,6 @@ const PrioritiesAndTradeOffsContainer =
 
     const [scraping, setScraping] = useState<boolean>(false);
 
-    const [report, setReport] = useState<string | null>(null);
-
     const [priorities, setPriorities] = useState<PriorityObj[]>([]);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -762,7 +760,7 @@ const PrioritiesAndTradeOffsContainer =
     const { positionID } = router.query;
 
     const [FindPrioritiesTrainEdenAI] = useMutation(
-      FIND_priorities_TRAIN_EDEN_AI,
+      FIND_PRIORITIES_TRAIN_EDEN_AI,
       {
         onCompleted({ findPrioritiesTrainEdenAI }) {
           console.log(
