@@ -350,9 +350,9 @@ const PositionCRM: NextPageWithLayout = () => {
 
     if (percentage >= 85) {
       grade = { letter: "A", color: "text-green-500" };
-    } else if (percentage >= 75) {
+    } else if (percentage >= 70) {
       grade = { letter: "B", color: "text-green-200" };
-    } else if (percentage >= 65) {
+    } else if (percentage >= 50) {
       grade = { letter: "C", color: "text-orange-300" };
       // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
       // else grade = { letter: "C", color: "text-black" };
