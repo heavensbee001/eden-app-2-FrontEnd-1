@@ -8,7 +8,7 @@ import {
   // PopoverScoreReason,
   TeamAttributeChart,
   // TextHeading2,
-  TextInputLabel,
+  // TextInputLabel,
   TextLabel1,
 } from "@eden/package-ui";
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
@@ -284,10 +284,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   //   },
   // };
 
+  console.log("summaryQuestions", summaryQuestions);
+
   return (
-    <div className="relative pb-4 pt-4">
+    <div className="relative pb-4 pt-24">
       {member?.letterAndColor?.culture?.letter && (
-        <div className="relative">
+        <div className="">
           <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
             <p className="text-lg font-bold">Stats Score:</p>
             <p
@@ -299,79 +301,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         </div>
       )}
 
-      <div className="mb-8 grid grid-cols-12">
-        <div className="col-span-6 mb-4">
-          <p className="mb-2 text-center">
-            <TextLabel1>PieChart</TextLabel1>
-          </p>
-          {/* <Pie data={data} options={options} /> */}
-          {!!loadingPieNodeCategory ? (
-            <LoadingGraphData />
-          ) : pieChartData.datasets[0]?.data.length > 0 ? (
-            <Pie
-              data={pieChartData}
-              options={{
-                layout: {
-                  padding: 12,
-                },
-                plugins: {
-                  legend: {
-                    position: "bottom",
-                  },
-                },
-              }}
-            />
-          ) : (
-            <NoGraphData />
-          )}
-        </div>
-        <div className="col-span-6 mb-4">
-          <p className="mb-2 text-center">
-            <TextLabel1>Radar Chart</TextLabel1>
-          </p>
-          {/* <Pie data={data} options={options} /> */}
-          {/* <TeamAttributeChart members={dataRadarchart} /> */}
-          {radioChartLoading ? (
-            <LoadingGraphData />
-          ) : (
-            <>
-              {radioChart?.length > 0 ? (
-                <div className="-mt-8">
-                  <TeamAttributeChart
-                    members={radioChart}
-                    options={optionsRadar}
-                  />
-                </div>
-              ) : (
-                <NoGraphData />
-              )}
-            </>
-          )}
-        </div>
-        <div className="col-span-2"></div>
-        <div className="col-span-8">
-          <p className="mb-4 text-center">
-            <TextLabel1>Background match</TextLabel1>
-          </p>
-          {/* <BackgroundMatchChart
-            memberName={member?.discordName ?? ""}
-            backgroundMatchData={exampleData}
-          /> */}
-          {dataBarChart.length > 0 ? (
-            <div className="h-[300px]">
-              <BackgroundMatchChart
-                memberName={member?.user?.discordName ?? ""}
-                backgroundMatchData={dataBarChart}
-              />
-            </div>
-          ) : (
-            <LoadingGraphData />
-          )}
-        </div>
-        <div className="col-span-2"></div>
-      </div>
       <p className="mb-2 text-center">
-        <TextLabel1>INTERVIEW ANALYSIS</TextLabel1>
+        <TextLabel1>INTERVIEW QUESTION ANALYSIS</TextLabel1>
       </p>
       <div
         className={`mx-auto mb-2 px-4`}
@@ -384,7 +315,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               <div
                 key={index}
                 className={classNames(
-                  "transition-scale z-10 mb-2 h-full cursor-pointer rounded-sm border-none bg-gray-50 px-4 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
+                  "transition-scale z-10 mb-4 h-full cursor-pointer rounded-sm border-none bg-gray-50 px-4 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
                   summaryQuestionSelected?.questionID === item.questionID
                     ? "border-accentColor scale-[1.02] bg-lime-50"
                     : ""
@@ -401,19 +332,19 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 }}
               >
                 <div className="py-4">
-                  <p className="mb-2 font-semibold">
-                    {item.questionContentSmall?.replace(".", "")}
+                  <p className="mb-4 font-medium text-gray-700">
+                    {item.questionContent?.replace(".", "")}
                   </p>
                   <div className="flex w-full">
-                    <div className="w-1/4 pt-2">
-                      {!item.score ? (
+                    <div className="flex w-1/4 items-center justify-center">
+                      {/* {!item.score ? (
                         <TextInputLabel className="mr-auto text-center text-xs text-black">
-                          {item.answerContentSmall?.replace(".", "")}
+                          {item.answerContent?.replace(".", "")}
                         </TextInputLabel>
-                      ) : null}
-                      {item.score ? (
-                        <div className="text-center text-lg font-bold leading-tight">
-                          <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div>
+                      ) : null} */}
+                      <div className="text-center text-lg font-bold leading-tight">
+                        <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div>
+                        {item.score ? (
                           <p
                             className={classNames(
                               `text-${getPercentageColor(item.score * 10)}`
@@ -421,20 +352,16 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                           >
                             {getPercentageText(item.score * 10)}
                           </p>
-                        </div>
-                      ) : //  : (
-                      //   <TextInputLabel className="text-xs text-black">
-                      //     {item.answerContentSmall.replace(".", "")}
-                      //   </TextInputLabel>
-                      // )
-                      null}
+                        ) : null}
+                      </div>
                     </div>
                     <div className="w-3/4 pl-2">
-                      <p className="whitespace-pre-wrap">{item.reason}</p>
+                      <p className="whitespace-pre-wrap text-gray-500">
+                        {item.reason}
+                      </p>
                     </div>
                   </div>
                 </div>
-                {summaryQuestionSelected?.questionID}
                 <Modal
                   open={summaryQuestionSelected?.questionID === item.questionID}
                   onClose={() => {
@@ -508,6 +435,78 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               </div>
             ))
           : null}
+      </div>
+
+      <div className="mb-8 grid grid-cols-12">
+        <div className="col-span-2"></div>
+        <div className="col-span-8">
+          <p className="mb-4 text-center">
+            <TextLabel1>Background match</TextLabel1>
+          </p>
+          {/* <BackgroundMatchChart
+            memberName={member?.discordName ?? ""}
+            backgroundMatchData={exampleData}
+          /> */}
+          {dataBarChart.length > 0 ? (
+            <div className="h-[300px]">
+              <BackgroundMatchChart
+                memberName={member?.user?.discordName ?? ""}
+                backgroundMatchData={dataBarChart}
+              />
+            </div>
+          ) : (
+            <LoadingGraphData />
+          )}
+        </div>
+        <div className="col-span-2"></div>
+        <div className="col-span-6 mb-4">
+          <p className="mb-2 text-center">
+            <TextLabel1>PieChart</TextLabel1>
+          </p>
+          {/* <Pie data={data} options={options} /> */}
+          {!!loadingPieNodeCategory ? (
+            <LoadingGraphData />
+          ) : pieChartData.datasets[0]?.data.length > 0 ? (
+            <Pie
+              data={pieChartData}
+              options={{
+                layout: {
+                  padding: 12,
+                },
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                  },
+                },
+              }}
+            />
+          ) : (
+            <NoGraphData />
+          )}
+        </div>
+        <div className="col-span-6 mb-4">
+          <p className="mb-2 text-center">
+            <TextLabel1>Radar Chart</TextLabel1>
+          </p>
+          {/* <Pie data={data} options={options} /> */}
+          {/* <TeamAttributeChart members={dataRadarchart} /> */}
+          {radioChartLoading ? (
+            <LoadingGraphData />
+          ) : (
+            <>
+              {radioChart?.length > 0 ? (
+                <div className="-mt-8">
+                  <TeamAttributeChart
+                    members={radioChart}
+                    options={optionsRadar}
+                  />
+                </div>
+              ) : (
+                <NoGraphData />
+              )}
+            </>
+          )}
+        </div>
       </div>
       {/* <p className="text-soilHeading3 font-poppins mb-6 text-center font-black text-gray-400">
         CULTURE FIT

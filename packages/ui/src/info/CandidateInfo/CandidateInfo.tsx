@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useQuery } from "@apollo/client";
 import { FIND_MEMBER } from "@eden/package-graphql";
 import { SummaryQuestionType } from "@eden/package-graphql/generated";
@@ -17,7 +16,7 @@ import {
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
 
 type NodeDisplay = {
   nameRelevantNode: string;
@@ -34,11 +33,16 @@ type relevantNodeObj = {
 
 export interface ICandidateInfoProps {
   memberID: string;
-  percentage: number | null;
+  percentage?: number | null;
   summaryQuestions?: SummaryQuestionType[];
   mostRelevantMemberNode?: relevantNodeObj;
   candidate?: CandidateTypeSkillMatch;
   onClose?: () => void;
+  // eslint-disable-next-line no-unused-vars
+  rejectCandidateFn?: (memberID: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  approveCandidateFn?: (memberID: string) => void;
+  qualified?: boolean;
 }
 
 function classNames(...classes: any[]) {
@@ -47,11 +51,13 @@ function classNames(...classes: any[]) {
 
 export const CandidateInfo = ({
   memberID,
-  percentage,
   summaryQuestions,
   mostRelevantMemberNode,
   candidate,
   onClose,
+  rejectCandidateFn,
+  approveCandidateFn,
+  qualified = false,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
 
@@ -66,8 +72,6 @@ export const CandidateInfo = ({
     skip: !Boolean(memberID),
     ssr: false,
   });
-
-  // console.log("selectedUserScoreLetter 000f0f0 = ", selectedUserScoreLetter);
 
   const tabs = [
     {
@@ -142,7 +146,13 @@ export const CandidateInfo = ({
     },
   ];
 
-  console.log("candidate = ", candidate);
+  const handleRejectCandidate = () => {
+    rejectCandidateFn && rejectCandidateFn(memberID);
+  };
+
+  const handleApproveCandidate = () => {
+    approveCandidateFn && approveCandidateFn(memberID);
+  };
 
   return (
     <>
@@ -153,11 +163,12 @@ export const CandidateInfo = ({
         />
         <div className="grid w-full grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full py-2 text-center">
-            {!router.pathname.includes("/talentlist") ? (
+            {!router.pathname.includes("/talentlist") && !qualified ? (
               <div className="flex w-full justify-end">
                 <Button
                   className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
                   radius="pill"
+                  onClick={handleRejectCandidate}
                 >
                   REJECT
                 </Button>
@@ -170,12 +181,13 @@ export const CandidateInfo = ({
             </div>
           </div>
           <div className="col-3 mt-5 w-full py-2 text-center text-sm">
-            {!router.pathname.includes("/talentlist") ? (
+            {!router.pathname.includes("/talentlist") && !qualified ? (
               <div className="flex w-full justify-start">
                 <Button
                   variant="primary"
                   radius="pill"
                   className="border-none font-bold text-white"
+                  onClick={handleApproveCandidate}
                 >
                   APPROVE
                 </Button>
