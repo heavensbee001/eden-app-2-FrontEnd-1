@@ -386,6 +386,17 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
+              <WizardStep label={"Priorities & TradeOffs"}>
+                <div className="mx-auto h-full max-w-lg">
+                  <h2 className="mb-4 text-xl font-medium">Key Priorities</h2>
+                  <p className="mb-8 text-sm leading-tight text-gray-500">
+                    Here’s what I got your priorities are - please re-arrange as
+                    you see fit.
+                  </p>
+                  <PrioritiesAndTradeOffsContainer />
+                </div>
+              </WizardStep>
+
               <WizardStep label={"Eden Intake"}>
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">
@@ -697,6 +708,305 @@ const InterviewEdenAIContainer = ({
   );
 };
 
+export const FIND_priorities_TRAIN_EDEN_AI = gql`
+  mutation FindPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
+    findPrioritiesTrainEdenAI(fields: $fields) {
+      success
+      priorities {
+        priority
+        reason
+      }
+      tradeOffs {
+        tradeOff1
+        tradeOff2
+        reason
+      }
+    }
+  }
+`;
+
+interface PriorityObj {
+  priority: string;
+  reason: string;
+}
+
+interface TradeOffsObj {
+  tradeOff1: string;
+  tradeOff2: string;
+  reason: string;
+}
+
+interface IPrioritiesAndTradeOffsContainerProps {}
+
+const PrioritiesAndTradeOffsContainer =
+  ({}: IPrioritiesAndTradeOffsContainerProps) => {
+    const { currentUser } = useContext(UserContext);
+    // eslint-disable-next-line no-unused-vars
+    const [submitting, setSubmitting] = useState(false);
+    const router = useRouter();
+
+    const [scraping, setScraping] = useState<boolean>(false);
+
+    const [report, setReport] = useState<string | null>(null);
+
+    const [priorities, setPriorities] = useState<PriorityObj[]>([]);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+    const [tradeOffs, setTradeOffs] = useState<TradeOffsObj[]>([]);
+
+    // eslint-disable-next-line no-unused-vars
+    const { register, watch, control, setValue, getValues } = useForm<Members>({
+      defaultValues: { ...currentUser },
+    });
+
+    const { positionID } = router.query;
+
+    const [FindPrioritiesTrainEdenAI] = useMutation(
+      FIND_priorities_TRAIN_EDEN_AI,
+      {
+        onCompleted({ findPrioritiesTrainEdenAI }) {
+          console.log(
+            "findPrioritiesTrainEdenAI = ",
+            findPrioritiesTrainEdenAI
+          );
+
+          setScraping(false);
+
+          // let jobDescription =
+          //   FindPrioritiesTrainEdenAI.report.replace(/<|>/g, "");
+
+          // //Change - to •
+          // jobDescription = jobDescription.replace(/-\s/g, "• ");
+
+          setPriorities(findPrioritiesTrainEdenAI.priorities);
+
+          setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
+
+          setSelected(
+            findPrioritiesTrainEdenAI.tradeOffs.map(
+              (tradeOff: TradeOffsObj) => tradeOff.tradeOff2
+            )
+          );
+        },
+      }
+    );
+
+    // console.log("tradeOffs = ", tradeOffs);
+
+    useEffect(() => {
+      setScraping(true);
+
+      console.log("positionID 2= ", positionID);
+
+      FindPrioritiesTrainEdenAI({
+        variables: {
+          // fields: { message: textResponse, userID: currentUser?._id },
+          fields: {
+            positionID: positionID,
+          },
+        },
+      });
+      return () => {
+        setScraping(false);
+      };
+    }, []);
+
+    const [selected, setSelected] = useState<string[]>(
+      tradeOffs.map((tradeOff) => tradeOff.tradeOff2)
+    );
+
+    const handleSelect = (index: number, option: string) => {
+      const newSelected = [...selected];
+
+      newSelected[index] = option;
+      setSelected(newSelected);
+    };
+
+    return (
+      // <ul className="space-y-2">
+      //   {priorities.map((priority, index) => (
+      //     <li
+      //       key={index}
+      //       className="relative cursor-pointer"
+      //       onMouseEnter={() => setHoveredIndex(index)}
+      //       onMouseLeave={() => setHoveredIndex(null)}
+      //     >
+      //       <div className="font-bold">{priority.priority}</div>
+      //       {hoveredIndex === index && (
+      //         <div className="absolute left-0 top-full rounded-md bg-white p-2 shadow-lg">
+      //           {priority.reason}
+      //         </div>
+      //       )}
+      //     </li>
+      //   ))}
+      // </ul>
+      // <ul className="space-y-4">
+      //   {priorities.map((priority, index) => (
+      //     <li
+      //       key={index}
+      //       className="relative cursor-pointer text-xl"
+      //       onMouseEnter={() => setHoveredIndex(index)}
+      //       onMouseLeave={() => setHoveredIndex(null)}
+      //     >
+      //       <div className="font-bold">
+      //         {index + 1}. {priority.priority}
+      //       </div>
+      //       {hoveredIndex === index && (
+      //         <div className="absolute left-0 top-full z-50 rounded-md bg-white p-2 shadow-lg">
+      //           {priority.reason}
+      //         </div>
+      //       )}
+      //     </li>
+      //   ))}
+      // </ul>
+      <>
+        {scraping && (
+          <p className="text-center text-gray-400">
+            Clculating criteria{" "}
+            <svg
+              className="inline-block animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              width="21px"
+              height="21px"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                opacity="0.2"
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                fill="#000000"
+              />
+              <path
+                d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
+                fill="#000000"
+              />
+            </svg>
+          </p>
+        )}
+        <ul className="space-y-4">
+          {priorities &&
+            priorities.length > 0 &&
+            priorities.map((priority, index) => (
+              <li
+                key={index}
+                className="relative cursor-pointer text-xl"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <div className="text-lg font-bold">
+                  {index + 1}. {priority.priority}
+                </div>
+                {hoveredIndex === index && (
+                  <div className="absolute left-0 top-0 z-50 rounded-md bg-white p-4 text-sm shadow-md">
+                    <h1>Reason for Priority: </h1>
+                    <p>{priority.reason}</p>
+                  </div>
+                )}
+              </li>
+            ))}
+        </ul>
+
+        <h2 className="mb-4 py-12 text-3xl font-medium">Tradeoffs</h2>
+        <p className="text-md mb-8 leading-tight text-gray-500">
+          From what I gathered, these are your tradeoff preferences - feel free
+          to adjust
+        </p>
+
+        {/* <div className="flex flex-col items-center justify-center">
+          {tradeOffs.map((tradeOff, index) => (
+            <div key={index} className="flex flex-col gap-2">
+              <div className="flex flex-row items-center gap-4">
+                <label className="flex items-center gap-2 text-lg">
+                  <input
+                    type="radio"
+                    name={`tradeoff-${index}`}
+                    value={tradeOff.tradeOff1}
+                    checked={selected[index] === tradeOff.tradeOff1}
+                    onChange={() => handleSelect(index, tradeOff.tradeOff1)}
+                  />
+                  <span className="text-xl">{tradeOff.tradeOff1}</span>
+                </label>
+                <label className="flex items-center gap-2 text-lg">
+                  <input
+                    type="radio"
+                    name={`tradeoff-${index}`}
+                    value={tradeOff.tradeOff2}
+                    checked={selected[index] === tradeOff.tradeOff2}
+                    onChange={() => handleSelect(index, tradeOff.tradeOff2)}
+                  />
+                  <span className="text-xl">{tradeOff.tradeOff2}</span>
+                </label>
+              </div>
+            </div>
+          ))}
+        </div> */}
+        <div className="flex flex-col items-center justify-center">
+          {tradeOffs.map((tradeOff, index) => (
+            <div key={index} className="flex flex-col gap-2">
+              <div className="flex flex-row items-center gap-4">
+                <label className="flex items-center gap-2 text-lg">
+                  <input
+                    type="radio"
+                    name={`tradeoff-${index}`}
+                    value={tradeOff.tradeOff1}
+                    checked={selected[index] === tradeOff.tradeOff1}
+                    onChange={() => handleSelect(index, tradeOff.tradeOff1)}
+                  />
+                  <span className="text-xl">{tradeOff.tradeOff1}</span>
+                </label>
+                <label className="flex items-center gap-2 text-lg">
+                  <input
+                    type="radio"
+                    name={`tradeoff-${index}`}
+                    value={tradeOff.tradeOff2}
+                    checked={selected[index] === tradeOff.tradeOff2}
+                    onChange={() => handleSelect(index, tradeOff.tradeOff2)}
+                  />
+                  <span className="text-xl">{tradeOff.tradeOff2}</span>
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
+
+      // <div className="w-full">
+      //   {scraping && (
+      //     <p className="text-center text-gray-400">
+      //       Clculating criteria{" "}
+      //       <svg
+      //         className="inline-block animate-spin"
+      //         xmlns="http://www.w3.org/2000/svg"
+      //         width="21px"
+      //         height="21px"
+      //         viewBox="0 0 24 24"
+      //         fill="none"
+      //       >
+      //         <path
+      //           opacity="0.2"
+      //           fillRule="evenodd"
+      //           clipRule="evenodd"
+      //           d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+      //           fill="#000000"
+      //         />
+      //         <path
+      //           d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
+      //           fill="#000000"
+      //         />
+      //       </svg>
+      //     </p>
+      //   )}
+      //   {report && (
+      //     <div className="whitespace-pre-wrap">
+      //       {convertTextCategoriesToHTML(report)}
+      //     </div>
+      //   )}
+      // </div>
+    );
+  };
+
 export const POSITION_TEXT_CONVO_TO_REPORT = gql`
   mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
     positionTextAndConvoToReportCriteria(fields: $fields) {
@@ -792,7 +1102,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
 
       {scraping && (
         <p className="text-center text-gray-400">
-          Recalculating criteria{" "}
+          Clculating criteria{" "}
           <svg
             className="inline-block animate-spin"
             xmlns="http://www.w3.org/2000/svg"
