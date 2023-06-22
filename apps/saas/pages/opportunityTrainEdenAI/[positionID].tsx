@@ -28,6 +28,10 @@ import { HiBadgeCheck } from "react-icons/hi";
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../_app";
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export const WEBPAGE_TO_MEMORY = gql`
   mutation ($fields: websiteToMemoryCompanyInput!) {
     websiteToMemoryCompany(fields: $fields) {
@@ -502,6 +506,7 @@ export default HomePage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
+import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { HiOutlineLink } from "react-icons/hi2";
 
 export async function getServerSideProps(ctx: {
@@ -748,7 +753,6 @@ const PrioritiesAndTradeOffsContainer =
     const [scraping, setScraping] = useState<boolean>(false);
 
     const [priorities, setPriorities] = useState<PriorityObj[]>([]);
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const [tradeOffs, setTradeOffs] = useState<TradeOffsObj[]>([]);
 
@@ -820,6 +824,26 @@ const PrioritiesAndTradeOffsContainer =
       setSelected(newSelected);
     };
 
+    const permutePriorities = (index1: number, index2: number) => {
+      if (
+        index1 < 0 ||
+        index1 >= priorities.length ||
+        index2 < 0 ||
+        index2 >= priorities.length
+      ) {
+        throw new Error("Invalid index");
+      }
+
+      const newArray = [...priorities];
+
+      [newArray[index1], newArray[index2]] = [
+        newArray[index2],
+        newArray[index1],
+      ];
+
+      setPriorities(newArray);
+    };
+
     return (
       // <ul className="space-y-2">
       //   {priorities.map((priority, index) => (
@@ -860,7 +884,7 @@ const PrioritiesAndTradeOffsContainer =
       <>
         {scraping && (
           <p className="text-center text-gray-400">
-            Clculating criteria{" "}
+            Calculating criteria{" "}
             <svg
               className="inline-block animate-spin"
               xmlns="http://www.w3.org/2000/svg"
@@ -883,31 +907,57 @@ const PrioritiesAndTradeOffsContainer =
             </svg>
           </p>
         )}
-        <ul className="space-y-4">
+        <ul className="mb-8">
           {priorities &&
             priorities.length > 0 &&
             priorities.map((priority, index) => (
               <li
                 key={index}
-                className="relative cursor-pointer text-xl"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
+                className="group relative cursor-pointer py-1 pl-10 text-xl"
               >
                 <div className="text-lg font-bold">
                   {index + 1}. {priority.priority}
                 </div>
-                {hoveredIndex === index && (
-                  <div className="absolute left-0 top-0 z-50 rounded-md bg-white p-4 text-sm shadow-md">
-                    <h1>Reason for Priority: </h1>
-                    <p>{priority.reason}</p>
+                <div className="h-0 overflow-hidden p-0 pt-0 text-sm text-gray-600 group-hover:h-auto group-hover:p-4 group-hover:pt-1">
+                  <h3>Reason for Priority: </h3>
+                  <p>{priority.reason}</p>
+                </div>
+                <div className="absolute left-2 top-0 hidden text-gray-400 group-hover:block">
+                  <div className="hover:text-gray-600">
+                    <div
+                      className={classNames(
+                        "hover:text-gray-600",
+                        index === 0 ? "hidden" : ""
+                      )}
+                    >
+                      <BiChevronUp
+                        onClick={() => {
+                          permutePriorities(index, index - 1);
+                        }}
+                      />
+                    </div>
                   </div>
-                )}
+                  <div className="hover:text-gray-600">
+                    <div
+                      className={classNames(
+                        "hover:text-gray-600",
+                        index === priorities.length - 1 ? "hidden" : ""
+                      )}
+                    >
+                      <BiChevronDown
+                        onClick={() => {
+                          permutePriorities(index, index + 1);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </li>
             ))}
         </ul>
 
-        <h2 className="mb-4 py-12 text-3xl font-medium">Tradeoffs</h2>
-        <p className="text-md mb-8 leading-tight text-gray-500">
+        <h2 className="mb-4 text-xl font-medium">Tradeoffs</h2>
+        <p className="mb-8 text-sm leading-tight text-gray-500">
           From what I gathered, these are your tradeoff preferences - feel free
           to adjust
         </p>
@@ -942,21 +992,25 @@ const PrioritiesAndTradeOffsContainer =
         </div> */}
         <div className="flex flex-col items-center justify-center">
           {tradeOffs.map((tradeOff, index) => (
-            <div key={index} className="flex flex-col gap-2">
-              <div className="flex flex-row items-center gap-4">
-                <label className="flex items-center gap-2 text-lg">
+            <div key={index} className="grid grid-cols-2 gap-2">
+              <div className="col-span-1">
+                <label className="flex cursor-pointer items-center justify-end text-lg">
+                  <span className="text-xl">{tradeOff.tradeOff1}</span>
                   <input
                     type="radio"
                     name={`tradeoff-${index}`}
                     value={tradeOff.tradeOff1}
                     checked={selected[index] === tradeOff.tradeOff1}
                     onChange={() => handleSelect(index, tradeOff.tradeOff1)}
+                    className="ml-2"
                   />
-                  <span className="text-xl">{tradeOff.tradeOff1}</span>
                 </label>
-                <label className="flex items-center gap-2 text-lg">
+              </div>
+              <div className="col-span-1">
+                <label className="flex cursor-pointer items-center text-lg">
                   <input
                     type="radio"
+                    className="mr-2"
                     name={`tradeoff-${index}`}
                     value={tradeOff.tradeOff2}
                     checked={selected[index] === tradeOff.tradeOff2}
