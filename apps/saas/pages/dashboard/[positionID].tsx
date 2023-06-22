@@ -277,6 +277,32 @@ const PositionCRM: NextPageWithLayout = () => {
                 !approvedCandidatesIDs.includes(candidate.user._id)
             )
         );
+
+        if (findPositionData?.findPosition?.talentList) {
+          setApprovedTalentListID(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Accepted"
+            )?._id
+          );
+
+          setApprovedTalentListCandidatesList(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Accepted"
+            )?.talent
+          );
+
+          setRejectedTalentListID(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Rejected"
+            )?._id
+          );
+
+          setRejectedTalentListCandidatesList(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Rejected"
+            )?.talent
+          );
+        }
       }
 
       const questionPrep: Question[] = [];
@@ -301,34 +327,6 @@ const PositionCRM: NextPageWithLayout = () => {
       setQuestions(questionPrep);
     },
   });
-
-  useEffect(() => {
-    if (findPositionData?.findPosition?.talentList) {
-      setApprovedTalentListID(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Accepted"
-        )?._id
-      );
-
-      setApprovedTalentListCandidatesList(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Accepted"
-        )?.talent
-      );
-
-      setRejectedTalentListID(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Rejected"
-        )?._id
-      );
-
-      setRejectedTalentListCandidatesList(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Rejected"
-        )?.talent
-      );
-    }
-  }, [findPositionData?.findPosition?.talentList]);
 
   useEffect(() => {
     if (talentListToShow && talentListsAvailables.length) {
@@ -387,7 +385,10 @@ const PositionCRM: NextPageWithLayout = () => {
         ],
       },
     },
-    skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
+    skip:
+      !findPositionData?.findPosition ||
+      candidatesFromTalentList.length == 0 ||
+      nodeIDsPosition.length == 0,
 
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
@@ -432,9 +433,6 @@ const PositionCRM: NextPageWithLayout = () => {
         return _candidateWithSkillLetter;
       });
 
-      // setCandidates(_candidatesNew);
-      setCandidatesFromTalentList(_candidatesNew);
-
       const rejectedCandidatesIDs = rejectedTalentListCandidatesList.map(
         (candidate: any) => candidate?.user?._id
       );
@@ -454,6 +452,9 @@ const PositionCRM: NextPageWithLayout = () => {
               !approvedCandidatesIDs.includes(candidate.user._id)
           )
       );
+
+      // setCandidates(_candidatesNew);
+      setCandidatesFromTalentList(_candidatesNew);
 
       // -------------- Get the Candidates of the page ------------
 
@@ -917,71 +918,88 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   return (
-    <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
-      <div
-        className={classNames(
-          `z-20 transition-all duration-200 ease-in-out`,
-          selectedUserId ? "w-[calc(50%-1rem)]" : "w-full"
-        )}
-      >
-        <div className="mb-4 flex h-10 items-center">
-          <h1 className="mr-6 text-2xl font-medium">
-            {findPositionData && findPositionData.findPosition.name
-              ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
-                findPositionData.findPosition.name.slice(1)
-              : ""}{" "}
-            Dashboard
-          </h1>
-          <Button
-            size="sm"
-            className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
-            variant="default"
-            onClick={handleCopyLink}
-          >
-            <HiOutlineLink className="mr-1" />
-            interview link
-          </Button>
-          {notificationOpen && (
-            <span className="text-sm text-gray-400">Link copied!</span>
+    <>
+      <Head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:3442218,hjsv:6};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+          `,
+          }}
+        />
+      </Head>
+      <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
+        <div
+          className={classNames(
+            `z-20 transition-all duration-200 ease-in-out`,
+            selectedUserId ? "w-[calc(50%-1rem)]" : "w-full"
           )}
-          <Button
-            className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
-            radius="pill"
-            variant="secondary"
-            onClick={handleTrainButtonClick}
-          >
-            Train Eden AI
-            <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#ff5656]">
-              <div className="h-[40px] w-[40px] min-w-[40px]">
-                <Image
-                  src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                  width={40}
-                  height={40}
-                  alt=""
-                />
+        >
+          <div className="mb-4 flex h-10 items-center">
+            <h1 className="mr-6 text-2xl font-medium">
+              {findPositionData && findPositionData.findPosition.name
+                ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
+                  findPositionData.findPosition.name.slice(1)
+                : ""}{" "}
+              Dashboard
+            </h1>
+            <Button
+              size="sm"
+              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              variant="default"
+              onClick={handleCopyLink}
+            >
+              <HiOutlineLink className="mr-1" />
+              interview link
+            </Button>
+            {notificationOpen && (
+              <span className="text-sm text-gray-400">Link copied!</span>
+            )}
+            <Button
+              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              radius="pill"
+              variant="secondary"
+              onClick={handleTrainButtonClick}
+            >
+              Train Eden AI
+              <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#ff5656]">
+                <div className="h-[40px] w-[40px] min-w-[40px]">
+                  <Image
+                    src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                    width={40}
+                    height={40}
+                    alt=""
+                  />
+                </div>
               </div>
-            </div>
-          </Button>
-          <Button
-            className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
-            radius="pill"
-            variant="secondary"
-            onClick={handleFindBestTalentClick}
-          >
-            Find Best Talent
-            <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#007bff]">
-              <div className="h-[40px] w-[40px] min-w-[40px]">
-                <Image
-                  src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                  width={40}
-                  height={40}
-                  alt=""
-                />
+            </Button>
+            <Button
+              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              radius="pill"
+              variant="secondary"
+              onClick={handleFindBestTalentClick}
+            >
+              Find Best Talent
+              <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#007bff]">
+                <div className="h-[40px] w-[40px] min-w-[40px]">
+                  <Image
+                    src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                    width={40}
+                    height={40}
+                    alt=""
+                  />
+                </div>
               </div>
-            </div>
-          </Button>
+            </Button>
 
-          {/* <Button
+            {/* <Button
             variant="secondary"
             onClick={() => {
               router.push(`/train-ai/${positionID}`);
@@ -989,21 +1007,21 @@ const PositionCRM: NextPageWithLayout = () => {
             >
             Train AI
           </Button> */}
-        </div>
-        <div className="">
-          <div className="mb-4 flex items-center">
-            <div className="mr-4 max-w-[200px]">
-              {/* {!newTalentListCreationMode ? ( */}
-              <SelectList
-                items={[
-                  { _id: "000", name: "All candidates" },
-                  ...talentListsAvailables,
-                ]}
-                onChange={handleSelectedTalentList}
-                newValue={talentListSelected ? talentListSelected : undefined}
-                // isDisabled={editTalentListMode}
-              />
-              {/* ) : (
+          </div>
+          <div className="">
+            <div className="mb-4 flex items-center">
+              <div className="mr-4 max-w-[200px]">
+                {/* {!newTalentListCreationMode ? ( */}
+                <SelectList
+                  items={[
+                    { _id: "000", name: "All candidates" },
+                    ...talentListsAvailables,
+                  ]}
+                  onChange={handleSelectedTalentList}
+                  newValue={talentListSelected ? talentListSelected : undefined}
+                  // isDisabled={editTalentListMode}
+                />
+                {/* ) : (
                 <TextField
                   onChange={handleNewTalentListNameChange}
                   placeholder="Name your custom list"
@@ -1012,8 +1030,8 @@ const PositionCRM: NextPageWithLayout = () => {
                   className="mt-0 h-[30px] !px-2 !py-1"
                 />
               )} */}
-            </div>
-            {/* <>
+              </div>
+              {/* <>
               {talentListSelected?._id === "000" ? (
                 !newTalentListCreationMode ? (
                   <Button
@@ -1052,12 +1070,12 @@ const PositionCRM: NextPageWithLayout = () => {
                 )
               ) : !editTalentListMode ? (
                 <div className="flex"> */}
-            <MdIosShare
-              size={24}
-              className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
-              onClick={handleShareTalentListButton}
-            />
-            {/* <Button
+              <MdIosShare
+                size={24}
+                className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
+                onClick={handleShareTalentListButton}
+              />
+              {/* <Button
                     className="mr-2"
                     variant="secondary"
                     size="sm"
@@ -1088,7 +1106,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 </Button>
               )}
             </> */}
-            {/* <select
+              {/* <select
               name="add-to-list"
               id="add-to-list"
               className="ml-auto cursor-pointer text-xs text-gray-600 underline hover:text-gray-500"
@@ -1102,277 +1120,285 @@ const PositionCRM: NextPageWithLayout = () => {
               </option>
               <option value="asd">New list</option>
             </select> */}
-            {newTalentListCandidatesIds.length > 0 && (
-              <>
-                {createTalentListPositionLoading ||
-                updateUsersTalentListPositionLoading ? (
-                  <Loading title="" />
-                ) : (
-                  <div className="relative ml-10 mr-3">
-                    <span
-                      onClick={() => {
-                        setAddToListOpen(true);
-                      }}
-                      className="cursor-pointer text-xs text-gray-600 hover:text-gray-400"
-                    >
-                      <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
-                      Add to list
-                    </span>
-                    {addToListOpen && (
-                      <div
-                        className="fixed left-0 top-0 z-30 h-full w-full"
+              {newTalentListCandidatesIds.length > 0 && (
+                <>
+                  {createTalentListPositionLoading ||
+                  updateUsersTalentListPositionLoading ? (
+                    <Loading title="" />
+                  ) : (
+                    <div className="relative ml-10 mr-3">
+                      <span
                         onClick={() => {
-                          setAddToListOpen(false);
+                          setAddToListOpen(true);
                         }}
-                      ></div>
-                    )}
-                    {addToListOpen && (
-                      <div
-                        className={classNames(
-                          "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
-                          addToListOpen ? "" : "h-0"
-                        )}
+                        className="cursor-pointer text-xs text-gray-600 hover:text-gray-400"
                       >
+                        <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
+                        Add to list
+                      </span>
+                      {addToListOpen && (
                         <div
-                          className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                          onClick={handleCreateNewList}
+                          className="fixed left-0 top-0 z-30 h-full w-full"
+                          onClick={() => {
+                            setAddToListOpen(false);
+                          }}
+                        ></div>
+                      )}
+                      {addToListOpen && (
+                        <div
+                          className={classNames(
+                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                            addToListOpen ? "" : "h-0"
+                          )}
                         >
-                          <p className="">
-                            <HiOutlineDocumentPlus
-                              size={16}
-                              className="mb-1 mr-1 inline"
-                            />
-                            New list
-                          </p>
-                        </div>
-                        {talentListsAvailables.map((list, index) => (
                           <div
-                            key={index}
                             className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                            onClick={() => handleAddCandidatesToList(list._id!)}
+                            onClick={handleCreateNewList}
                           >
-                            <p className="">{list.name}</p>
+                            <p className="">
+                              <HiOutlineDocumentPlus
+                                size={16}
+                                className="mb-1 mr-1 inline"
+                              />
+                              New list
+                            </p>
                           </div>
-                        ))}
-                      </div>
-                    )}
+                          {talentListsAvailables.map((list, index) => (
+                            <div
+                              key={index}
+                              className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                              onClick={() =>
+                                handleAddCandidatesToList(list._id!)
+                              }
+                            >
+                              <p className="">{list.name}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+              {newTalentListCandidatesIds.length > 0 &&
+                talentListSelected?._id !== "000" && (
+                  <div className="relative">
+                    <span
+                      className="ml-4 cursor-pointer text-xs text-gray-600 hover:text-gray-400"
+                      onClick={() => {
+                        handleRemoveCandidatesFromList(
+                          talentListSelected?._id!
+                        );
+                      }}
+                    >
+                      <IoMdRemoveCircle
+                        size={16}
+                        className="mb-1 mr-1 inline"
+                      />
+                      Remove from list
+                    </span>
                   </div>
                 )}
-              </>
-            )}
-            {newTalentListCandidatesIds.length > 0 &&
-              talentListSelected?._id !== "000" && (
+              {newTalentListCandidatesIds.length > 0 && (
                 <div className="relative">
                   <span
-                    className="ml-4 cursor-pointer text-xs text-gray-600 hover:text-gray-400"
+                    data-tip="Select only 2 candidates to compare"
+                    data-for={`badgeTip-compare`}
+                    className={classNames(
+                      "ml-8 mr-4 text-xs text-gray-600 hover:text-gray-400",
+                      newTalentListCandidatesIds.length !== 2
+                        ? "cursor-default hover:line-through"
+                        : "cursor-pointer"
+                    )}
                     onClick={() => {
-                      handleRemoveCandidatesFromList(talentListSelected?._id!);
+                      if (newTalentListCandidatesIds.length !== 2) return;
+
+                      router.push(
+                        {
+                          pathname: "/dashboard/" + positionID,
+                          query: {
+                            candidate1: newTalentListCandidatesIds[0],
+                            candidate2: newTalentListCandidatesIds[1],
+                          },
+                        },
+                        undefined,
+                        { shallow: true }
+                      );
                     }}
                   >
-                    <IoMdRemoveCircle size={16} className="mb-1 mr-1 inline" />
-                    Remove from list
+                    <MdCompare size={16} className="mb-1 mr-1 inline" />
+                    Compare
                   </span>
+                  {newTalentListCandidatesIds.length !== 2 && (
+                    <ReactTooltip
+                      id="badgeTip-compare"
+                      place="top"
+                      effect="solid"
+                      backgroundColor="#f87171"
+                    />
+                  )}
                 </div>
               )}
-            {newTalentListCandidatesIds.length > 0 && (
-              <div className="relative">
-                <span
-                  data-tip="Select only 2 candidates to compare"
-                  data-for={`badgeTip-compare`}
-                  className={classNames(
-                    "ml-8 mr-4 text-xs text-gray-600 hover:text-gray-400",
-                    newTalentListCandidatesIds.length !== 2
-                      ? "cursor-default hover:line-through"
-                      : "cursor-pointer"
-                  )}
-                  onClick={() => {
-                    if (newTalentListCandidatesIds.length !== 2) return;
+            </div>
+          </div>
+          <div className="grid grid-flow-row">
+            <CandidatesTableList
+              candidateIDRowSelected={selectedUserId || null}
+              candidatesList={
+                talentListSelected?._id === "000"
+                  ? candidatesUnqualifiedList
+                  : candidatesFromTalentList
+              }
+              fetchIsLoading={findPositionIsLoading}
+              setRowObjectData={handleRowClick}
+              listMode={ListModeEnum.selectable}
+              selectedIds={newTalentListCandidatesIds}
+              handleChkSelection={handleCandidateCheckboxSelection}
+            />
+            {trainModalOpen ? (
+              <div className="fixed inset-0 z-30 overflow-y-auto">
+                <div className="flex min-h-screen items-center justify-center px-4">
+                  <div
+                    className="fixed inset-0 transition-opacity"
+                    aria-hidden="true"
+                    onClick={handleCloseTrainModal}
+                  >
+                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                  </div>
+                  <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-xl">
+                    <TrainQuestionsEdenAI
+                      questions={questions}
+                      positionID={positionID!}
+                      setQuestions={setQuestions}
+                      setTrainModalOpen={setTrainModalOpen}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div
+          className={classNames(
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+            selectedUserId ? "w-[50vw]" : "w-0"
+          )}
+        >
+          <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
+            {/* {selectedUserId ? ( */}
 
+            <CandidateInfo
+              key={selectedUserId || ""}
+              memberID={selectedUserId || ""}
+              // percentage={selectedUserScore}
+              summaryQuestions={selectedUserSummaryQuestions}
+              mostRelevantMemberNode={mostRelevantMemberNode}
+              candidate={candidatesOriginalList?.find(
+                (candidate) =>
+                  candidate?.user?._id?.toString() == selectedUserId?.toString()
+              )}
+              onClose={() => {
+                setSelectedUserId(null);
+              }}
+              rejectCandidateFn={handleRejectCandidate}
+              approveCandidateFn={handleApproveCandidate}
+              qualified={
+                Boolean(
+                  approvedTalentListCandidatesList?.find(
+                    (candidate) =>
+                      candidate?.user?._id?.toString() ==
+                      selectedUserId?.toString()
+                  )
+                ) ||
+                Boolean(
+                  rejectedTalentListCandidatesList?.find(
+                    (candidate) =>
+                      candidate?.user?._id?.toString() ==
+                      selectedUserId?.toString()
+                  )
+                )
+              }
+            />
+            {/* ) : (
+            <div className="w-full pt-20 text-center">
+              <p className="text-gray-400">Select a candidate</p>
+            </div>
+          )} */}
+          </div>
+        </div>
+        <div
+          className={classNames(
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+            router.query.candidate1 && router.query.candidate2
+              ? "w-[100vw]"
+              : "w-0"
+          )}
+        >
+          {router.query.candidate1 && router.query.candidate2 && (
+            <>
+              <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+                {/* {router.query.candidate1 ? ( */}
+                <CandidateInfo
+                  key={(router.query.candidate1 as string) || ""}
+                  memberID={(router.query.candidate1 as string) || ""}
+                  percentage={selectedUserScore}
+                  summaryQuestions={selectedUserSummaryQuestions}
+                  mostRelevantMemberNode={mostRelevantMemberNode}
+                  candidate={candidatesOriginalList?.find(
+                    (candidate) =>
+                      candidate?.user?._id?.toString() ==
+                      router.query.candidate1?.toString()
+                  )}
+                  onClose={() => {
                     router.push(
                       {
                         pathname: "/dashboard/" + positionID,
-                        query: {
-                          candidate1: newTalentListCandidatesIds[0],
-                          candidate2: newTalentListCandidatesIds[1],
-                        },
                       },
                       undefined,
                       { shallow: true }
                     );
                   }}
-                >
-                  <MdCompare size={16} className="mb-1 mr-1 inline" />
-                  Compare
-                </span>
-                {newTalentListCandidatesIds.length !== 2 && (
-                  <ReactTooltip
-                    id="badgeTip-compare"
-                    place="top"
-                    effect="solid"
-                    backgroundColor="#f87171"
-                  />
-                )}
+                />
+                {/* ) : (
+            <div className="w-full pt-20 text-center">
+              <p className="text-gray-400">Select a candidate</p>
+            </div>
+          )} */}
               </div>
-            )}
-          </div>
-        </div>
-        <div className="grid grid-flow-row">
-          <CandidatesTableList
-            candidateIDRowSelected={selectedUserId || null}
-            candidatesList={
-              talentListSelected?._id === "000"
-                ? candidatesUnqualifiedList
-                : candidatesFromTalentList
-            }
-            fetchIsLoading={findPositionIsLoading}
-            setRowObjectData={handleRowClick}
-            listMode={ListModeEnum.selectable}
-            selectedIds={newTalentListCandidatesIds}
-            handleChkSelection={handleCandidateCheckboxSelection}
-          />
-          {trainModalOpen ? (
-            <div className="fixed inset-0 z-30 overflow-y-auto">
-              <div className="flex min-h-screen items-center justify-center px-4">
-                <div
-                  className="fixed inset-0 transition-opacity"
-                  aria-hidden="true"
-                  onClick={handleCloseTrainModal}
-                >
-                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                <div className="transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-xl">
-                  <TrainQuestionsEdenAI
-                    questions={questions}
-                    positionID={positionID!}
-                    setQuestions={setQuestions}
-                    setTrainModalOpen={setTrainModalOpen}
-                  />
-                </div>
+              <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll bg-white">
+                {/* {router.query.candidate2 ? ( */}
+                <CandidateInfo
+                  key={(router.query.candidate2 as string) || ""}
+                  memberID={(router.query.candidate2 as string) || ""}
+                  percentage={selectedUserScore}
+                  summaryQuestions={selectedUserSummaryQuestions}
+                  mostRelevantMemberNode={mostRelevantMemberNode}
+                  candidate={candidatesOriginalList?.find(
+                    (candidate) =>
+                      candidate?.user?._id?.toString() ==
+                      router.query.candidate2?.toString()
+                  )}
+                  onClose={() => {
+                    router.push(
+                      {
+                        pathname: "/dashboard/" + positionID,
+                      },
+                      undefined,
+                      { shallow: true }
+                    );
+                  }}
+                />
+                {/* ) : (
+            <div className="w-full pt-20 text-center">
+              <p className="text-gray-400">Select a candidate</p>
+            </div>
+          )} */}
               </div>
-            </div>
-          ) : null}
+            </>
+          )}
         </div>
       </div>
-      <div
-        className={classNames(
-          "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
-          selectedUserId ? "w-[50vw]" : "w-0"
-        )}
-      >
-        <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
-          {/* {selectedUserId ? ( */}
-
-          <CandidateInfo
-            key={selectedUserId || ""}
-            memberID={selectedUserId || ""}
-            // percentage={selectedUserScore}
-            summaryQuestions={selectedUserSummaryQuestions}
-            mostRelevantMemberNode={mostRelevantMemberNode}
-            candidate={candidatesOriginalList?.find(
-              (candidate) =>
-                candidate?.user?._id?.toString() == selectedUserId?.toString()
-            )}
-            onClose={() => {
-              setSelectedUserId(null);
-            }}
-            rejectCandidateFn={handleRejectCandidate}
-            approveCandidateFn={handleApproveCandidate}
-            qualified={
-              Boolean(
-                approvedTalentListCandidatesList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              ) ||
-              Boolean(
-                rejectedTalentListCandidatesList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              )
-            }
-          />
-          {/* ) : (
-            <div className="w-full pt-20 text-center">
-              <p className="text-gray-400">Select a candidate</p>
-            </div>
-          )} */}
-        </div>
-      </div>
-      <div
-        className={classNames(
-          "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
-          router.query.candidate1 && router.query.candidate2
-            ? "w-[100vw]"
-            : "w-0"
-        )}
-      >
-        {router.query.candidate1 && router.query.candidate2 && (
-          <>
-            <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
-              {/* {router.query.candidate1 ? ( */}
-              <CandidateInfo
-                key={(router.query.candidate1 as string) || ""}
-                memberID={(router.query.candidate1 as string) || ""}
-                percentage={selectedUserScore}
-                summaryQuestions={selectedUserSummaryQuestions}
-                mostRelevantMemberNode={mostRelevantMemberNode}
-                candidate={candidatesOriginalList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    router.query.candidate1?.toString()
-                )}
-                onClose={() => {
-                  router.push(
-                    {
-                      pathname: "/dashboard/" + positionID,
-                    },
-                    undefined,
-                    { shallow: true }
-                  );
-                }}
-              />
-              {/* ) : (
-            <div className="w-full pt-20 text-center">
-              <p className="text-gray-400">Select a candidate</p>
-            </div>
-          )} */}
-            </div>
-            <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll bg-white">
-              {/* {router.query.candidate2 ? ( */}
-              <CandidateInfo
-                key={(router.query.candidate2 as string) || ""}
-                memberID={(router.query.candidate2 as string) || ""}
-                percentage={selectedUserScore}
-                summaryQuestions={selectedUserSummaryQuestions}
-                mostRelevantMemberNode={mostRelevantMemberNode}
-                candidate={candidatesOriginalList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    router.query.candidate2?.toString()
-                )}
-                onClose={() => {
-                  router.push(
-                    {
-                      pathname: "/dashboard/" + positionID,
-                    },
-                    undefined,
-                    { shallow: true }
-                  );
-                }}
-              />
-              {/* ) : (
-            <div className="w-full pt-20 text-center">
-              <p className="text-gray-400">Select a candidate</p>
-            </div>
-          )} */}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
+    </>
   );
 };
 
@@ -1381,6 +1407,7 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 export default PositionCRM;
 
 import { IncomingMessage, ServerResponse } from "http";
+import Head from "next/head";
 import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
