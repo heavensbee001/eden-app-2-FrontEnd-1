@@ -1,4 +1,5 @@
 export * from "./EdenChatTab";
+export * from "./FitTab";
 export * from "./GraphTab";
 export * from "./InfoTab";
 export * from "./MatchTab";

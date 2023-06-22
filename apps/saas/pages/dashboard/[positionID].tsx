@@ -916,6 +916,13 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("Candidate added to Approved Candidates list!");
   };
 
+  console.log({
+    asd: candidatesOriginalList?.find(
+      (candidate) =>
+        candidate?.user?._id?.toString() === selectedUserId?.toString()
+    ),
+  });
+
   return (
     <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
       <div
