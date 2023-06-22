@@ -277,6 +277,32 @@ const PositionCRM: NextPageWithLayout = () => {
                 !approvedCandidatesIDs.includes(candidate.user._id)
             )
         );
+
+        if (findPositionData?.findPosition?.talentList) {
+          setApprovedTalentListID(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Accepted"
+            )?._id
+          );
+
+          setApprovedTalentListCandidatesList(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Accepted"
+            )?.talent
+          );
+
+          setRejectedTalentListID(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Rejected"
+            )?._id
+          );
+
+          setRejectedTalentListCandidatesList(
+            findPositionData.findPosition.talentList.find(
+              (list: TalentListType) => list.name === "Rejected"
+            )?.talent
+          );
+        }
       }
 
       const questionPrep: Question[] = [];
@@ -301,34 +327,6 @@ const PositionCRM: NextPageWithLayout = () => {
       setQuestions(questionPrep);
     },
   });
-
-  useEffect(() => {
-    if (findPositionData?.findPosition?.talentList) {
-      setApprovedTalentListID(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Accepted"
-        )?._id
-      );
-
-      setApprovedTalentListCandidatesList(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Accepted"
-        )?.talent
-      );
-
-      setRejectedTalentListID(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Rejected"
-        )?._id
-      );
-
-      setRejectedTalentListCandidatesList(
-        findPositionData.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Rejected"
-        )?.talent
-      );
-    }
-  }, [findPositionData?.findPosition?.talentList]);
 
   useEffect(() => {
     if (talentListToShow && talentListsAvailables.length) {
@@ -387,7 +385,10 @@ const PositionCRM: NextPageWithLayout = () => {
         ],
       },
     },
-    skip: candidatesFromTalentList.length == 0 || nodeIDsPosition.length == 0,
+    skip:
+      !findPositionData?.findPosition ||
+      candidatesFromTalentList.length == 0 ||
+      nodeIDsPosition.length == 0,
 
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
@@ -432,9 +433,6 @@ const PositionCRM: NextPageWithLayout = () => {
         return _candidateWithSkillLetter;
       });
 
-      // setCandidates(_candidatesNew);
-      setCandidatesFromTalentList(_candidatesNew);
-
       const rejectedCandidatesIDs = rejectedTalentListCandidatesList.map(
         (candidate: any) => candidate?.user?._id
       );
@@ -454,6 +452,9 @@ const PositionCRM: NextPageWithLayout = () => {
               !approvedCandidatesIDs.includes(candidate.user._id)
           )
       );
+
+      // setCandidates(_candidatesNew);
+      setCandidatesFromTalentList(_candidatesNew);
 
       // -------------- Get the Candidates of the page ------------
 
