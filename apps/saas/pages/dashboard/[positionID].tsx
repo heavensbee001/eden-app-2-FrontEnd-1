@@ -55,6 +55,7 @@ type Grade = {
 
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
+  skillScore: number;
   letterAndColor?: {
     totalMatchPerc?: Grade;
     culture?: Grade;
@@ -192,6 +193,18 @@ const PositionCRM: NextPageWithLayout = () => {
                 ...letterAndColor,
                 culture: getGrade(candidate.overallScore, false),
               };
+            }
+
+            if (candidate?.skillScore) {
+              totalMatchPerc += candidate.skillScore;
+              totalMatchPercCount++;
+
+              letterAndColor = {
+                ...letterAndColor,
+                skill: getGrade(candidate.skillScore, false),
+              };
+
+              // candidate.skillMatch = candidate.skillScore;
             }
 
             if (
@@ -342,6 +355,8 @@ const PositionCRM: NextPageWithLayout = () => {
       setSelectedUserSummaryQuestions(user.summaryQuestions);
   };
 
+  const [updateSkillScore, setUpdateSkillScore] = useState<boolean>(false);
+
   // eslint-disable-next-line no-unused-vars
   const getGrade = (percentage: number, mainColumn: boolean): Grade => {
     let grade: Grade = { letter: "", color: "" };
@@ -386,12 +401,15 @@ const PositionCRM: NextPageWithLayout = () => {
       },
     },
     skip:
-      !findPositionData?.findPosition ||
-      candidatesFromTalentList.length == 0 ||
-      nodeIDsPosition.length == 0,
+      // !findPositionData?.findPosition ||
+      // candidatesFromTalentList.length == 0 ||
+      // nodeIDsPosition.length == 0,
+      updateSkillScore == false,
 
     onCompleted: (data) => {
       // from data.matchNodesToMembers_AI4 change it to an object with member._id as the key
+
+      setUpdateSkillScore(false);
 
       // -------------- Get the Candidates of the page ------------
       const memberScoreObj: { [key: string]: number } = {};
@@ -713,6 +731,12 @@ const PositionCRM: NextPageWithLayout = () => {
     setTrainModalOpen(false);
   };
 
+  const handleCalculateSkillScore = () => {
+    console.log("change = 232322");
+
+    setUpdateSkillScore(true);
+  };
+
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
@@ -958,6 +982,15 @@ const PositionCRM: NextPageWithLayout = () => {
             >
               <HiOutlineLink className="mr-1" />
               interview link
+            </Button>
+            <Button
+              size="sm"
+              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              variant="default"
+              onClick={handleCalculateSkillScore}
+              style={{ opacity: 0.2 }}
+            >
+              Calculate Skill Score
             </Button>
             {notificationOpen && (
               <span className="text-sm text-gray-400">Link copied!</span>
