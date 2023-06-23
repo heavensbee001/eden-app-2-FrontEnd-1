@@ -1,4 +1,4 @@
-import { CandidateTypeSkillMatch } from "@eden/package-ui";
+import { CandidateTypeSkillMatch, PopoverScoreReason } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
 type Grade = {
@@ -103,38 +103,53 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
                 </span>
               </div>
 
-              <ul className="list-disc space-y-1 pl-7 [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-300">
+              <ul className="list-disc space-y-1 pl-7">
                 {/* Render each item in the category */}
 
                 {typeof items.notes !== "string"
-                  ? items.notes.map((item) => {
+                  ? items.notes.map((item, idx) => {
                       const score = item.score || 0;
 
                       const { letter, color } = getGrade(score);
 
+                      console.log({ item });
                       return (
-                        <li
-                          key={item.IDb}
-                          className="flex w-full cursor-pointer columns-2 items-center justify-between rounded-md px-4 py-2 "
-                        >
-                          <span className="ml-2">
-                            {item.title
-                              .trim()
-                              .split(" ")
-                              .slice(0, 25)
-                              .join(" ") +
-                              (item.title.split(" ").length > 25 ? "..." : "")}
-                          </span>
-                          <span
-                            className={color}
-                            style={{
-                              marginRight: "1.2rem",
-                              fontSize: "1.4rem",
+                        <>
+                          <PopoverScoreReason
+                            question={{
+                              score: item.score,
+                              reason: item.reason,
                             }}
+                            ubication="top-start"
                           >
-                            {letter}
-                          </span>
-                        </li>
+                            <li
+                              key={item.IDb}
+                              className={`${
+                                idx % 2 === 0 ? "bg-gray-300 " : "bg-white"
+                              } flex w-full cursor-pointer columns-2 items-center justify-between rounded-md px-4 py-2 transition-all duration-200 ease-out hover:scale-[102%]  hover:shadow-md hover:shadow-[rgba(116,250,109,0.4)]`}
+                            >
+                              <span className="ml-2">
+                                {item.title
+                                  .trim()
+                                  .split(" ")
+                                  .slice(0, 25)
+                                  .join(" ") +
+                                  (item.title.split(" ").length > 25
+                                    ? "..."
+                                    : "")}
+                              </span>
+                              <span
+                                className={color}
+                                style={{
+                                  marginRight: "1.2rem",
+                                  fontSize: "1.4rem",
+                                }}
+                              >
+                                {letter}
+                              </span>
+                            </li>
+                          </PopoverScoreReason>
+                        </>
                       );
                     })
                   : null}
