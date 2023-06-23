@@ -43,22 +43,19 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
       );
 
       Object.entries(categories).forEach(([categoryName, items]) => {
-        console.log({ categoryName, items });
         let total = 0;
 
         items.notes.map((it: any) => {
-          console.log({ it });
           total += parseInt(it.score);
         });
 
         const average = total / Object.keys(items).length;
 
-        console.log({ average });
         const { letter } = getGrade(average);
 
         categories[categoryName].average = letter;
       });
-      console.log({ categories });
+
       setReportNotesData(categories);
     }
   }, [candidate]);
