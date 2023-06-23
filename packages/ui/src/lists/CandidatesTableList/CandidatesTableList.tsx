@@ -114,7 +114,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   };
 
   return (
-    <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
+    <section className="scrollbar-hide max-h-[calc(100vh-12.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md relative w-full">
         <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
           <tr>
