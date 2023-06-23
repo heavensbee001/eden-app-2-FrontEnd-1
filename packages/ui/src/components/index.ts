@@ -9,6 +9,7 @@ export * from "./DescriptionGPT";
 export * from "./DiscoverTalent";
 export * from "./DragDrop";
 export * from "./EdenAiChat";
+export * from "./EdenTooltip";
 export * from "./ExperienceCreateProfileChatTalentSearch";
 export * from "./FillSocialLinks";
 export * from "./InterviewEdenAI";

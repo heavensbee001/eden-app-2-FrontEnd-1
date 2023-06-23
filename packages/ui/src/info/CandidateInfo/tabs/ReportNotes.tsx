@@ -1,4 +1,4 @@
-import { CandidateTypeSkillMatch, PopoverScoreReason } from "@eden/package-ui";
+import { CandidateTypeSkillMatch, EdenTooltip } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
 type Grade = {
@@ -103,30 +103,37 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
                 </span>
               </div>
 
-              <ul className="list-disc space-y-1 pl-7">
+              <ul className="list-none space-y-1 pl-2 [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-200">
                 {/* Render each item in the category */}
 
                 {typeof items.notes !== "string"
-                  ? items.notes.map((item, idx) => {
+                  ? items.notes.map((item) => {
                       const score = item.score || 0;
 
                       const { letter, color } = getGrade(score);
 
                       return (
-                        <>
-                          <PopoverScoreReason
-                            question={{
-                              score: item.score,
-                              reason: item.reason,
-                            }}
-                            ubication="top-start"
+                        <li
+                          key={item.IDb}
+                          className="w-full cursor-pointer rounded-md"
+                        >
+                          <EdenTooltip
+                            id={item.title.split(" ").join("")}
+                            innerTsx={
+                              <div className="w-60">
+                                <span className="text-gray-600">
+                                  {item.reason}
+                                </span>
+                              </div>
+                            }
+                            place="top"
+                            effect="solid"
+                            backgroundColor="white"
+                            border
+                            borderColor="#e5e7eb"
+                            padding="0.5rem"
                           >
-                            <li
-                              key={item.IDb}
-                              className={`${
-                                idx % 2 === 0 ? "bg-gray-300 " : "bg-white"
-                              } flex w-full cursor-pointer columns-2 items-center justify-between rounded-md px-4 py-2 transition-all duration-200 ease-out hover:scale-[102%]  hover:shadow-md hover:shadow-[rgba(116,250,109,0.4)]`}
-                            >
+                            <div className="flex w-full columns-2 items-center justify-between px-4 py-2">
                               <span className="ml-2">
                                 {item.title
                                   .trim()
@@ -146,9 +153,9 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
                               >
                                 {letter}
                               </span>
-                            </li>
-                          </PopoverScoreReason>
-                        </>
+                            </div>
+                          </EdenTooltip>
+                        </li>
                       );
                     })
                   : null}
