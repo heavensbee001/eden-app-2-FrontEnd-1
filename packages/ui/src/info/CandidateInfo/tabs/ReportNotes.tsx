@@ -1,4 +1,4 @@
-import { CandidateTypeSkillMatch } from "@eden/package-ui";
+import { CandidateTypeSkillMatch, EdenTooltip } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
 type Grade = {
@@ -98,7 +98,7 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
                 </span>
               </div>
 
-              <ul className="list-disc space-y-1 pl-7 [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-300">
+              <ul className="list-none space-y-1 pl-2 [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-200">
                 {/* Render each item in the category */}
 
                 {typeof items.notes !== "string"
@@ -110,25 +110,46 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
                       return (
                         <li
                           key={item.IDb}
-                          className="flex w-full cursor-pointer columns-2 items-center justify-between rounded-md px-4 py-2 "
+                          className="w-full cursor-pointer rounded-md"
                         >
-                          <span className="ml-2">
-                            {item.title
-                              .trim()
-                              .split(" ")
-                              .slice(0, 25)
-                              .join(" ") +
-                              (item.title.split(" ").length > 25 ? "..." : "")}
-                          </span>
-                          <span
-                            className={color}
-                            style={{
-                              marginRight: "1.2rem",
-                              fontSize: "1.4rem",
-                            }}
+                          <EdenTooltip
+                            id={item.title.split(" ").join("")}
+                            innerTsx={
+                              <div className="w-60">
+                                <span className="text-gray-600">
+                                  {item.reason}
+                                </span>
+                              </div>
+                            }
+                            place="top"
+                            effect="solid"
+                            backgroundColor="white"
+                            border
+                            borderColor="#e5e7eb"
+                            padding="0.5rem"
                           >
-                            {letter}
-                          </span>
+                            <div className="flex w-full columns-2 items-center justify-between px-4 py-2">
+                              <span className="ml-2">
+                                {item.title
+                                  .trim()
+                                  .split(" ")
+                                  .slice(0, 25)
+                                  .join(" ") +
+                                  (item.title.split(" ").length > 25
+                                    ? "..."
+                                    : "")}
+                              </span>
+                              <span
+                                className={color}
+                                style={{
+                                  marginRight: "1.2rem",
+                                  fontSize: "1.4rem",
+                                }}
+                              >
+                                {letter}
+                              </span>
+                            </div>
+                          </EdenTooltip>
                         </li>
                       );
                     })
