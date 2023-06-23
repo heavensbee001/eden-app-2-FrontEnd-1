@@ -392,6 +392,7 @@ const PositionCRM: NextPageWithLayout = () => {
     variables: {
       fields: {
         nodesID: nodeIDsPosition,
+        positionID: positionID,
         membersIDallow: candidatesFromTalentList?.map((userData: any) => {
           return userData?.user?._id;
         }),
