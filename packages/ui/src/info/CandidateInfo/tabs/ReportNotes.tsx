@@ -49,7 +49,7 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
           total += parseInt(it.score);
         });
 
-        const average = total / Object.keys(items).length;
+        const average = total / items.notes.length;
 
         const { letter } = getGrade(average);
 
