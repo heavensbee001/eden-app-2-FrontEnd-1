@@ -89,7 +89,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Requirements",
+      tab: "Fit",
       Content: () => (
         <ReportNotes
           member={
