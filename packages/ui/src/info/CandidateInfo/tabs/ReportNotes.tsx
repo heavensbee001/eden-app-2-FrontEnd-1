@@ -37,19 +37,24 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
           if (!categories[item.categoryName]) {
             categories[item.categoryName] = { notes: [], average: "" };
           }
-          let total = 0;
 
-          Object.keys(item).forEach((item: any) => {
-            total += item.score;
-          });
-          const average = total / Object.keys(item).length;
-
-          const { letter } = getGrade(average);
-
-          categories[item.categoryName].average = letter;
           categories[item.categoryName].notes.push(item);
         }
       );
+
+      Object.entries(categories).forEach(([categoryName, items]) => {
+        let total = 0;
+
+        items.notes.map((it: any) => {
+          total += parseInt(it.score);
+        });
+
+        const average = total / Object.keys(items).length;
+
+        const { letter } = getGrade(average);
+
+        categories[categoryName].average = letter;
+      });
 
       setReportNotesData(categories);
     }
@@ -58,11 +63,11 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
   const getGrade = (percentage: number): Grade => {
     let grade: Grade = { letter: "", color: "" };
 
-    if (percentage >= 85) {
+    if (percentage >= 8.5) {
       grade = { letter: "A", color: "text-green-500" };
-    } else if (percentage >= 70) {
+    } else if (percentage >= 7) {
       grade = { letter: "B", color: "text-green-200" };
-    } else if (percentage >= 50) {
+    } else if (percentage >= 5) {
       grade = { letter: "C", color: "text-orange-300" };
     } else {
       grade = { letter: "D", color: "text-red-300" };
