@@ -112,7 +112,6 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
 
                       const { letter, color } = getGrade(score);
 
-                      console.log({ item });
                       return (
                         <>
                           <PopoverScoreReason
