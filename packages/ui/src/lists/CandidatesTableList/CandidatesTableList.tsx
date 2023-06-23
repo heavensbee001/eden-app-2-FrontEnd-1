@@ -49,6 +49,7 @@ type Grade = {
 // This can be refactored to util function and processed with useMemo inside the component
 export interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
+  skillScore: number;
   flagSkill?: boolean;
   totalMatchPerc?: number;
   letterAndColor?: {
@@ -93,7 +94,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   };
   const [showMatchDetails, setShowMatchDetails] = useState(true);
 
-  // console.log("candidatesList 00 0 = ", candidatesList);
+  console.log("candidatesList 00 0 = ", candidatesList);
 
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
@@ -262,7 +263,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
 
                 {showMatchDetails && (
                   <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
-                    {candidate.skillMatch ? (
+                    {candidate.skillMatch || candidate.skillScore ? (
                       <TextHeading2
                         className={classNames(
                           candidate?.letterAndColor?.skill?.letter == "A" ||

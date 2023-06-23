@@ -5,7 +5,11 @@ import { ChatSimple } from "@eden/package-ui";
 import React, { useEffect, useState } from "react";
 
 // eslint-disable-next-line no-unused-vars
-import { INTERVIEW_EDEN_AI, MESSAGE_MAP_KG_V4 } from "./gqlFunctions";
+import {
+  ASK_EDEN_USER_POSITION,
+  INTERVIEW_EDEN_AI,
+  MESSAGE_MAP_KG_V4,
+} from "./gqlFunctions";
 
 interface NodeObj {
   [key: string]: {
@@ -35,6 +39,7 @@ interface MessageObject {
 export enum AI_INTERVIEW_SERVICES {
   // eslint-disable-next-line no-unused-vars
   INTERVIEW_EDEN_AI = "INTERVIEW_EDEN_AI",
+  ASK_EDEN_USER_POSITION = "ASK_EDEN_USER_POSITION",
 }
 type ChatMessage = Array<{ user: string; message: string; date: Date }>;
 
@@ -109,7 +114,7 @@ export const InterviewEdenAI = ({
   const [edenAIsentMessage, setEdenAIsentMessage] = useState<boolean>(false); // sets if response is pending (TODO => change logic to query based)
   const [numMessageLongTermMem, setNumMessageLongTermMem] = useState<any>(0);
 
-  console.log("questions = 223 ", questions);
+  // console.log("questions = 223 ", questions);
 
   // const [previusTaskDoneID, setPreviusTaskDoneID] = useState<String>("");
 
@@ -327,6 +332,43 @@ export const InterviewEdenAI = ({
     },
   });
 
+  const { data: dataAskEdenUserPosition } = useQuery(ASK_EDEN_USER_POSITION, {
+    variables: {
+      fields: {
+        conversation: chatN.map((obj) => {
+          if (obj.user === "01") {
+            return {
+              role: "assistant",
+              content: obj.message,
+              date: obj.date,
+            };
+          } else {
+            return { role: "user", content: obj.message, date: obj.date };
+          }
+        }),
+        positionID: positionID,
+        userID: userID,
+      },
+    },
+    skip:
+      chatN.length == 0 ||
+      aiReplyService != AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION ||
+      chatN[chatN.length - 1]?.user == "01" ||
+      userID == "",
+    onCompleted: (data) => {
+      console.log("WOOOW data = ", data);
+      // toraFunc();
+      // setElapsedTime(0);
+      // setStartTime(Date.now());
+      // console.log("setnmessae = ");
+
+      setStartTime(0);
+      setElapsedTime(0);
+    },
+  });
+
+  console.log("chatN = ", chatN, questions);
+
   // ---------- When GPT Reply, Store all convo messages and GPT friendly formated messages ------------
   useEffect(() => {
     if (dataInterviewEdenAI && edenAIsentMessage == true) {
@@ -403,6 +445,38 @@ export const InterviewEdenAI = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataInterviewEdenAI]);
+
+  useEffect(() => {
+    if (dataAskEdenUserPosition && edenAIsentMessage == true) {
+      const chatT: ChatMessage = [...chatN];
+
+      const reply = dataAskEdenUserPosition?.askEdenUserPosition?.reply;
+
+      chatT.push({
+        user: "01",
+        message: reply,
+        // date: dataAskEdenUserPosition?.askEdenUserPosition.date,
+        date: new Date(),
+      });
+
+      setChatN(chatT);
+
+      // from chatT that is an array of objects, translate it to a string
+      let chatNprepareGPTP = "";
+
+      for (let i = 0; i < chatT.length; i++) {
+        if (chatT[i].user == "01")
+          chatNprepareGPTP += "Eden AI: " + chatT[i].message + "\n";
+        else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
+      }
+
+      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+
+      // setChatNprepareGPT(chatNprepareGPTP);
+      setEdenAIsentMessage(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataAskEdenUserPosition]);
   // -----------------------------------------
 
   // ---------- When sent message, Store all convo messages and long term memory ------------

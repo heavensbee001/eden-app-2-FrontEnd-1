@@ -22,6 +22,7 @@ function classNames(...classes: string[]) {
 
 interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
+  skillScore: number;
 }
 
 type NodeDisplay = {

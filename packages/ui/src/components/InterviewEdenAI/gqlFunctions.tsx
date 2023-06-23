@@ -38,3 +38,11 @@ export const MESSAGE_MAP_KG_V4 = gql`
     }
   }
 `;
+
+export const ASK_EDEN_USER_POSITION = gql`
+  query AskEdenUserPosition($fields: askEdenUserPositionInput) {
+    askEdenUserPosition(fields: $fields) {
+      reply
+    }
+  }
+`;
