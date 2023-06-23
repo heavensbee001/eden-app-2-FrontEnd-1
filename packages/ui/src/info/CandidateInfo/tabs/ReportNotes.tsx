@@ -25,7 +25,7 @@ interface ReportNotesData {
   [key: string]: { notes: meetingNotesType; average: string };
 }
 
-export const ReportNotes: FC<Props> = ({ candidate, member }) => {
+export const ReportNotes: FC<Props> = ({ candidate }) => {
   const [reportNotesData, setReportNotesData] = useState<ReportNotesData>();
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export const ReportNotes: FC<Props> = ({ candidate, member }) => {
 
   return (
     <>
-      {member?.letterAndColor?.requirements?.letter && (
+      {/* {member?.letterAndColor?.requirements?.letter && (
         <div className="relative">
           <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
             <p className="text-lg font-bold">Requirements Score:</p>
@@ -84,8 +84,8 @@ export const ReportNotes: FC<Props> = ({ candidate, member }) => {
             </p>
           </div>
         </div>
-      )}
-      <div className="space-y-4 rounded-lg p-4 py-36">
+      )} */}
+      <div className="space-y-4 rounded-lg p-4 py-10">
         {/* Render each category */}
 
         {reportNotesData &&
