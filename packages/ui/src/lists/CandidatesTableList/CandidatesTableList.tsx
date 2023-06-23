@@ -92,7 +92,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
   };
-  const [showMatchDetails, setShowMatchDetails] = useState(false);
+  const [showMatchDetails, setShowMatchDetails] = useState(true);
 
   console.log("candidatesList 00 0 = ", candidatesList);
 
@@ -110,7 +110,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
               Name
             </th>
             <th className="border-b border-gray-300 py-2 font-medium">
-              Total
+              Fit Score
               {showMatchDetails ? (
                 <AiOutlineEyeInvisible
                   size={24}
@@ -125,18 +125,18 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 />
               )}
             </th>
-            {showMatchDetails && (
+            {/* {showMatchDetails && (
               <th className={"border-b border-gray-300 py-2 font-medium"}>
                 Requir.
               </th>
-            )}
+            )} */}
             {showMatchDetails && (
               <th
                 className={
                   "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
                 }
               >
-                Stats
+                Culture Fit
               </th>
             )}
             {showMatchDetails && (
@@ -219,7 +219,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   ) : null}
                 </ColumnStyled>
 
-                {showMatchDetails && (
+                {/* {showMatchDetails && (
                   <ColumnStyled textColor="text-[#EDBFB7] text-center">
                     {candidate?.compareCandidatePosition
                       ?.CV_ConvoToPositionAverageScore ? (
@@ -240,7 +240,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                       <div></div>
                     )}
                   </ColumnStyled>
-                )}
+                )} */}
                 {showMatchDetails && (
                   <ColumnStyled textColor="text-[#86C8BC] text-center">
                     {candidate.overallScore ? (
