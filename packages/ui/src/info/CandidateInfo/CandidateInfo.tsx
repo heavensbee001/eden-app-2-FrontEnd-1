@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { FIND_MEMBER } from "@eden/package-graphql";
 import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
+  AskEdenTab,
   Avatar,
   Button,
   CandidateTypeSkillMatch,
@@ -89,7 +90,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Requirements",
+      tab: "Fit",
       Content: () => (
         <ReportNotes
           member={
@@ -133,6 +134,12 @@ export const CandidateInfo = ({
       tab: "Highlights",
       Content: () => (
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
+      ),
+    },
+    {
+      tab: "Ask Eden",
+      Content: () => (
+        <AskEdenTab member={dataMember?.findMember} candidate={candidate} />
       ),
     },
     {

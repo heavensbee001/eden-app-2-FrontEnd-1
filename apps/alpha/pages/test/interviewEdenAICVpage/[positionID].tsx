@@ -145,7 +145,7 @@ const InterviewEdenAIpage: React.FC = () => {
     }
   }, [positionID, currentUser?._id]);
 
-  console.log("positionID = ", positionID);
+  // console.log("positionID = ", positionID);
 
   const [experienceTypeID] = useState<string>("");
 
