@@ -76,7 +76,7 @@ export const CandidateInfo = ({
 
   const tabs = [
     {
-      tab: "Bio",
+      tab: "Background",
       Content: () => (
         <InfoTab
           member={
@@ -104,7 +104,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Stats",
+      tab: "Interview Analysis",
       Content: () => (
         <MatchTab
           member={
@@ -118,7 +118,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Skill Graph",
+      tab: "Skill Match",
       Content: () => (
         <GraphTab
           member={
@@ -131,7 +131,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Highlights",
+      tab: "Culture Fit",
       Content: () => (
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
       ),
@@ -143,7 +143,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Interview",
+      tab: "Transcript",
       Content: () => (
         <EdenChatTab
           memberImg={dataMember?.findMember.discordAvatar}
