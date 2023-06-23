@@ -95,6 +95,23 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
 
   // console.log("candidatesList 00 0 = ", candidatesList);
 
+  //@TODO this is a mock
+  const getSkillsNumber = (letter: string) => {
+    const randNum = Math.floor(Math.random() * 3);
+    switch (letter) {
+      case "A":
+        return `${14 + randNum}/16`;
+      case "B":
+        return `${10 + randNum}/16`;
+      case "C":
+        return `${6 + randNum}/16`;
+      case "D":
+        return `${2 + randNum}/16`;
+      default:
+        return null;
+    }
+  };
+
   return (
     <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md relative w-full">
@@ -248,7 +265,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                           candidate?.letterAndColor?.culture?.letter == "A" ||
                             candidate?.letterAndColor?.culture?.letter == "B"
                             ? candidate?.letterAndColor?.culture?.color
-                            : "text-black",
+                            : "text-gray-400",
                           "font-black"
                         )}
                       >
@@ -263,17 +280,20 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 {showMatchDetails && (
                   <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
                     {candidate.skillMatch ? (
-                      <TextHeading2
+                      <p
                         className={classNames(
                           candidate?.letterAndColor?.skill?.letter == "A" ||
                             candidate?.letterAndColor?.skill?.letter == "B"
                             ? candidate?.letterAndColor?.skill?.color
-                            : "text-black",
-                          "font-black"
+                            : "text-gray-400",
+                          "text-lg font-medium"
                         )}
                       >
-                        {candidate?.letterAndColor?.skill?.letter}
-                      </TextHeading2>
+                        {candidate?.letterAndColor?.skill?.letter &&
+                          getSkillsNumber(
+                            candidate?.letterAndColor?.skill?.letter
+                          )}
+                      </p>
                     ) : (
                       <div></div>
                     )}
