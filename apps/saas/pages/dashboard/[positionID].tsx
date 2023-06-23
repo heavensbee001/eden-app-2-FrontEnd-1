@@ -917,13 +917,6 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("Candidate added to Approved Candidates list!");
   };
 
-  console.log({
-    asd: candidatesOriginalList?.find(
-      (candidate) =>
-        candidate?.user?._id?.toString() === selectedUserId?.toString()
-    ),
-  });
-
   return (
     <>
       <Head>
