@@ -165,10 +165,10 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 Skills
               </th>
             )}
-            <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
+            {/* <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
               $/hour
-            </th>
-            <th className="border-b border-gray-300 py-2 font-medium">Level</th>
+            </th> */}
+            {/* <th className="border-b border-gray-300 py-2 font-medium">Level</th> */}
             <th
               className={classNames(
                 "border-b border-gray-300 py-2 font-medium",
@@ -301,7 +301,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   </ColumnStyled>
                 )}
 
-                <ColumnStyled extraCssClass="pr-2 text-right">
+                {/* <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
                     <TextHeading2 className="font-black text-yellow-500">
                       ${candidate.user?.budget?.perHour}
@@ -326,7 +326,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                       cutText={9}
                     />
                   ) : null}
-                </ColumnStyled>
+                </ColumnStyled> */}
 
                 <ColumnStyled
                   textColor="text-center"
