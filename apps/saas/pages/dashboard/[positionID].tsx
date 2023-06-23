@@ -13,7 +13,9 @@ import {
   CandidatesTableList,
   ListModeEnum,
   Loading,
+  Modal,
   SelectList,
+  TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import Image from "next/image";
@@ -136,6 +138,11 @@ const PositionCRM: NextPageWithLayout = () => {
   >([]);
 
   const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
+
+  const [newTalentListNameInputOpen, setNewTalentListNameInputOpen] =
+    useState<boolean>(false);
+
+  const [newTalentListName, setNewTalentListName] = useState<string>("");
 
   const {
     data: findPositionData,
@@ -385,6 +392,7 @@ const PositionCRM: NextPageWithLayout = () => {
     variables: {
       fields: {
         nodesID: nodeIDsPosition,
+        positionID: positionID,
         membersIDallow: candidatesFromTalentList?.map((userData: any) => {
           return userData?.user?._id;
         }),
@@ -775,13 +783,15 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleCreateNewList = () => {
+    setNewTalentListNameInputOpen(true);
+
     setAddToListOpen(false);
 
-    setNewTalentListCandidatesIds(
-      candidatesOriginalList.map((c) => c.user?._id!)
-    );
+    // setNewTalentListCandidatesIds(
+    //   candidatesOriginalList.map((c) => c.user?._id!)
+    // );
 
-    handleSaveNewTalentList();
+    // handleSaveNewTalentList();
   };
 
   const handleAddCandidatesToList = async (listID: string) => {
@@ -863,11 +873,13 @@ const PositionCRM: NextPageWithLayout = () => {
       variables: {
         fields: {
           positionID: positionID,
-          name: "List",
+          name: newTalentListName,
         },
       },
     });
 
+    setNewTalentListNameInputOpen(false);
+    setNewTalentListName("");
     const lastTalentListIndex =
       result.data?.createTalentListPosition.talentList.length - 1;
 
@@ -959,6 +971,32 @@ const PositionCRM: NextPageWithLayout = () => {
           }}
         />
       </Head>
+      <Modal
+        open={newTalentListNameInputOpen}
+        onClose={() => setNewTalentListNameInputOpen(false)}
+        title="Set your new talent list name"
+        closeOnEsc
+      >
+        <div className="relative flex flex-col items-center space-y-6">
+          <TextField
+            name="newtalentlistnameinput"
+            onChange={(event) => setNewTalentListName(event.target.value)}
+            placeholder="Type the new talent list name"
+            type="text"
+          />
+
+          <Button
+            disabled={!newTalentListName.length}
+            onClick={() => {
+              setNewTalentListNameInputOpen(false);
+              handleSaveNewTalentList();
+            }}
+            variant="secondary"
+          >
+            Save
+          </Button>
+        </div>
+      </Modal>
       <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
         <div
           className={classNames(
