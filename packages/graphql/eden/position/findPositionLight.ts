@@ -9,6 +9,7 @@ export const FIND_POSITION_LIGHT = gql`
       name
       candidates {
         overallScore
+        skillScore
         conversationID
         user {
           _id

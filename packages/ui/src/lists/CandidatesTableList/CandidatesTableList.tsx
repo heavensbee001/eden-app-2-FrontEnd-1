@@ -49,6 +49,7 @@ type Grade = {
 // This can be refactored to util function and processed with useMemo inside the component
 export interface CandidateTypeSkillMatch extends CandidateType {
   skillMatch: number;
+  skillScore: number;
   flagSkill?: boolean;
   totalMatchPerc?: number;
   letterAndColor?: {
@@ -91,12 +92,29 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
   };
-  const [showMatchDetails, setShowMatchDetails] = useState(false);
+  const [showMatchDetails, setShowMatchDetails] = useState(true);
 
-  // console.log("candidatesList 00 0 = ", candidatesList);
+  console.log("candidatesList 00 0 = ", candidatesList);
+
+  //@TODO this is a mock
+  const getSkillsNumber = (letter: string) => {
+    const randNum = Math.floor(Math.random() * 3);
+    switch (letter) {
+      case "A":
+        return `${14 + randNum}/16`;
+      case "B":
+        return `${10 + randNum}/16`;
+      case "C":
+        return `${6 + randNum}/16`;
+      case "D":
+        return `${2 + randNum}/16`;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <section className="scrollbar-hide max-h-[calc(100vh-9.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
+    <section className="scrollbar-hide max-h-[calc(100vh-12.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md relative w-full">
         <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
           <tr>
@@ -109,7 +127,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
               Name
             </th>
             <th className="border-b border-gray-300 py-2 font-medium">
-              Total
+              Fit Score
               {showMatchDetails ? (
                 <AiOutlineEyeInvisible
                   size={24}
@@ -124,18 +142,18 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 />
               )}
             </th>
-            {showMatchDetails && (
+            {/* {showMatchDetails && (
               <th className={"border-b border-gray-300 py-2 font-medium"}>
                 Requir.
               </th>
-            )}
+            )} */}
             {showMatchDetails && (
               <th
                 className={
                   "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
                 }
               >
-                Stats
+                Culture Fit
               </th>
             )}
             {showMatchDetails && (
@@ -147,10 +165,10 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 Skills
               </th>
             )}
-            <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
+            {/* <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
               $/hour
-            </th>
-            <th className="border-b border-gray-300 py-2 font-medium">Level</th>
+            </th> */}
+            {/* <th className="border-b border-gray-300 py-2 font-medium">Level</th> */}
             <th
               className={classNames(
                 "border-b border-gray-300 py-2 font-medium",
@@ -218,7 +236,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   ) : null}
                 </ColumnStyled>
 
-                {showMatchDetails && (
+                {/* {showMatchDetails && (
                   <ColumnStyled textColor="text-[#EDBFB7] text-center">
                     {candidate?.compareCandidatePosition
                       ?.CV_ConvoToPositionAverageScore ? (
@@ -239,7 +257,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                       <div></div>
                     )}
                   </ColumnStyled>
-                )}
+                )} */}
                 {showMatchDetails && (
                   <ColumnStyled textColor="text-[#86C8BC] text-center">
                     {candidate.overallScore ? (
@@ -248,7 +266,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                           candidate?.letterAndColor?.culture?.letter == "A" ||
                             candidate?.letterAndColor?.culture?.letter == "B"
                             ? candidate?.letterAndColor?.culture?.color
-                            : "text-black",
+                            : "text-gray-400",
                           "font-black"
                         )}
                       >
@@ -262,25 +280,28 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
 
                 {showMatchDetails && (
                   <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
-                    {candidate.skillMatch ? (
-                      <TextHeading2
+                    {candidate.skillMatch || candidate.skillScore ? (
+                      <p
                         className={classNames(
                           candidate?.letterAndColor?.skill?.letter == "A" ||
                             candidate?.letterAndColor?.skill?.letter == "B"
                             ? candidate?.letterAndColor?.skill?.color
-                            : "text-black",
-                          "font-black"
+                            : "text-gray-400",
+                          "text-lg font-medium"
                         )}
                       >
-                        {candidate?.letterAndColor?.skill?.letter}
-                      </TextHeading2>
+                        {candidate?.letterAndColor?.skill?.letter &&
+                          getSkillsNumber(
+                            candidate?.letterAndColor?.skill?.letter
+                          )}
+                      </p>
                     ) : (
                       <div></div>
                     )}
                   </ColumnStyled>
                 )}
 
-                <ColumnStyled extraCssClass="pr-2 text-right">
+                {/* <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
                     <TextHeading2 className="font-black text-yellow-500">
                       ${candidate.user?.budget?.perHour}
@@ -305,7 +326,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                       cutText={9}
                     />
                   ) : null}
-                </ColumnStyled>
+                </ColumnStyled> */}
 
                 <ColumnStyled
                   textColor="text-center"

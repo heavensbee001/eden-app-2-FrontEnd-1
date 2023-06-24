@@ -20,7 +20,7 @@ type PopoverOnHoverProps = {
     | "left-end";
 };
 
-function useHover(delay = 500) {
+function useHover(delay = 1000) {
   const [show, setShow] = useState(false);
   const timer = useRef<number | null>(null);
 

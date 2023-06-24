@@ -1,3 +1,4 @@
+export * from "./AskEdenTab";
 export * from "./EdenChatTab";
 export * from "./GraphTab";
 export * from "./InfoTab";
