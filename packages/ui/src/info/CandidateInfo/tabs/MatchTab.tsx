@@ -6,7 +6,7 @@ import {
   Card,
   Modal,
   // PopoverScoreReason,
-  TeamAttributeChart,
+  // TeamAttributeChart,
   // TextHeading2,
   // TextInputLabel,
   TextLabel1,
@@ -26,15 +26,15 @@ const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
   }
 `;
 
-const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
-  query ($fields: memberRadioChartCharacterAttributesInput) {
-    memberRadioChartCharacterAttributes(fields: $fields) {
-      attributeName
-      score
-      reason
-    }
-  }
-`;
+// const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
+//   query ($fields: memberRadioChartCharacterAttributesInput) {
+//     memberRadioChartCharacterAttributes(fields: $fields) {
+//       attributeName
+//       score
+//       reason
+//     }
+//   }
+// `;
 
 // const dataRadarchart = [
 //   {
@@ -169,81 +169,81 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     },
   };
 
-  const { loading: radioChartLoading } = useQuery(
-    MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES,
-    {
-      variables: {
-        fields: {
-          memberID: member?.user?._id,
-        },
-      },
-      skip: member?.user?._id == undefined,
-      onCompleted: (data) => {
-        interface attributesType {
-          [key: string]: any;
-        }
-        const attributesT: attributesType = {};
+  // const { loading: radioChartLoading } = useQuery(
+  //   MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES,
+  //   {
+  //     variables: {
+  //       fields: {
+  //         memberID: member?.user?._id,
+  //       },
+  //     },
+  //     skip: member?.user?._id == undefined,
+  //     onCompleted: (data) => {
+  //       interface attributesType {
+  //         [key: string]: any;
+  //       }
+  //       const attributesT: attributesType = {};
 
-        let averageScore = 0;
-        let numT = 0;
+  //       let averageScore = 0;
+  //       let numT = 0;
 
-        for (
-          let i = 0;
-          i < data.memberRadioChartCharacterAttributes.length;
-          i++
-        ) {
-          const elementT: {
-            attributeName: string;
-            score: number;
-            reason: string;
-          } = data.memberRadioChartCharacterAttributes[i];
+  //       for (
+  //         let i = 0;
+  //         i < data.memberRadioChartCharacterAttributes.length;
+  //         i++
+  //       ) {
+  //         const elementT: {
+  //           attributeName: string;
+  //           score: number;
+  //           reason: string;
+  //         } = data.memberRadioChartCharacterAttributes[i];
 
-          if (elementT && elementT.attributeName) {
-            const nameAtt = elementT.attributeName;
+  //         if (elementT && elementT.attributeName) {
+  //           const nameAtt = elementT.attributeName;
 
-            // how to make maximum 11 letters on nameAtt
-            // if (nameAtt.length > 11) {
-            //   nameAtt = nameAtt.substring(0, 11) + "...";
-            // }
+  //           // how to make maximum 11 letters on nameAtt
+  //           // if (nameAtt.length > 11) {
+  //           //   nameAtt = nameAtt.substring(0, 11) + "...";
+  //           // }
 
-            attributesT[nameAtt] = elementT.score;
+  //           attributesT[nameAtt] = elementT.score;
 
-            averageScore = averageScore + elementT.score;
-            numT = numT + 1;
-          }
-        }
+  //           averageScore = averageScore + elementT.score;
+  //           numT = numT + 1;
+  //         }
+  //       }
 
-        averageScore = averageScore / numT;
+  //       averageScore = averageScore / numT;
 
-        // male averageScore int
-        averageScore = Math.round(averageScore);
+  //       // male averageScore int
+  //       averageScore = Math.round(averageScore);
 
-        setRadioChart([
-          {
-            memberInfo: {
-              discordName:
-                member?.user?.discordName +
-                  " - " +
-                  averageScore.toString() +
-                  "%" ?? "",
-              attributes: attributesT,
-            },
-          },
-        ]);
+  //       setRadioChart([
+  //         {
+  //           memberInfo: {
+  //             discordName:
+  //               member?.user?.discordName +
+  //                 " - " +
+  //                 averageScore.toString() +
+  //                 "%" ?? "",
+  //             attributes: attributesT,
+  //           },
+  //         },
+  //       ]);
 
-        console.log("CHANGE Radio Chart", [
-          {
-            memberInfo: {
-              discordName: member?.user?.discordName ?? "",
-              attributes: attributesT,
-            },
-          },
-        ]);
-      },
-    }
-  );
+  //       console.log("CHANGE Radio Chart", [
+  //         {
+  //           memberInfo: {
+  //             discordName: member?.user?.discordName ?? "",
+  //             attributes: attributesT,
+  //           },
+  //         },
+  //       ]);
+  //     },
+  //   }
+  // );
 
-  console.log("radioChart = ", radioChart);
+  // console.log("radioChart = ", radioChart);
 
   useEffect(() => {
     const dataBarChartPr: BarChartQuestions[] = [];
@@ -333,7 +333,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               >
                 <div className="py-4">
                   <p className="mb-4 font-medium text-gray-700">
-                    {item.questionContent?.replace(".", "")}
+                    {/* {item.questionContent?.replace(".", "")}
+                     */}
+                    {item.originalQuestionContent?.replace(".", "") ||
+                      item.questionContent?.replace(".", "")}
                   </p>
                   <div className="flex w-full">
                     <div className="flex w-1/4 items-center justify-center">
@@ -356,7 +359,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                       </div>
                     </div>
                     <div className="w-3/4 pl-2">
-                      <p className="whitespace-pre-wrap text-gray-500">
+                      <p className="whitespace-pre-wrap text-gray-400">
                         {item.reason}
                       </p>
                     </div>
@@ -484,12 +487,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             <NoGraphData />
           )}
         </div>
-        <div className="col-span-6 mb-4">
+        {/* <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
             <TextLabel1>Radar Chart</TextLabel1>
           </p>
-          {/* <Pie data={data} options={options} /> */}
-          {/* <TeamAttributeChart members={dataRadarchart} /> */}
           {radioChartLoading ? (
             <LoadingGraphData />
           ) : (
@@ -506,7 +507,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               )}
             </>
           )}
-        </div>
+        </div> */}
       </div>
       {/* <p className="text-soilHeading3 font-poppins mb-6 text-center font-black text-gray-400">
         CULTURE FIT
