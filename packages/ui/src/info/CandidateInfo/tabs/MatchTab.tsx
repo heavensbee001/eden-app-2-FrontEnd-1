@@ -359,7 +359,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                       </div>
                     </div>
                     <div className="w-3/4 pl-2">
-                      <p className="whitespace-pre-wrap text-gray-500">
+                      <p className="whitespace-pre-wrap text-gray-400">
                         {item.reason}
                       </p>
                     </div>
