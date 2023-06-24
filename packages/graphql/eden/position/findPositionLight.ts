@@ -28,6 +28,7 @@ export const FIND_POSITION_LIGHT = gql`
         readyToDisplay
         summaryQuestions {
           questionID
+          originalQuestionContent
           questionContent
           questionContentSmall
           answerContent
