@@ -29,6 +29,12 @@ export type Ai = {
   serverID?: Maybe<Scalars["String"]>;
 };
 
+export type AddCvToUserOutput = {
+  __typename?: "AddCVToUserOutput";
+  cvSummary?: Maybe<Scalars["String"]>;
+  userID?: Maybe<Scalars["String"]>;
+};
+
 export type CvToPositionType = {
   __typename?: "CVToPositionType";
   content?: Maybe<Scalars["String"]>;
@@ -72,6 +78,7 @@ export type CandidateType = {
   notesInterview?: Maybe<Array<Maybe<NotesInterviewType>>>;
   overallScore?: Maybe<Scalars["Float"]>;
   readyToDisplay?: Maybe<Scalars["Boolean"]>;
+  skillScore?: Maybe<Scalars["Float"]>;
   summaryQuestions?: Maybe<Array<Maybe<SummaryQuestionType>>>;
   user?: Maybe<Members>;
 };
@@ -123,6 +130,7 @@ export type Conversation = {
   convKey?: Maybe<Scalars["String"]>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
   positionID?: Maybe<Scalars["String"]>;
+  positionTrainEdenAI?: Maybe<Scalars["Boolean"]>;
   questionsAnswered?: Maybe<Array<Maybe<QuestionAnsweredType>>>;
   summary?: Maybe<Array<Maybe<SummaryType>>>;
   summaryReady?: Maybe<Scalars["Boolean"]>;
@@ -389,6 +397,7 @@ export type Mutation = {
   createFakeEndorsement?: Maybe<Endorsement>;
   createFakeReview?: Maybe<Review>;
   createFakeUser?: Maybe<Members>;
+  createFakeUserCVnew?: Maybe<Members>;
   createMultipleFakeEndorsementAndReview?: Maybe<Scalars["Boolean"]>;
   createNewEpic?: Maybe<Epic>;
   createNewRole?: Maybe<Role>;
@@ -413,12 +422,16 @@ export type Mutation = {
   enterRoom?: Maybe<Rooms>;
   exitRoom?: Maybe<Rooms>;
   findEndorsements?: Maybe<Array<Maybe<Endorsement>>>;
+  findPrioritiesTrainEdenAI?: Maybe<FindPrioritiesTrainEdenAiOutput>;
   findReviews?: Maybe<Array<Maybe<Review>>>;
   inputToGPT?: Maybe<InputToGptOutput>;
   interviewQuestionCreationUser?: Maybe<Position>;
   login: User;
   messageToGPT?: Maybe<MessageToGptOutput>;
   newTweetProject?: Maybe<TweetsProject>;
+  positionSuggestQuestionsAskCandidate?: Maybe<PositionSuggestQuestionsAskCandidateOutput>;
+  positionTextAndConvoToReportCriteria?: Maybe<PositionTextAndConvoToReportCriteriaOutput>;
+  positionTextToExtraQuestions?: Maybe<PositionTextToExtraQuestionsOutput>;
   relatedNode?: Maybe<Node>;
   relatedNode_name?: Maybe<Node>;
   saveActionsPerformed?: Maybe<Scalars["Boolean"]>;
@@ -588,6 +601,10 @@ export type MutationCreateFakeUserArgs = {
   fields?: InputMaybe<CreateFakeUserInput>;
 };
 
+export type MutationCreateFakeUserCVnewArgs = {
+  fields?: InputMaybe<CreateFakeUserCVnewInput>;
+};
+
 export type MutationCreateMultipleFakeEndorsementAndReviewArgs = {
   fields?: InputMaybe<CreateMultipleFakeEndorsementAndReviewInput>;
 };
@@ -684,6 +701,10 @@ export type MutationFindEndorsementsArgs = {
   fields?: InputMaybe<FindEndorsementsInput>;
 };
 
+export type MutationFindPrioritiesTrainEdenAiArgs = {
+  fields?: InputMaybe<FindPrioritiesTrainEdenAiInput>;
+};
+
 export type MutationFindReviewsArgs = {
   fields?: InputMaybe<FindReviewsInput>;
 };
@@ -706,6 +727,18 @@ export type MutationMessageToGptArgs = {
 
 export type MutationNewTweetProjectArgs = {
   fields: NewTweetProjectInput;
+};
+
+export type MutationPositionSuggestQuestionsAskCandidateArgs = {
+  fields?: InputMaybe<PositionSuggestQuestionsAskCandidateInput>;
+};
+
+export type MutationPositionTextAndConvoToReportCriteriaArgs = {
+  fields?: InputMaybe<PositionTextAndConvoToReportCriteriaInput>;
+};
+
+export type MutationPositionTextToExtraQuestionsArgs = {
+  fields?: InputMaybe<PositionTextToExtraQuestionsInput>;
 };
 
 export type MutationRelatedNodeArgs = {
@@ -929,6 +962,9 @@ export type Position = {
   company?: Maybe<Company>;
   convRecruiter?: Maybe<Array<Maybe<ConvRecruiterType>>>;
   convRecruiterReadyToDisplay?: Maybe<Scalars["Boolean"]>;
+  interviewQuestionsForPosition?: Maybe<
+    Array<Maybe<InterviewQuestionsForCandidateType>>
+  >;
   name?: Maybe<Scalars["String"]>;
   nodes?: Maybe<Array<Maybe<NodeDataType>>>;
   positionsRequirements?: Maybe<PositionsRequirementsType>;
@@ -987,6 +1023,7 @@ export type Query = {
   activeMembersStats?: Maybe<Array<Maybe<ResultCount>>>;
   activeUsersQueryStats?: Maybe<Array<Maybe<ResultCount2>>>;
   adminFindAllSkillsEveryState?: Maybe<Array<Maybe<Skills>>>;
+  askEdenUserPosition?: Maybe<AskEdenUserPositionOutput>;
   candidateNotesComparePositionEdenAI?: Maybe<
     Array<Maybe<CandidateNotesComparePositionEdenAiOutput>>
   >;
@@ -1113,6 +1150,10 @@ export type QueryActiveUsersQueryStatsArgs = {
 
 export type QueryAdminFindAllSkillsEveryStateArgs = {
   fields?: InputMaybe<FindSkillsInput>;
+};
+
+export type QueryAskEdenUserPositionArgs = {
+  fields?: InputMaybe<AskEdenUserPositionInput>;
 };
 
 export type QueryCandidateNotesComparePositionEdenAiArgs = {
@@ -1719,6 +1760,7 @@ export type Subscription = {
   memberUpdated?: Maybe<Members>;
   memberUpdatedInRoom?: Maybe<Members>;
   roomUpdated?: Maybe<Rooms>;
+  userCVSavedToDB?: Maybe<AddCvToUserOutput>;
 };
 
 export type SubscriptionMemberUpdatedArgs = {
@@ -1738,6 +1780,7 @@ export type SummaryQuestionType = {
   answerContent?: Maybe<Scalars["String"]>;
   answerContentSmall?: Maybe<Scalars["String"]>;
   bestAnswerPosition?: Maybe<Scalars["String"]>;
+  originalQuestionContent?: Maybe<Scalars["String"]>;
   questionContent?: Maybe<Scalars["String"]>;
   questionContentSmall?: Maybe<Scalars["String"]>;
   questionID?: Maybe<Scalars["ID"]>;
@@ -1892,7 +1935,7 @@ export type AddProjectRoleInput = {
 };
 
 export type AddQuestionToEdenAiInput = {
-  content?: InputMaybe<Scalars["ID"]>;
+  content?: InputMaybe<Scalars["String"]>;
 };
 
 export type AddQuestionToEdenAiOutput = {
@@ -1947,6 +1990,17 @@ export enum ApprovedSkillEnum {
   Rejected = "rejected",
   Waiting = "waiting",
 }
+
+export type AskEdenUserPositionInput = {
+  conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type AskEdenUserPositionOutput = {
+  __typename?: "askEdenUserPositionOutput";
+  reply?: Maybe<Scalars["String"]>;
+};
 
 export enum AttributesEnum {
   Coordinator = "Coordinator",
@@ -2204,6 +2258,12 @@ export type CreateFakeReviewInput = {
   payEndorsers?: InputMaybe<Scalars["Boolean"]>;
   userReceiveID?: InputMaybe<Scalars["ID"]>;
   userSendID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type CreateFakeUserCVnewInput = {
+  cvContent?: InputMaybe<Scalars["String"]>;
+  memberID?: InputMaybe<Scalars["ID"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type CreateFakeUserInput = {
@@ -2940,6 +3000,17 @@ export type FindPositionsInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
+export type FindPrioritiesTrainEdenAiInput = {
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type FindPrioritiesTrainEdenAiOutput = {
+  __typename?: "findPrioritiesTrainEdenAIOutput";
+  priorities?: Maybe<Array<Maybe<PrioritiesType>>>;
+  success?: Maybe<Scalars["Boolean"]>;
+  tradeOffs?: Maybe<Array<Maybe<TradeOffsType>>>;
+};
+
 export type FindProjectGraphInput = {
   edgeSettings?: InputMaybe<Array<InputMaybe<EdgeSetting>>>;
   nodeSettings?: InputMaybe<Array<InputMaybe<NodeSetting>>>;
@@ -3084,6 +3155,7 @@ export type InputToGptOutput = {
 export type InterviewEdenAiInput = {
   conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
   positionID?: InputMaybe<Scalars["ID"]>;
+  positionTrainEdenAI?: InputMaybe<Scalars["Boolean"]>;
   questionAskingID?: InputMaybe<Scalars["ID"]>;
   questionAskingNow?: InputMaybe<Scalars["String"]>;
   timesAsked?: InputMaybe<Scalars["Int"]>;
@@ -3210,6 +3282,7 @@ export type MatchNodesToMembers_Ai4Input = {
   membersIDallow?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   nodesID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   page?: InputMaybe<Scalars["Int"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
   weightModules?: InputMaybe<Array<InputMaybe<WeightModulesInput>>>;
 };
 
@@ -3527,6 +3600,37 @@ export enum PhaseType {
   Shortlisted = "shortlisted",
 }
 
+export type PositionSuggestQuestionsAskCandidateInput = {
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type PositionSuggestQuestionsAskCandidateOutput = {
+  __typename?: "positionSuggestQuestionsAskCandidateOutput";
+  questionSuggest?: Maybe<Array<Maybe<QuestionSuggestType>>>;
+  success?: Maybe<Scalars["Boolean"]>;
+};
+
+export type PositionTextAndConvoToReportCriteriaInput = {
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type PositionTextAndConvoToReportCriteriaOutput = {
+  __typename?: "positionTextAndConvoToReportCriteriaOutput";
+  report?: Maybe<Scalars["String"]>;
+  success?: Maybe<Scalars["Boolean"]>;
+};
+
+export type PositionTextToExtraQuestionsInput = {
+  positionID?: InputMaybe<Scalars["ID"]>;
+  positionText?: InputMaybe<Scalars["String"]>;
+};
+
+export type PositionTextToExtraQuestionsOutput = {
+  __typename?: "positionTextToExtraQuestionsOutput";
+  questions?: Maybe<Array<Maybe<InterviewQuestionsForCandidateType>>>;
+  success?: Maybe<Scalars["Boolean"]>;
+};
+
 export type PositionsAppliedType = {
   __typename?: "positionsAppliedType";
   positionID?: Maybe<Scalars["ID"]>;
@@ -3535,6 +3639,7 @@ export type PositionsAppliedType = {
 export type PositionsRequirementsType = {
   __typename?: "positionsRequirementsType";
   content?: Maybe<Scalars["String"]>;
+  originalContent?: Maybe<Scalars["String"]>;
 };
 
 export type PrefPastSearch = {
@@ -3598,6 +3703,12 @@ export type PreviousProjectsType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export type PrioritiesType = {
+  __typename?: "prioritiesType";
+  priority?: Maybe<Scalars["String"]>;
+  reason?: Maybe<Scalars["String"]>;
+};
+
 export type ProjectMatchType = {
   __typename?: "projectMatchType";
   matchPercentage?: Maybe<Scalars["Float"]>;
@@ -3629,6 +3740,13 @@ export type QuestionAnsweredType = {
   subConversationAnswer?: Maybe<Array<Maybe<ConversationType>>>;
   summaryOfAnswer?: Maybe<Scalars["String"]>;
   summaryOfAnswerSmall?: Maybe<Scalars["String"]>;
+};
+
+export type QuestionSuggestType = {
+  __typename?: "questionSuggestType";
+  IDCriteria?: Maybe<Scalars["ID"]>;
+  category?: Maybe<Scalars["String"]>;
+  question?: Maybe<Scalars["String"]>;
 };
 
 export enum Range {
@@ -3901,6 +4019,7 @@ export type TalentListType = {
   __typename?: "talentListType";
   _id?: Maybe<Scalars["ID"]>;
   name?: Maybe<Scalars["String"]>;
+  positionID?: Maybe<Scalars["ID"]>;
   talent?: Maybe<Array<Maybe<TalentType>>>;
 };
 
@@ -3939,6 +4058,13 @@ export type TotalNodeTrustType = {
   averageTrustNum?: Maybe<Scalars["Float"]>;
   numberOfTrustNodes?: Maybe<Scalars["Int"]>;
   totalTrustNum?: Maybe<Scalars["Float"]>;
+};
+
+export type TradeOffsType = {
+  __typename?: "tradeOffsType";
+  reason?: Maybe<Scalars["String"]>;
+  tradeOff1?: Maybe<Scalars["String"]>;
+  tradeOff2?: Maybe<Scalars["String"]>;
 };
 
 export type TreeOfRelatedNodesInput = {
@@ -4217,6 +4343,9 @@ export type WebsiteToMemoryCompanyInput = {
 
 export type WebsiteToMemoryCompanyOutput = {
   __typename?: "websiteToMemoryCompanyOutput";
+  interviewQuestionsForPosition?: Maybe<
+    Array<Maybe<InterviewQuestionsForCandidateType>>
+  >;
   nodes?: Maybe<Array<Maybe<Node>>>;
   report?: Maybe<Scalars["String"]>;
   success?: Maybe<Scalars["Boolean"]>;

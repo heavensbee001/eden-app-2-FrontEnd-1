@@ -28,6 +28,7 @@ export const FIND_POSITION_LIGHT = gql`
         readyToDisplay
         summaryQuestions {
           questionID
+          originalQuestionContent
           questionContent
           questionContentSmall
           answerContent
@@ -58,6 +59,18 @@ export const FIND_POSITION_LIGHT = gql`
             score
             reason
             IDb
+          }
+        }
+        analysisCandidateEdenAI {
+          flagAnalysisCreated
+          background {
+            content
+          }
+          fitRequirements {
+            content
+          }
+          skills {
+            content
           }
         }
       }
