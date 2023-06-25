@@ -25,7 +25,7 @@ interface ReportNotesData {
   [key: string]: { notes: meetingNotesType; average: string };
 }
 
-export const ReportNotes: FC<Props> = ({ candidate }) => {
+export const ReportNotes: FC<Props> = ({ member, candidate }) => {
   const [reportNotesData, setReportNotesData] = useState<ReportNotesData>();
 
   useEffect(() => {
@@ -90,7 +90,37 @@ export const ReportNotes: FC<Props> = ({ candidate }) => {
           </div>
         </div>
       )} */}
-      <div className="space-y-4 rounded-lg p-4 py-10">
+      {member?.letterAndColor?.totalMatchPerc?.letter && (
+        <div className="relative flex items-center">
+          <div className="absolute left-0 top-0 flex items-center rounded-lg bg-white px-4 py-6 shadow-lg">
+            <p className="mr-4 text-lg font-bold">Total Score:</p>
+            <p
+              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
+            >
+              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
+            </p>
+            {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+              <>
+                <hr className="mx-4 my-0 h-8 border-gray-400" />
+                <div>
+                  <p className="text-lg font-bold">Eden’s Thoughts on Fit 🤔</p>
+                  <p className="text-sm">
+                    {candidate?.analysisCandidateEdenAI?.fitRequirements
+                      ?.content?.length > 300
+                      ? `${candidate?.analysisCandidateEdenAI?.fitRequirements?.content?.substr(
+                          0,
+                          300
+                        )}...`
+                      : candidate?.analysisCandidateEdenAI?.fitRequirements
+                          ?.content}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      <div className="space-y-4 rounded-lg p-4 py-52">
         {/* Render each category */}
 
         {reportNotesData &&

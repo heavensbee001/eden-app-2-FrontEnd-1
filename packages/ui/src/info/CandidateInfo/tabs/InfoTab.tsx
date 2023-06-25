@@ -26,27 +26,52 @@ type relevantNodeObj = {
 interface Props {
   member?: CandidateTypeSkillMatch; // This was formerly accepting Members but now it needs the score letter; Definitely not good approach. Have to refactor this into util functions
   mostRelevantMemberNode?: relevantNodeObj;
+  candidate?: any;
 }
 
-export const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode }) => {
+export const InfoTab: FC<Props> = ({
+  member,
+  mostRelevantMemberNode,
+  candidate,
+}) => {
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
   const [seeMore, setSeeMore] = useState(false);
+
+  console.log("candidate = 998", candidate);
 
   return (
     <>
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="relative">
-          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
-            <p className="text-lg font-bold">Total Score:</p>
+        <div className="relative flex items-center">
+          <div className="absolute left-0 top-0 flex items-center rounded-lg bg-white px-4 py-6 shadow-lg">
+            <p className="mr-4 text-lg font-bold">Total Score:</p>
             <p
-              className={` ${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
+              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </p>
+            {candidate?.analysisCandidateEdenAI?.background?.content && (
+              <>
+                <hr className="mx-4 my-0 h-8 border-gray-400" />
+                <div>
+                  <p className="text-lg font-bold">Eden First Impression 👀</p>
+                  <p className="text-sm">
+                    {candidate?.analysisCandidateEdenAI?.background?.content
+                      ?.length > 300
+                      ? `${candidate?.analysisCandidateEdenAI?.background?.content?.substr(
+                          0,
+                          300
+                        )}...`
+                      : candidate?.analysisCandidateEdenAI?.background?.content}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
-      <div className="mb-4 grid grid-cols-2 py-24">
+
+      <div className="mb-4 grid grid-cols-2 py-36">
         <div className="col-span-2 p-2">
           <div className="my-4 flex flex-col items-start justify-center">
             <TextLabel1>🌸 Short bio</TextLabel1>

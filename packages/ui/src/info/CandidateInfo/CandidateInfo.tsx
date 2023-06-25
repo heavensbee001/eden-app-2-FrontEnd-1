@@ -86,6 +86,7 @@ export const CandidateInfo = ({
             } as CandidateTypeSkillMatch
           }
           mostRelevantMemberNode={mostRelevantMemberNode}
+          candidate={candidate}
         />
       ),
     },
@@ -127,6 +128,7 @@ export const CandidateInfo = ({
               user: dataMember?.findMember,
             } as CandidateTypeSkillMatch
           }
+          candidate={candidate}
         />
       ),
     },
