@@ -61,6 +61,18 @@ export const FIND_POSITION_LIGHT = gql`
             IDb
           }
         }
+        analysisCandidateEdenAI {
+          flagAnalysisCreated
+          background {
+            content
+          }
+          fitRequirements {
+            content
+          }
+          skills {
+            content
+          }
+        }
       }
       talentList {
         _id
