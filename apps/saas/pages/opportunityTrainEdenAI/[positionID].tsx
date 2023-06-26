@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   ChatMessage,
+  EdenTooltip,
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
@@ -915,43 +916,59 @@ const PrioritiesAndTradeOffsContainer =
                 key={index}
                 className="group relative cursor-pointer py-1 pl-10 text-xl"
               >
-                <div className="text-lg font-bold">
-                  {index + 1}. {priority.priority}
-                </div>
-                <div className="h-0 overflow-hidden p-0 pt-0 text-sm text-gray-600 group-hover:h-auto group-hover:p-4 group-hover:pt-1">
-                  <h3>Reason for Priority: </h3>
-                  <p>{priority.reason}</p>
-                </div>
-                <div className="absolute left-2 top-0 hidden text-gray-400 group-hover:block">
-                  <div className="hover:text-gray-600">
-                    <div
-                      className={classNames(
-                        "hover:text-gray-600",
-                        index === 0 ? "hidden" : ""
-                      )}
-                    >
-                      <BiChevronUp
-                        onClick={() => {
-                          permutePriorities(index, index - 1);
-                        }}
-                      />
+                <EdenTooltip
+                  id={priority.reason.split(" ").join("")}
+                  innerTsx={
+                    <div className="w-60">
+                      <h3>Reason for Priority: </h3>
+                      <p>{priority.reason}</p>
+                    </div>
+                  }
+                  place="top"
+                  effect="solid"
+                  backgroundColor="white"
+                  border
+                  borderColor="#e5e7eb"
+                  padding="0.5rem"
+                  offset={{ left: 100 }}
+                >
+                  <div className="w-full">
+                    <div className="text-lg font-bold">
+                      {index + 1}. {priority.priority}
+                    </div>
+                    <div className="absolute left-2 top-0 hidden text-gray-400 group-hover:block">
+                      <div className="hover:text-gray-600">
+                        <div
+                          className={classNames(
+                            "hover:text-gray-600",
+                            index === 0 ? "hidden" : ""
+                          )}
+                        >
+                          <BiChevronUp
+                            onClick={() => {
+                              permutePriorities(index, index - 1);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="hover:text-gray-600">
+                        <div
+                          className={classNames(
+                            "hover:text-gray-600",
+                            index === priorities.length - 1 ? "hidden" : "",
+                            index === 0 ? "mt-4" : ""
+                          )}
+                        >
+                          <BiChevronDown
+                            onClick={() => {
+                              permutePriorities(index, index + 1);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="hover:text-gray-600">
-                    <div
-                      className={classNames(
-                        "hover:text-gray-600",
-                        index === priorities.length - 1 ? "hidden" : ""
-                      )}
-                    >
-                      <BiChevronDown
-                        onClick={() => {
-                          permutePriorities(index, index + 1);
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
+                </EdenTooltip>
               </li>
             ))}
         </ul>
