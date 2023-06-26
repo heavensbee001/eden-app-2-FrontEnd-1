@@ -1057,7 +1057,7 @@ const PositionCRM: NextPageWithLayout = () => {
               variant="secondary"
               onClick={handleFindBestTalentClick}
             >
-              Find Best Talent
+              Recruit Similar Candidates
               <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#007bff]">
                 <div className="h-[40px] w-[40px] min-w-[40px]">
                   <Image
