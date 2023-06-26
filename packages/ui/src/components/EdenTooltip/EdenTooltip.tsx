@@ -24,7 +24,7 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
           className={classNames("!opacity-100", className || "")}
           id={`badgeTip-${id}-description`}
         >
-          <div className="chat-message p-2">
+          <div className="chat-message p-2 text-gray-700">
             <div className={"flex items-start"}>
               <div
                 className={
