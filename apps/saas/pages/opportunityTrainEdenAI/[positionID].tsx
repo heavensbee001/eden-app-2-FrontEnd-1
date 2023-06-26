@@ -1008,36 +1008,54 @@ const PrioritiesAndTradeOffsContainer =
           ))}
         </div> */}
         <div className="flex flex-col items-center justify-center">
-          {tradeOffs.map((tradeOff, index) => (
-            <div key={index} className="grid grid-cols-2 gap-2">
-              <div className="col-span-1">
-                <label className="flex cursor-pointer items-center justify-end text-lg">
-                  <span className="text-xl">{tradeOff.tradeOff1}</span>
-                  <input
-                    type="radio"
-                    name={`tradeoff-${index}`}
-                    value={tradeOff.tradeOff1}
-                    checked={selected[index] === tradeOff.tradeOff1}
-                    onChange={() => handleSelect(index, tradeOff.tradeOff1)}
-                    className="ml-2"
-                  />
-                </label>
-              </div>
-              <div className="col-span-1">
-                <label className="flex cursor-pointer items-center text-lg">
-                  <input
-                    type="radio"
-                    className="mr-2"
-                    name={`tradeoff-${index}`}
-                    value={tradeOff.tradeOff2}
-                    checked={selected[index] === tradeOff.tradeOff2}
-                    onChange={() => handleSelect(index, tradeOff.tradeOff2)}
-                  />
-                  <span className="text-xl">{tradeOff.tradeOff2}</span>
-                </label>
-              </div>
-            </div>
-          ))}
+          {tradeOffs &&
+            tradeOffs.length > 0 &&
+            tradeOffs.map((tradeOff, index) => (
+              <EdenTooltip
+                key={index}
+                id={`tradeoff-${index}`}
+                innerTsx={
+                  <div className="w-60">
+                    <p>{tradeOff.reason}</p>
+                  </div>
+                }
+                place="top"
+                effect="solid"
+                backgroundColor="white"
+                border
+                borderColor="#e5e7eb"
+                padding="0.5rem"
+              >
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="col-span-1">
+                    <label className="flex cursor-pointer items-center justify-end text-lg">
+                      <span className="text-xl">{tradeOff.tradeOff1}</span>
+                      <input
+                        type="radio"
+                        name={`tradeoff-${index}`}
+                        value={tradeOff.tradeOff1}
+                        checked={selected[index] === tradeOff.tradeOff1}
+                        onChange={() => handleSelect(index, tradeOff.tradeOff1)}
+                        className="ml-2"
+                      />
+                    </label>
+                  </div>
+                  <div className="col-span-1">
+                    <label className="flex cursor-pointer items-center text-lg">
+                      <input
+                        type="radio"
+                        className="mr-2"
+                        name={`tradeoff-${index}`}
+                        value={tradeOff.tradeOff2}
+                        checked={selected[index] === tradeOff.tradeOff2}
+                        onChange={() => handleSelect(index, tradeOff.tradeOff2)}
+                      />
+                      <span className="text-xl">{tradeOff.tradeOff2}</span>
+                    </label>
+                  </div>
+                </div>
+              </EdenTooltip>
+            ))}
         </div>
       </>
 
@@ -1566,51 +1584,69 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
     <form className="grid grid-cols-2 gap-16">
       <div className="col-span-1">
         <div className="mb-2 flex items-center justify-between">
-          <label>Targetted Start Date</label>
+          <label className="w-2/5 pr-2">Targetted Start Date</label>
           <input
-            type="text"
+            type="date"
             name="targettedStartDate"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
           />
         </div>
         <div className="mb-2 flex items-center justify-between">
-          <label>Visa Requirements</label>
+          <label className="w-2/5 pr-2">Visa Requirements</label>
           <input
             type="text"
             name="visaRequirements"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
           />
         </div>
         <div className="mb-2 flex items-center justify-between">
-          <label>Office Locations</label>
+          <label className="w-2/5 pr-2">Office Locations</label>
           <input
             type="text"
             name="officeLocations"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
           />
         </div>
         <div className="mb-2 flex items-center justify-between">
-          <label>Office Policy</label>
-          <input
-            type="text"
+          <label className="w-2/5 pr-2">Office Policy</label>
+          <select
             name="officePolicy"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
-          />
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            defaultValue={""}
+          >
+            <option value={""} disabled hidden>
+              Select an option...
+            </option>
+            <option value="on-site">On site</option>
+            <option value="remote">Remote</option>
+            <option value="hybrid-1-day-office">Hybrid - 1 day office</option>
+            <option value="hybrid-2-day-office">Hybrid - 2 day office</option>
+            <option value="hybrid-3-day-office">Hybrid - 3 day office</option>
+            <option value="hybrid-4-day-office">Hybrid - 4 day office</option>
+          </select>
         </div>
         <div className="mb-2 flex items-center justify-between">
-          <label>Contract Type</label>
-          <input
-            type="text"
+          <label className="w-2/5 pr-2">Contract Type</label>
+          <select
             name="contractType"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
-          />
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            defaultValue={""}
+          >
+            <option value={""} disabled hidden>
+              Select an option...
+            </option>
+            <option value="fulltime">Full time</option>
+            <option value="parttime">Part time</option>
+            <option value="freelance">Freelance</option>
+            <option value="intern">Intern</option>
+          </select>
         </div>
         <div className="mb-2 flex items-center justify-between">
-          <label>Contract Duration</label>
+          <label className="w-2/5 pr-2">Contract Duration</label>
           <input
             type="text"
             name="contractDuration"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-auto rounded-full pl-4"
+            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
           />
         </div>
       </div>
