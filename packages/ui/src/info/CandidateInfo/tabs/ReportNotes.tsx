@@ -91,36 +91,27 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
         </div>
       )} */}
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="relative flex items-center">
-          <div className="absolute left-0 top-0 flex items-center rounded-lg bg-white px-4 py-6 shadow-lg">
-            <p className="mr-4 text-lg font-bold">Total Score:</p>
+        <div className=" mb-2 mt-4   flex items-center ">
+          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
             <p
               className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </p>
-            {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+            {candidate?.analysisCandidateEdenAI?.background?.content && (
               <>
                 <hr className="mx-4 my-0 h-8 border-gray-400" />
-                <div>
-                  <p className="text-lg font-bold">Eden’s Thoughts on Fit 🤔</p>
-                  <p className="text-sm">
-                    {candidate?.analysisCandidateEdenAI?.fitRequirements
-                      ?.content?.length > 300
-                      ? `${candidate?.analysisCandidateEdenAI?.fitRequirements?.content?.substr(
-                          0,
-                          300
-                        )}...`
-                      : candidate?.analysisCandidateEdenAI?.fitRequirements
-                          ?.content}
-                  </p>
+                <div className="">
+                  <p className="text-lg font-bold">Eden First Impression 👀</p>
+
+                  {candidate?.analysisCandidateEdenAI?.background?.content}
                 </div>
               </>
             )}
           </div>
         </div>
       )}
-      <div className="space-y-4 rounded-lg p-4 py-52">
+      <div className="space-y-4 rounded-lg border-[1px] bg-white p-4 py-4">
         {/* Render each category */}
 
         {reportNotesData &&

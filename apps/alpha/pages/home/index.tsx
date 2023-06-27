@@ -29,7 +29,7 @@ const HomeHeroSection = ({}: IHomeHeroSectionProps) => {
   // const { currentUser } = useContext(UserContext);
 
   return (
-    <div className="scrollbar-hide h-[calc(100vh-4rem)] w-full overflow-y-scroll bg-gray-100">
+    <div className="scrollbar-hide bg-background h-[calc(100vh-4rem)] w-full overflow-y-scroll">
       <GridLayout>
         <GridItemThree> </GridItemThree>
         <GridItemSix className="">
@@ -48,7 +48,7 @@ const HomeHeroSection = ({}: IHomeHeroSectionProps) => {
               Welcome to Eden!
             </h1>
           </div>
-          <Card shadow className=" mb-2 -mt-8 w-full bg-white px-8 py-6">
+          <Card shadow className=" -mt-8 mb-2 w-full bg-white px-8 py-6">
             <section className="flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-medium">

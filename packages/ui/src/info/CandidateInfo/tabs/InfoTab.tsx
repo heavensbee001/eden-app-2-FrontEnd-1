@@ -3,6 +3,7 @@ import {
   Badge,
   CandidateTypeSkillMatch,
   NodeList,
+  ReadMore,
   // SocialMediaComp,
   TextLabel1,
   UserBackground,
@@ -42,9 +43,8 @@ export const InfoTab: FC<Props> = ({
   return (
     <>
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="relative flex items-center">
-          <div className="absolute left-0 top-0 flex items-center rounded-lg bg-white px-4 py-6 shadow-lg">
-            <p className="mr-4 text-lg font-bold">Total Score:</p>
+        <div className=" mb-2 mt-4 flex  items-center  ">
+          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
             <p
               className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
             >
@@ -53,17 +53,10 @@ export const InfoTab: FC<Props> = ({
             {candidate?.analysisCandidateEdenAI?.background?.content && (
               <>
                 <hr className="mx-4 my-0 h-8 border-gray-400" />
-                <div>
+                <div className="">
                   <p className="text-lg font-bold">Eden First Impression 👀</p>
-                  <p className="text-sm">
-                    {candidate?.analysisCandidateEdenAI?.background?.content
-                      ?.length > 300
-                      ? `${candidate?.analysisCandidateEdenAI?.background?.content?.substr(
-                          0,
-                          300
-                        )}...`
-                      : candidate?.analysisCandidateEdenAI?.background?.content}
-                  </p>
+
+                  {candidate?.analysisCandidateEdenAI?.background?.content}
                 </div>
               </>
             )}
@@ -71,9 +64,9 @@ export const InfoTab: FC<Props> = ({
         </div>
       )}
 
-      <div className="mb-4 grid grid-cols-2 py-36">
-        <div className="col-span-2 p-2">
-          <div className="my-4 flex flex-col items-start justify-center">
+      <div className=" grid grid-cols-2">
+        <div className="col-span-2 ">
+          <div className="mb-2 flex flex-col items-start justify-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-6">
             <TextLabel1>🌸 Short bio</TextLabel1>
             {member?.user?.bio ? (
               <>
@@ -139,7 +132,7 @@ export const InfoTab: FC<Props> = ({
           </section>
         </div> */}
       </div>
-      <div className="mb-4 grid grid-cols-2">
+      <div className="mb-2 grid grid-cols-2 rounded-lg border-[1px] border-gray-300 bg-white px-2">
         {mostRelevantMemberNode &&
         member &&
         member?.user?._id &&
@@ -263,7 +256,7 @@ export const InfoTab: FC<Props> = ({
       </div>
       {member?.user?.previousProjects &&
       member?.user.previousProjects.length ? (
-        <section className=" w-9/12 pb-4 text-left">
+        <section className=" w-full rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4  text-left">
           <TextLabel1 className="text-xs">🍒 BACKGROUND</TextLabel1>
           <UserBackground
             background={member?.user.previousProjects || []}
