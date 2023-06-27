@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import {
   ASK_EDEN_USER_POSITION,
   INTERVIEW_EDEN_AI,
-  MESSAGE_MAP_KG_V4,
+  // MESSAGE_MAP_KG_V4,
 } from "./gqlFunctions";
 
 interface NodeObj {
@@ -39,6 +39,7 @@ interface MessageObject {
 export enum AI_INTERVIEW_SERVICES {
   // eslint-disable-next-line no-unused-vars
   INTERVIEW_EDEN_AI = "INTERVIEW_EDEN_AI",
+  // eslint-disable-next-line no-unused-vars
   ASK_EDEN_USER_POSITION = "ASK_EDEN_USER_POSITION",
 }
 type ChatMessage = Array<{ user: string; message: string; date: Date }>;

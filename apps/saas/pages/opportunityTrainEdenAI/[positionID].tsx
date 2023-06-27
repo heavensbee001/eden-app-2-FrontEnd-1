@@ -7,11 +7,11 @@ import {
   Button,
   Card,
   ChatMessage,
+  EdenAiProcessingModal,
   EdenTooltip,
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
-  Modal,
   ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -20,7 +20,6 @@ import {
   WizardStep,
 } from "@eden/package-ui";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -357,25 +356,18 @@ const HomePage: NextPageWithLayout = () => {
                     )}
                     {error && <div className="text-red-500">{error}</div>}
                   </div>
-                  <Modal open={scraping} closeOnEsc={false}>
-                    <div className="px-20 py-10 text-center">
-                      <Image
-                        width={80}
-                        height={80}
-                        className="mx-auto mb-4"
-                        src="/eden-logo.png"
-                        alt=""
-                      />
+                  <EdenAiProcessingModal
+                    open={scraping}
+                    title="Give me 30 seconds!"
+                  >
+                    <div className="text-center">
                       <p>
-                        Give me 30 seconds!
-                        <br />
-                        <br />
                         I&apos;m reading your job description, writing down
                         additional questions I have for you so I can draft the
                         ideal interview for your candidates!
                       </p>
                     </div>
-                  </Modal>
+                  </EdenAiProcessingModal>
                 </div>
               </WizardStep>
 
@@ -884,29 +876,10 @@ const PrioritiesAndTradeOffsContainer =
       // </ul>
       <>
         {scraping && (
-          <p className="text-center text-gray-400">
-            Calculating criteria{" "}
-            <svg
-              className="inline-block animate-spin"
-              xmlns="http://www.w3.org/2000/svg"
-              width="21px"
-              height="21px"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                opacity="0.2"
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                fill="#000000"
-              />
-              <path
-                d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
-                fill="#000000"
-              />
-            </svg>
-          </p>
+          <EdenAiProcessingModal
+            open={scraping}
+            title="Calculating criteria"
+          ></EdenAiProcessingModal>
         )}
         <ul className="mb-8">
           {priorities &&
@@ -1188,29 +1161,10 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
       </Button> */}
 
       {scraping && (
-        <p className="text-center text-gray-400">
-          Clculating criteria{" "}
-          <svg
-            className="inline-block animate-spin"
-            xmlns="http://www.w3.org/2000/svg"
-            width="21px"
-            height="21px"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              opacity="0.2"
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-              fill="#000000"
-            />
-            <path
-              d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
-              fill="#000000"
-            />
-          </svg>
-        </p>
+        <EdenAiProcessingModal
+          open={scraping}
+          title="Calculating criteria"
+        ></EdenAiProcessingModal>
       )}
       {report && (
         <div className="whitespace-pre-wrap">
@@ -1450,29 +1404,10 @@ const CreateQuestions = ({}: ICreateQuestions) => {
         Suggest Questions
       </Button> */}
       {scraping && (
-        <p className="text-center text-gray-400">
-          Loading questions{" "}
-          <svg
-            className="inline-block animate-spin"
-            xmlns="http://www.w3.org/2000/svg"
-            width="21px"
-            height="21px"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              opacity="0.2"
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-              fill="#000000"
-            />
-            <path
-              d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
-              fill="#000000"
-            />
-          </svg>
-        </p>
+        <EdenAiProcessingModal
+          open={scraping}
+          title="Loading questions"
+        ></EdenAiProcessingModal>
       )}
       <Button
         className="absolute bottom-8 right-8 z-30 mx-auto"
