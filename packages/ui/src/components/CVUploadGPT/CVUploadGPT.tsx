@@ -11,7 +11,7 @@ import {
 import { BsCheckCircle } from "react-icons/bs";
 import { toast } from "react-toastify";
 
-import { EdenAiProcessingModal, Loading } from "../../elements";
+import { EdenAiProcessingModal } from "../../elements";
 // export const CV_TO_SUMMARY = gql`
 //   mutation ($fields: CVtoSummaryInput!) {
 //     CVtoSummary(fields: $fields) {
