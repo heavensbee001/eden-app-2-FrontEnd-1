@@ -59,8 +59,12 @@ export const EdenAiProcessingModal = ({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative z-30 inline-block min-h-[280px] overflow-x-hidden rounded-md bg-white !pt-8 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-md sm:p-6 sm:align-middle">
-              <div className={"mt-3 w-full sm:mt-0"}>
+            <div className="relative z-30 inline-block overflow-x-hidden rounded-md bg-white text-left align-bottom shadow-xl transition-all sm:w-full sm:max-w-md sm:align-middle">
+              <div
+                className={
+                  "flex min-h-[280px] w-full flex-col justify-center !pt-8 sm:my-8 sm:mt-0 sm:p-6"
+                }
+              >
                 <Image
                   width={40}
                   height={40}
