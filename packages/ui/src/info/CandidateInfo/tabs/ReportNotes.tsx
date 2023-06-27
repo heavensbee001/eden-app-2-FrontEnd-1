@@ -91,41 +91,35 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
         </div>
       )} */}
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="relative flex items-center">
-          <div className="absolute left-0 top-0 flex items-center rounded-lg bg-white px-4 py-6 shadow-lg">
-            <p className="mr-4 text-lg font-bold">Total Score:</p>
+        <div className=" mb-2 mt-4   flex items-center ">
+          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
             <p
               className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </p>
-            {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+            {candidate?.analysisCandidateEdenAI?.background?.content && (
               <>
-                <hr className="mx-4 my-0 h-8 border-gray-400" />
-                <div>
-                  <p className="text-lg font-bold">Eden’s Thoughts on Fit 🤔</p>
-                  <p className="text-sm">
-                    {candidate?.analysisCandidateEdenAI?.fitRequirements
-                      ?.content?.length > 300
-                      ? `${candidate?.analysisCandidateEdenAI?.fitRequirements?.content?.substr(
-                          0,
-                          300
-                        )}...`
-                      : candidate?.analysisCandidateEdenAI?.fitRequirements
-                          ?.content}
-                  </p>
+                <hr className="mx-2 my-0 h-8 border-gray-400" />
+                <div className="">
+                  <p className="text-lg font-bold">Eden First Impression 👀</p>
+
+                  {candidate?.analysisCandidateEdenAI?.background?.content}
                 </div>
               </>
             )}
           </div>
         </div>
       )}
-      <div className="space-y-4 rounded-lg p-4 py-52">
+      <div className="space-y-4 rounded-lg border-[1px] bg-white p-4 py-4">
         {/* Render each category */}
 
         {reportNotesData &&
           Object.entries(reportNotesData).map(([categoryName, items]) => (
-            <div key={categoryName}>
+            <div
+              className="rounded-lg border-[3px] border-gray-300  px-4 py-4"
+              key={categoryName}
+            >
               <div className="flex justify-between pr-10">
                 <h2 className="mb-3 text-lg font-medium">{categoryName}</h2>
                 <span className="font-medium">
@@ -133,7 +127,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                 </span>
               </div>
 
-              <ul className="list-none space-y-1 pl-2 [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-200">
+              <ul className="list-none space-y-1  [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-200">
                 {/* Render each item in the category */}
 
                 {typeof items.notes !== "string"
