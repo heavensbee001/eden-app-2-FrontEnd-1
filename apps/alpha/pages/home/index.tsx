@@ -29,7 +29,7 @@ const HomeHeroSection = ({}: IHomeHeroSectionProps) => {
   // const { currentUser } = useContext(UserContext);
 
   return (
-    <div className="scrollbar-hide bg-background h-[calc(100vh-4rem)] w-full overflow-y-scroll">
+    <div className="scrollbar-hide h-[calc(100vh-4rem)] w-full overflow-y-scroll bg-gray-100">
       <GridLayout>
         <GridItemThree> </GridItemThree>
         <GridItemSix className="">

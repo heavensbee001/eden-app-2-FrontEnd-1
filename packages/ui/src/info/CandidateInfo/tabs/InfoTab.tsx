@@ -52,7 +52,7 @@ export const InfoTab: FC<Props> = ({
             </p>
             {candidate?.analysisCandidateEdenAI?.background?.content && (
               <>
-                <hr className="mx-4 my-0 h-8 border-gray-400" />
+                <hr className=" mx-2 my-0 h-8 border-gray-400" />
                 <div className="">
                   <p className="text-lg font-bold">Eden First Impression 👀</p>
 

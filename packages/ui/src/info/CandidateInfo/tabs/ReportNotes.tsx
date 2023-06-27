@@ -100,7 +100,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
             </p>
             {candidate?.analysisCandidateEdenAI?.background?.content && (
               <>
-                <hr className="mx-4 my-0 h-8 border-gray-400" />
+                <hr className="mx-2 my-0 h-8 border-gray-400" />
                 <div className="">
                   <p className="text-lg font-bold">Eden First Impression 👀</p>
 
@@ -116,7 +116,10 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
 
         {reportNotesData &&
           Object.entries(reportNotesData).map(([categoryName, items]) => (
-            <div key={categoryName}>
+            <div
+              className="rounded-lg border-[3px] border-gray-300  px-4 py-4"
+              key={categoryName}
+            >
               <div className="flex justify-between pr-10">
                 <h2 className="mb-3 text-lg font-medium">{categoryName}</h2>
                 <span className="font-medium">
@@ -124,7 +127,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                 </span>
               </div>
 
-              <ul className="list-none space-y-1 pl-2 [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-200">
+              <ul className="list-none space-y-1  [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-200">
                 {/* Render each item in the category */}
 
                 {typeof items.notes !== "string"
