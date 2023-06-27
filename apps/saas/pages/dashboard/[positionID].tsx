@@ -718,7 +718,8 @@ const PositionCRM: NextPageWithLayout = () => {
   });
 
   const handleTrainButtonClick = () => {
-    setTrainModalOpen(true);
+    // setTrainModalOpen(true);
+    router.push(`/opportunityTrainEdenAI/${positionID}`);
   };
 
   const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
