@@ -170,7 +170,7 @@ export const CandidateInfo = ({
           className="absolute left-4 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
           onClick={onClose}
         />
-        <div className="grid w-full grid-cols-3 bg-white">
+        {/* <div className="grid w-full grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full py-2 text-center">
             {!router.pathname.includes("/talentlist") && !qualified ? (
               <div className="flex w-full justify-end">
@@ -203,12 +203,12 @@ export const CandidateInfo = ({
               </div>
             ) : null}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex w-full justify-center px-4">
-          <TextHeading3 className="font-extrabold">
+          {/* <TextHeading3 className="font-extrabold">
             {dataMember?.findMember?.discordName}
-          </TextHeading3>
+          </TextHeading3> */}
         </div>
         <TextHeading3 className="w-full justify-center px-4 !text-sm font-bold text-gray-400">
           {dataMember?.findMember?.memberRole?.title}
