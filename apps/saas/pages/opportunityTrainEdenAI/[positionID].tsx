@@ -7,11 +7,11 @@ import {
   Button,
   Card,
   ChatMessage,
+  EdenAiProcessingModal,
   EdenTooltip,
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
-  Modal,
   ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -20,7 +20,6 @@ import {
   WizardStep,
 } from "@eden/package-ui";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -357,25 +356,18 @@ const HomePage: NextPageWithLayout = () => {
                     )}
                     {error && <div className="text-red-500">{error}</div>}
                   </div>
-                  <Modal open={scraping} closeOnEsc={false}>
-                    <div className="px-20 py-10 text-center">
-                      <Image
-                        width={80}
-                        height={80}
-                        className="mx-auto mb-4"
-                        src="/eden-logo.png"
-                        alt=""
-                      />
+                  <EdenAiProcessingModal
+                    open={scraping}
+                    title="Give me 30 seconds!"
+                  >
+                    <div className="text-center">
                       <p>
-                        Give me 30 seconds!
-                        <br />
-                        <br />
                         I&apos;m reading your job description, writing down
                         additional questions I have for you so I can draft the
                         ideal interview for your candidates!
                       </p>
                     </div>
-                  </Modal>
+                  </EdenAiProcessingModal>
                 </div>
               </WizardStep>
 
