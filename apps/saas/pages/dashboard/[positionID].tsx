@@ -1351,7 +1351,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll border-l-2 border-gray-300 transition-all duration-200 ease-in-out",
             selectedUserId ? "w-[50vw]" : "w-0"
           )}
         >
