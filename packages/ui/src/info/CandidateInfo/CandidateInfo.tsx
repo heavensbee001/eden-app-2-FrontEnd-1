@@ -6,6 +6,7 @@ import {
   Avatar,
   Button,
   CandidateTypeSkillMatch,
+  Dropdown,
   EdenChatTab,
   GraphTab,
   InfoTab,
@@ -163,14 +164,63 @@ export const CandidateInfo = ({
     approveCandidateFn && approveCandidateFn(memberID);
   };
 
+  let cutOffText;
+
+  if (dataMember?.findMember?.bio) {
+    const text = dataMember?.findMember?.bio;
+
+    if (text.length > 60) {
+      cutOffText = text.substring(0, 60) + "..."; // "This is a long strin..."
+    } else {
+      cutOffText = text;
+    }
+  } else {
+    cutOffText =
+      "On a mission to empower anyone anywhere to do meaningful work";
+  }
   return (
     <>
-      <div className="font-Inter absolute z-20 h-40 w-full flex-col bg-white text-center">
+      <div className="font-Inter absolute z-20 h-56 w-full flex-col bg-white text-center">
         <FaChevronLeft
           className="absolute left-4 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
           onClick={onClose}
         />
-        <div className="grid w-full grid-cols-3 bg-white">
+
+        <div className="flex justify-between">
+          <div className="ml-6 mt-12 w-fit  items-end text-left">
+            <Avatar src={dataMember?.findMember.discordAvatar!} size={`lg`} />
+
+            <div className="ml-[2px]">
+              <h1 className=" text-lg font-semibold">
+                {dataMember?.findMember?.discordName}
+              </h1>
+
+              <p className="text-sm">{cutOffText}</p>
+
+              <div className="flex items-center  space-x-1 text-sm text-gray-400">
+                <p>{dataMember?.findMember?.location} </p>
+                <p className="text-xs">•</p>
+                <p> {dataMember?.findMember?.timeZone}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className=" mr-8 mt-4 flex w-fit justify-end gap-4 ">
+            <Button variant="secondary" className="h-fit">
+              Add to Talent Pool
+            </Button>
+            <div className=" items-end space-y-2 text-sm">
+              <Button variant="secondary" className=" w-44 py-4 ">
+                Schedule 2nd Interview
+              </Button>
+              <Button variant="secondary" className=" w-full px-6 py-4 ">
+                Reject Gracefully
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="grid w-full grid-cols-3 bg-white">
           <div className="col-1 mt-5 w-full py-2 text-center">
             {!router.pathname.includes("/talentlist") && !qualified ? (
               <div className="flex w-full justify-end">
@@ -203,16 +253,12 @@ export const CandidateInfo = ({
               </div>
             ) : null}
           </div>
-        </div>
+        </div> */}
 
-        <div className="flex w-full justify-center px-4">
-          <TextHeading3 className="font-extrabold">
-            {dataMember?.findMember?.discordName}
-          </TextHeading3>
-        </div>
+        {/* <div className="flex w-full justify-center px-4"></div>
         <TextHeading3 className="w-full justify-center px-4 !text-sm font-bold text-gray-400">
           {dataMember?.findMember?.memberRole?.title}
-        </TextHeading3>
+        </TextHeading3> */}
       </div>
       <div className="bg-background h-full w-full">
         <Tab.Group
@@ -222,7 +268,7 @@ export const CandidateInfo = ({
             setIndex(index);
           }}
         >
-          <Tab.List className="absolute top-36 z-20 flex h-8  w-full justify-between bg-white text-lg">
+          <Tab.List className="absolute top-56 z-20 flex h-8  w-full justify-between bg-white text-lg">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}
@@ -240,7 +286,7 @@ export const CandidateInfo = ({
             ))}
           </Tab.List>
           <Tab.Panels>
-            <div className="bg-background relative top-44">
+            <div className="bg-background relative top-64">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
                   {/* <div className="h-[calc(100vh-17rem)]"> */}
