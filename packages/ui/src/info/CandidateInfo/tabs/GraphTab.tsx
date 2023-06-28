@@ -12,7 +12,7 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
   if (!member) return null;
 
   return (
-    <>
+    <div className="flex flex-col items-center ">
       {/* {member?.letterAndColor?.skill?.letter && (
         <div className="relative">
           <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
@@ -26,37 +26,27 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
         </div>
       )} */}
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="relative flex items-center">
-          <div className="absolute left-0 top-0 flex items-center rounded-lg bg-white px-4 py-6 shadow-lg">
-            <p className="mr-4 text-lg font-bold">Total Score:</p>
+        <div className="  mt-4 flex  items-center  ">
+          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
             <p
               className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </p>
-            {candidate?.analysisCandidateEdenAI?.skills?.content && (
+            {candidate?.analysisCandidateEdenAI?.background?.content && (
               <>
-                <hr className="mx-4 my-0 h-8 border-gray-400" />
-                <div>
-                  <p className="text-lg font-bold">
-                    Eden’s Thoughts on Skill Match 🤲
-                  </p>
-                  <p className="text-sm">
-                    {candidate?.analysisCandidateEdenAI?.skills?.content
-                      ?.length > 300
-                      ? `${candidate?.analysisCandidateEdenAI?.skills?.content?.substr(
-                          0,
-                          300
-                        )}...`
-                      : candidate?.analysisCandidateEdenAI?.skills?.content}
-                  </p>
+                <hr className="mx-2 my-0 h-8 border-gray-400" />
+                <div className="">
+                  <p className="text-lg font-bold">Eden First Impression 👀</p>
+
+                  {candidate?.analysisCandidateEdenAI?.background?.content}
                 </div>
               </>
             )}
           </div>
         </div>
       )}
-      <div className="mt-3 h-[900px] w-full py-36">
+      <div className="mt-2 h-[900px] w-full rounded-lg border-[1px] bg-white py-36">
         <DynamicSearchMemberGraph
           memberID={member?.user?._id!}
           nodesID={
@@ -66,6 +56,6 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
           graphType={"KG_AI2"}
         />
       </div>
-    </>
+    </div>
   );
 };

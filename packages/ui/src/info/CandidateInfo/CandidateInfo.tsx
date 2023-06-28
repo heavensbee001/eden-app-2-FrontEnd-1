@@ -214,7 +214,7 @@ export const CandidateInfo = ({
           {dataMember?.findMember?.memberRole?.title}
         </TextHeading3>
       </div>
-      <div className="w-full bg-white">
+      <div className="bg-background h-full w-full">
         <Tab.Group
           defaultIndex={index}
           onChange={(index: number) => {
@@ -240,7 +240,7 @@ export const CandidateInfo = ({
             ))}
           </Tab.List>
           <Tab.Panels>
-            <div className="relative top-44">
+            <div className="bg-background relative top-44">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
                   {/* <div className="h-[calc(100vh-17rem)]"> */}
