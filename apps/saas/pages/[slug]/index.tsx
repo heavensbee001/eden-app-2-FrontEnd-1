@@ -105,7 +105,7 @@ const HomePage: NextPageWithLayout = () => {
                     >
                       <div
                         onClick={() =>
-                          router.push(`/dashboard/${position._id}`)
+                          router.push(`/${slug}/dashboard/${position._id}`)
                         }
                       >
                         <h4 className="text-center">{position.name}</h4>
