@@ -394,7 +394,7 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Eden Intake"}>
+              <WizardStep label={"Eden Alignment"}>
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">
                     Complete Checks & Balances List
@@ -412,7 +412,7 @@ const HomePage: NextPageWithLayout = () => {
               <WizardStep label={"Edit Eden’s Suggestions"}>
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">
-                    Eden&apos;s suggested interview questions
+                    Eden Seed Interview Questions
                   </h2>
                   <p className="mb-8 text-sm leading-tight text-gray-500">
                     Here&apos;s a list of all the questions Eden will ask to
@@ -1434,7 +1434,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
                 <button
                   type="button"
                   onClick={() => handleDeleteQuestion(category, index)}
-                  className="absolute -left-10 top-1 flex h-4 w-4 rotate-45 cursor-pointer items-center justify-center rounded-full border-[2px] border-[#ff5656] bg-white pb-[2px] font-bold text-[#ff5656] hover:bg-[#ff5656] hover:text-white hover:opacity-80"
+                  className="absolute -left-10 top-1 flex h-4 w-4 rotate-45 cursor-pointer items-center justify-center rounded-full border-[2px] border-gray-400 bg-white pb-[2px] font-bold text-gray-400 hover:bg-gray-400 hover:text-white hover:opacity-80"
                 >
                   +
                 </button>
