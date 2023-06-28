@@ -291,7 +291,6 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       {member?.letterAndColor?.culture?.letter && (
         <div className="">
           <div className="absolute left-0 top-0 mt-[4px] rounded-lg border-[1px] bg-white px-4 py-6">
-            <p className="text-lg font-bold">Stats Score:</p>
             <p
               className={`${member?.letterAndColor?.culture?.color} text-4xl font-black`}
             >
