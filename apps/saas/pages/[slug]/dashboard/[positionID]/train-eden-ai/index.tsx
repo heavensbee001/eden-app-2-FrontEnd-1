@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 import { HiBadgeCheck } from "react-icons/hi";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
-import type { NextPageWithLayout } from "../_app";
+import type { NextPageWithLayout } from "../../../../_app";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");

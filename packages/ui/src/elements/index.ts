@@ -6,6 +6,7 @@ export * from "./CheckBox";
 export * from "./ColorPicker";
 export * from "./Date";
 export * from "./Dropdown";
+export * from "./EdenAiProcessingModal";
 export * from "./Favorite";
 export * from "./LevelAvatar";
 export * from "./Loading";

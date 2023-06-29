@@ -290,8 +290,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     <div className="relative pb-4 pt-24">
       {member?.letterAndColor?.culture?.letter && (
         <div className="">
-          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
-            <p className="text-lg font-bold">Stats Score:</p>
+          <div className="absolute left-0 top-0 mt-[4px] rounded-lg border-[1px] bg-white px-4 py-6">
             <p
               className={`${member?.letterAndColor?.culture?.color} text-4xl font-black`}
             >
@@ -305,7 +304,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <TextLabel1>INTERVIEW QUESTION ANALYSIS</TextLabel1>
       </p>
       <div
-        className={`mx-auto mb-2 px-4`}
+        className={`mx-auto mb-2`}
         // className={`mx-auto grid grid-cols-${
         //   summaryQuestions?.length === 1 ? 3 : summaryQuestions?.length
         // } gap-4`}
@@ -315,7 +314,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               <div
                 key={index}
                 className={classNames(
-                  "transition-scale z-10 mb-4 h-full cursor-pointer rounded-sm border-none bg-gray-50 px-4 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
+                  "transition-scale z-10 mb-2 h-full w-full cursor-pointer rounded-sm border-[1px] bg-white px-4 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
                   summaryQuestionSelected?.questionID === item.questionID
                     ? "border-accentColor scale-[1.02] bg-lime-50"
                     : ""
@@ -331,7 +330,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                   }
                 }}
               >
-                <div className="py-4">
+                <div className=" py-4">
                   <p className="mb-4 font-medium text-gray-700">
                     {/* {item.questionContent?.replace(".", "")}
                      */}
@@ -440,7 +439,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           : null}
       </div>
 
-      <div className="mb-8 grid grid-cols-12">
+      <div className="mb-8 grid grid-cols-12 border-[1px] bg-white pt-2">
         <div className="col-span-2"></div>
         <div className="col-span-8">
           <p className="mb-4 text-center">

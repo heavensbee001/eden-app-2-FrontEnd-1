@@ -11,7 +11,7 @@ import {
 import { BsCheckCircle } from "react-icons/bs";
 import { toast } from "react-toastify";
 
-import { Loading } from "../../elements";
+import { EdenAiProcessingModal } from "../../elements";
 // export const CV_TO_SUMMARY = gql`
 //   mutation ($fields: CVtoSummaryInput!) {
 //     CVtoSummary(fields: $fields) {
@@ -304,7 +304,16 @@ export const CVUploadGPT = ({
           type="file"
           accept=".pdf"
         ></input>
-        {uploading && <Loading title="uploading" />}
+        {/* {uploading && <Loading title="uploading" />} */}
+        <EdenAiProcessingModal
+          open={uploading}
+          title="Eden AI is processing your CV"
+        >
+          <p className="text-center">
+            Please wait.
+            <br /> This process may take up to 30 seconds
+          </p>
+        </EdenAiProcessingModal>
         {/* <button
           className="rounded-lg border-2 border-blue-400 px-2 font-bold text-blue-400 hover:border-blue-700 hover:bg-blue-700 hover:text-white"
           type="submit"

@@ -28,7 +28,7 @@ import { MdCompare, MdIosShare } from "react-icons/md";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../../_app";
 
 const CREATE_FAKE_USER_CV = gql`
   mutation CreateFakeUserCVnew($fields: createFakeUserCVnewInput) {
@@ -81,7 +81,7 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
-  const { positionID } = router.query;
+  const { positionID, slug } = router.query;
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
   const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
@@ -719,7 +719,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleTrainButtonClick = () => {
     // setTrainModalOpen(true);
-    router.push(`/opportunityTrainEdenAI/${positionID}`);
+    router.push(`/${slug}/dashboard/${positionID}/train-eden-ai`);
   };
 
   const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
