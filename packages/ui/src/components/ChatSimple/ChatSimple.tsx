@@ -3,8 +3,8 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
+import { AiOutlineSend } from "react-icons/ai";
 import { CiLocationArrow1 } from "react-icons/ci";
-import { HiPencil } from "react-icons/hi";
 
 import { Card } from "../..";
 
@@ -89,17 +89,17 @@ export const ChatSimple = ({
 
   return (
     <>
-      <div className="flex h-full flex-col justify-between">
-        <div className="h-[calc(100%-38px)] py-4">
-          <Card border shadow className="h-full overflow-scroll bg-white">
+      <div className="flex h-full flex-col justify-between  pb-16 2xl:pb-0">
+        <div className="h-[calc(100%-38px)] py-4 ">
+          <Card border shadow className="h-full overflow-scroll bg-white ">
             <div
               ref={componentRef}
               // className="h-full overflow-y-auto bg-white p-4"
-              className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3"
+              className="scrollbar-thumb-blue scrollbar-thumb-rounded  scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3"
             >
               {/* <div className="p:2 flex h-screen flex-1 flex-col justify-between sm:p-6"> */}
               {/* <p className="text-lg font-bold">Message Title</p> */}
-              <div className="my-4">
+              <div className="my-4 ">
                 {chatN && chatN.length ? (
                   <>
                     {chatN.map((chat: any, index: any) => (
@@ -135,6 +135,35 @@ export const ChatSimple = ({
                           />
                         </div>
                       </div>
+                      // <div key={index}>
+                      //   <div>
+                      //     <div className="flex items-center bg-green-600">
+                      //       <img
+                      //         src={Users[chat.user].img}
+                      //         alt="My profile"
+                      //         className="order-1 h-6 w-6 rounded-full "
+                      //       />
+                      //       <div
+                      //         className={classNames(
+                      //           chat.user == "01" ? "order-2" : "order-1",
+                      //           "mx-2 flex w-full  flex-col items-start space-y-2 text-xs"
+                      //         )}
+                      //       >
+                      //         <span
+                      //           // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                      //           className={classNames(
+                      //             chat.user == "01"
+                      //               ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                      //               : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                      //             "inline-block w-full whitespace-pre-wrap rounded-lg px-4 py-2"
+                      //           )}
+                      //         >
+                      //           {chat.message}
+                      //         </span>
+                      //       </div>
+                      //     </div>
+                      //   </div>
+                      // </div>
                     ))}
                     {chatN[chatN.length - 1].user == "02" ? (
                       <div className="chat-message flex items-center space-x-[5px] rounded-full pl-2">
@@ -163,12 +192,11 @@ export const ChatSimple = ({
         <Card
           border
           shadow
-          className="flex h-[38px] items-center justify-between bg-white px-3"
+          className="flex items-center justify-between bg-white px-3"
         >
-          <HiPencil className="mr-2 h-[30px] w-[30px]" />
           <input
             type="text"
-            className="mr-2 w-full bg-transparent px-4 py-2"
+            className="max-height: 200px; height: 24px; overflow-y: hidden; m-0 w-full resize-none border-0 bg-transparent  py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"
             placeholder="Type your message here..."
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
@@ -188,7 +216,41 @@ export const ChatSimple = ({
               setInputMessage("");
             }}
           >
-            <CiLocationArrow1 className="h-[24px] w-[24px] rotate-45" />
+            {inputMessage === "" ? (
+              <div>
+                <svg
+                  width="24px"
+                  height="24px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
+                    fill="#9CA3AF"
+                  />
+                </svg>
+              </div>
+            ) : (
+              <div className="bg-soilGreen-700 rounded-lg p-2  text-white">
+                <svg
+                  width="24px"
+                  height="24px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
+                    fill="#FFFFFF"
+                  />
+                </svg>
+              </div>
+            )}
           </div>
           {/* <button
             className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"

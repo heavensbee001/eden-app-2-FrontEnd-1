@@ -106,7 +106,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Interview Analysis",
+      tab: "Interview",
       Content: () => (
         <MatchTab
           member={
