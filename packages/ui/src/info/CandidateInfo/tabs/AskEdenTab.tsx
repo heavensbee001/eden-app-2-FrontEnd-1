@@ -171,7 +171,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
             }
             questions={questions}
             setQuestions={setQuestions}
-            userID={currentUser?._id}
+            userID={member?._id}
             positionID={positionID}
             conversationID={conversationID}
             setConversationID={setConversationID}
