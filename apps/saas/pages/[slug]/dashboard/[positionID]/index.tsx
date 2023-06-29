@@ -1040,7 +1040,7 @@ const PositionCRM: NextPageWithLayout = () => {
               variant="secondary"
               onClick={handleTrainButtonClick}
             >
-              Train Eden AI
+              Align with Eden
               <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#ff5656]">
                 <div className="h-[40px] w-[40px] min-w-[40px]">
                   <Image
