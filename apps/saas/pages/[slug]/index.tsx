@@ -259,8 +259,10 @@ const getAverageMinutes = (position: Position): number => {
       return (
         acc +
         Math.round(
-          (curr?.conversation[curr.conversation.length - 1]?.date.getTime() -
-            curr.conversation[0]?.date.getTime()) /
+          (new Date(
+            curr?.conversation[curr.conversation.length - 1]?.date
+          ).getTime() -
+            new Date(curr.conversation[0]?.date).getTime()) /
             1000
         )
       );
