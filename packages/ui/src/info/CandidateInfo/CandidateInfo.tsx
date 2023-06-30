@@ -4,21 +4,24 @@ import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import {
   AskEdenTab,
   Avatar,
-  Button,
+  // Button,
   CandidateTypeSkillMatch,
-  Dropdown,
+  // Dropdown,
   EdenChatTab,
   GraphTab,
   InfoTab,
+  LongText,
   MatchTab,
   MeetingNotes,
   ReportNotes,
-  TextHeading3,
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { BsCalendarPlus } from "react-icons/bs";
 import { FaChevronLeft } from "react-icons/fa";
+import { IoMdAdd, IoMdAddCircle } from "react-icons/io";
+import ReactTooltip from "react-tooltip";
 
 type NodeDisplay = {
   nameRelevantNode: string;
@@ -59,10 +62,12 @@ export const CandidateInfo = ({
   onClose,
   rejectCandidateFn,
   approveCandidateFn,
+  // eslint-disable-next-line no-unused-vars
   qualified = false,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
 
+  // eslint-disable-next-line no-unused-vars
   const router = useRouter();
 
   const { data: dataMember } = useQuery(FIND_MEMBER, {
@@ -164,59 +169,155 @@ export const CandidateInfo = ({
     approveCandidateFn && approveCandidateFn(memberID);
   };
 
-  let cutOffText;
+  // let cutOffText;
 
-  if (dataMember?.findMember?.bio) {
-    const text = dataMember?.findMember?.bio;
+  // if (dataMember?.findMember?.bio) {
+  //   const text = dataMember?.findMember?.bio;
 
-    if (text.length > 60) {
-      cutOffText = text.substring(0, 60) + "..."; // "This is a long strin..."
-    } else {
-      cutOffText = text;
-    }
-  } else {
-    cutOffText =
-      "On a mission to empower anyone anywhere to do meaningful work";
-  }
+  //   if (text.length > 60) {
+  //     cutOffText = text.substring(0, 60) + "..."; // "This is a long strin..."
+  //   } else {
+  //     cutOffText = text;
+  //   }
+  // } else {
+  //   cutOffText =
+  //     "On a mission to empower anyone anywhere to do meaningful work";
+  // }
   return (
     <>
       <div className="font-Inter absolute z-20 h-56 w-full flex-col bg-white text-center">
         <FaChevronLeft
-          className="absolute left-4 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
+          className="absolute left-2 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
           onClick={onClose}
         />
 
-        <div className="flex justify-between">
-          <div className="ml-6 mt-12 w-fit  items-end text-left">
-            <Avatar src={dataMember?.findMember.discordAvatar!} size={`lg`} />
-
-            <div className="ml-[2px]">
+        <div className="px-8 py-4">
+          <div className="items-end text-left">
+            <Avatar src={dataMember?.findMember.discordAvatar!} size={`md`} />
+            <div className="">
               <h1 className=" text-lg font-semibold">
                 {dataMember?.findMember?.discordName}
               </h1>
-
-              <p className="text-sm">{cutOffText}</p>
-
               <div className="flex items-center  space-x-1 text-sm text-gray-400">
                 <p>{dataMember?.findMember?.location} </p>
-                <p className="text-xs">•</p>
-                <p> {dataMember?.findMember?.timeZone}</p>
+                <p> ({dataMember?.findMember?.timeZone})</p>
+              </div>
+
+              <div className="max-h-20 overflow-y-scroll">
+                <LongText
+                  cutText={100}
+                  text={(dataMember?.findMember?.bio as string) || ""}
+                  className={`whitespace-pre-wrap text-sm`}
+                />
               </div>
             </div>
           </div>
 
-          <div className=" mr-8 mt-4 flex w-fit justify-end gap-4 ">
-            <Button variant="secondary" className="h-fit">
-              Add to Talent Pool
-            </Button>
-            <div className=" items-end space-y-2 text-sm">
-              <Button variant="secondary" className=" w-44 py-4 ">
-                Schedule 2nd Interview
-              </Button>
-              <Button variant="secondary" className=" w-full px-6 py-4 ">
-                Reject Gracefully
-              </Button>
+          <div className="absolute right-8 top-4 flex gap-4">
+            {/* ------- add to talent pool button ------- */}
+            <div className="">
+              <span
+                onClick={() => {
+                  // setAddToListOpen(true);
+                }}
+                className="cursor-pointer text-xs"
+                data-tip={"Add to talent pool"}
+                data-for={`badgeTip-add-to-talent-pool`}
+              >
+                <IoMdAddCircle
+                  size={28}
+                  className="text-accentColor hover:text-black"
+                  onClick={handleApproveCandidate}
+                />
+                <ReactTooltip
+                  id={`badgeTip-add-to-talent-pool`}
+                  place="left"
+                  effect="solid"
+                  padding="0.25rem"
+                ></ReactTooltip>
+              </span>
+              {/* {addToListOpen && (
+                <div
+                  className="fixed left-0 top-0 z-30 h-full w-full"
+                  onClick={() => {
+                    setAddToListOpen(false);
+                  }}
+                ></div>
+              )}
+              {addToListOpen && (
+                <div
+                  className={classNames(
+                    "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                    addToListOpen ? "" : "h-0"
+                  )}
+                >
+                  <div
+                    className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                    onClick={handleCreateNewList}
+                  >
+                    <p className="">
+                      <HiOutlineDocumentPlus
+                        size={16}
+                        className="mb-1 mr-1 inline"
+                      />
+                      New list
+                    </p>
+                  </div>
+                  {talentListsAvailables.map((list, index) => (
+                    <div
+                      key={index}
+                      className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                      onClick={() => handleAddCandidatesToList(list._id!)}
+                    >
+                      <p className="">{list.name}</p>
+                    </div>
+                  ))}
+                </div>
+              )} */}
             </div>
+
+            {/* ------- reject button ------- */}
+            <span
+              onClick={() => {
+                // reject
+              }}
+              className="cursor-pointer text-xs"
+              data-tip={"Reject gracefully"}
+              data-for={`badgeTip-reject`}
+            >
+              <IoMdAdd
+                size={28}
+                className="rotate-45 text-red-400"
+                onClick={handleRejectCandidate}
+              />
+              <ReactTooltip
+                id={`badgeTip-reject`}
+                place="left"
+                effect="solid"
+                padding="0.25rem"
+              ></ReactTooltip>
+            </span>
+
+            {/* ------- schedule 2nd interview button ------- */}
+            <span
+              onClick={() => {
+                // schedule 2nd interview
+              }}
+              className="cursor-pointer text-xs"
+              data-tip={"Schedule 2nd interview"}
+              data-for={`badgeTip-schedule`}
+            >
+              <BsCalendarPlus
+                size={25}
+                className="text-gray-600 hover:text-gray-500"
+              />
+              <ReactTooltip
+                id={`badgeTip-schedule`}
+                place="left"
+                effect="solid"
+                padding="0.25rem"
+              ></ReactTooltip>
+            </span>
           </div>
         </div>
 
