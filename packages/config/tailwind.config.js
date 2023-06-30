@@ -7,6 +7,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        forestGreen: "#00462C",
+        cottonPink: "#F9E1ED",
+        digitalGreen: "#74FA6D",
+        deepBlack: "#000000",
         background: "#F5F5F5",
         accentColor: "#74FA6D",
         darkGreen: "#071B08",

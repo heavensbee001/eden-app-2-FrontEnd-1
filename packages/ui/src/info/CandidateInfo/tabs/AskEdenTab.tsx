@@ -165,7 +165,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-accentColor rounded-lg p-1 text-center font-medium">
+              <p className=" bg-cottonPink text-forestGreen rounded-lg p-1 text-center font-medium">
                 Ask me any question about the Candidate
               </p>
             }
