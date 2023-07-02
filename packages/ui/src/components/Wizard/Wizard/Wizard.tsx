@@ -78,7 +78,7 @@ export const Wizard = ({
       {showStepsHeader && <div className="pt-20"></div>}
       <div
         className={classNames(
-          showStepsHeader ? "h-[calc(100%-10rem)]" : "h-[calc(100%-5rem)]",
+          showStepsHeader ? "h-[calc(100%-10rem)]" : "h-[calc(100%-4rem)]",
           "w-full"
         )}
       >
@@ -96,7 +96,7 @@ export const Wizard = ({
         {children[step]}
       </div>
       <div className="pt-20"></div>
-      <div className="absolute bottom-0 left-0 flex w-full rounded-b-2xl bg-white p-4">
+      <div className="absolute bottom-0 left-0 flex w-full rounded-b-2xl p-4">
         {!isHidePrev() && canPrev && (
           <Button
             className="mr-auto"
