@@ -200,7 +200,9 @@ export const CandidateInfo = ({
               </h1>
               <div className="flex items-center  space-x-1 text-sm text-gray-400">
                 <p>{dataMember?.findMember?.location} </p>
-                <p> ({dataMember?.findMember?.timeZone})</p>
+                {dataMember?.findMember?.timeZone && (
+                  <p> ({dataMember?.findMember?.timeZone})</p>
+                )}
               </div>
 
               <div className="max-h-20 overflow-y-scroll">
