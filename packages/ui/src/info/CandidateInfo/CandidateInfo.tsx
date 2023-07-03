@@ -23,6 +23,8 @@ import { FaChevronLeft } from "react-icons/fa";
 import { IoMdAdd, IoMdAddCircle } from "react-icons/io";
 import ReactTooltip from "react-tooltip";
 
+import { EdenAiLetter } from "../../components/EdenAiLetter";
+
 type NodeDisplay = {
   nameRelevantNode: string;
   nameOriginalNode: string;
@@ -66,7 +68,11 @@ export const CandidateInfo = ({
   qualified = false,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
+  const handleIsOpen = () => {
+    setIsOpen(!isOpen);
+  };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
 
@@ -183,6 +189,9 @@ export const CandidateInfo = ({
   //   cutOffText =
   //     "On a mission to empower anyone anywhere to do meaningful work";
   // }
+
+  console.log("dataMember LLLLLLLLLLLL", dataMember);
+
   return (
     <>
       <div className="font-Inter absolute z-20 h-56 w-full flex-col bg-white text-center">
@@ -302,13 +311,15 @@ export const CandidateInfo = ({
 
             {/* ------- schedule 2nd interview button ------- */}
             <span
-              onClick={() => {
-                // schedule 2nd interview
-              }}
+              onClick={handleIsOpen}
               className="cursor-pointer text-xs"
               data-tip={"Schedule 2nd interview"}
               data-for={`badgeTip-schedule`}
             >
+              <EdenAiLetter
+                member={dataMember?.findMember}
+                isModalOpen={isOpen}
+              />
               <BsCalendarPlus
                 size={25}
                 className="text-gray-600 hover:text-gray-500"
