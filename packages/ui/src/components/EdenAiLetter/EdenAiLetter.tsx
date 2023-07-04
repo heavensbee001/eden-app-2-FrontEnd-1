@@ -1,0 +1,144 @@
+import { gql, useMutation } from "@apollo/client";
+import { Maybe, Members } from "@eden/package-graphql/generated";
+import { CheckCircleIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
+// import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+import { Button, Modal } from "../../elements";
+
+export interface IEdenAiLetter {
+  isModalOpen: boolean;
+  member: Maybe<Members>;
+}
+
+export const REJECTION_LETTER = gql`
+  mutation ($fields: rejectionLetterInput!) {
+    rejectionLetter(fields: $fields) {
+      generatedLetter
+    }
+  }
+`;
+
+export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
+  const router = useRouter();
+  const { positionID } = router.query;
+  const [letterContent, setLetterContent] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyToClipboard = () => {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    const textToCopy = document.getElementById("text-to-copy");
+
+    if (textToCopy) {
+      range.selectNodeContents(textToCopy);
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand("copy");
+        selection.removeAllRanges();
+      }
+    }
+
+    setCopied(true);
+  };
+
+  const [rejectionLetter] = useMutation(REJECTION_LETTER, {
+    onCompleted({ rejectionLetter }) {
+      setLetterContent(rejectionLetter.generatedLetter);
+      console.log("generatedLetter from completed", rejectionLetter);
+      console.log("letterContent", rejectionLetter);
+    },
+  });
+
+  useEffect(() => {
+    if (isModalOpen === true) {
+      rejectionLetter({
+        variables: {
+          fields: {
+            positionID: positionID,
+            userID: member?._id,
+          },
+        },
+      });
+    }
+
+    console.log("generatedLetter", rejectionLetter);
+  }, [isModalOpen]);
+
+  () => {
+    rejectionLetter({
+      variables: {
+        fields: {
+          positionID: positionID,
+          userID: member?._id,
+        },
+      },
+    });
+
+    // Additional code related to `handleLetter` can be added here
+
+    // Example: Accessing `letterContent` value
+    console.log(letterContent);
+  };
+
+  return (
+    <>
+      <Modal open={isModalOpen}>
+        <div className="flex flex-col items-center justify-end gap-10 space-y-6 ">
+          <div className="w-full">
+            <p className="text-xl font-bold">Personalized Rejection Message</p>
+            <p>
+              {member &&
+                `Copy/Paste the following personalized message to gracefully reject ${member.discordName} 
+              .`}
+            </p>
+          </div>
+
+          <div className="h-fit border-2 bg-white p-6">
+            {letterContent ? (
+              <div id="text-to-copy" className="h-fit w-96 ">
+                <p className="whitespace-pre-line">{letterContent}</p>
+              </div>
+            ) : (
+              <div className="flex h-96 w-96 animate-pulse space-x-4">
+                <div className="flex-1 space-y-2 py-1">
+                  <div className="h-3 w-24 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div>
+            {copied ? (
+              <div className="flex  items-center gap-2">
+                <Button disabled onClick={handleCopyToClipboard}>
+                  Copied Message To Clipboard
+                </Button>
+                <span className=" text-lg text-green-600">
+                  <CheckCircleIcon className="h-8 w-8" aria-hidden="true" />
+                </span>
+              </div>
+            ) : (
+              <Button onClick={handleCopyToClipboard}>
+                Copy Message To Clipboard
+              </Button>
+            )}
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+};
