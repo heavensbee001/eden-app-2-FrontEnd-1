@@ -38,6 +38,19 @@ const HomePage: NextPageWithLayout = () => {
   const [progress, setProgress] = useState<number>(0);
   const [titleRole, setTitleRole] = useState<string>("");
   const [topSkills, setTopSkills] = useState<any[]>([]);
+  const [content, setContent] = useState<{
+    matchPercentage: number | null;
+    improvementPoints: string | null;
+    strongFit: string | null;
+    growthAreas: string | null;
+    experienceAreas: string | null;
+  }>({
+    matchPercentage: null,
+    improvementPoints: null,
+    strongFit: null,
+    growthAreas: null,
+    experienceAreas: null,
+  });
 
   console.log("cvEnded = ", cvEnded);
   const {
@@ -81,20 +94,6 @@ const HomePage: NextPageWithLayout = () => {
     }
   };
 
-  const randomPercentage = () => {
-    const min = 5;
-    const max = 100;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    console.log("randomNumber ", randomNumber);
-
-    console.log("randomNumber > 50", randomNumber > 50);
-
-    return randomNumber;
-  };
-
-  const percentage = randomPercentage();
-
   return (
     <>
       <Head>
@@ -129,81 +128,17 @@ const HomePage: NextPageWithLayout = () => {
                   titleRole={""}
                   setTitleRole={setTitleRole}
                   setTopSkills={setTopSkills}
+                  setContent={setContent}
                   handleCvEnd={handleCvEnd}
                 />
               </WizardStep>
               <WizardStep label={"welcome"}>
-                <section className="flex h-full flex-col items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="200"
-                    height="200"
-                    viewBox="0 0 24 24"
-                    style={{
-                      fill: "rgba(215, 254, 109, 1)",
-                      transform: "",
-                      msFilter: "",
-                    }}
-                  >
-                    <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
-                  </svg>
-                  <h2 className="mb-8 text-2xl font-medium">
-                    Good to know you, {currentUser?.discordName}!
-                  </h2>
-                  {findPositionData?.findPosition?.name ? (
-                    <>
-                      <p>Impressive background in {titleRole}</p>
-                      <br />
-                      <div className="flex flex-col items-center space-y-2">
-                        <p>Your main skills:</p>
-                        <div>
-                          {topSkills !== null &&
-                            topSkills.map((skill: any, index: number) => (
-                              <Badge
-                                className="text-white"
-                                key={index}
-                                text={skill}
-                                colorRGB="168, 85, 247"
-                                cutText={20}
-                              />
-                            ))}
-                        </div>
-                      </div>
-                      <br />
-                      <p>Probability Of Passing:</p>
-                      {percentage > 50 ? (
-                        <p className="text-[50px] text-lime-400">
-                          {`${percentage}%`}
-                        </p>
-                      ) : (
-                        <p className="text-[50px] text-red-600">
-                          {`${percentage}%`}
-                        </p>
-                      )}
-                      <p className="text-gray-400">
-                        Rock this interview and increase your
-                      </p>
-                      <p className="text-gray-400">
-                        chance of passing by up to 25%
-                      </p>
-                      <br />
-                      <br />
-
-                      <div className="flex justify-center ">
-                        <div className="flex">
-                          <input type="checkbox" />
-                          <p className="mx-1 text-red-600">*</p>
-                        </div>
-                        <p>
-                          I acknowledge That my CV & responses will be stored
-                          and shared with Tesla Inc
-                        </p>
-                      </div>
-                    </>
-                  ) : (
-                    <p> </p>
-                  )}
-                </section>
+                <ApplicationStepContainer
+                  topSkills={topSkills}
+                  titleRole={titleRole}
+                  position={findPositionData?.findPosition}
+                  content={content}
+                />
               </WizardStep>
               {/* <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
@@ -279,6 +214,7 @@ interface UploadCVContainerProps {
   titleRole: string;
   setTitleRole: Dispatch<SetStateAction<string>>;
   setTopSkills: Dispatch<SetStateAction<any>>;
+  setContent: Dispatch<SetStateAction<any>>;
   handleCvEnd: () => void;
 }
 
@@ -286,6 +222,7 @@ const UploadCVContainer = ({
   titleRole,
   setTitleRole,
   setTopSkills,
+  setContent,
   handleCvEnd,
 }: UploadCVContainerProps) => {
   const router = useRouter();
@@ -298,6 +235,13 @@ const UploadCVContainer = ({
 
     setTitleRole(role);
     setTopSkills(skills);
+    setContent({
+      matchPercentage: data.saveCVtoUser.matchPercentage,
+      improvementPoints: data.saveCVtoUser.improvementPoints,
+      strongFit: data.saveCVtoUser.strongFit,
+      growthAreas: data.saveCVtoUser.growthAreas,
+      experienceAreas: data.saveCVtoUser.experienceAreas,
+    });
   };
 
   return (
@@ -332,13 +276,180 @@ const UploadCVContainer = ({
           </p>
           <ul className="list-disc pl-4">
             <li className="mb-2">Probability of landing this job</li>
-            <li className="mb-2">What to improve to maximeze youre chances</li>
+            <li className="mb-2">What to improve to maximeze your chances</li>
             <li className="mb-2">
               Ask specific questions about company, opportunity & culture in
               real time chat
             </li>
             <li className="mb-2">Salary range + equity benefits</li>
           </ul>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+interface ApplicationStepContainerProps {
+  titleRole: string;
+  topSkills: any[];
+  position: Position;
+  content: {
+    matchPercentage: number | null;
+    improvementPoints: string | null;
+    strongFit: string | null;
+    growthAreas: string | null;
+    experienceAreas: string | null;
+  };
+}
+
+const ApplicationStepContainer = ({
+  // eslint-disable-next-line no-unused-vars
+  titleRole,
+  // eslint-disable-next-line no-unused-vars
+  topSkills,
+  position,
+  content,
+}: ApplicationStepContainerProps) => {
+  // const router = useRouter();
+  // const { currentUser } = useContext(UserContext);
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const today = new Date();
+
+  return (
+    <div className="grid h-full grid-cols-12 gap-6">
+      <section className="col-span-3">
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold">Your top skills:</h3>
+          <div>
+            {topSkills !== null &&
+              topSkills.map((skill: any, index: number) => (
+                <Badge
+                  className="text-white"
+                  key={index}
+                  text={skill}
+                  colorRGB="168, 85, 247"
+                  cutText={20}
+                />
+              ))}
+          </div>
+        </div>
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold">Salary range:</h3>
+          <p>
+            ${60000} - ${90000}
+          </p>
+        </div>
+        <div>
+          <div>
+            <p>Recruiting + Eden AI chat</p>
+            <p className="text-gray-500">{`${
+              monthNames[today.getMonth()]
+            } ${today.getDate()}`}</p>
+          </div>
+          <div>
+            <p>Hiring manager interviews</p>
+            <p className="text-gray-500">{`${
+              monthNames[
+                new Date(new Date().setDate(today.getDate() + 3)).getMonth()
+              ]
+            } ${new Date(
+              new Date().setDate(today.getDate() + 3)
+            ).getDate()}`}</p>
+          </div>
+          <div>
+            <p>Onboarding</p>
+            <p className="text-gray-500">{`${
+              monthNames[
+                new Date(new Date().setDate(today.getDate() + 14)).getMonth()
+              ]
+            } ${new Date(
+              new Date().setDate(today.getDate() + 14)
+            ).getDate()}`}</p>
+          </div>
+        </div>
+      </section>
+      <section className="relative col-span-6 h-full overflow-y-scroll rounded-md bg-white p-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="80px"
+          height="80px"
+          viewBox="0 0 24 24"
+          className="mx-auto"
+          style={{
+            fill: "rgba(215, 254, 109, 1)",
+            transform: "",
+            msFilter: "",
+          }}
+        >
+          <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
+        </svg>
+        <h2 className="mb-8 text-center text-2xl font-medium">
+          Looking great!
+        </h2>
+        {position?.name ? (
+          <>
+            <p className="text-center">Your probability of passing is:</p>
+            {content.matchPercentage &&
+              (content.matchPercentage > 50 ? (
+                <p className="text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
+              ) : (
+                <p className="text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
+              ))}
+            <p className="mb-4 text-center text-gray-400">
+              Rock this interview and increase your chace of passing
+            </p>
+
+            <section>
+              <div className="px-8">
+                <h3 className="text-lg font-semibold">Strong suit:</h3>
+                <p className="mb-4 whitespace-pre-wrap">{content.strongFit}</p>
+              </div>
+              <div className="px-8">
+                <h3 className="text-lg font-semibold">Areas to improve:</h3>
+                <p className="mb-4 whitespace-pre-wrap">
+                  {content.improvementPoints}
+                </p>
+              </div>
+            </section>
+
+            <div className="absolute bottom-0 left-0 flex w-full justify-center px-4 py-2 text-xs text-gray-500 ">
+              <input type="checkbox" className="mr-3" />
+              <p>
+                I acknowledge That my CV & responses will be stored and shared
+                by Eden
+                <span className="mx-1 text-red-600">*</span>
+              </p>
+            </div>
+          </>
+        ) : null}
+      </section>
+      <section className="col-span-3">
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold">What you will get:</h3>
+          <div>
+            <h3 className="text-lg font-semibold">Growth:</h3>
+            <p className="mb-4 whitespace-pre-wrap">{content.growthAreas}</p>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold">Personal experience:</h3>
+            <p className="mb-4 whitespace-pre-wrap">
+              {content.experienceAreas}
+            </p>
+          </div>
         </div>
       </section>
     </div>
@@ -554,6 +665,7 @@ import { UPDATE_MEMBER } from "@eden/package-graphql";
 import {
   Members,
   Mutation,
+  Position,
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
 import { locations } from "@eden/package-ui/utils/locations";

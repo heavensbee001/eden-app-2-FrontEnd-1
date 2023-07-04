@@ -95,7 +95,7 @@ export const Wizard = ({
         ))} */}
         {children[step]}
       </div>
-      <div className="pt-20"></div>
+      {/* <div className="pt-20"></div> */}
       <div className="absolute bottom-0 left-0 flex w-full rounded-b-2xl p-4">
         {!isHidePrev() && canPrev && (
           <Button
