@@ -1,9 +1,9 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
+import { gql, useMutation } from "@apollo/client";
 import { Maybe, Members } from "@eden/package-graphql/generated";
+import { CheckCircleIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button, Modal } from "../../elements";
 
@@ -11,19 +11,6 @@ export interface IEdenAiLetter {
   isModalOpen: boolean;
   member: Maybe<Members>;
 }
-
-// mutation RejectionLetter($fields: rejectionLetterInput) {
-//   rejectionLetter(fields: $fields) {
-//     generatedLetter
-//   }
-// }
-
-// {
-//   "fields": {
-//     "positionID": "6475ea6437d59a80df96028a",
-//     "userID": "812342397790191638"
-//   }
-// }
 
 export const REJECTION_LETTER = gql`
   mutation ($fields: rejectionLetterInput!) {
@@ -37,22 +24,29 @@ export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
   const router = useRouter();
   const { positionID } = router.query;
   const [letterContent, setLetterContent] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  // const generatedLetter = useMutation(REJECTION_LETTER, {
-  //   variables: {
-  //     fields: {
-  //       positionID: positionID,
-  //       userID: member?._id,
-  //     },
-  //   },
-  // });
+  const handleCopyToClipboard = () => {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    const textToCopy = document.getElementById("text-to-copy");
+
+    if (textToCopy) {
+      range.selectNodeContents(textToCopy);
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand("copy");
+        selection.removeAllRanges();
+      }
+    }
+
+    setCopied(true);
+  };
 
   const [rejectionLetter] = useMutation(REJECTION_LETTER, {
     onCompleted({ rejectionLetter }) {
-      //   console.log("updateGrant", updateGrant);
-
-      //   console.log("nodes", nodes);
-
       setLetterContent(rejectionLetter.generatedLetter);
       console.log("generatedLetter from completed", rejectionLetter);
       console.log("letterContent", rejectionLetter);
@@ -60,7 +54,7 @@ export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
   });
 
   useEffect(() => {
-    if (isModalOpen === true)
+    if (isModalOpen === true) {
       rejectionLetter({
         variables: {
           fields: {
@@ -69,11 +63,12 @@ export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
           },
         },
       });
+    }
 
     console.log("generatedLetter", rejectionLetter);
   }, [isModalOpen]);
 
-  const handleLetter = () => {
+  () => {
     rejectionLetter({
       variables: {
         fields: {
@@ -82,6 +77,11 @@ export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
         },
       },
     });
+
+    // Additional code related to `handleLetter` can be added here
+
+    // Example: Accessing `letterContent` value
+    console.log(letterContent);
   };
 
   return (
@@ -98,33 +98,44 @@ export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
           </div>
 
           <div className="h-fit border-2 bg-white p-6">
-            {/* <p>
-              {`Dear Jeremy,
-
-
-            Thank you for taking the time to participate in our
-            interview process. We certainly appreciated the opportunity to learn
-            more about your capabilities and technical skills. However, after
-            analyzing your profile, it was observed that your experience with
-            some of the key technologies in our stack and leadership roles is
-            somewhat limited. For this position, proficiency in these
-            technologies and the ability to guide team members effectively is
-            crucial, and the ability to make sound technical trade-off decisions
-            is of great significance. We believe that with more experience and
-            exploration, you'll be a capable candidate for similar roles in the
-            future. We highly recommend looking into our sister companies that
-            might have suitable opportunities fitting your current skill set.
-            joineden.ai is a great resource where you can find these openings.
-            We wish you the best in your future endeavors and career pursuits.
-
-
-            Kind Regards, Miltiadis Saratzidis`}
-            </p> */}
-
-            {letterContent && <p>{letterContent}</p>}
+            {letterContent ? (
+              <div id="text-to-copy" className="h-fit w-96 ">
+                <p className="whitespace-pre-line">{letterContent}</p>
+              </div>
+            ) : (
+              <div className="flex h-96 w-96 animate-pulse space-x-4">
+                <div className="flex-1 space-y-2 py-1">
+                  <div className="h-3 w-24 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200"></div>
+                </div>
+              </div>
+            )}
           </div>
           <div>
-            <Button onClick={handleLetter}>Copy Message To Clipboard</Button>
+            {copied ? (
+              <div className="flex  items-center gap-2">
+                <Button disabled onClick={handleCopyToClipboard}>
+                  Copied Message To Clipboard
+                </Button>
+                <span className=" text-lg text-green-600">
+                  <CheckCircleIcon className="h-8 w-8" aria-hidden="true" />
+                </span>
+              </div>
+            ) : (
+              <Button onClick={handleCopyToClipboard}>
+                Copy Message To Clipboard
+              </Button>
+            )}
           </div>
         </div>
       </Modal>

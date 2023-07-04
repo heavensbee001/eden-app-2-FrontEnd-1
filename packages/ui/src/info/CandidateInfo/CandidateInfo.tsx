@@ -289,9 +289,7 @@ export const CandidateInfo = ({
 
             {/* ------- reject button ------- */}
             <span
-              onClick={() => {
-                // reject
-              }}
+              onClick={handleIsOpen}
               className="cursor-pointer text-xs"
               data-tip={"Reject gracefully"}
               data-for={`badgeTip-reject`}
@@ -299,7 +297,7 @@ export const CandidateInfo = ({
               <IoMdAdd
                 size={28}
                 className="rotate-45 text-red-400"
-                onClick={handleRejectCandidate}
+                // onClick={handleRejectCandidate}
               />
               <ReactTooltip
                 id={`badgeTip-reject`}
@@ -311,7 +309,7 @@ export const CandidateInfo = ({
 
             {/* ------- schedule 2nd interview button ------- */}
             <span
-              onClick={handleIsOpen}
+              // onClick={handleIsOpen}
               className="cursor-pointer text-xs"
               data-tip={"Schedule 2nd interview"}
               data-for={`badgeTip-schedule`}
