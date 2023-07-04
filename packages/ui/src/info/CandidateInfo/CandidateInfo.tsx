@@ -69,8 +69,17 @@ export const CandidateInfo = ({
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [letterType, setLetterType] = useState<
+    "rejection" | "nextInterviewInvite" | undefined
+  >(undefined);
 
-  const handleIsOpen = () => {
+  const handleRejectionLetter = () => {
+    setLetterType("rejection");
+    setIsOpen(!isOpen);
+  };
+
+  const handleSecondInterviewLetter = () => {
+    setLetterType("nextInterviewInvite");
     setIsOpen(!isOpen);
   };
   // eslint-disable-next-line no-unused-vars
@@ -289,7 +298,7 @@ export const CandidateInfo = ({
 
             {/* ------- reject button ------- */}
             <span
-              onClick={handleIsOpen}
+              onClick={handleRejectionLetter}
               className="cursor-pointer text-xs"
               data-tip={"Reject gracefully"}
               data-for={`badgeTip-reject`}
@@ -309,7 +318,7 @@ export const CandidateInfo = ({
 
             {/* ------- schedule 2nd interview button ------- */}
             <span
-              // onClick={handleIsOpen}
+              onClick={handleSecondInterviewLetter}
               className="cursor-pointer text-xs"
               data-tip={"Schedule 2nd interview"}
               data-for={`badgeTip-schedule`}
@@ -317,6 +326,7 @@ export const CandidateInfo = ({
               <EdenAiLetter
                 member={dataMember?.findMember}
                 isModalOpen={isOpen}
+                letterType={letterType}
               />
               <BsCalendarPlus
                 size={25}
