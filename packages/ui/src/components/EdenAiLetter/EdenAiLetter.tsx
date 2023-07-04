@@ -10,7 +10,7 @@ import { Button, Modal } from "../../elements";
 export interface IEdenAiLetter {
   isModalOpen: boolean;
   member: Maybe<Members>;
-  letterType: "rejection" | "nextInterviewInvite";
+  letterType: "rejection" | "nextInterviewInvite" | undefined;
 }
 
 export const REJECTION_LETTER = gql`
