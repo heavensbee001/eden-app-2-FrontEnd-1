@@ -10,6 +10,7 @@ import { Button, Modal } from "../../elements";
 export interface IEdenAiLetter {
   isModalOpen: boolean;
   member: Maybe<Members>;
+  letterType: "rejection" | "nextInterviewInvite" | undefined;
 }
 
 export const REJECTION_LETTER = gql`
@@ -20,7 +21,19 @@ export const REJECTION_LETTER = gql`
   }
 `;
 
-export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
+export const SECOND_INTERVIEW_LETTER = gql`
+  mutation ($fields: secondInterviewLetterInput!) {
+    secondInterviewLetter(fields: $fields) {
+      generatedLetter
+    }
+  }
+`;
+
+export const EdenAiLetter = ({
+  isModalOpen,
+  member,
+  letterType,
+}: IEdenAiLetter) => {
   const router = useRouter();
   const { positionID } = router.query;
   const [letterContent, setLetterContent] = useState("");
@@ -48,53 +61,67 @@ export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
   const [rejectionLetter] = useMutation(REJECTION_LETTER, {
     onCompleted({ rejectionLetter }) {
       setLetterContent(rejectionLetter.generatedLetter);
-      console.log("generatedLetter from completed", rejectionLetter);
-      console.log("letterContent", rejectionLetter);
+    },
+  });
+
+  const [secondInterviewLetter] = useMutation(SECOND_INTERVIEW_LETTER, {
+    onCompleted({ secondInterviewLetter }) {
+      setLetterContent(secondInterviewLetter.generatedLetter);
     },
   });
 
   useEffect(() => {
-    if (isModalOpen === true) {
-      rejectionLetter({
-        variables: {
-          fields: {
-            positionID: positionID,
-            userID: member?._id,
+    if (isModalOpen) {
+      if (letterType === "rejection") {
+        rejectionLetter({
+          variables: {
+            fields: {
+              positionID: positionID,
+              userID: member?._id,
+            },
           },
-        },
-      });
+        });
+      } else if (letterType === "nextInterviewInvite") {
+        secondInterviewLetter({
+          variables: {
+            fields: {
+              positionID: positionID,
+              userID: member?._id,
+            },
+          },
+        });
+      }
     }
 
-    console.log("generatedLetter", rejectionLetter);
-  }, [isModalOpen]);
-
-  () => {
-    rejectionLetter({
-      variables: {
-        fields: {
-          positionID: positionID,
-          userID: member?._id,
-        },
-      },
-    });
-
-    // Additional code related to `handleLetter` can be added here
-
-    // Example: Accessing `letterContent` value
-    console.log(letterContent);
-  };
-
+    return () => {
+      setLetterContent("");
+      setCopied(false);
+    };
+  }, [isModalOpen, letterType, member, positionID]);
   return (
     <>
       <Modal open={isModalOpen}>
         <div className="flex flex-col items-center justify-end gap-10 space-y-6 ">
           <div className="w-full">
-            <p className="text-xl font-bold">Personalized Rejection Message</p>
-            <p>
-              {member &&
-                `Copy/Paste the following personalized message to gracefully reject ${member.discordName} 
-              .`}
-            </p>
+            {letterType === "rejection" ? (
+              <>
+                <p className="text-xl font-bold">
+                  Personalized Rejection Message
+                </p>
+                <p>
+                  {member &&
+                    `Copy/Paste the following personalized message to gracefully reject ${member.discordName}.`}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-xl font-bold">Personalized Invite</p>
+                <p>
+                  {member &&
+                    `Copy/Paste the following personalized message to invite ${member.discordName} for a second interview.`}
+                </p>
+              </>
+            )}
           </div>
 
           <div className="h-fit border-2 bg-white p-6">
@@ -122,20 +149,21 @@ export const EdenAiLetter = ({ isModalOpen, member }: IEdenAiLetter) => {
             )}
           </div>
           <div>
-            {copied ? (
-              <div className="flex  items-center gap-2">
-                <Button disabled onClick={handleCopyToClipboard}>
-                  Copied Message To Clipboard
+            {letterContent &&
+              (copied ? (
+                <div className="flex  items-center gap-2">
+                  <Button disabled onClick={handleCopyToClipboard}>
+                    Copied Message To Clipboard
+                  </Button>
+                  <span className=" text-lg text-green-600">
+                    <CheckCircleIcon className="h-8 w-8" aria-hidden="true" />
+                  </span>
+                </div>
+              ) : (
+                <Button onClick={handleCopyToClipboard}>
+                  Copy Message To Clipboard
                 </Button>
-                <span className=" text-lg text-green-600">
-                  <CheckCircleIcon className="h-8 w-8" aria-hidden="true" />
-                </span>
-              </div>
-            ) : (
-              <Button onClick={handleCopyToClipboard}>
-                Copy Message To Clipboard
-              </Button>
-            )}
+              ))}
           </div>
         </div>
       </Modal>
