@@ -95,6 +95,7 @@ export const EdenAiLetter = ({
 
     return () => {
       setLetterContent("");
+      setCopied(false);
     };
   }, [isModalOpen, letterType, member, positionID]);
   return (
@@ -148,20 +149,21 @@ export const EdenAiLetter = ({
             )}
           </div>
           <div>
-            {copied ? (
-              <div className="flex  items-center gap-2">
-                <Button disabled onClick={handleCopyToClipboard}>
-                  Copied Message To Clipboard
+            {letterContent &&
+              (copied ? (
+                <div className="flex  items-center gap-2">
+                  <Button disabled onClick={handleCopyToClipboard}>
+                    Copied Message To Clipboard
+                  </Button>
+                  <span className=" text-lg text-green-600">
+                    <CheckCircleIcon className="h-8 w-8" aria-hidden="true" />
+                  </span>
+                </div>
+              ) : (
+                <Button onClick={handleCopyToClipboard}>
+                  Copy Message To Clipboard
                 </Button>
-                <span className=" text-lg text-green-600">
-                  <CheckCircleIcon className="h-8 w-8" aria-hidden="true" />
-                </span>
-              </div>
-            ) : (
-              <Button onClick={handleCopyToClipboard}>
-                Copy Message To Clipboard
-              </Button>
-            )}
+              ))}
           </div>
         </div>
       </Modal>
