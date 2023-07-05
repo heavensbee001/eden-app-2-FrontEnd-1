@@ -151,7 +151,7 @@ export const ChatSimple = ({
                                   <>
                                     {currentTime()}
 
-                                    <span className="ml-2 text-sm font-medium text-gray-600">
+                                    <span className="text-deepBlack ml-2 text-sm  font-bold">
                                       {currentUser?.discordName}
                                     </span>
                                   </>
@@ -159,7 +159,7 @@ export const ChatSimple = ({
 
                                 {chat.user !== "02" && (
                                   <>
-                                    <span className="mr-1 text-sm font-medium text-gray-600">
+                                    <span className="text-forestGreen mr-1 text-sm font-bold">
                                       Eden AI
                                     </span>
                                     {currentTime()}
