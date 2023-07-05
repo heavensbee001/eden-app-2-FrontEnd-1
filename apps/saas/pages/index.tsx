@@ -79,7 +79,7 @@ const HomePage: NextPage = () => {
             </div>
             <div className="grid grid-cols-12 gap-12">
               <div className="col-span-4 h-full">
-                <div className="h-full bg-[#d9d9d9] px-2 py-2 pb-8 text-center">
+                <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
                   <p className="mb-4">
                     Eden makes sure she’s got all the info she needs to properly{" "}
                     <b>vet candidates up to your standards</b>.
@@ -93,7 +93,7 @@ const HomePage: NextPage = () => {
                 </div>
               </div>
               <div className="col-span-4 h-full">
-                <div className="h-full bg-[#d9d9d9] px-2 py-2 pb-8 text-center">
+                <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
                   <p className="mb-4">
                     After the first scan Eden does, she generates an{" "}
                     <b>
@@ -110,7 +110,7 @@ const HomePage: NextPage = () => {
                 </div>
               </div>
               <div className="col-span-4 h-full">
-                <div className="h-full bg-[#d9d9d9] px-2 py-2 pb-8 text-center">
+                <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
                   <p className="mb-4">
                     Decide what candidates you want to{" "}
                     <b>invite for a second interview</b>.
