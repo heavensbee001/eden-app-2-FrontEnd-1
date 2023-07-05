@@ -98,6 +98,7 @@ module.exports = {
         poppins: ["Poppins", "sans-serif"],
         Inter: ["Inter", "sans-serif"],
         Gloria: ["Gloria Hallelujah", "cursive"],
+        Moret: ["Moret", "Inter"],
       },
       boxShadow: {
         headerShadow: "0px 1px 15px 0px rgba(0, 0, 0, 0.15)",

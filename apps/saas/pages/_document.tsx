@@ -77,6 +77,8 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
 
+          <link href="https://fonts.cdnfonts.com/css/moret" rel="stylesheet" />
+
           <script
             async
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
