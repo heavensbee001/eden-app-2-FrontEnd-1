@@ -76,17 +76,11 @@ export const CandidateInfo = ({
   const handleRejectionLetter = () => {
     setLetterType("rejection");
     setIsOpen(!isOpen);
-    console.log(
-      "handleRejectionLetter clicked  ===============-=-=-=-=-=-=-=-="
-    );
   };
 
   const handleSecondInterviewLetter = () => {
     setLetterType("nextInterviewInvite");
     setIsOpen(!isOpen);
-    console.log(
-      "handleSecondInterviewLetter clicked ===============-=-=-=-=-=-=-=-="
-    );
   };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
