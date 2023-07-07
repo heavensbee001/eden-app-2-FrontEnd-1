@@ -1,6 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { FIND_MEMBER } from "@eden/package-graphql";
-import { SummaryQuestionType } from "@eden/package-graphql/generated";
+import {
+  SummaryQuestionType,
+  TalentListType,
+} from "@eden/package-graphql/generated";
 import {
   AskEdenTab,
   Avatar,
@@ -17,9 +20,10 @@ import {
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { BsCalendarPlus } from "react-icons/bs";
 import { FaChevronLeft } from "react-icons/fa";
+import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoMdAdd, IoMdAddCircle } from "react-icons/io";
 import ReactTooltip from "react-tooltip";
 
@@ -50,6 +54,11 @@ export interface ICandidateInfoProps {
   // eslint-disable-next-line no-unused-vars
   approveCandidateFn?: (memberID: string) => void;
   qualified?: boolean;
+  addToListOpen: boolean;
+  setAddToListOpen: Dispatch<SetStateAction<boolean>>;
+  handleCreateNewList: () => void;
+  talentListsAvailables: TalentListType[];
+  handleAddCandidatesToList: (listID: string) => Promise<void>;
 }
 
 function classNames(...classes: any[]) {
@@ -64,6 +73,11 @@ export const CandidateInfo = ({
   onClose,
   rejectCandidateFn,
   approveCandidateFn,
+  addToListOpen,
+  setAddToListOpen,
+  talentListsAvailables,
+  handleCreateNewList,
+  handleAddCandidatesToList,
   // eslint-disable-next-line no-unused-vars
   qualified = false,
 }: ICandidateInfoProps) => {
@@ -237,9 +251,9 @@ export const CandidateInfo = ({
             {/* ------- add to talent pool button ------- */}
             <div className="">
               <span
-                onClick={() => {
-                  // setAddToListOpen(true);
-                }}
+                // onClick={() => {
+                //   setAddToListOpen(true);
+                // }}
                 className="cursor-pointer text-xs"
                 data-tip={"Add to talent pool"}
                 data-for={`badgeTip-add-to-talent-pool`}
@@ -247,7 +261,10 @@ export const CandidateInfo = ({
                 <IoMdAddCircle
                   size={28}
                   className="text-accentColor hover:text-black"
-                  onClick={handleApproveCandidate}
+                  // onClick={handleApproveCandidate}
+                  onClick={() => {
+                    setAddToListOpen(true);
+                  }}
                 />
                 <ReactTooltip
                   id={`badgeTip-add-to-talent-pool`}
@@ -256,7 +273,10 @@ export const CandidateInfo = ({
                   padding="0.25rem"
                 ></ReactTooltip>
               </span>
-              {/* {addToListOpen && (
+
+              {/* ------- Add candidate to list ------- */}
+
+              {addToListOpen && (
                 <div
                   className="fixed left-0 top-0 z-30 h-full w-full"
                   onClick={() => {
@@ -293,10 +313,9 @@ export const CandidateInfo = ({
                     </div>
                   ))}
                 </div>
-              )} */}
+              )}
             </div>
 
-            {/* ------- reject button ------- */}
             <span
               className="cursor-pointer text-xs"
               data-tip={"Reject gracefully"}

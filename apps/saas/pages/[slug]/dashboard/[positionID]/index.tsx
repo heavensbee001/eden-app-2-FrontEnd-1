@@ -110,8 +110,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1361,6 +1362,7 @@ const PositionCRM: NextPageWithLayout = () => {
             <CandidateInfo
               key={selectedUserId || ""}
               memberID={selectedUserId || ""}
+              addToListOpen={addToListOpen}
               // percentage={selectedUserScore}
               summaryQuestions={selectedUserSummaryQuestions}
               mostRelevantMemberNode={mostRelevantMemberNode}
@@ -1373,6 +1375,7 @@ const PositionCRM: NextPageWithLayout = () => {
               }}
               rejectCandidateFn={handleRejectCandidate}
               approveCandidateFn={handleApproveCandidate}
+              setAddToListOpen={setAddToListOpen}
               qualified={
                 Boolean(
                   approvedTalentListCandidatesList?.find(
@@ -1389,6 +1392,13 @@ const PositionCRM: NextPageWithLayout = () => {
                   )
                 )
               }
+              handleCreateNewList={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+              talentListsAvailables={talentListsAvailables}
+              handleAddCandidatesToList={function (): Promise<void> {
+                throw new Error("Function not implemented.");
+              }}
             />
             {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1415,6 +1425,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   percentage={selectedUserScore}
                   summaryQuestions={selectedUserSummaryQuestions}
                   mostRelevantMemberNode={mostRelevantMemberNode}
+                  handleAddCandidatesToList={handleAddCandidatesToList}
                   candidate={candidatesOriginalList?.find(
                     (candidate) =>
                       candidate?.user?._id?.toString() ==
@@ -1429,6 +1440,10 @@ const PositionCRM: NextPageWithLayout = () => {
                       { shallow: true }
                     );
                   }}
+                  addToListOpen={false}
+                  setAddToListOpen={setAddToListOpen}
+                  handleCreateNewList={handleCreateNewList}
+                  talentListsAvailables={[]}
                 />
                 {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1442,6 +1457,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   key={(router.query.candidate2 as string) || ""}
                   memberID={(router.query.candidate2 as string) || ""}
                   percentage={selectedUserScore}
+                  handleCreateNewList={handleCreateNewList}
                   summaryQuestions={selectedUserSummaryQuestions}
                   mostRelevantMemberNode={mostRelevantMemberNode}
                   candidate={candidatesOriginalList?.find(
@@ -1457,6 +1473,14 @@ const PositionCRM: NextPageWithLayout = () => {
                       undefined,
                       { shallow: true }
                     );
+                  }}
+                  addToListOpen={false}
+                  setAddToListOpen={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  talentListsAvailables={[]}
+                  handleAddCandidatesToList={function (): Promise<void> {
+                    throw new Error("Function not implemented.");
                   }}
                 />
                 {/* ) : (
