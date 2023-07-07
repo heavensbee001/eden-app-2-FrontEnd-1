@@ -118,9 +118,13 @@ export const ChatSimple = ({
 
   return (
     <>
-      <div className="flex h-full flex-col justify-between  pb-16 2xl:pb-0">
-        <div className="h-[calc(100%-38px)] py-4 ">
-          <Card border shadow className="h-full overflow-scroll bg-white ">
+      <div className=" mx-auto flex h-full min-w-[500px] flex-col items-center  pb-16 xl:w-2/4 xl:items-stretch 2xl:pb-0">
+        <div className="h-[calc(100%-38px)] py-4">
+          <Card
+            border
+            shadow
+            className="h-full w-full  overflow-scroll  bg-white "
+          >
             <div
               ref={componentRef}
               // className="h-full overflow-y-auto bg-white p-4"
@@ -151,7 +155,7 @@ export const ChatSimple = ({
                                   <>
                                     {currentTime()}
 
-                                    <span className="text-deepBlack ml-2 text-sm  font-bold">
+                                    <span className="text-deepBlack ml-2 text-xs  font-extrabold">
                                       {currentUser?.discordName}
                                     </span>
                                   </>
@@ -159,10 +163,9 @@ export const ChatSimple = ({
 
                                 {chat.user !== "02" && (
                                   <>
-                                    <span className="text-forestGreen mr-1 text-sm font-bold">
-                                      Eden AI
+                                    <span className="text-forestGreen mr-1 text-xs font-extrabold">
+                                      Eden
                                     </span>
-                                    {currentTime()}
                                   </>
                                 )}
                               </div>
@@ -172,7 +175,7 @@ export const ChatSimple = ({
                                   chat.user === "01"
                                     ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
                                     : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-sm xl:text-[16px]"
                                 )}
                               >
                                 {chat.message}
@@ -182,7 +185,7 @@ export const ChatSimple = ({
                           <img
                             src={Users[chat.user].img}
                             alt="My profile"
-                            className="order-1 h-6 w-6 rounded-full"
+                            className="order-1 h-12 w-12 rounded-full"
                           />
                         </div>
                       </div>
@@ -215,10 +218,10 @@ export const ChatSimple = ({
         <Card
           border
           shadow
-          className="flex items-center justify-between bg-white px-3"
+          className="flex w-full items-center justify-between  bg-white px-3"
         >
           <textarea
-            className="max-height: 200px; height: 24px; overflow-y: hidden; m-0 w-full resize-none border-0 bg-transparent  py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"
+            className="max-height: 200px; height: 24px; overflow-y: hidden; min-w-11/12 m-0 w-full resize-none border-0 bg-transparent   py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"
             placeholder="Type your message here..."
             value={inputMessage}
             rows={inputMessage.length < 50 ? 1 : 4}
