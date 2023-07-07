@@ -87,34 +87,34 @@ export const ChatSimple = ({
     }
   }, [chatN]);
 
-  const currentTime = () => {
-    // Get current date
-    const now: Date = new Date();
+  // const currentTime = () => {
+  //   // Get current date
+  //   const now: Date = new Date();
 
-    // Get hours
-    let hours: number = now.getHours();
+  //   // Get hours
+  //   let hours: number = now.getHours();
 
-    // Create a string for the period of the day
-    const period: string = hours >= 12 ? "PM" : "AM";
+  //   // Create a string for the period of the day
+  //   const period: string = hours >= 12 ? "PM" : "AM";
 
-    // Convert hours to 12-hour format
-    hours = hours % 12;
-    // The hour '0' should be '12'
-    hours = hours ? hours : 12;
+  //   // Convert hours to 12-hour format
+  //   hours = hours % 12;
+  //   // The hour '0' should be '12'
+  //   hours = hours ? hours : 12;
 
-    // Get minutes
-    const minutes: number = now.getMinutes();
+  //   // Get minutes
+  //   const minutes: number = now.getMinutes();
 
-    // Pad minutes with a zero (if less than 10)
-    const minutesFormatted: string =
-      minutes < 10 ? "0" + minutes.toString() : minutes.toString();
+  //   // Pad minutes with a zero (if less than 10)
+  //   const minutesFormatted: string =
+  //     minutes < 10 ? "0" + minutes.toString() : minutes.toString();
 
-    // Create the time string
-    const time: string =
-      hours.toString() + ":" + minutesFormatted + " " + period;
+  //   // Create the time string
+  //   const time: string =
+  //     hours.toString() + ":" + minutesFormatted + " " + period;
 
-    return time;
-  };
+  //   return time;
+  // };
 
   return (
     <>
@@ -149,8 +149,6 @@ export const ChatSimple = ({
                               <div>
                                 {chat.user !== "01" && (
                                   <>
-                                    {currentTime()}
-
                                     <span className="text-deepBlack ml-2 text-xs  font-extrabold">
                                       {currentUser?.discordName}
                                     </span>
