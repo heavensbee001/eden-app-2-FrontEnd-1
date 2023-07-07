@@ -33,13 +33,13 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </p>
-            {candidate?.analysisCandidateEdenAI?.background?.content && (
+            {candidate?.analysisCandidateEdenAI?.skills?.content && (
               <>
                 <hr className="mx-2 my-0 h-8 border-gray-400" />
                 <div className="">
                   <p className="text-lg font-bold">Eden First Impression 👀</p>
 
-                  {candidate?.analysisCandidateEdenAI?.background?.content}
+                  {candidate?.analysisCandidateEdenAI?.skills?.content}
                 </div>
               </>
             )}
