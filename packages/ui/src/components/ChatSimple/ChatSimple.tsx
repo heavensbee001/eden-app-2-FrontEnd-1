@@ -3,9 +3,9 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AiOutlineSend } from "react-icons/ai";
-import { CiLocationArrow1 } from "react-icons/ci";
 
+// import { AiOutlineSend } from "react-icons/ai";
+// import { CiLocationArrow1 } from "react-icons/ci";
 import { Card } from "../..";
 
 export interface IChatSimple {
@@ -89,7 +89,7 @@ export const ChatSimple = ({
 
   return (
     <>
-      <div className="flex h-full flex-col justify-between  pb-16 2xl:pb-0">
+      <div className="flex h-full flex-col justify-between 2xl:pb-0">
         <div className="h-[calc(100%-38px)] py-4 ">
           <Card border shadow className="h-full overflow-scroll bg-white ">
             <div
