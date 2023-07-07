@@ -102,21 +102,21 @@ export const EdenAiLetter = ({
     <>
       <Modal open={isModalOpen}>
         <div className="flex flex-col items-center justify-end gap-10 space-y-6 ">
-          <div className="text-soilHeading3  w-full">
+          <div className="w-full  font-medium">
             {letterType === "rejection" ? (
               <>
-                <p className=" text-xl  font-bold">
+                <h2 className=" text-xl  font-bold">
                   Personalized Rejection Message
-                </p>
-                <p>
+                </h2>
+                <p className="text-sm font-medium text-gray-500">
                   {member &&
                     `Copy/Paste the following personalized message to gracefully reject ${member.discordName}.`}
                 </p>
               </>
             ) : (
               <>
-                <p className="text-xl font-bold">Personalized Invite</p>
-                <p>
+                <h2 className="text-xl font-bold">Personalized Invite</h2>
+                <p className="text-sm font-medium text-gray-500">
                   {member &&
                     `Copy/Paste the following personalized message to invite ${member.discordName} for a second interview.`}
                 </p>
