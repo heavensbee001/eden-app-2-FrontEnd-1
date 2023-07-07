@@ -3,9 +3,9 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AiOutlineSend } from "react-icons/ai";
-import { CiLocationArrow1 } from "react-icons/ci";
 
+// import { AiOutlineSend } from "react-icons/ai";
+// import { CiLocationArrow1 } from "react-icons/ci";
 import { Card } from "../..";
 
 export interface IChatSimple {
@@ -118,13 +118,9 @@ export const ChatSimple = ({
 
   return (
     <>
-      <div className=" mx-auto flex h-full min-w-[500px] flex-col items-center  pb-16 xl:w-2/4 xl:items-stretch 2xl:pb-0">
-        <div className="h-[calc(100%-38px)] py-4">
-          <Card
-            border
-            shadow
-            className="h-full w-full  overflow-scroll  bg-white "
-          >
+      <div className="flex h-full flex-col justify-between 2xl:pb-0">
+        <div className="h-[calc(100%-38px)] py-4 ">
+          <Card border shadow className="h-full overflow-scroll bg-white ">
             <div
               ref={componentRef}
               // className="h-full overflow-y-auto bg-white p-4"
@@ -175,7 +171,7 @@ export const ChatSimple = ({
                                   chat.user === "01"
                                     ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
                                     : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-sm xl:text-[16px]"
+                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-xs"
                                 )}
                               >
                                 {chat.message}
@@ -185,7 +181,7 @@ export const ChatSimple = ({
                           <img
                             src={Users[chat.user].img}
                             alt="My profile"
-                            className="order-1 h-12 w-12 rounded-full"
+                            className="order-1 h-8 w-8 rounded-full"
                           />
                         </div>
                       </div>

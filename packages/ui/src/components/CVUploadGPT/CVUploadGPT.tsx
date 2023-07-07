@@ -28,6 +28,7 @@ export const SAVE_CV_TO_USER = gql`
       mainSkills
       cvSummary
       matchPercentage
+      strongFit
       improvementPoints
       growthAreas
       experienceAreas
