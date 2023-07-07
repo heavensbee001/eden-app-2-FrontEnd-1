@@ -246,7 +246,7 @@ const UploadCVContainer = ({
 
   return (
     <div className="">
-      <section className="mb-2 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
+      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
         <h3 className="mb-4 text-center text-lg font-medium">
           Hey {currentUser?.discordName}!
         </h3>
@@ -267,34 +267,40 @@ const UploadCVContainer = ({
           positionID={positionID}
         />
       </section>
-      <section className="grid h-[50vh] grid-cols-3 gap-2">
+      <section className="grid h-[50vh] grid-cols-3 gap-6">
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-lg font-semibold">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-[#F9E1ED]">
             Role Description
           </h3>
           <ul className="list-disc pl-4">
-            {position?.positionsRequirements?.roleDescription?.map(
-              (item, index) => (
-                <li key={index}>{item}</li>
-              )
-            )}
+            {position?.positionsRequirements?.roleDescription
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-lg font-semibold">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-[#F9E1ED]">
             Benefits & Perks
           </h3>
           <ul className="list-disc pl-4">
-            {position?.positionsRequirements?.benefits?.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
+            {position?.positionsRequirements?.benefits
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-lg font-semibold">
+          <h3 className="text-center text-2xl font-semibold text-[#F9E1ED]">
             You x {position?.company?.name}
           </h3>
-          <p className="mb-8 text-center text-gray-500">
+          <p className="mb-4 text-center text-gray-500">
             <AiOutlineLock className="mr-2 inline-block" />
             Upload your CV to unlock it
           </p>
