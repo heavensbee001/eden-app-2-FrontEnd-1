@@ -102,10 +102,10 @@ export const EdenAiLetter = ({
     <>
       <Modal open={isModalOpen}>
         <div className="flex flex-col items-center justify-end gap-10 space-y-6 ">
-          <div className="w-full">
+          <div className="text-soilHeading3  w-full">
             {letterType === "rejection" ? (
               <>
-                <p className="text-xl font-bold">
+                <p className=" text-xl  font-bold">
                   Personalized Rejection Message
                 </p>
                 <p>
@@ -124,9 +124,9 @@ export const EdenAiLetter = ({
             )}
           </div>
 
-          <div className="h-fit border-2 bg-white p-6">
+          <div className="h-[86hv] border-2 bg-white p-4">
             {letterContent ? (
-              <div id="text-to-copy" className="h-fit w-96 ">
+              <div id="text-to-copy" className="h-fit w-fit ">
                 <p className="whitespace-pre-line">{letterContent}</p>
               </div>
             ) : (
@@ -160,7 +160,10 @@ export const EdenAiLetter = ({
                   </span>
                 </div>
               ) : (
-                <Button onClick={handleCopyToClipboard}>
+                <Button
+                  className="bg-cottonPink hover:bg-forestGreen hover:text-white"
+                  onClick={handleCopyToClipboard}
+                >
                   Copy Message To Clipboard
                 </Button>
               ))}
