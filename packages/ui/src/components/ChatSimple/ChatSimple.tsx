@@ -171,7 +171,7 @@ export const ChatSimple = ({
                                   chat.user === "01"
                                     ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
                                     : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-sm xl:text-[16px]"
+                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-xs"
                                 )}
                               >
                                 {chat.message}
@@ -181,7 +181,7 @@ export const ChatSimple = ({
                           <img
                             src={Users[chat.user].img}
                             alt="My profile"
-                            className="order-1 h-12 w-12 rounded-full"
+                            className="order-1 h-8 w-8 rounded-full"
                           />
                         </div>
                       </div>

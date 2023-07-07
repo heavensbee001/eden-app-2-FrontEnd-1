@@ -87,6 +87,7 @@ interface Props {
 
 // type AskEdenTabType = Category[];
 
+// eslint-disable-next-line no-unused-vars
 export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
   const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
     useState<MessageObject>({ message: "", sentMessage: false, user: "" });
@@ -102,6 +103,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  // eslint-disable-next-line no-unused-vars
   const { data: findPositionData } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
@@ -134,6 +136,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
 
   const [experienceTypeID] = useState<string>("");
 
+  // eslint-disable-next-line no-unused-vars
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
   // console.log("chatN = ", chatN);
@@ -142,7 +145,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
 
   return (
     <div className="w-full">
-      <div className="relative h-[68vh]">
+      <div className="relative h-[calc(100vh-20rem)]">
         <div className="absolute left-0 top-2 z-20 w-full">
           {/* <ProgressBarGeneric
             color="accentColor"
@@ -154,7 +157,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
             }
           /> */}
         </div>
-        {
+        <div className="mx-auto h-[96%] max-w-lg flex-col xl:w-2/4 xl:items-stretch 2xl:pb-0">
           <InterviewEdenAI
             key={experienceTypeID}
             aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
@@ -165,7 +168,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className=" bg-cottonPink text-forestGreen rounded-lg p-1 text-center font-medium">
+              <p className="bg-cottonPink text-forestGreen rounded-lg p-1 text-center font-medium">
                 Ask me any question about the Candidate
               </p>
             }
@@ -179,7 +182,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
             //   if (handleEnd) handleEnd();
             // }}
           />
-        }
+        </div>
       </div>
     </div>
   );
