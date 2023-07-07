@@ -77,7 +77,7 @@ export const ChatSimple = ({
     // );
   });
 
-  // console.log("chatN = ", chatN);
+  console.log("chatN = ", chatN.date);
 
   useEffect(() => {
     const lastMessage = document.querySelector(`.chat-message:last-child`);
@@ -86,6 +86,35 @@ export const ChatSimple = ({
       lastMessage.scrollIntoView({ behavior: "smooth", inline: "end" });
     }
   }, [chatN]);
+
+  const currentTime = () => {
+    // Get current date
+    const now: Date = new Date();
+
+    // Get hours
+    let hours: number = now.getHours();
+
+    // Create a string for the period of the day
+    const period: string = hours >= 12 ? "PM" : "AM";
+
+    // Convert hours to 12-hour format
+    hours = hours % 12;
+    // The hour '0' should be '12'
+    hours = hours ? hours : 12;
+
+    // Get minutes
+    const minutes: number = now.getMinutes();
+
+    // Pad minutes with a zero (if less than 10)
+    const minutesFormatted: string =
+      minutes < 10 ? "0" + minutes.toString() : minutes.toString();
+
+    // Create the time string
+    const time: string =
+      hours.toString() + ":" + minutesFormatted + " " + period;
+
+    return time;
+  };
 
   return (
     <>
@@ -106,36 +135,58 @@ export const ChatSimple = ({
                       <div className="chat-message p-2" key={index}>
                         <div
                           className={classNames(
-                            chat.user == "01" ? "" : "justify-end",
+                            chat.user === "01" ? "" : "justify-end",
                             "flex items-start"
                           )}
                         >
                           <div
                             className={classNames(
-                              chat.user == "01" ? "order-2" : "order-1",
+                              chat.user === "01" ? "order-2" : "order-1",
                               "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                             )}
                           >
-                            <span
-                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                              className={classNames(
-                                chat.user == "01"
-                                  ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                  : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
-                              )}
-                            >
-                              {chat.message}
-                            </span>
+                            <div className=" flex flex-col">
+                              <div>
+                                {chat.user !== "01" && (
+                                  <>
+                                    {currentTime()}
+
+                                    <span className="text-deepBlack ml-2 text-xs  font-extrabold">
+                                      {currentUser?.discordName}
+                                    </span>
+                                  </>
+                                )}
+
+                                {chat.user !== "02" && (
+                                  <>
+                                    <span className="text-forestGreen mr-1 text-xs font-extrabold">
+                                      Eden
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+
+                              <span
+                                className={classNames(
+                                  chat.user === "01"
+                                    ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                    : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-sm xl:text-[16px]"
+                                )}
+                              >
+                                {chat.message}
+                              </span>
+                            </div>
                           </div>
                           <img
                             src={Users[chat.user].img}
                             alt="My profile"
-                            className="order-1 h-6 w-6 rounded-full"
+                            className="order-1 h-12 w-12 rounded-full"
                           />
                         </div>
                       </div>
                     ))}
+
                     {chatN[chatN.length - 1].user == "02" ? (
                       <div className="chat-message flex items-center space-x-[5px] rounded-full pl-2">
                         <div
@@ -163,10 +214,10 @@ export const ChatSimple = ({
         <Card
           border
           shadow
-          className="flex items-center justify-between bg-white px-3"
+          className="flex w-full items-center justify-between  bg-white px-3"
         >
           <textarea
-            className="max-height: 200px; height: 24px; overflow-y: hidden; m-0 w-full resize-none border-0 bg-transparent  py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"
+            className="max-height: 200px; height: 24px; overflow-y: hidden; min-w-11/12 m-0 w-full resize-none border-0 bg-transparent   py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"
             placeholder="Type your message here..."
             value={inputMessage}
             rows={inputMessage.length < 50 ? 1 : 4}
