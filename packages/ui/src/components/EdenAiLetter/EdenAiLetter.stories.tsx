@@ -13,4 +13,4 @@ const Template: ComponentStory<typeof EdenAiLetter> = (args) => (
 );
 
 export const Default = Template.bind({});
-Default.args = { isOpen: false };
+Default.args = {};

@@ -76,11 +76,17 @@ export const CandidateInfo = ({
   const handleRejectionLetter = () => {
     setLetterType("rejection");
     setIsOpen(!isOpen);
+    console.log(
+      "handleRejectionLetter clicked  ===============-=-=-=-=-=-=-=-="
+    );
   };
 
   const handleSecondInterviewLetter = () => {
     setLetterType("nextInterviewInvite");
     setIsOpen(!isOpen);
+    console.log(
+      "handleSecondInterviewLetter clicked ===============-=-=-=-=-=-=-=-="
+    );
   };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
@@ -298,12 +304,12 @@ export const CandidateInfo = ({
 
             {/* ------- reject button ------- */}
             <span
-              onClick={handleRejectionLetter}
               className="cursor-pointer text-xs"
               data-tip={"Reject gracefully"}
               data-for={`badgeTip-reject`}
             >
               <IoMdAdd
+                onClick={handleRejectionLetter}
                 size={28}
                 className="rotate-45 text-red-400"
                 // onClick={handleRejectCandidate}
@@ -318,7 +324,6 @@ export const CandidateInfo = ({
 
             {/* ------- schedule 2nd interview button ------- */}
             <span
-              onClick={handleSecondInterviewLetter}
               className="cursor-pointer text-xs"
               data-tip={"Schedule 2nd interview"}
               data-for={`badgeTip-schedule`}
@@ -329,6 +334,7 @@ export const CandidateInfo = ({
                 letterType={letterType}
               />
               <BsCalendarPlus
+                onClick={handleSecondInterviewLetter}
                 size={25}
                 className="text-gray-600 hover:text-gray-500"
               />
