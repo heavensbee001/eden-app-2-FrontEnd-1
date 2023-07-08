@@ -77,7 +77,7 @@ export const ChatSimple = ({
     // );
   });
 
-  // console.log("chatN = ", chatN.date);
+  console.log("chatN = ", chatN.date);
 
   useEffect(() => {
     const lastMessage = document.querySelector(`.chat-message:last-child`);
