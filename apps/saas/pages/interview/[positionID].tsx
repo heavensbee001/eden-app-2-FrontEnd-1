@@ -113,7 +113,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-5xl overflow-y-scroll rounded-none pt-4">
+      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl px-4 overflow-y-scroll rounded-none pt-4">
         {currentUser && (
           <div className="h-full w-full">
             <div className="absolute left-0 top-0 w-full">
@@ -246,7 +246,7 @@ const UploadCVContainer = ({
 
   return (
     <div className="">
-      <section className="mb-2 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
+      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
         <h3 className="mb-4 text-center text-lg font-medium">
           Hey {currentUser?.discordName}!
         </h3>
@@ -267,34 +267,40 @@ const UploadCVContainer = ({
           positionID={positionID}
         />
       </section>
-      <section className="grid h-[50vh] grid-cols-3 gap-2">
+      <section className="grid h-[50vh] grid-cols-3 gap-6">
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-lg font-semibold">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-[#F9E1ED]">
             Role Description
           </h3>
           <ul className="list-disc pl-4">
-            {position?.positionsRequirements?.roleDescription?.map(
-              (item, index) => (
-                <li key={index}>{item}</li>
-              )
-            )}
+            {position?.positionsRequirements?.roleDescription
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-lg font-semibold">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-[#F9E1ED]">
             Benefits & Perks
           </h3>
           <ul className="list-disc pl-4">
-            {position?.positionsRequirements?.benefits?.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
+            {position?.positionsRequirements?.benefits
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-lg font-semibold">
+          <h3 className="text-center text-2xl font-semibold text-[#F9E1ED]">
             You x {position?.company?.name}
           </h3>
-          <p className="mb-8 text-center text-gray-500">
+          <p className="mb-4 text-center text-gray-500">
             <AiOutlineLock className="mr-2 inline-block" />
             Upload your CV to unlock it
           </p>
@@ -357,7 +363,9 @@ const ApplicationStepContainer = ({
     <div className="grid h-full grid-cols-12 gap-6">
       <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
         <div className="mb-8">
-          <h3 className="text-lg font-semibold">Your top skills:</h3>
+          <h3 className="text-lg font-semibold text-gray-400">
+            Your top skills:
+          </h3>
           <div>
             {topSkills !== null &&
               topSkills.map((skill: any, index: number) => (
@@ -372,8 +380,8 @@ const ApplicationStepContainer = ({
           </div>
         </div>
         <div className="mb-8">
-          <h3 className="text-lg font-semibold">Salary range:</h3>
-          <p>
+          <h3 className="text-lg font-semibold text-gray-400">Salary range:</h3>
+          <p className="text-xl font-medium">
             ${60000} - ${90000}
           </p>
         </div>
@@ -422,7 +430,7 @@ const ApplicationStepContainer = ({
           >
             <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
           </svg>
-          <h2 className="mb-8 text-center text-2xl font-medium">
+          <h2 className="mb-4 text-center text-2xl font-medium">
             Looking great!
           </h2>
           {position?.name ? (
@@ -430,23 +438,24 @@ const ApplicationStepContainer = ({
               <p className="text-center">Your probability of passing is:</p>
               {content.matchPercentage &&
                 (content.matchPercentage > 50 ? (
-                  <p className="text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
+                  <p className="mb-4 text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
                 ) : (
-                  <p className="text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
+                  <p className="mb-4 text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
                 ))}
-              <p className="mb-4 text-center text-gray-400">
-                Rock this interview and increase your chace of passing
-              </p>
 
-              <section className="h-[45vh] overflow-y-scroll">
+              <section className="h-[42vh] overflow-y-scroll">
                 <div className="px-8">
-                  <h3 className="text-lg font-semibold">Strong suit:</h3>
+                  <h3 className="text-lg text-forestGreen font-semibold">
+                    Strong suit:
+                  </h3>
                   <p className="mb-4 whitespace-pre-wrap">
                     {content.strongFit}
                   </p>
                 </div>
                 <div className="px-8">
-                  <h3 className="text-lg font-semibold">Areas to improve:</h3>
+                  <h3 className="text-lg text-forestGreen font-semibold">
+                    Areas to improve:
+                  </h3>
                   <p className="mb-8 whitespace-pre-wrap">
                     {content.improvementPoints}
                   </p>
@@ -466,16 +475,18 @@ const ApplicationStepContainer = ({
       </section>
       <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
         <div className="mb-8">
-          <h3 className="text-lg font-semibold">What you will get:</h3>
-          <div>
-            <h3 className="text-lg font-semibold">Growth:</h3>
-            <p className="mb-4 whitespace-pre-wrap">{content.growthAreas}</p>
+          <h3 className="text-lg font-semibold mb-2 text-gray-400">
+            What you will get:
+          </h3>
+          <div className="bg-white rounded-md mb-4 p-2">
+            <h3 className="text-lg font-semibold text-gray-400">Growth:</h3>
+            <p className="whitespace-pre-wrap">{content.growthAreas}</p>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold">Personal experience:</h3>
-            <p className="mb-4 whitespace-pre-wrap">
-              {content.experienceAreas}
-            </p>
+          <div className="bg-white rounded-md mb-4 p-2">
+            <h3 className="text-lg font-semibold text-gray-400">
+              Personal experience:
+            </h3>
+            <p className="whitespace-pre-wrap">{content.experienceAreas}</p>
           </div>
         </div>
       </section>
@@ -664,7 +675,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-accentColor rounded-lg p-1 text-center font-medium">
+              <p className="bg-cottonPink text-forestGreen rounded-sm p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>
