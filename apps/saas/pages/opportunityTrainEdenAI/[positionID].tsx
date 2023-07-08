@@ -12,7 +12,7 @@ import {
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
-  ProgressBarGeneric,
+  // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
   TextArea,
@@ -621,14 +621,14 @@ const InterviewEdenAIContainer = ({
 
   const [conversationID, setConversationID] = useState<String>("");
 
-  // console.log("positionID = ", positionID);
+  console.log("findPositionData = ", findPositionData);
 
   const [experienceTypeID] = useState<string>("");
 
   // eslint-disable-next-line no-unused-vars
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  // console.log("chatN = ", chatN);
+  console.log("chatN = ", chatN);
 
   // console.log("conversationID = ", conversationID);
 
