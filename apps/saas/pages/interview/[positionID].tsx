@@ -269,7 +269,7 @@ const UploadCVContainer = ({
       </section>
       <section className="grid h-[50vh] grid-cols-3 gap-6">
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="mb-4 text-center text-2xl font-semibold text-[#F9E1ED]">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-forestGreen">
             Role Description
           </h3>
           <ul className="list-disc pl-4">
@@ -283,7 +283,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="mb-4 text-center text-2xl font-semibold text-[#F9E1ED]">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-forestGreen">
             Benefits & Perks
           </h3>
           <ul className="list-disc pl-4">
@@ -297,7 +297,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-2xl font-semibold text-[#F9E1ED]">
+          <h3 className="text-center text-2xl font-semibold text-forestGreen">
             You x {position?.company?.name}
           </h3>
           <p className="mb-4 text-center text-gray-500">
