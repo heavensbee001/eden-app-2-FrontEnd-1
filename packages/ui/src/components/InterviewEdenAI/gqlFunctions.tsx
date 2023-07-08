@@ -46,3 +46,13 @@ export const ASK_EDEN_USER_POSITION = gql`
     }
   }
 `;
+
+export const ASK_EDEN_GPT4_ONLY = gql`
+  query InterviewEdenGPT4only($fields: interviewEdenGPT4onlyInput) {
+    interviewEdenGPT4only(fields: $fields) {
+      reply
+      date
+      conversationID
+    }
+  }
+`;

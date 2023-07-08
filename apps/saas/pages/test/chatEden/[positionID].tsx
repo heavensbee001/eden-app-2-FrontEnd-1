@@ -280,7 +280,7 @@ const chatEden: NextPageWithLayout = () => {
 
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  console.log("chatN = ", chatN);
+  // console.log("chatN = ", chatN);
 
   const [questions, setQuestions] = useState<Question[]>([
     {

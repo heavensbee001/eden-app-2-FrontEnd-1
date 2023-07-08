@@ -601,7 +601,7 @@ const InterviewEdenAIContainer = ({
 
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  console.log("chatN = ", chatN);
+  // console.log("chatN = ", chatN);
 
   console.log("conversationID = ", conversationID);
 

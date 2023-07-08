@@ -151,7 +151,7 @@ const InterviewEdenAIpage: React.FC = () => {
 
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  console.log("chatN = ", chatN);
+  // console.log("chatN = ", chatN);
 
   const [isLoading, setIsLoading] = useState(false);
 
