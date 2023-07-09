@@ -145,13 +145,17 @@ export const ChatSimple = ({
                               "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                             )}
                           >
-                            <div className=" flex flex-col">
+                            <div
+                              className={classNames(
+                                chat.user === "01" ? "text-start" : "text-end"
+                              )}
+                            >
                               <div>
                                 {chat.user !== "01" && (
                                   <>
                                     {currentTime()}
 
-                                    <span className="text-deepBlack ml-2 text-xs  font-extrabold">
+                                    <span className="text-deepBlack mr-4 ml-2 text-xs font-extrabold">
                                       {currentUser?.discordName}
                                     </span>
                                   </>
@@ -159,7 +163,7 @@ export const ChatSimple = ({
 
                                 {chat.user !== "02" && (
                                   <>
-                                    <span className="text-forestGreen mr-1 text-xs font-extrabold">
+                                    <span className="text-forestGreen ml-4 text-xs font-extrabold">
                                       Eden
                                     </span>
                                   </>
