@@ -6,9 +6,10 @@ import React, { useEffect, useState } from "react";
 
 // eslint-disable-next-line no-unused-vars
 import {
-  ASK_EDEN_USER_POSITION,
-  INTERVIEW_EDEN_AI,
   ASK_EDEN_GPT4_ONLY,
+  ASK_EDEN_USER_POSITION,
+  ASK_EDEN_USER_POSITION_AFTER_INTERVIEW,
+  INTERVIEW_EDEN_AI,
   // MESSAGE_MAP_KG_V4,
 } from "./gqlFunctions";
 
@@ -42,6 +43,8 @@ export enum AI_INTERVIEW_SERVICES {
   INTERVIEW_EDEN_AI = "INTERVIEW_EDEN_AI",
   // eslint-disable-next-line no-unused-vars
   ASK_EDEN_USER_POSITION = "ASK_EDEN_USER_POSITION",
+  // eslint-disable-next-line no-unused-vars
+  ASK_EDEN_USER_POSITION_AFTER_INTERVIEW = "ASK_EDEN_USER_POSITION_AFTER_INTERVIEW",
   // eslint-disable-next-line no-unused-vars
   ASK_EDEN_GPT4_ONLY = "ASK_EDEN_GPT4_ONLY",
 }
@@ -371,6 +374,46 @@ export const InterviewEdenAI = ({
     },
   });
 
+  const { data: dataAskEdenUserPositionAfterInterview } = useQuery(
+    ASK_EDEN_USER_POSITION_AFTER_INTERVIEW,
+    {
+      variables: {
+        fields: {
+          conversation: chatN.map((obj) => {
+            if (obj.user === "01") {
+              return {
+                role: "assistant",
+                content: obj.message,
+                date: obj.date,
+              };
+            } else {
+              return { role: "user", content: obj.message, date: obj.date };
+            }
+          }),
+          positionID: positionID,
+          userID: userID,
+          whatToAsk: "COMPANY",
+        },
+      },
+      skip:
+        chatN.length == 0 ||
+        aiReplyService !=
+          AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW ||
+        chatN[chatN.length - 1]?.user == "01" ||
+        userID == "",
+      onCompleted: (data) => {
+        console.log("WOOOW data = ", data);
+        // toraFunc();
+        // setElapsedTime(0);
+        // setStartTime(Date.now());
+        // console.log("setnmessae = ");
+
+        setStartTime(0);
+        setElapsedTime(0);
+      },
+    }
+  );
+
   const { data: dataAskEdenGPT4only } = useQuery(ASK_EDEN_GPT4_ONLY, {
     variables: {
       fields: {
@@ -529,15 +572,18 @@ export const InterviewEdenAI = ({
   }, [dataAskEdenGPT4only]);
 
   useEffect(() => {
-    if (dataAskEdenUserPosition && edenAIsentMessage == true) {
+    const _data =
+      dataAskEdenUserPosition || dataAskEdenUserPositionAfterInterview;
+
+    if (_data && edenAIsentMessage == true) {
       const chatT: ChatMessage = [...chatN];
 
-      const reply = dataAskEdenUserPosition?.askEdenUserPosition?.reply;
+      const reply = _data?.askEdenUserPosition?.reply;
 
       chatT.push({
         user: "01",
         message: reply,
-        // date: dataAskEdenUserPosition?.askEdenUserPosition.date,
+        // date: data?.askEdenUserPosition.date,
         date: new Date(),
       });
 
@@ -558,7 +604,7 @@ export const InterviewEdenAI = ({
       setEdenAIsentMessage(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataAskEdenUserPosition]);
+  }, [dataAskEdenUserPosition, dataAskEdenUserPositionAfterInterview]);
   // -----------------------------------------
 
   // ---------- When sent message, Store all convo messages and long term memory ------------
