@@ -119,8 +119,12 @@ export const ChatSimple = ({
   return (
     <>
       <div className="flex h-full flex-col justify-between 2xl:pb-0">
-        <div className="h-[calc(100%-38px)] py-4 ">
-          <Card border shadow className="h-full overflow-scroll bg-white ">
+        <div className="h-[calc(100%-38px)] py-4">
+          <Card
+            border
+            shadow
+            className="h-full overflow-y-scroll scrollbar-hide bg-white"
+          >
             <div
               ref={componentRef}
               // className="h-full overflow-y-auto bg-white p-4"
