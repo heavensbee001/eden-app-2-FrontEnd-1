@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 
 // eslint-disable-next-line no-unused-vars
 import {
+  ASK_EDEN_GPT4_ONLY,
   ASK_EDEN_USER_POSITION,
   ASK_EDEN_USER_POSITION_AFTER_INTERVIEW,
   INTERVIEW_EDEN_AI,
@@ -44,6 +45,8 @@ export enum AI_INTERVIEW_SERVICES {
   ASK_EDEN_USER_POSITION = "ASK_EDEN_USER_POSITION",
   // eslint-disable-next-line no-unused-vars
   ASK_EDEN_USER_POSITION_AFTER_INTERVIEW = "ASK_EDEN_USER_POSITION_AFTER_INTERVIEW",
+  // eslint-disable-next-line no-unused-vars
+  ASK_EDEN_GPT4_ONLY = "ASK_EDEN_GPT4_ONLY",
 }
 type ChatMessage = Array<{ user: string; message: string; date: Date }>;
 
@@ -115,7 +118,7 @@ export const InterviewEdenAI = ({
   // eslint-disable-next-line no-unused-vars
   const [nodeObj, setNodeObj] = useState<NodeObj>({}); // list of nodes
 
-  const [edenAIsentMessage, setEdenAIsentMessage] = useState<boolean>(false); // sets if response is pending (TODO => change logic to query based)
+  const [edenAIsentMessage, setEdenAIsentMessage] = useState<boolean>(true); // sets if response is pending (TODO => change logic to query based)
   const [numMessageLongTermMem, setNumMessageLongTermMem] = useState<any>(0);
 
   // console.log("questions = 223 ", questions);
@@ -411,6 +414,43 @@ export const InterviewEdenAI = ({
     }
   );
 
+  const { data: dataAskEdenGPT4only } = useQuery(ASK_EDEN_GPT4_ONLY, {
+    variables: {
+      fields: {
+        conversation: chatN.map((obj) => {
+          if (obj.user === "01") {
+            return {
+              role: "assistant",
+              content: obj.message,
+              date: obj.date,
+            };
+          } else {
+            return { role: "user", content: obj.message, date: obj.date };
+          }
+        }),
+        positionID: positionID,
+        userID: userID,
+        positionTrainEdenAI: positionTrainEdenAI,
+        useMemory: true,
+      },
+    },
+    skip:
+      // chatN.length == 0 ||
+      aiReplyService != AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY ||
+      chatN[chatN.length - 1]?.user == "01" ||
+      userID == "",
+    onCompleted: (data) => {
+      console.log("WOOOW data = ", data);
+      // toraFunc();
+      // setElapsedTime(0);
+      // setStartTime(Date.now());
+      // console.log("setnmessae = ");
+
+      setStartTime(0);
+      setElapsedTime(0);
+    },
+  });
+
   console.log("chatN = ", chatN, questions);
 
   // ---------- When GPT Reply, Store all convo messages and GPT friendly formated messages ------------
@@ -491,13 +531,54 @@ export const InterviewEdenAI = ({
   }, [dataInterviewEdenAI]);
 
   useEffect(() => {
-    const data =
-      dataAskEdenUserPosition || dataAskEdenUserPositionAfterInterview;
-
-    if (data && edenAIsentMessage == true) {
+    if (dataAskEdenGPT4only && edenAIsentMessage == true) {
       const chatT: ChatMessage = [...chatN];
 
-      const reply = data?.askEdenUserPosition?.reply;
+      const reply = dataAskEdenGPT4only?.interviewEdenGPT4only?.reply;
+
+      console.log("chatT = ", chatT);
+      console.log("reply = ", reply);
+
+      const conversationID = dataAskEdenGPT4only?.interviewEdenGPT4only
+        ?.conversationID as string;
+
+      if (setConversationID && conversationID != undefined) {
+        setConversationID(conversationID);
+      }
+
+      chatT.push({
+        user: "01",
+        message: reply,
+        date: dataAskEdenGPT4only?.interviewEdenGPT4only.date,
+      });
+
+      setChatN(chatT);
+
+      // from chatT that is an array of objects, translate it to a string
+      let chatNprepareGPTP = "";
+
+      for (let i = 0; i < chatT.length; i++) {
+        if (chatT[i].user == "01")
+          chatNprepareGPTP += "Eden AI: " + chatT[i].message + "\n";
+        else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
+      }
+
+      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+
+      // setChatNprepareGPT(chatNprepareGPTP);
+      setEdenAIsentMessage(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataAskEdenGPT4only]);
+
+  useEffect(() => {
+    const _data =
+      dataAskEdenUserPosition || dataAskEdenUserPositionAfterInterview;
+
+    if (_data && edenAIsentMessage == true) {
+      const chatT: ChatMessage = [...chatN];
+
+      const reply = _data?.askEdenUserPosition?.reply;
 
       chatT.push({
         user: "01",
