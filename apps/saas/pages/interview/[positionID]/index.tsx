@@ -27,7 +27,7 @@ import {
 import { AiOutlineLock } from "react-icons/ai";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
-import type { NextPageWithLayout } from "../_app";
+import type { NextPageWithLayout } from "../../_app";
 
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
@@ -741,7 +741,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   const [updateMember] = useMutation(UPDATE_MEMBER, {
     onCompleted({ updateMember }: Mutation) {
       if (!updateMember) console.log("updateMember is null");
-      router.push("/thanks");
+      router.push(`/interview/${router.query.positionID}/submitted`);
       setSubmitting(false);
     },
     onError: () => {

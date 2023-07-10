@@ -46,3 +46,11 @@ export const ASK_EDEN_USER_POSITION = gql`
     }
   }
 `;
+
+export const ASK_EDEN_USER_POSITION_AFTER_INTERVIEW = gql`
+  query AskEdenUserPosition($fields: askEdenUserPositionInput) {
+    askEdenUserPosition(fields: $fields) {
+      reply
+    }
+  }
+`;
