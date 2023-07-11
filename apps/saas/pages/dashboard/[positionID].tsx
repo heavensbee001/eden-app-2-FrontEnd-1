@@ -356,7 +356,6 @@ const PositionCRM: NextPageWithLayout = () => {
   }, [talentListToShow, talentListsAvailables]);
 
   const handleRowClick = (user: CandidateTypeSkillMatch) => {
-    console.log("click row!!!");
     if (user.user?._id) setSelectedUserId(user.user?._id);
     if (user.overallScore) setSelectedUserScore(user.overallScore);
     if (user.summaryQuestions)
@@ -715,7 +714,6 @@ const PositionCRM: NextPageWithLayout = () => {
         setTalentListSelected({ _id: "000", name: "All candidates" });
       }
       setQuickActionButtonUsed(false);
-      console.log("hi 1");
     },
   });
 
@@ -749,11 +747,9 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleSelectedTalentList = (list: TalentListType) => {
-    console.log("something is happening here");
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     if (talentListToShow) {
-      console.log("what is happening heheheheheheheheheheheheheeheh");
       for (let i = 0; i < candidatesOriginalList.length; i++) {
         for (let j = 0; j < talentListToShow.talent!.length; j++) {
           if (
@@ -800,11 +796,6 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleAddCandidatesToList = async (listID: string) => {
-    console.log("ahhahahahahahahahahahahaah", listID);
-    console.log(
-      "newTalentListCandidatesIds_+_+_+_+_+_+_+__++++",
-      newTalentListCandidatesIds
-    );
     setAddToListOpen(false);
 
     const _prevTalent = findPositionData?.findPosition.talentList
@@ -863,10 +854,6 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleCandidateCheckboxSelection = (candidate: CandidateType) => {
-    console.log(
-      "Here it is!!!!!!!!!!!!!!!!1!!!!!!!!!11@@!!!!!!, checkbox click what is the candidate?????!!!!!",
-      candidate
-    );
     setNewTalentListCandidatesIds((prev) => {
       const newCandidatesIds = [...prev];
 
