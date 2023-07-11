@@ -55,7 +55,7 @@ export const Badge = ({
       >
         <div className="flex h-full w-full items-center justify-between px-3">
           <>
-            <span className="mb-px">{textShort}</span>
+            <span className="mb-px whitespace-nowrap">{textShort}</span>
             {closeButton && (
               <button className={`-mr-1 -mt-1 ml-1`} onClick={onClose}>
                 <XIcon

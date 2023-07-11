@@ -82,11 +82,9 @@ export const CandidateInfo = ({
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
 
-  const [letterType, setLetterType] = useState<
-    "rejection" | "nextInterviewInvite" | undefined
-  >(undefined);
+  const [letterType, setLetterType] =
+    useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");

@@ -110,9 +110,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1498,12 +1497,12 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  const url = ctx.req.url?.replace("/", "");
+  const url = ctx.req.url;
 
   if (!session) {
     return {
       redirect: {
-        destination: `/login?redirect=${url}`,
+        destination: `/?redirect=${url}`,
         permanent: false,
       },
     };
