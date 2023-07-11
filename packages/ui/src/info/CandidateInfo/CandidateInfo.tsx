@@ -20,7 +20,7 @@ import {
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
 import { BsCalendarPlus } from "react-icons/bs";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
@@ -54,11 +54,10 @@ export interface ICandidateInfoProps {
   // eslint-disable-next-line no-unused-vars
   approveCandidateFn?: (memberID: string) => void;
   qualified?: boolean;
-  addToListOpen: boolean;
-  setAddToListOpen: Dispatch<SetStateAction<boolean>>;
   handleCreateNewList: () => void;
   talentListsAvailables: TalentListType[];
   handleAddCandidatesToList: (listID: string) => Promise<void>;
+  handleChkSelection?: (candidate: CandidateTypeSkillMatch) => void;
 }
 
 function classNames(...classes: any[]) {
@@ -73,8 +72,8 @@ export const CandidateInfo = ({
   onClose,
   rejectCandidateFn,
   approveCandidateFn,
-  addToListOpen,
-  setAddToListOpen,
+  handleChkSelection,
+
   talentListsAvailables,
   handleCreateNewList,
   handleAddCandidatesToList,
@@ -83,6 +82,8 @@ export const CandidateInfo = ({
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
+
   const [letterType, setLetterType] = useState<
     "rejection" | "nextInterviewInvite" | undefined
   >(undefined);
@@ -95,6 +96,15 @@ export const CandidateInfo = ({
   const handleSecondInterviewLetter = () => {
     setLetterType("nextInterviewInvite");
     setIsOpen(!isOpen);
+  };
+
+  const handleGreenButtonPress = () => {
+    setAddToListOpen(true);
+    handleChkSelection(candidate);
+    console.log(
+      "candidate18283189748127401278398129381928309128390128390123182938192389108319283018409128490",
+      candidate
+    );
   };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
@@ -213,7 +223,7 @@ export const CandidateInfo = ({
   //     "On a mission to empower anyone anywhere to do meaningful work";
   // }
 
-  console.log("dataMember LLLLLLLLLLLL", dataMember);
+  // console.log("dataMember LLLLLLLLLLLL", dataMember);
 
   return (
     <>
@@ -262,9 +272,7 @@ export const CandidateInfo = ({
                   size={28}
                   className="text-accentColor hover:text-black"
                   // onClick={handleApproveCandidate}
-                  onClick={() => {
-                    setAddToListOpen(true);
-                  }}
+                  onClick={handleGreenButtonPress}
                 />
                 <ReactTooltip
                   id={`badgeTip-add-to-talent-pool`}
@@ -303,15 +311,16 @@ export const CandidateInfo = ({
                       New list
                     </p>
                   </div>
-                  {talentListsAvailables.map((list, index) => (
-                    <div
-                      key={index}
-                      className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                      onClick={() => handleAddCandidatesToList(list._id!)}
-                    >
-                      <p className="">{list.name}</p>
-                    </div>
-                  ))}
+                  {talentListsAvailables &&
+                    talentListsAvailables.map((list, index) => (
+                      <div
+                        key={index}
+                        className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                        onClick={() => handleAddCandidatesToList(list._id!)}
+                      >
+                        <p className="">{list.name}</p>
+                      </div>
+                    ))}
                 </div>
               )}
             </div>

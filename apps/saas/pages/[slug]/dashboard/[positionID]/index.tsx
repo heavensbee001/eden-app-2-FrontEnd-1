@@ -786,6 +786,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleCreateNewList = () => {
     setNewTalentListNameInputOpen(true);
 
+    console.log("click =-=-=-=-=-=-=-");
+
     setAddToListOpen(false);
 
     // setNewTalentListCandidatesIds(
@@ -797,6 +799,9 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleAddCandidatesToList = async (listID: string) => {
     setAddToListOpen(false);
+    console.log(
+      "iwefijnwefijnrfijnewio;fnrwijonhiowernfojngvjonwойбнефо;рбнво;йшбнвой;шнефой;ншреoifnwoirnfgv'efrnvg;o'ienр"
+    );
 
     const _prevTalent = findPositionData?.findPosition.talentList
       .find((_list: any) => _list._id === listID)
@@ -817,7 +822,7 @@ const PositionCRM: NextPageWithLayout = () => {
       },
     });
 
-    toast.success("Candidate added to list!");
+    // toast.success("Candidate added to list!");
   };
 
   const handleRemoveCandidatesFromList = async (listID: string) => {
@@ -1362,7 +1367,6 @@ const PositionCRM: NextPageWithLayout = () => {
             <CandidateInfo
               key={selectedUserId || ""}
               memberID={selectedUserId || ""}
-              addToListOpen={addToListOpen}
               // percentage={selectedUserScore}
               summaryQuestions={selectedUserSummaryQuestions}
               mostRelevantMemberNode={mostRelevantMemberNode}
@@ -1375,7 +1379,6 @@ const PositionCRM: NextPageWithLayout = () => {
               }}
               rejectCandidateFn={handleRejectCandidate}
               approveCandidateFn={handleApproveCandidate}
-              setAddToListOpen={setAddToListOpen}
               qualified={
                 Boolean(
                   approvedTalentListCandidatesList?.find(
@@ -1392,9 +1395,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   )
                 )
               }
-              handleCreateNewList={function (): void {
-                throw new Error("Function not implemented.");
-              }}
+              handleCreateNewList={handleCreateNewList}
               talentListsAvailables={talentListsAvailables}
               handleAddCandidatesToList={function (): Promise<void> {
                 throw new Error("Function not implemented.");
@@ -1440,10 +1441,8 @@ const PositionCRM: NextPageWithLayout = () => {
                       { shallow: true }
                     );
                   }}
-                  addToListOpen={false}
-                  setAddToListOpen={setAddToListOpen}
                   handleCreateNewList={handleCreateNewList}
-                  talentListsAvailables={[]}
+                  talentListsAvailables={talentListsAvailables}
                 />
                 {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1474,11 +1473,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       { shallow: true }
                     );
                   }}
-                  addToListOpen={false}
-                  setAddToListOpen={function (): void {
-                    throw new Error("Function not implemented.");
-                  }}
-                  talentListsAvailables={[]}
+                  talentListsAvailables={talentListsAvailables}
                   handleAddCandidatesToList={function (): Promise<void> {
                     throw new Error("Function not implemented.");
                   }}
