@@ -157,7 +157,7 @@ export const ChatSimple = ({
                               <div>
                                 {chat.user !== "01" && (
                                   <>
-                                    <span className="text-deepBlack mr-4 ml-2 text-xs font-extrabold">
+                                    <span className="text-deepBlack ml-2 text-xs font-extrabold">
                                       {currentUser?.discordName}
                                     </span>
                                   </>
@@ -165,7 +165,7 @@ export const ChatSimple = ({
 
                                 {chat.user !== "02" && (
                                   <>
-                                    <span className="text-forestGreen ml-4 text-xs font-extrabold">
+                                    <span className="text-forestGreen text-xs font-extrabold">
                                       Eden
                                     </span>
                                   </>
