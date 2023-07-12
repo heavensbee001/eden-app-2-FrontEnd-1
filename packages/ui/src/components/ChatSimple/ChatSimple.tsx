@@ -123,7 +123,7 @@ export const ChatSimple = ({
           <Card
             border
             shadow
-            className="h-full overflow-y-scroll scrollbar-hide bg-white"
+            className="scrollbar-hide h-full overflow-y-scroll bg-white"
           >
             <div
               ref={componentRef}

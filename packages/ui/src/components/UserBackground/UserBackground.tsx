@@ -30,8 +30,6 @@ export const UserBackground = ({
   experienceOpen,
   setExperienceOpen,
 }: IUserBackgroundProps) => {
-  console.log("background++++++", background);
-
   const modifiedBackgroundArr: NewObjType[] = background
     .filter((obj): obj is PreviousProjectsType => obj !== null)
     .map((obj: PreviousProjectsType): NewObjType => {

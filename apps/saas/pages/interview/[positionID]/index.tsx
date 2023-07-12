@@ -113,7 +113,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl px-4 overflow-y-scroll rounded-none pt-4">
+      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4">
         {currentUser && (
           <div className="h-full w-full">
             <div className="absolute left-0 top-0 w-full">
@@ -269,7 +269,7 @@ const UploadCVContainer = ({
       </section>
       <section className="grid h-[50vh] grid-cols-3 gap-6">
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="mb-4 text-center text-2xl font-semibold text-forestGreen">
+          <h3 className="text-forestGreen mb-4 text-center text-2xl font-semibold">
             Role Description
           </h3>
           <ul className="list-disc pl-4">
@@ -283,7 +283,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="mb-4 text-center text-2xl font-semibold text-forestGreen">
+          <h3 className="text-forestGreen mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
           <ul className="list-disc pl-4">
@@ -297,7 +297,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-2xl font-semibold text-forestGreen">
+          <h3 className="text-forestGreen text-center text-2xl font-semibold">
             You x {position?.company?.name}
           </h3>
           <p className="mb-4 text-center text-gray-500">
@@ -414,8 +414,8 @@ const ApplicationStepContainer = ({
           </div>
         </div>
       </section>
-      <section className="relative col-span-6 max-h-[calc(88vh-5rem)] overflow-y-scroll h-full rounded-md bg-white">
-        <div className="p-4 h-full overflow-y-scroll scrollbar-hide">
+      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll rounded-md bg-white">
+        <div className="scrollbar-hide h-full overflow-y-scroll p-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="80px"
@@ -445,7 +445,7 @@ const ApplicationStepContainer = ({
 
               <section className="h-[42vh] overflow-y-scroll">
                 <div className="px-8">
-                  <h3 className="text-lg text-forestGreen font-semibold">
+                  <h3 className="text-forestGreen text-lg font-semibold">
                     Strong suit:
                   </h3>
                   <p className="mb-4 whitespace-pre-wrap">
@@ -453,7 +453,7 @@ const ApplicationStepContainer = ({
                   </p>
                 </div>
                 <div className="px-8">
-                  <h3 className="text-lg text-forestGreen font-semibold">
+                  <h3 className="text-forestGreen text-lg font-semibold">
                     Areas to improve:
                   </h3>
                   <p className="mb-8 whitespace-pre-wrap">
@@ -464,7 +464,7 @@ const ApplicationStepContainer = ({
             </>
           ) : null}
         </div>
-        <div className="absolute rounded-md bg-white bottom-0 left-0 flex w-full justify-center px-4 py-2 text-xs text-gray-500 ">
+        <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-md bg-white px-4 py-2 text-xs text-gray-500 ">
           <input type="checkbox" className="mr-3" />
           <p>
             I acknowledge That my CV & responses will be stored and shared by
@@ -475,14 +475,14 @@ const ApplicationStepContainer = ({
       </section>
       <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
         <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-2 text-gray-400">
+          <h3 className="mb-2 text-lg font-semibold text-gray-400">
             What you will get:
           </h3>
-          <div className="bg-white rounded-md mb-4 p-2">
+          <div className="mb-4 rounded-md bg-white p-2">
             <h3 className="text-lg font-semibold text-gray-400">Growth:</h3>
             <p className="whitespace-pre-wrap">{content.growthAreas}</p>
           </div>
-          <div className="bg-white rounded-md mb-4 p-2">
+          <div className="mb-4 rounded-md bg-white p-2">
             <h3 className="text-lg font-semibold text-gray-400">
               Personal experience:
             </h3>

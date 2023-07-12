@@ -110,8 +110,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1373,6 +1374,10 @@ const PositionCRM: NextPageWithLayout = () => {
               }}
               rejectCandidateFn={handleRejectCandidate}
               approveCandidateFn={handleApproveCandidate}
+              handleCreateNewList={handleCreateNewList}
+              handleChkSelection={handleCandidateCheckboxSelection}
+              talentListsAvailables={talentListsAvailables}
+              handleAddCandidatesToList={handleAddCandidatesToList}
               qualified={
                 Boolean(
                   approvedTalentListCandidatesList?.find(
@@ -1415,6 +1420,9 @@ const PositionCRM: NextPageWithLayout = () => {
                   percentage={selectedUserScore}
                   summaryQuestions={selectedUserSummaryQuestions}
                   mostRelevantMemberNode={mostRelevantMemberNode}
+                  handleCreateNewList={handleCreateNewList}
+                  talentListsAvailables={talentListsAvailables}
+                  handleAddCandidatesToList={handleAddCandidatesToList}
                   candidate={candidatesOriginalList?.find(
                     (candidate) =>
                       candidate?.user?._id?.toString() ==
@@ -1444,6 +1452,9 @@ const PositionCRM: NextPageWithLayout = () => {
                   percentage={selectedUserScore}
                   summaryQuestions={selectedUserSummaryQuestions}
                   mostRelevantMemberNode={mostRelevantMemberNode}
+                  handleCreateNewList={handleCreateNewList}
+                  talentListsAvailables={talentListsAvailables}
+                  handleAddCandidatesToList={handleAddCandidatesToList}
                   candidate={candidatesOriginalList?.find(
                     (candidate) =>
                       candidate?.user?._id?.toString() ==
