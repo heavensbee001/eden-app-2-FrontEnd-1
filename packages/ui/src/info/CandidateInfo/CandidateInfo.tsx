@@ -20,7 +20,7 @@ import {
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BsCalendarPlus } from "react-icons/bs";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
@@ -57,7 +57,7 @@ export interface ICandidateInfoProps {
   handleCreateNewList: () => void;
   talentListsAvailables: TalentListType[];
   handleAddCandidatesToList: (listID: string) => Promise<void>;
-  handleChkSelection?: (candidate: CandidateTypeSkillMatch) => void;
+  handleChkSelection?: (candidate: any) => void;
 }
 
 function classNames(...classes: any[]) {
@@ -82,6 +82,7 @@ export const CandidateInfo = ({
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
 
   const [letterType, setLetterType] = useState<
     "rejection" | "nextInterviewInvite" | undefined
@@ -99,11 +100,9 @@ export const CandidateInfo = ({
 
   const handleGreenButtonPress = () => {
     setAddToListOpen(true);
-    handleChkSelection(candidate);
-    console.log(
-      "candidate18283189748127401278398129381928309128390128390123182938192389108319283018409128490",
-      candidate
-    );
+    if (handleChkSelection) {
+      handleChkSelection(candidate);
+    }
   };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
