@@ -3,9 +3,9 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AiOutlineSend } from "react-icons/ai";
-import { CiLocationArrow1 } from "react-icons/ci";
 
+// import { AiOutlineSend } from "react-icons/ai";
+// import { CiLocationArrow1 } from "react-icons/ci";
 import { Card } from "../..";
 
 export interface IChatSimple {
@@ -87,43 +87,43 @@ export const ChatSimple = ({
     }
   }, [chatN]);
 
-  const currentTime = () => {
-    // Get current date
-    const now: Date = new Date();
+  // const currentTime = () => {
+  //   // Get current date
+  //   const now: Date = new Date();
 
-    // Get hours
-    let hours: number = now.getHours();
+  //   // Get hours
+  //   let hours: number = now.getHours();
 
-    // Create a string for the period of the day
-    const period: string = hours >= 12 ? "PM" : "AM";
+  //   // Create a string for the period of the day
+  //   const period: string = hours >= 12 ? "PM" : "AM";
 
-    // Convert hours to 12-hour format
-    hours = hours % 12;
-    // The hour '0' should be '12'
-    hours = hours ? hours : 12;
+  //   // Convert hours to 12-hour format
+  //   hours = hours % 12;
+  //   // The hour '0' should be '12'
+  //   hours = hours ? hours : 12;
 
-    // Get minutes
-    const minutes: number = now.getMinutes();
+  //   // Get minutes
+  //   const minutes: number = now.getMinutes();
 
-    // Pad minutes with a zero (if less than 10)
-    const minutesFormatted: string =
-      minutes < 10 ? "0" + minutes.toString() : minutes.toString();
+  //   // Pad minutes with a zero (if less than 10)
+  //   const minutesFormatted: string =
+  //     minutes < 10 ? "0" + minutes.toString() : minutes.toString();
 
-    // Create the time string
-    const time: string =
-      hours.toString() + ":" + minutesFormatted + " " + period;
+  //   // Create the time string
+  //   const time: string =
+  //     hours.toString() + ":" + minutesFormatted + " " + period;
 
-    return time;
-  };
+  //   return time;
+  // };
 
   return (
     <>
-      <div className=" mx-auto flex h-full min-w-[500px] flex-col items-center  pb-16 xl:w-2/4 xl:items-stretch 2xl:pb-0">
+      <div className="flex h-full flex-col justify-between 2xl:pb-0">
         <div className="h-[calc(100%-38px)] py-4">
           <Card
             border
             shadow
-            className="h-full w-full  overflow-scroll  bg-white "
+            className="scrollbar-hide h-full overflow-y-scroll bg-white"
           >
             <div
               ref={componentRef}
@@ -149,13 +149,15 @@ export const ChatSimple = ({
                               "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                             )}
                           >
-                            <div className=" flex flex-col">
+                            <div
+                              className={classNames(
+                                chat.user === "01" ? "text-start" : "text-end"
+                              )}
+                            >
                               <div>
                                 {chat.user !== "01" && (
                                   <>
-                                    {currentTime()}
-
-                                    <span className="text-deepBlack ml-2 text-xs  font-extrabold">
+                                    <span className="text-deepBlack ml-2 text-xs font-extrabold">
                                       {currentUser?.discordName}
                                     </span>
                                   </>
@@ -163,7 +165,7 @@ export const ChatSimple = ({
 
                                 {chat.user !== "02" && (
                                   <>
-                                    <span className="text-forestGreen mr-1 text-xs font-extrabold">
+                                    <span className="text-forestGreen text-xs font-extrabold">
                                       Eden
                                     </span>
                                   </>
@@ -175,7 +177,7 @@ export const ChatSimple = ({
                                   chat.user === "01"
                                     ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
                                     : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-sm xl:text-[16px]"
+                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-xs"
                                 )}
                               >
                                 {chat.message}
@@ -185,7 +187,7 @@ export const ChatSimple = ({
                           <img
                             src={Users[chat.user].img}
                             alt="My profile"
-                            className="order-1 h-12 w-12 rounded-full"
+                            className="order-1 h-8 w-8 rounded-full"
                           />
                         </div>
                       </div>

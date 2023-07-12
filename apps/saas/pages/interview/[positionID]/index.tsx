@@ -27,7 +27,7 @@ import {
 import { AiOutlineLock } from "react-icons/ai";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
-import type { NextPageWithLayout } from "../_app";
+import type { NextPageWithLayout } from "../../_app";
 
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
@@ -113,7 +113,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-5xl overflow-y-scroll rounded-none pt-4">
+      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4">
         {currentUser && (
           <div className="h-full w-full">
             <div className="absolute left-0 top-0 w-full">
@@ -125,11 +125,11 @@ const HomePage: NextPageWithLayout = () => {
                 label={"cv"}
               >
                 <UploadCVContainer
-                  titleRole={""}
                   setTitleRole={setTitleRole}
                   setTopSkills={setTopSkills}
                   setContent={setContent}
                   handleCvEnd={handleCvEnd}
+                  position={findPositionData?.findPosition}
                 />
               </WizardStep>
               <WizardStep label={"welcome"}>
@@ -194,12 +194,12 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  const url = ctx.req.url?.replace("/", "");
+  const url = ctx.req.url;
 
   if (!session) {
     return {
       redirect: {
-        destination: `/login?redirect=${url}`,
+        destination: `/?redirect=${url}`,
         permanent: false,
       },
     };
@@ -211,19 +211,19 @@ export async function getServerSideProps(ctx: {
 }
 
 interface UploadCVContainerProps {
-  titleRole: string;
   setTitleRole: Dispatch<SetStateAction<string>>;
   setTopSkills: Dispatch<SetStateAction<any>>;
   setContent: Dispatch<SetStateAction<any>>;
   handleCvEnd: () => void;
+  position: Position;
 }
 
 const UploadCVContainer = ({
-  titleRole,
   setTitleRole,
   setTopSkills,
   setContent,
   handleCvEnd,
+  position,
 }: UploadCVContainerProps) => {
   const router = useRouter();
   const { positionID } = router.query;
@@ -246,16 +246,20 @@ const UploadCVContainer = ({
 
   return (
     <div className="">
-      <section className="mb-2 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
+      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
         <h3 className="mb-4 text-center text-lg font-medium">
           Hey {currentUser?.discordName}!
         </h3>
         <p className="mb-4 text-center">
-          Congratulations! You&apos;ve Been Selected To
+          Congratulations! You&apos;ve been selected to
           <br />
-          complete A First interview with <strong>Tesla</strong>
-          <br />
-          For the {titleRole ? <strong>{titleRole}</strong> : null} Role
+          do a first interview with <strong>{position?.company?.name}</strong>
+          {position?.name ? (
+            <>
+              <br />
+              for the <strong>{position?.name}</strong> role
+            </>
+          ) : null}
         </p>
         <CVUploadGPT
           onDataReceived={handleDataFromCVUploadGPT}
@@ -263,14 +267,40 @@ const UploadCVContainer = ({
           positionID={positionID}
         />
       </section>
-      <section className="grid h-[50vh] grid-cols-3 gap-2">
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4"></div>
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4"></div>
+      <section className="grid h-[50vh] grid-cols-3 gap-6">
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-center text-lg font-semibold">
-            You x {"[Company name]"}
+          <h3 className="text-forestGreen mb-4 text-center text-2xl font-semibold">
+            Role Description
           </h3>
-          <p className="mb-8 text-center text-gray-500">
+          <ul className="list-disc pl-4">
+            {position?.positionsRequirements?.roleDescription
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
+          </ul>
+        </div>
+        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+          <h3 className="text-forestGreen mb-4 text-center text-2xl font-semibold">
+            Benefits & Perks
+          </h3>
+          <ul className="list-disc pl-4">
+            {position?.positionsRequirements?.benefits
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
+          </ul>
+        </div>
+        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+          <h3 className="text-forestGreen text-center text-2xl font-semibold">
+            You x {position?.company?.name}
+          </h3>
+          <p className="mb-4 text-center text-gray-500">
             <AiOutlineLock className="mr-2 inline-block" />
             Upload your CV to unlock it
           </p>
@@ -331,9 +361,11 @@ const ApplicationStepContainer = ({
 
   return (
     <div className="grid h-full grid-cols-12 gap-6">
-      <section className="col-span-3">
+      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
         <div className="mb-8">
-          <h3 className="text-lg font-semibold">Your top skills:</h3>
+          <h3 className="text-lg font-semibold text-gray-400">
+            Your top skills:
+          </h3>
           <div>
             {topSkills !== null &&
               topSkills.map((skill: any, index: number) => (
@@ -348,8 +380,8 @@ const ApplicationStepContainer = ({
           </div>
         </div>
         <div className="mb-8">
-          <h3 className="text-lg font-semibold">Salary range:</h3>
-          <p>
+          <h3 className="text-lg font-semibold text-gray-400">Salary range:</h3>
+          <p className="text-xl font-medium">
             ${60000} - ${90000}
           </p>
         </div>
@@ -382,73 +414,79 @@ const ApplicationStepContainer = ({
           </div>
         </div>
       </section>
-      <section className="relative col-span-6 h-full overflow-y-scroll rounded-md bg-white p-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="80px"
-          height="80px"
-          viewBox="0 0 24 24"
-          className="mx-auto"
-          style={{
-            fill: "rgba(215, 254, 109, 1)",
-            transform: "",
-            msFilter: "",
-          }}
-        >
-          <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
-        </svg>
-        <h2 className="mb-8 text-center text-2xl font-medium">
-          Looking great!
-        </h2>
-        {position?.name ? (
-          <>
-            <p className="text-center">Your probability of passing is:</p>
-            {content.matchPercentage &&
-              (content.matchPercentage > 50 ? (
-                <p className="text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
-              ) : (
-                <p className="text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
-              ))}
-            <p className="mb-4 text-center text-gray-400">
-              Rock this interview and increase your chace of passing
-            </p>
+      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll rounded-md bg-white">
+        <div className="scrollbar-hide h-full overflow-y-scroll p-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="80px"
+            height="80px"
+            viewBox="0 0 24 24"
+            className="mx-auto"
+            style={{
+              fill: "rgba(215, 254, 109, 1)",
+              transform: "",
+              msFilter: "",
+            }}
+          >
+            <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
+          </svg>
+          <h2 className="mb-4 text-center text-2xl font-medium">
+            Looking great!
+          </h2>
+          {position?.name ? (
+            <>
+              <p className="text-center">Your probability of passing is:</p>
+              {content.matchPercentage &&
+                (content.matchPercentage > 50 ? (
+                  <p className="mb-4 text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
+                ) : (
+                  <p className="mb-4 text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
+                ))}
 
-            <section>
-              <div className="px-8">
-                <h3 className="text-lg font-semibold">Strong suit:</h3>
-                <p className="mb-4 whitespace-pre-wrap">{content.strongFit}</p>
-              </div>
-              <div className="px-8">
-                <h3 className="text-lg font-semibold">Areas to improve:</h3>
-                <p className="mb-4 whitespace-pre-wrap">
-                  {content.improvementPoints}
-                </p>
-              </div>
-            </section>
-
-            <div className="absolute bottom-0 left-0 flex w-full justify-center px-4 py-2 text-xs text-gray-500 ">
-              <input type="checkbox" className="mr-3" />
-              <p>
-                I acknowledge That my CV & responses will be stored and shared
-                by Eden
-                <span className="mx-1 text-red-600">*</span>
-              </p>
-            </div>
-          </>
-        ) : null}
+              <section className="h-[42vh] overflow-y-scroll">
+                <div className="px-8">
+                  <h3 className="text-forestGreen text-lg font-semibold">
+                    Strong suit:
+                  </h3>
+                  <p className="mb-4 whitespace-pre-wrap">
+                    {content.strongFit}
+                  </p>
+                </div>
+                <div className="px-8">
+                  <h3 className="text-forestGreen text-lg font-semibold">
+                    Areas to improve:
+                  </h3>
+                  <p className="mb-8 whitespace-pre-wrap">
+                    {content.improvementPoints}
+                  </p>
+                </div>
+              </section>
+            </>
+          ) : null}
+        </div>
+        <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-md bg-white px-4 py-2 text-xs text-gray-500 ">
+          <input type="checkbox" className="mr-3" />
+          <p>
+            I acknowledge That my CV & responses will be stored and shared by
+            Eden
+            <span className="mx-1 text-red-600">*</span>
+          </p>
+        </div>
       </section>
-      <section className="col-span-3">
+      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
         <div className="mb-8">
-          <h3 className="text-lg font-semibold">What you will get:</h3>
-          <div>
-            <h3 className="text-lg font-semibold">Growth:</h3>
-            <p className="mb-4 whitespace-pre-wrap">{content.growthAreas}</p>
+          <h3 className="mb-2 text-lg font-semibold text-gray-400">
+            What you will get:
+          </h3>
+          <div className="mb-4 rounded-md bg-white p-2">
+            <h3 className="text-lg font-semibold text-gray-400">Growth:</h3>
+            <p className="whitespace-pre-wrap">{content.growthAreas}</p>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold">Personal experience:</h3>
-            <p className="mb-4 whitespace-pre-wrap">
-              {content.experienceAreas}
-            </p>
+          <div className="mb-4 rounded-md bg-white p-2">
+            <h3 className="text-lg font-semibold text-gray-400">
+              Personal experience:
+            </h3>
+            <p className="whitespace-pre-wrap">{content.experienceAreas}</p>
           </div>
         </div>
       </section>
@@ -463,12 +501,19 @@ const FIND_POSITION = gql`
     findPosition(fields: $fields) {
       _id
       name
+      company {
+        name
+      }
       questionsToAsk {
         bestAnswer
         question {
           _id
           content
         }
+      }
+      positionsRequirements {
+        roleDescription
+        benefits
       }
     }
   }
@@ -630,7 +675,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-accentColor rounded-lg p-1 text-center font-medium">
+              <p className="bg-cottonPink text-forestGreen rounded-sm p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>
@@ -696,7 +741,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   const [updateMember] = useMutation(UPDATE_MEMBER, {
     onCompleted({ updateMember }: Mutation) {
       if (!updateMember) console.log("updateMember is null");
-      router.push("/thanks");
+      router.push(`/interview/${router.query.positionID}/submitted`);
       setSubmitting(false);
     },
     onError: () => {

@@ -12,7 +12,7 @@ import {
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
-  ProgressBarGeneric,
+  // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
   TextArea,
@@ -508,12 +508,12 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  const url = ctx.req.url?.replace("/", "");
+  const url = ctx.req.url;
 
   if (!session) {
     return {
       redirect: {
-        destination: `/login?redirect=${url}`,
+        destination: `/?redirect=${url}`,
         permanent: false,
       },
     };
@@ -621,14 +621,14 @@ const InterviewEdenAIContainer = ({
 
   const [conversationID, setConversationID] = useState<String>("");
 
-  // console.log("positionID = ", positionID);
+  console.log("findPositionData = ", findPositionData);
 
   const [experienceTypeID] = useState<string>("");
 
   // eslint-disable-next-line no-unused-vars
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  // console.log("chatN = ", chatN);
+  console.log("chatN = ", chatN);
 
   // console.log("conversationID = ", conversationID);
 
@@ -652,7 +652,7 @@ const InterviewEdenAIContainer = ({
   return (
     <div className="w-full">
       <div className="relative h-[68vh]">
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <ProgressBarGeneric
             color="accentColor"
             progress={
@@ -662,11 +662,11 @@ const InterviewEdenAIContainer = ({
               findPositionData?.findPosition?.questionsToAsk.length
             }
           />
-        </div>
+        </div> */}
         {
           <InterviewEdenAI
             key={experienceTypeID}
-            aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
+            aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY}
             experienceTypeID={experienceTypeID}
             handleChangeChat={(_chat: any) => {
               setChatN(_chat);
@@ -674,7 +674,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-accentColor rounded-lg p-1 text-center font-medium">
+              <p className=" bg-cottonPink text-forestGreen rounded-lg p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>

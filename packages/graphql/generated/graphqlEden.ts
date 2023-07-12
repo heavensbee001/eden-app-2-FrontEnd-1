@@ -1142,6 +1142,7 @@ export type Query = {
   findTeams?: Maybe<Array<Maybe<Team>>>;
   findUserTalentListPosition?: Maybe<TalentListType>;
   interviewEdenAI?: Maybe<InterviewEdenAiOutput>;
+  interviewEdenGPT4only?: Maybe<InterviewEdenGpt4onlyOutput>;
   lurkersContributorsQuery?: Maybe<LurkersAndContributors>;
   matchMembersToProject?: Maybe<Array<Maybe<MatchMembersToProjectOutput>>>;
   matchMembersToProjectRole?: Maybe<
@@ -1476,6 +1477,10 @@ export type QueryFindUserTalentListPositionArgs = {
 
 export type QueryInterviewEdenAiArgs = {
   fields?: InputMaybe<InterviewEdenAiInput>;
+};
+
+export type QueryInterviewEdenGpt4onlyArgs = {
+  fields?: InputMaybe<InterviewEdenGpt4onlyInput>;
 };
 
 export type QueryMatchMembersToProjectArgs = {
@@ -2064,6 +2069,7 @@ export type AskEdenUserPositionInput = {
   conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
+  whatToAsk?: InputMaybe<WhatToAskEnum>;
 };
 
 export type AskEdenUserPositionOutput = {
@@ -3280,6 +3286,21 @@ export type InterviewEdenAiOutput = {
   unansweredQuestionsArr?: Maybe<Array<Maybe<UnansweredQuestionsType>>>;
 };
 
+export type InterviewEdenGpt4onlyInput = {
+  conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+  positionTrainEdenAI?: InputMaybe<Scalars["Boolean"]>;
+  useMemory?: InputMaybe<Scalars["Boolean"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type InterviewEdenGpt4onlyOutput = {
+  __typename?: "interviewEdenGPT4onlyOutput";
+  conversationID?: Maybe<Scalars["ID"]>;
+  date?: Maybe<Scalars["Date"]>;
+  reply?: Maybe<Scalars["String"]>;
+};
+
 export type InterviewQuestionCreationUserInput = {
   cvContent?: InputMaybe<Scalars["String"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
@@ -3740,9 +3761,11 @@ export type PositionsAppliedType = {
 
 export type PositionsRequirementsType = {
   __typename?: "positionsRequirementsType";
+  benefits?: Maybe<Array<Maybe<Scalars["String"]>>>;
   content?: Maybe<Scalars["String"]>;
   originalContent?: Maybe<Scalars["String"]>;
   positionPreparationMemory?: Maybe<Scalars["Boolean"]>;
+  roleDescription?: Maybe<Array<Maybe<Scalars["String"]>>>;
 };
 
 export type PrefPastSearch = {
@@ -4500,6 +4523,11 @@ export type Wh_K_ArrType = {
   numPath?: Maybe<Scalars["Float"]>;
   wh_sum?: Maybe<Scalars["Float"]>;
 };
+
+export enum WhatToAskEnum {
+  CandidateOfCompany = "CANDIDATE_OF_COMPANY",
+  Company = "COMPANY",
+}
 
 export interface PossibleTypesResultData {
   possibleTypes: {

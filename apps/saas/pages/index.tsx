@@ -1,6 +1,10 @@
 import { SEO } from "@eden/package-ui";
 import Lottie from "lottie-react";
-import type { NextPage } from "next";
+import type {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
@@ -8,7 +12,9 @@ import { signIn } from "next-auth/react";
 import animationData2 from "../public/lotties/select-candidate.json";
 import animationData1 from "../public/lotties/working-laptop.json";
 
-const HomePage: NextPage = () => {
+const HomePage: NextPage = ({
+  redirect,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <SEO title={`Eden protocol`} />
@@ -17,14 +23,17 @@ const HomePage: NextPage = () => {
       </Head>
       <div className={`min-h-screen overflow-hidden bg-[#fcf0f6]`}>
         <div className="mx-auto max-w-4xl py-8">
-          <h2 className="text-bold text-center text-3xl text-[#00462C]">
+          <h1 className="text-bold text-forestGreen mb-4 flex items-center justify-center text-center text-6xl">
             <Image
               src="/eden-logo.png"
               alt=""
               width={60}
               height={60}
-              className="mr-4 inline-block"
+              className="mb-1 mr-4 inline-block"
             />
+            Eden
+          </h1>
+          <h2 className="text-bold text-forestGreen text-center text-2xl">
             Talk to less, but more of the right candidates.
           </h2>
           <section className="mb-4 grid grid-cols-12">
@@ -37,9 +46,9 @@ const HomePage: NextPage = () => {
             </div>
             <div className="col-span-4 flex items-center justify-center">
               <button
-                className="hover:text-[#00462C] flex h-10 w-32 items-center justify-center bg-accentColor hover:bg-white"
+                className="hover:text-forestGreen bg-accentColor flex h-10 w-32 items-center justify-center hover:bg-white"
                 onClick={() => {
-                  signIn("google");
+                  signIn("google", { callbackUrl: redirect });
                 }}
               >
                 login
@@ -57,21 +66,21 @@ const HomePage: NextPage = () => {
             <div className="grid grid-cols-12 gap-12">
               <div className="col-span-4">
                 <div>
-                  <h3 className="mb-4 text-center text-4xl text-[#00462C]">
+                  <h3 className="text-forestGreen mb-4 text-center text-4xl">
                     Align
                   </h3>
                 </div>
               </div>
               <div className="col-span-4">
                 <div>
-                  <h3 className="mb-4 text-center text-4xl text-[#00462C]">
+                  <h3 className="text-forestGreen mb-4 text-center text-4xl">
                     Evaluate
                   </h3>
                 </div>
               </div>
               <div className="col-span-4">
                 <div>
-                  <h3 className="mb-4 text-center text-4xl text-[#00462C]">
+                  <h3 className="text-forestGreen mb-4 text-center text-4xl">
                     Select
                   </h3>
                 </div>
@@ -128,6 +137,39 @@ const HomePage: NextPage = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  // const session = await getSession(ctx);
+
+  const { redirect } = ctx.query;
+
+  // let redirectUrl = "/";
+
+  // if (
+  //   redirect &&
+  //   typeof redirect === "string" &&
+  //   redirect.startsWith("_next")
+  // ) {
+  //   redirectUrl = "/";
+  // } else if (redirect && typeof redirect === "string") {
+  //   redirectUrl = redirect;
+  // }
+
+  // if (session) {
+  //   return {
+  //     redirect: {
+  //       destination: redirectUrl ? `/${redirectUrl}` : `/`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
+
+  return {
+    props: {
+      redirect: redirect || "",
+    },
+  };
 };
 
 export default HomePage;
