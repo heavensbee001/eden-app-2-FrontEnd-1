@@ -3,9 +3,9 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AiOutlineSend } from "react-icons/ai";
-import { CiLocationArrow1 } from "react-icons/ci";
 
+// import { AiOutlineSend } from "react-icons/ai";
+// import { CiLocationArrow1 } from "react-icons/ci";
 import { Card } from "../..";
 
 export interface IChatSimple {
@@ -77,7 +77,7 @@ export const ChatSimple = ({
     // );
   });
 
-  // console.log("chatN = ", chatN);
+  console.log("chatN = ", chatN.date);
 
   useEffect(() => {
     const lastMessage = document.querySelector(`.chat-message:last-child`);
@@ -87,11 +87,44 @@ export const ChatSimple = ({
     }
   }, [chatN]);
 
+  // const currentTime = () => {
+  //   // Get current date
+  //   const now: Date = new Date();
+
+  //   // Get hours
+  //   let hours: number = now.getHours();
+
+  //   // Create a string for the period of the day
+  //   const period: string = hours >= 12 ? "PM" : "AM";
+
+  //   // Convert hours to 12-hour format
+  //   hours = hours % 12;
+  //   // The hour '0' should be '12'
+  //   hours = hours ? hours : 12;
+
+  //   // Get minutes
+  //   const minutes: number = now.getMinutes();
+
+  //   // Pad minutes with a zero (if less than 10)
+  //   const minutesFormatted: string =
+  //     minutes < 10 ? "0" + minutes.toString() : minutes.toString();
+
+  //   // Create the time string
+  //   const time: string =
+  //     hours.toString() + ":" + minutesFormatted + " " + period;
+
+  //   return time;
+  // };
+
   return (
     <>
-      <div className="flex h-full flex-col justify-between  pb-16 2xl:pb-0">
-        <div className="h-[calc(100%-38px)] py-4 ">
-          <Card border shadow className="h-full overflow-scroll bg-white ">
+      <div className="flex h-full flex-col justify-between 2xl:pb-0">
+        <div className="h-[calc(100%-38px)] py-4">
+          <Card
+            border
+            shadow
+            className="h-full overflow-y-scroll scrollbar-hide bg-white"
+          >
             <div
               ref={componentRef}
               // className="h-full overflow-y-auto bg-white p-4"
@@ -106,65 +139,60 @@ export const ChatSimple = ({
                       <div className="chat-message p-2" key={index}>
                         <div
                           className={classNames(
-                            chat.user == "01" ? "" : "justify-end",
+                            chat.user === "01" ? "" : "justify-end",
                             "flex items-start"
                           )}
                         >
                           <div
                             className={classNames(
-                              chat.user == "01" ? "order-2" : "order-1",
+                              chat.user === "01" ? "order-2" : "order-1",
                               "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                             )}
                           >
-                            <span
-                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                            <div
                               className={classNames(
-                                chat.user == "01"
-                                  ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                  : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                                chat.user === "01" ? "text-start" : "text-end"
                               )}
                             >
-                              {chat.message}
-                            </span>
+                              <div>
+                                {chat.user !== "01" && (
+                                  <>
+                                    <span className="text-deepBlack ml-2 text-xs font-extrabold">
+                                      {currentUser?.discordName}
+                                    </span>
+                                  </>
+                                )}
+
+                                {chat.user !== "02" && (
+                                  <>
+                                    <span className="text-forestGreen text-xs font-extrabold">
+                                      Eden
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+
+                              <span
+                                className={classNames(
+                                  chat.user === "01"
+                                    ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                    : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-xs"
+                                )}
+                              >
+                                {chat.message}
+                              </span>
+                            </div>
                           </div>
                           <img
                             src={Users[chat.user].img}
                             alt="My profile"
-                            className="order-1 h-6 w-6 rounded-full"
+                            className="order-1 h-8 w-8 rounded-full"
                           />
                         </div>
                       </div>
-                      // <div key={index}>
-                      //   <div>
-                      //     <div className="flex items-center bg-green-600">
-                      //       <img
-                      //         src={Users[chat.user].img}
-                      //         alt="My profile"
-                      //         className="order-1 h-6 w-6 rounded-full "
-                      //       />
-                      //       <div
-                      //         className={classNames(
-                      //           chat.user == "01" ? "order-2" : "order-1",
-                      //           "mx-2 flex w-full  flex-col items-start space-y-2 text-xs"
-                      //         )}
-                      //       >
-                      //         <span
-                      //           // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                      //           className={classNames(
-                      //             chat.user == "01"
-                      //               ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                      //               : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                      //             "inline-block w-full whitespace-pre-wrap rounded-lg px-4 py-2"
-                      //           )}
-                      //         >
-                      //           {chat.message}
-                      //         </span>
-                      //       </div>
-                      //     </div>
-                      //   </div>
-                      // </div>
                     ))}
+
                     {chatN[chatN.length - 1].user == "02" ? (
                       <div className="chat-message flex items-center space-x-[5px] rounded-full pl-2">
                         <div
@@ -192,18 +220,18 @@ export const ChatSimple = ({
         <Card
           border
           shadow
-          className="flex items-center justify-between bg-white px-3"
+          className="flex w-full items-center justify-between  bg-white px-3"
         >
-          <input
-            type="text"
-            className="max-height: 200px; height: 24px; overflow-y: hidden; m-0 w-full resize-none border-0 bg-transparent  py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"
+          <textarea
+            className="max-height: 200px; height: 24px; overflow-y: hidden; min-w-11/12 m-0 w-full resize-none border-0 bg-transparent   py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"
             placeholder="Type your message here..."
             value={inputMessage}
+            rows={inputMessage.length < 50 ? 1 : 4}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={(e) => {
               if (inputMessage.length > 0 && e.code == "Enter") {
                 handleSentMessage(inputMessage, "02");
-
+                e.preventDefault();
                 setInputMessage("");
               }
             }}
@@ -234,7 +262,7 @@ export const ChatSimple = ({
                 </svg>
               </div>
             ) : (
-              <div className="bg-soilGreen-700 rounded-lg p-2  text-white">
+              <div className="bg-cottonPink  rounded-lg  p-2">
                 <svg
                   width="24px"
                   height="24px"
@@ -246,7 +274,7 @@ export const ChatSimple = ({
                     fill-rule="evenodd"
                     clip-rule="evenodd"
                     d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
-                    fill="#FFFFFF"
+                    fill="#00462C"
                   />
                 </svg>
               </div>

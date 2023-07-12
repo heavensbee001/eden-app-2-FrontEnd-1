@@ -27,6 +27,11 @@ export const SAVE_CV_TO_USER = gql`
       titleRole
       mainSkills
       cvSummary
+      matchPercentage
+      strongFit
+      improvementPoints
+      growthAreas
+      experienceAreas
     }
   }
 `;

@@ -17,10 +17,17 @@ import {
   WizardStep,
 } from "@eden/package-ui";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { AiOutlineLock } from "react-icons/ai";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
-import type { NextPageWithLayout } from "../_app";
+import type { NextPageWithLayout } from "../../_app";
 
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
@@ -29,8 +36,21 @@ const HomePage: NextPageWithLayout = () => {
   const [interviewEnded, setInterviewEnded] = useState(false);
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
-  const [titleRole, setTitleRole] = useState(null);
-  const [topSkills, setTopSkills] = useState([]);
+  const [titleRole, setTitleRole] = useState<string>("");
+  const [topSkills, setTopSkills] = useState<any[]>([]);
+  const [content, setContent] = useState<{
+    matchPercentage: number | null;
+    improvementPoints: string | null;
+    strongFit: string | null;
+    growthAreas: string | null;
+    experienceAreas: string | null;
+  }>({
+    matchPercentage: null,
+    improvementPoints: null,
+    strongFit: null,
+    growthAreas: null,
+    experienceAreas: null,
+  });
 
   console.log("cvEnded = ", cvEnded);
   const {
@@ -46,12 +66,12 @@ const HomePage: NextPageWithLayout = () => {
   });
 
   const handleCvEnd = () => {
-    console.log("cv end");
+    // console.log("cv end");
 
     setCvEnded(true);
   };
   const handleInterviewEnd = () => {
-    console.log("interview end");
+    // console.log("interview end");
 
     setInterviewEnded(true);
   };
@@ -74,28 +94,6 @@ const HomePage: NextPageWithLayout = () => {
     }
   };
 
-  const handleDataFromCVUploadGPT = (data: any) => {
-    const role = data.saveCVtoUser.titleRole;
-    const skills = data.saveCVtoUser.mainSkills;
-
-    setTitleRole(role);
-    setTopSkills(skills);
-  };
-
-  const randomPercentage = () => {
-    const min = 5;
-    const max = 100;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    console.log("randomNumber ", randomNumber);
-
-    console.log("randomNumber > 50", randomNumber > 50);
-
-    return randomNumber;
-  };
-
-  const percentage = randomPercentage();
-
   return (
     <>
       <Head>
@@ -115,12 +113,9 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <Card
-        className="mx-auto mt-3 h-[88vh] w-full max-w-5xl overflow-y-scroll bg-white"
-        shadow
-      >
+      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl px-4 overflow-y-scroll rounded-none pt-4">
         {currentUser && (
-          <div className="h-full w-full p-8">
+          <div className="h-full w-full">
             <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
             </div>
@@ -129,135 +124,21 @@ const HomePage: NextPageWithLayout = () => {
                 // nextDisabled={!cvEnded}
                 label={"cv"}
               >
-                <section className="flex h-full flex-col items-center justify-center">
-                  <h3 className="mb-8 text-center text-lg font-medium">
-                    Hey {currentUser?.discordName}!
-                  </h3>
-                  <p className="mb-4 text-center">
-                    Congratulations! You&apos;ve Been Selected To
-                    <br />
-                    complete A First interview with <strong>Tesla</strong>
-                    <br />
-                    For the {titleRole ? (
-                      <strong>{titleRole}</strong>
-                    ) : null}{" "}
-                    Role
-                  </p>
-                  <CVUploadGPT
-                    onDataReceived={handleDataFromCVUploadGPT}
-                    handleEnd={handleCvEnd}
-                    positionID={positionID}
-                  />
-
-                  <p className="mt-4  flex ">
-                    AI
-                    <span className="mx-[4px] flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="gold"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="h-[12px] w-[12px]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                        />
-                      </svg>
-                      Magic
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="gold"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="h-[12px] w-[12px]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                        />
-                      </svg>
-                    </span>
-                    Takes 30 Seconds
-                  </p>
-                </section>
+                <UploadCVContainer
+                  setTitleRole={setTitleRole}
+                  setTopSkills={setTopSkills}
+                  setContent={setContent}
+                  handleCvEnd={handleCvEnd}
+                  position={findPositionData?.findPosition}
+                />
               </WizardStep>
               <WizardStep label={"welcome"}>
-                <section className="flex h-full flex-col items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="200"
-                    height="200"
-                    viewBox="0 0 24 24"
-                    style={{
-                      fill: "rgba(215, 254, 109, 1)",
-                      transform: "",
-                      msFilter: "",
-                    }}
-                  >
-                    <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
-                  </svg>
-                  <h2 className="mb-8 text-2xl font-medium">
-                    Good to know you, {currentUser?.discordName}!
-                  </h2>
-                  {findPositionData?.findPosition?.name ? (
-                    <>
-                      <p>Impressive background in {titleRole}</p>
-                      <br />
-                      <div className="flex flex-col items-center space-y-2">
-                        <p>Your main skills:</p>
-                        <div>
-                          {topSkills !== null &&
-                            topSkills.map((skill: any, index: number) => (
-                              <Badge
-                                className="text-white"
-                                key={index}
-                                text={skill}
-                                colorRGB="168, 85, 247"
-                                cutText={20}
-                              />
-                            ))}
-                        </div>
-                      </div>
-                      <br />
-                      <p>Probability Of Passing:</p>
-                      {percentage > 50 ? (
-                        <p className="text-[50px] text-lime-400">
-                          {`${percentage}%`}
-                        </p>
-                      ) : (
-                        <p className="text-[50px] text-red-600">
-                          {`${percentage}%`}
-                        </p>
-                      )}
-                      <p className="text-gray-400">
-                        Rock this interview and increase your
-                      </p>
-                      <p className="text-gray-400">
-                        chance of passing by up to 25%
-                      </p>
-                      <br />
-                      <br />
-
-                      <div className="flex justify-center ">
-                        <div className="flex">
-                          <input type="checkbox" />
-                          <p className="mx-1 text-red-600">*</p>
-                        </div>
-                        <p>
-                          I acknowledge That my CV & responses will be stored
-                          and shared with Tesla Inc
-                        </p>
-                      </div>
-                    </>
-                  ) : (
-                    <p> </p>
-                  )}
-                </section>
+                <ApplicationStepContainer
+                  topSkills={topSkills}
+                  titleRole={titleRole}
+                  position={findPositionData?.findPosition}
+                  content={content}
+                />
               </WizardStep>
               {/* <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
@@ -313,12 +194,12 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  const url = ctx.req.url?.replace("/", "");
+  const url = ctx.req.url;
 
   if (!session) {
     return {
       redirect: {
-        destination: `/login?redirect=${url}`,
+        destination: `/?redirect=${url}`,
         permanent: false,
       },
     };
@@ -329,6 +210,290 @@ export async function getServerSideProps(ctx: {
   };
 }
 
+interface UploadCVContainerProps {
+  setTitleRole: Dispatch<SetStateAction<string>>;
+  setTopSkills: Dispatch<SetStateAction<any>>;
+  setContent: Dispatch<SetStateAction<any>>;
+  handleCvEnd: () => void;
+  position: Position;
+}
+
+const UploadCVContainer = ({
+  setTitleRole,
+  setTopSkills,
+  setContent,
+  handleCvEnd,
+  position,
+}: UploadCVContainerProps) => {
+  const router = useRouter();
+  const { positionID } = router.query;
+  const { currentUser } = useContext(UserContext);
+
+  const handleDataFromCVUploadGPT = (data: any) => {
+    const role = data.saveCVtoUser.titleRole;
+    const skills = data.saveCVtoUser.mainSkills;
+
+    setTitleRole(role);
+    setTopSkills(skills);
+    setContent({
+      matchPercentage: data.saveCVtoUser.matchPercentage,
+      improvementPoints: data.saveCVtoUser.improvementPoints,
+      strongFit: data.saveCVtoUser.strongFit,
+      growthAreas: data.saveCVtoUser.growthAreas,
+      experienceAreas: data.saveCVtoUser.experienceAreas,
+    });
+  };
+
+  return (
+    <div className="">
+      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
+        <h3 className="mb-4 text-center text-lg font-medium">
+          Hey {currentUser?.discordName}!
+        </h3>
+        <p className="mb-4 text-center">
+          Congratulations! You&apos;ve been selected to
+          <br />
+          do a first interview with <strong>{position?.company?.name}</strong>
+          {position?.name ? (
+            <>
+              <br />
+              for the <strong>{position?.name}</strong> role
+            </>
+          ) : null}
+        </p>
+        <CVUploadGPT
+          onDataReceived={handleDataFromCVUploadGPT}
+          handleEnd={handleCvEnd}
+          positionID={positionID}
+        />
+      </section>
+      <section className="grid h-[50vh] grid-cols-3 gap-6">
+        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-forestGreen">
+            Role Description
+          </h3>
+          <ul className="list-disc pl-4">
+            {position?.positionsRequirements?.roleDescription
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
+          </ul>
+        </div>
+        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+          <h3 className="mb-4 text-center text-2xl font-semibold text-forestGreen">
+            Benefits & Perks
+          </h3>
+          <ul className="list-disc pl-4">
+            {position?.positionsRequirements?.benefits
+              ?.slice(0, 10)
+              .map((item, index) => (
+                <li key={index} className="mb-2">
+                  {item}
+                </li>
+              ))}
+          </ul>
+        </div>
+        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+          <h3 className="text-center text-2xl font-semibold text-forestGreen">
+            You x {position?.company?.name}
+          </h3>
+          <p className="mb-4 text-center text-gray-500">
+            <AiOutlineLock className="mr-2 inline-block" />
+            Upload your CV to unlock it
+          </p>
+          <ul className="list-disc pl-4">
+            <li className="mb-2">Probability of landing this job</li>
+            <li className="mb-2">What to improve to maximeze your chances</li>
+            <li className="mb-2">
+              Ask specific questions about company, opportunity & culture in
+              real time chat
+            </li>
+            <li className="mb-2">Salary range + equity benefits</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+interface ApplicationStepContainerProps {
+  titleRole: string;
+  topSkills: any[];
+  position: Position;
+  content: {
+    matchPercentage: number | null;
+    improvementPoints: string | null;
+    strongFit: string | null;
+    growthAreas: string | null;
+    experienceAreas: string | null;
+  };
+}
+
+const ApplicationStepContainer = ({
+  // eslint-disable-next-line no-unused-vars
+  titleRole,
+  // eslint-disable-next-line no-unused-vars
+  topSkills,
+  position,
+  content,
+}: ApplicationStepContainerProps) => {
+  // const router = useRouter();
+  // const { currentUser } = useContext(UserContext);
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const today = new Date();
+
+  return (
+    <div className="grid h-full grid-cols-12 gap-6">
+      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-400">
+            Your top skills:
+          </h3>
+          <div>
+            {topSkills !== null &&
+              topSkills.map((skill: any, index: number) => (
+                <Badge
+                  className="text-white"
+                  key={index}
+                  text={skill}
+                  colorRGB="168, 85, 247"
+                  cutText={20}
+                />
+              ))}
+          </div>
+        </div>
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-400">Salary range:</h3>
+          <p className="text-xl font-medium">
+            ${60000} - ${90000}
+          </p>
+        </div>
+        <div>
+          <div>
+            <p>Recruiting + Eden AI chat</p>
+            <p className="text-gray-500">{`${
+              monthNames[today.getMonth()]
+            } ${today.getDate()}`}</p>
+          </div>
+          <div>
+            <p>Hiring manager interviews</p>
+            <p className="text-gray-500">{`${
+              monthNames[
+                new Date(new Date().setDate(today.getDate() + 3)).getMonth()
+              ]
+            } ${new Date(
+              new Date().setDate(today.getDate() + 3)
+            ).getDate()}`}</p>
+          </div>
+          <div>
+            <p>Onboarding</p>
+            <p className="text-gray-500">{`${
+              monthNames[
+                new Date(new Date().setDate(today.getDate() + 14)).getMonth()
+              ]
+            } ${new Date(
+              new Date().setDate(today.getDate() + 14)
+            ).getDate()}`}</p>
+          </div>
+        </div>
+      </section>
+      <section className="relative col-span-6 max-h-[calc(88vh-5rem)] overflow-y-scroll h-full rounded-md bg-white">
+        <div className="p-4 h-full overflow-y-scroll scrollbar-hide">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="80px"
+            height="80px"
+            viewBox="0 0 24 24"
+            className="mx-auto"
+            style={{
+              fill: "rgba(215, 254, 109, 1)",
+              transform: "",
+              msFilter: "",
+            }}
+          >
+            <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
+          </svg>
+          <h2 className="mb-4 text-center text-2xl font-medium">
+            Looking great!
+          </h2>
+          {position?.name ? (
+            <>
+              <p className="text-center">Your probability of passing is:</p>
+              {content.matchPercentage &&
+                (content.matchPercentage > 50 ? (
+                  <p className="mb-4 text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
+                ) : (
+                  <p className="mb-4 text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
+                ))}
+
+              <section className="h-[42vh] overflow-y-scroll">
+                <div className="px-8">
+                  <h3 className="text-lg text-forestGreen font-semibold">
+                    Strong suit:
+                  </h3>
+                  <p className="mb-4 whitespace-pre-wrap">
+                    {content.strongFit}
+                  </p>
+                </div>
+                <div className="px-8">
+                  <h3 className="text-lg text-forestGreen font-semibold">
+                    Areas to improve:
+                  </h3>
+                  <p className="mb-8 whitespace-pre-wrap">
+                    {content.improvementPoints}
+                  </p>
+                </div>
+              </section>
+            </>
+          ) : null}
+        </div>
+        <div className="absolute rounded-md bg-white bottom-0 left-0 flex w-full justify-center px-4 py-2 text-xs text-gray-500 ">
+          <input type="checkbox" className="mr-3" />
+          <p>
+            I acknowledge That my CV & responses will be stored and shared by
+            Eden
+            <span className="mx-1 text-red-600">*</span>
+          </p>
+        </div>
+      </section>
+      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold mb-2 text-gray-400">
+            What you will get:
+          </h3>
+          <div className="bg-white rounded-md mb-4 p-2">
+            <h3 className="text-lg font-semibold text-gray-400">Growth:</h3>
+            <p className="whitespace-pre-wrap">{content.growthAreas}</p>
+          </div>
+          <div className="bg-white rounded-md mb-4 p-2">
+            <h3 className="text-lg font-semibold text-gray-400">
+              Personal experience:
+            </h3>
+            <p className="whitespace-pre-wrap">{content.experienceAreas}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
 // ------- Interview Chat --------
 
 const FIND_POSITION = gql`
@@ -336,12 +501,19 @@ const FIND_POSITION = gql`
     findPosition(fields: $fields) {
       _id
       name
+      company {
+        name
+      }
       questionsToAsk {
         bestAnswer
         question {
           _id
           content
         }
+      }
+      positionsRequirements {
+        roleDescription
+        benefits
       }
     }
   }
@@ -503,7 +675,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-accentColor rounded-lg p-1 text-center font-medium">
+              <p className="bg-cottonPink text-forestGreen rounded-sm p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>
@@ -538,6 +710,7 @@ import { UPDATE_MEMBER } from "@eden/package-graphql";
 import {
   Members,
   Mutation,
+  Position,
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
 import { locations } from "@eden/package-ui/utils/locations";
@@ -568,7 +741,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   const [updateMember] = useMutation(UPDATE_MEMBER, {
     onCompleted({ updateMember }: Mutation) {
       if (!updateMember) console.log("updateMember is null");
-      router.push("/thanks");
+      router.push(`/interview/${router.query.positionID}/submitted`);
       setSubmitting(false);
     },
     onError: () => {

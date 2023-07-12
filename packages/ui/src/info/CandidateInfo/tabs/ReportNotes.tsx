@@ -76,6 +76,11 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
     return grade;
   };
 
+  console.log(
+    "candidate?.analysisCandidateEdenAI",
+    candidate?.analysisCandidateEdenAI
+  );
+
   return (
     <>
       {/* {member?.letterAndColor?.requirements?.letter && (
@@ -98,13 +103,13 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </p>
-            {candidate?.analysisCandidateEdenAI?.background?.content && (
+            {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
               <>
                 <hr className="mx-2 my-0 h-8 border-gray-400" />
                 <div className="">
                   <p className="text-lg font-bold">Eden First Impression 👀</p>
 
-                  {candidate?.analysisCandidateEdenAI?.background?.content}
+                  {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
                 </div>
               </>
             )}

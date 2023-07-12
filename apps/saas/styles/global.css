@@ -15,6 +15,16 @@
   }
 }
 
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-Moret;
+    font-weight: bold;
+  }
+}
+
 @layer components {
   .input-primary {
     @apply font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 my-2 flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent  focus:ring;

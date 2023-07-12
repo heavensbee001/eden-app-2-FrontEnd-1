@@ -23,6 +23,8 @@ import { FaChevronLeft } from "react-icons/fa";
 import { IoMdAdd, IoMdAddCircle } from "react-icons/io";
 import ReactTooltip from "react-tooltip";
 
+import { EdenAiLetter } from "../../components/EdenAiLetter";
+
 type NodeDisplay = {
   nameRelevantNode: string;
   nameOriginalNode: string;
@@ -66,7 +68,19 @@ export const CandidateInfo = ({
   qualified = false,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [letterType, setLetterType] =
+    useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
 
+  const handleRejectionLetter = () => {
+    setLetterType("rejection");
+    setIsOpen(!isOpen);
+  };
+
+  const handleSecondInterviewLetter = () => {
+    setLetterType("nextInterviewInvite");
+    setIsOpen(!isOpen);
+  };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
 
@@ -183,6 +197,9 @@ export const CandidateInfo = ({
   //   cutOffText =
   //     "On a mission to empower anyone anywhere to do meaningful work";
   // }
+
+  console.log("dataMember LLLLLLLLLLLL", dataMember);
+
   return (
     <>
       <div className="font-Inter absolute z-20 h-56 w-full flex-col bg-white text-center">
@@ -200,7 +217,9 @@ export const CandidateInfo = ({
               </h1>
               <div className="flex items-center  space-x-1 text-sm text-gray-400">
                 <p>{dataMember?.findMember?.location} </p>
-                <p> ({dataMember?.findMember?.timeZone})</p>
+                {dataMember?.findMember?.timeZone && (
+                  <p> ({dataMember?.findMember?.timeZone})</p>
+                )}
               </div>
 
               <div className="max-h-20 overflow-y-scroll">
@@ -278,17 +297,15 @@ export const CandidateInfo = ({
 
             {/* ------- reject button ------- */}
             <span
-              onClick={() => {
-                // reject
-              }}
               className="cursor-pointer text-xs"
               data-tip={"Reject gracefully"}
               data-for={`badgeTip-reject`}
             >
               <IoMdAdd
+                onClick={handleRejectionLetter}
                 size={28}
                 className="rotate-45 text-red-400"
-                onClick={handleRejectCandidate}
+                // onClick={handleRejectCandidate}
               />
               <ReactTooltip
                 id={`badgeTip-reject`}
@@ -300,14 +317,17 @@ export const CandidateInfo = ({
 
             {/* ------- schedule 2nd interview button ------- */}
             <span
-              onClick={() => {
-                // schedule 2nd interview
-              }}
               className="cursor-pointer text-xs"
               data-tip={"Schedule 2nd interview"}
               data-for={`badgeTip-schedule`}
             >
+              <EdenAiLetter
+                member={dataMember?.findMember}
+                isModalOpen={isOpen}
+                letterType={letterType}
+              />
               <BsCalendarPlus
+                onClick={handleSecondInterviewLetter}
                 size={25}
                 className="text-gray-600 hover:text-gray-500"
               />

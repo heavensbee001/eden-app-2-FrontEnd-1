@@ -508,12 +508,12 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  const url = ctx.req.url?.replace("/", "");
+  const url = ctx.req.url;
 
   if (!session) {
     return {
       redirect: {
-        destination: `/login?redirect=${url}`,
+        destination: `/?redirect=${url}`,
         permanent: false,
       },
     };
@@ -674,7 +674,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-accentColor rounded-lg p-1 text-center font-medium">
+              <p className="bg-cottonPink text-forestGreen rounded-sm p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>
