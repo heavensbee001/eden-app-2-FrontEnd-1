@@ -20,7 +20,7 @@ import {
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsCalendarPlus } from "react-icons/bs";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
@@ -56,8 +56,8 @@ export interface ICandidateInfoProps {
   qualified?: boolean;
   handleCreateNewList: () => void;
   talentListsAvailables: TalentListType[];
-  handleAddCandidatesToList: () => Promise<void>;
-  handleChkSelection?: (candidate) => void;
+  handleAddCandidatesToList: (listID: string) => Promise<void>;
+  handleChkSelection?: (candidate: CandidateTypeSkillMatch) => void;
 }
 
 function classNames(...classes: any[]) {
@@ -100,9 +100,11 @@ export const CandidateInfo = ({
 
   const handleGreenButtonPress = () => {
     setAddToListOpen(true);
-    if (handleChkSelection) {
-      handleChkSelection(candidate);
-    }
+    handleChkSelection(candidate);
+    console.log(
+      "candidate18283189748127401278398129381928309128390128390123182938192389108319283018409128490",
+      candidate
+    );
   };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
