@@ -149,11 +149,7 @@ export const ChatSimple = ({
                               "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                             )}
                           >
-                            <div
-                              className={classNames(
-                                chat.user === "01" ? "text-start" : "text-end"
-                              )}
-                            >
+                            <div className="text-start">
                               <div>
                                 {chat.user !== "01" && (
                                   <>
