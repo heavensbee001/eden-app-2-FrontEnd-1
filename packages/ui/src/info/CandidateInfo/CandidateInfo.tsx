@@ -54,9 +54,9 @@ export interface ICandidateInfoProps {
   // eslint-disable-next-line no-unused-vars
   approveCandidateFn?: (memberID: string) => void;
   qualified?: boolean;
-  handleCreateNewList: () => void;
-  talentListsAvailables: TalentListType[];
-  handleAddCandidatesToList: (listID: string) => Promise<void>;
+  handleCreateNewList?: () => void;
+  talentListsAvailables?: TalentListType[];
+  handleAddCandidatesToList?: (listID: string) => Promise<void>;
   handleChkSelection?: (candidate: any) => void;
 }
 
@@ -314,7 +314,10 @@ export const CandidateInfo = ({
                       <div
                         key={index}
                         className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                        onClick={() => handleAddCandidatesToList(list._id!)}
+                        onClick={() =>
+                          handleAddCandidatesToList &&
+                          handleAddCandidatesToList(list._id!)
+                        }
                       >
                         <p className="">{list.name}</p>
                       </div>
