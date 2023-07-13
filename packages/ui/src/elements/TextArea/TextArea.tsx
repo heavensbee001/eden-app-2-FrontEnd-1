@@ -43,10 +43,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
     }
   };
 
-  const inputCls = clsx(
-    className,
-    "py-1 px-2 font-Inter text-soilBody flex rounded-md"
-  );
+  const inputCls = clsx(className, "py-1 px-2 font-Unica flex rounded-md");
 
   return (
     <div className={`w-full`}>

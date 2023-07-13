@@ -302,7 +302,7 @@ export const CreateProfileFlow = ({
                 <textarea
                   id="bio"
                   defaultValue={currentUser?.bio || ""}
-                  className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 px-2 py-1 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                  className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 px-2 py-1 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
                   rows={8}
                   required
                   {...register("bio")}
@@ -393,7 +393,7 @@ export const CreateProfileFlow = ({
                     min={0}
                     max={40}
                     id="hoursPerWeek"
-                    className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                    className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
                     required
                     {...register("hoursPerWeek")}
                   />
@@ -410,7 +410,7 @@ export const CreateProfileFlow = ({
                     <select
                       defaultValue={`(${userState?.timeZone}) ${userState?.location}`}
                       id="location"
-                      className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                      className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
                       required
                       onChange={(e) => {
                         const _gmt = e.target.value.split(" ")[0].slice(1, -1);
@@ -448,7 +448,7 @@ export const CreateProfileFlow = ({
                     // min={0}
                     // max={40}
                     // // id="hoursPerWeek"
-                    className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                    className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
                     // required
                     {...register("experienceLevel.years")}
                   />
@@ -465,7 +465,7 @@ export const CreateProfileFlow = ({
                     render={() => (
                       <select
                         id="experienceLevel"
-                        className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                        className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
                         required
                         onChange={(e) => {
                           const _val = {

@@ -47,12 +47,12 @@ export const ProjectMatchCard = ({
           <Button onClick={() => onSelected(matchProject)}>More</Button>
         </div>
       </div>
-      <div className={`text-darkGreen font-Inter my-2 text-sm`}>
+      <div className={`text-darkGreen font-Unica my-2 text-sm`}>
         {matchProject?.project?.description}
       </div>
       <ProjectChampion member={matchProject?.project?.champion as Members} />
       <div>
-        <div className={`font-Inter text-sm font-medium text-zinc-500`}>
+        <div className={`font-Unica text-sm font-medium text-zinc-500`}>
           🔎open Positions
         </div>
         <div className={`mt-2`}>
@@ -61,7 +61,7 @@ export const ProjectMatchCard = ({
               key={index}
               text={role?.projectRole?.title || ""}
               colorRGB={`235,225,255`}
-              className={`font-Inter text-sm`}
+              className={`font-Unica text-sm`}
               cutText={20}
             />
           ))}

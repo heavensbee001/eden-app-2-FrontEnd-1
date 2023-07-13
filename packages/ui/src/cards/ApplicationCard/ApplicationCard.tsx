@@ -63,7 +63,7 @@ export const ApplicationCard = ({ project }: ApplicationCardProps) => {
             <TextBody>{project?.role?.title}</TextBody>
           </div>
         </div>
-        <div className="font-Inter mb-4 px-6 text-left font-medium text-gray-400">
+        <div className="font-Unica mb-4 px-6 text-left font-medium text-gray-400">
           <AvailabilityComp
             timePerWeek={project?.role?.hoursPerWeek || undefined}
             seed={project?.role?.budget?.perHour || undefined}

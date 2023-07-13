@@ -30,7 +30,7 @@ export const KeywordList = ({
         key={index}
         text={trimParentheses(node?.keyword || "")}
         colorRGB={colorRGB}
-        className={`font-Inter text-xs`}
+        className={`font-Unica text-xs`}
         closeButton={closeButton}
         onClose={() => {
           if (handleDeleteNode) handleDeleteNode(node);

@@ -96,7 +96,7 @@ export const SelectNodesModal = ({
                             <Badge
                               text={item?.name || ""}
                               colorRGB={`209,247,196`}
-                              className={`font-Inter text-sm`}
+                              className={`font-Unica text-sm`}
                               // closeButton={true}
                               onClose={() => {
                                 const newSelectedItems = { ...selectedItems };

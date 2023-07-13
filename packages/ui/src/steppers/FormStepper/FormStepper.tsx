@@ -15,7 +15,7 @@ const Steps = ({ i, isActive }: StepProps) => {
         clipPath:
           "polygon(85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%, 0% 0%)",
       }}
-      className={`font-Inter flex  h-[32px] w-full items-center justify-center font-normal md:-ml-2 lg:-ml-5 2xl:-ml-6 ${
+      className={`font-Unica flex  h-[32px] w-full items-center justify-center font-normal md:-ml-2 lg:-ml-5 2xl:-ml-6 ${
         isActive ? "bg-[#FFF268]" : "bg-[#FFF268] opacity-40"
       }`}
     >
@@ -34,7 +34,7 @@ export const FormStepper = ({
         style={{
           clipPath: "polygon(85% 0, 100% 50%, 85% 100%, 0% 100%, 0 50%, 0% 0%)",
         }}
-        className={`font-Inter flex h-[32px] w-full items-center justify-center rounded-l-full font-normal ${
+        className={`font-Unica flex h-[32px] w-full items-center justify-center rounded-l-full font-normal ${
           currentStep >= 1 ? "bg-[#FFF268]" : "bg-[#FFF268] opacity-40"
         } `}
       >
@@ -48,7 +48,7 @@ export const FormStepper = ({
           clipPath:
             "polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 15% 50%, 0% 0%)",
         }}
-        className={`font-Inter flex h-[32px] w-full items-center justify-center rounded-r-full font-normal md:-ml-2 lg:-ml-5 2xl:-ml-5 ${
+        className={`font-Unica flex h-[32px] w-full items-center justify-center rounded-r-full font-normal md:-ml-2 lg:-ml-5 2xl:-ml-5 ${
           currentStep === numberofSteps
             ? "bg-[#FFF268]"
             : "bg-[#FFF268] opacity-40"

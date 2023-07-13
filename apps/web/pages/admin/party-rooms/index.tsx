@@ -97,7 +97,7 @@ const DiscoverPage: NextPageWithLayout = () => {
             <div className={`col-span-1`}>
               <TextHeading2>Create a Room</TextHeading2>
               <div className={``}>
-                <div className={`font-Inter my-auto font-medium text-gray-700`}>
+                <div className={`font-Unica my-auto font-medium text-gray-700`}>
                   Select a Discord Server to Connect in
                 </div>
                 <ServerSelector

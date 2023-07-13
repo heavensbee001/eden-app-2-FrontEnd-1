@@ -269,7 +269,7 @@ const UploadCVContainer = ({
       </section>
       <section className="grid h-[50vh] grid-cols-3 gap-6">
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-forestGreen mb-4 text-center text-2xl font-semibold">
+          <h3 className="text-edenGreen-900 mb-4 text-center text-2xl font-semibold">
             Role Description
           </h3>
           <ul className="list-disc pl-4">
@@ -283,7 +283,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-forestGreen mb-4 text-center text-2xl font-semibold">
+          <h3 className="text-edenGreen-900 mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
           <ul className="list-disc pl-4">
@@ -297,7 +297,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-forestGreen text-center text-2xl font-semibold">
+          <h3 className="text-edenGreen-900 text-center text-2xl font-semibold">
             You x {position?.company?.name}
           </h3>
           <p className="mb-4 text-center text-gray-500">
@@ -445,7 +445,7 @@ const ApplicationStepContainer = ({
 
               <section className="h-[42vh] overflow-y-scroll">
                 <div className="px-8">
-                  <h3 className="text-forestGreen text-lg font-semibold">
+                  <h3 className="text-edenGreen-900 text-lg font-semibold">
                     Strong suit:
                   </h3>
                   <p className="mb-4 whitespace-pre-wrap">
@@ -453,7 +453,7 @@ const ApplicationStepContainer = ({
                   </p>
                 </div>
                 <div className="px-8">
-                  <h3 className="text-forestGreen text-lg font-semibold">
+                  <h3 className="text-edenGreen-900 text-lg font-semibold">
                     Areas to improve:
                   </h3>
                   <p className="mb-8 whitespace-pre-wrap">
@@ -675,7 +675,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-cottonPink text-forestGreen rounded-sm p-1 text-center font-medium">
+              <p className="bg-cottonPink text-edenGreen-900 rounded-sm p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>
@@ -827,7 +827,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
               defaultValue={currentUser?.budget?.perHour || ""}
               type="number"
               id="budget"
-              className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
               required
               {...register("budget.perHour")}
             />
@@ -843,7 +843,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
               min={0}
               max={40}
               id="hoursPerWeek"
-              className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
               required
               {...register("hoursPerWeek")}
             />
@@ -865,7 +865,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                     : ""
                 }
                 id="location"
-                className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
                 required
                 onChange={(e) => {
                   const _gmt = e.target.value.split(" ")[0].slice(1, -1);
@@ -905,7 +905,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
               // max={40}
               // id="hoursPerWeek"
               defaultValue={currentUser?.experienceLevel?.years || ""}
-              className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
               // required
               {...register("experienceLevel.years")}
             />
@@ -928,7 +928,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                 return (
                   <select
                     id="experienceLevel"
-                    className="font-Inter text-soilBody focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                    className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
                     required
                     onChange={(e) => {
                       const _val = {

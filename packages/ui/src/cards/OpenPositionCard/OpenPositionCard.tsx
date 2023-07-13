@@ -56,7 +56,7 @@ OpenPositionCardProps) => {
             <LongText
               cutText={100}
               text={(role?.description as string) || ""}
-              className={`text-darkGreen font-Inter my-2 whitespace-pre-wrap text-sm font-normal tracking-wide`}
+              className={`text-darkGreen font-Unica my-2 whitespace-pre-wrap text-sm font-normal tracking-wide`}
             />
           </div>
           <div className="text-xs font-medium">

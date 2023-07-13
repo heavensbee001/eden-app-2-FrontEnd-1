@@ -34,7 +34,7 @@ const ThanksPage: NextPageWithLayout = () => {
             // sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             // setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-cottonPink text-forestGreen rounded-lg p-1 text-center font-medium">
+              <p className="bg-cottonPink text-edenGreen-900 rounded-lg p-1 text-center font-medium">
                 Ask me anything about the role, company or culture
               </p>
             }

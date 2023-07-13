@@ -104,7 +104,7 @@ export const HomeHeroSection = ({
           >
             <Card className={`px-6`}>
               <div
-                className={`font-Inter text-center text-xl font-medium md:text-3xl`}
+                className={`font-Unica text-center text-xl font-medium md:text-3xl`}
               >
                 {item.title}
 

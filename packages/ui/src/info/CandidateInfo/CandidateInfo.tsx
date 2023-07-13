@@ -84,9 +84,8 @@ export const CandidateInfo = ({
   const [isOpen, setIsOpen] = useState(false);
   const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
 
-  const [letterType, setLetterType] = useState<
-    "rejection" | "nextInterviewInvite" | undefined
-  >(undefined);
+  const [letterType, setLetterType] =
+    useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -225,7 +224,7 @@ export const CandidateInfo = ({
 
   return (
     <>
-      <div className="font-Inter absolute z-20 h-56 w-full flex-col bg-white text-center">
+      <div className="font-Unica absolute z-20 h-56 w-full flex-col bg-white text-center">
         <FaChevronLeft
           className="absolute left-2 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
           onClick={onClose}

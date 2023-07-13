@@ -23,7 +23,7 @@ const HomePage: NextPage = ({
       </Head>
       <div className={`min-h-screen overflow-hidden bg-[#fcf0f6]`}>
         <div className="mx-auto max-w-4xl py-8">
-          <h1 className="text-bold text-forestGreen mb-4 flex items-center justify-center text-center text-6xl">
+          <h1 className="text-bold text-edenGreen-900 mb-4 flex items-center justify-center text-center text-6xl">
             <Image
               src="/eden-logo.png"
               alt=""
@@ -33,7 +33,7 @@ const HomePage: NextPage = ({
             />
             Eden
           </h1>
-          <h2 className="text-bold text-forestGreen text-center text-2xl">
+          <h2 className="text-bold text-edenGreen-900 text-center text-2xl">
             Talk to less, but more of the right candidates.
           </h2>
           <section className="mb-4 grid grid-cols-12">
@@ -46,7 +46,7 @@ const HomePage: NextPage = ({
             </div>
             <div className="col-span-4 flex items-center justify-center">
               <button
-                className="hover:text-forestGreen bg-accentColor flex h-10 w-32 items-center justify-center hover:bg-white"
+                className="hover:text-edenGreen-900 bg-accentColor flex h-10 w-32 items-center justify-center hover:bg-white"
                 onClick={() => {
                   signIn("google", { callbackUrl: redirect });
                 }}
@@ -66,21 +66,21 @@ const HomePage: NextPage = ({
             <div className="grid grid-cols-12 gap-12">
               <div className="col-span-4">
                 <div>
-                  <h3 className="text-forestGreen mb-4 text-center text-4xl">
+                  <h3 className="text-edenGreen-900 mb-4 text-center text-4xl">
                     Align
                   </h3>
                 </div>
               </div>
               <div className="col-span-4">
                 <div>
-                  <h3 className="text-forestGreen mb-4 text-center text-4xl">
+                  <h3 className="text-edenGreen-900 mb-4 text-center text-4xl">
                     Evaluate
                   </h3>
                 </div>
               </div>
               <div className="col-span-4">
                 <div>
-                  <h3 className="text-forestGreen mb-4 text-center text-4xl">
+                  <h3 className="text-edenGreen-900 mb-4 text-center text-4xl">
                     Select
                   </h3>
                 </div>

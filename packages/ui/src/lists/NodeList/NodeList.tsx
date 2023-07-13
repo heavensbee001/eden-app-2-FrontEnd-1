@@ -30,7 +30,7 @@ export const NodeList = ({
         key={index}
         text={trimParentheses(node?.nodeData?.name || "")}
         colorRGB={colorRGB}
-        className={`font-Inter text-sm`}
+        className={`font-Unica text-sm`}
         closeButton={closeButton}
         onClose={() => {
           if (handleDeleteNode) handleDeleteNode(node);
