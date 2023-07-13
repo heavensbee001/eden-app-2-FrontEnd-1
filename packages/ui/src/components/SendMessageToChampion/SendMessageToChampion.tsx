@@ -199,7 +199,7 @@ export const SendMessageToChampion = ({
                 </TextHeading3>
                 <div className={`my-4 md:mr-28 md:flex md:justify-between`}>
                   <div
-                    className={`font-Inter my-auto font-medium text-gray-700`}
+                    className={`font-Unica my-auto font-medium text-gray-700`}
                   >
                     Select a Discord Server to Connect in
                   </div>

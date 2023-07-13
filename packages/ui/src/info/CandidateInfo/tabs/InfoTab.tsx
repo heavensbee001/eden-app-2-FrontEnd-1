@@ -70,7 +70,7 @@ export const InfoTab: FC<Props> = ({
             <TextLabel1>🌸 Short bio</TextLabel1>
             {member?.user?.bio ? (
               <>
-                <p className="text-soilBody font-Inter whitespace-pre-wrap font-normal">
+                <p className="font-Unica whitespace-pre-wrap font-normal">
                   {seeMore
                     ? member?.user.bio
                     : member?.user.bio.length > 600
@@ -114,7 +114,7 @@ export const InfoTab: FC<Props> = ({
                     key={index}
                     text={preference}
                     colorRGB="224,151,232"
-                    className={`font-Inter text-sm`}
+                    className={`font-Unica text-sm`}
                     closeButton={false}
                     cutText={16}
                   />

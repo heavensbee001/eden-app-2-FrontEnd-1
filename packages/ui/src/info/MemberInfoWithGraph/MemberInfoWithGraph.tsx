@@ -59,7 +59,7 @@ export const MemberInfoWithGraph = ({
         <div className="my-4 flex flex-col items-start justify-center sm:col-span-3 sm:my-0">
           {!!member?.bio && <TextLabel1>🪪 Short bio</TextLabel1>}
           {!loading ? (
-            <p className="text-soilBody font-Inter whitespace-pre-wrap font-normal">
+            <p className="font-Unica whitespace-pre-wrap font-normal">
               {member?.bio}
             </p>
           ) : (
@@ -86,7 +86,7 @@ export const MemberInfoWithGraph = ({
                   key={index}
                   text={PREFERENCES_TITLE[preference]}
                   colorRGB={`255,255,167`}
-                  className={`font-Inter text-sm`}
+                  className={`font-Unica text-sm`}
                   closeButton={false}
                   cutText={16}
                 />

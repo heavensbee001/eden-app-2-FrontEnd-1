@@ -78,6 +78,7 @@ class MyDocument extends Document {
           />
 
           <link href="https://fonts.cdnfonts.com/css/moret" rel="stylesheet" />
+          <link rel="stylesheet" href="https://use.typekit.net/vlw0gla.css" />
 
           <script
             async

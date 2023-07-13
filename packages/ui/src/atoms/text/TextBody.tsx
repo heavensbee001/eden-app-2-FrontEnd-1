@@ -4,5 +4,5 @@ export interface TextBodyProps {
 }
 
 export const TextBody = ({ children, className }: TextBodyProps) => {
-  return <p className={`text-soilBody font-Inter ${className}`}>{children}</p>;
+  return <p className={`font-Unica ${className}`}>{children}</p>;
 };

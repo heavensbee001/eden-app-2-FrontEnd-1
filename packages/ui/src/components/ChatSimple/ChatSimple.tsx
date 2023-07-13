@@ -161,7 +161,7 @@ export const ChatSimple = ({
 
                                 {chat.user !== "02" && (
                                   <>
-                                    <span className="text-forestGreen text-xs font-semibold">
+                                    <span className="text-edenGreen-900 text-xs font-semibold">
                                       Eden
                                     </span>
                                   </>

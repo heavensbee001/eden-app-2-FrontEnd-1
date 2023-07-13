@@ -190,7 +190,7 @@ export const ViewProjectContainer = ({
                 </div>
                 <div className={`my-4`}>
                   <TextLabel2>📃 Description Of the role</TextLabel2>
-                  <div className="text-darkGreen font-Inter my-2 text-sm tracking-wide">
+                  <div className="text-darkGreen font-Unica my-2 text-sm tracking-wide">
                     {activeRole?.description}
                   </div>
                 </div>

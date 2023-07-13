@@ -31,7 +31,7 @@ export const TextField: React.FC<TextFieldProps> = ({
   className,
   ...rest
 }) => {
-  const inputCls = clsx("py-1 px-4 font-Inter text-soilBody flex", {
+  const inputCls = clsx("py-1 px-4 font-Unica flex", {
     "rounded-md": radius === "default",
     "rounded-lg": radius === "rounded",
     "rounded-full": radius === "pill",

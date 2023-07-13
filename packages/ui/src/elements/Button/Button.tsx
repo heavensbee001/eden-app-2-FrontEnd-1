@@ -30,7 +30,7 @@ export const Button = ({
       "px-6": size === "lg",
     },
     className,
-    "py-1 font-Inter text-darkGreen flex font-medium",
+    "py-1 font-Unica text-darkGreen flex font-medium",
     "disabled:!border-gray-400 disabled:!text-gray-400 disabled:!bg-gray-50",
     {
       "bg-accentColor text-soilGreen border-2 border-accentColor hover:border-darkGreen hover:bg-darkGreen hover:text-white":

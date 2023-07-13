@@ -52,9 +52,7 @@ export const ApplicationModal = ({
               </p>
             </div>
           </div>
-          <p className="text-soilBody font-Inter">
-            {project?.info?.description}
-          </p>
+          <p className="font-Unica">{project?.info?.description}</p>
           <div className="w-full">
             <h1 className="text-soilHeading3 font-medium">
               {project?.role?.title}
@@ -92,7 +90,7 @@ export const ApplicationModal = ({
             <ProjectChampion member={project?.info?.champion!} />
           </div>
           <div className="flex flex-col items-center justify-center">
-            <p className="font-Inter text-soilGray text-soilHeading3 mb-3 font-semibold">
+            <p className="font-Unica text-soilGray text-soilHeading3 mb-3 font-semibold">
               CORE TEAM
             </p>
             <AvatarList avatars={filterCommittedTeamAvatars as AvatarProps[]} />

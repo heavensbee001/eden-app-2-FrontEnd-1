@@ -42,7 +42,7 @@ export const SocialMediaInput = ({
   const inputCls = clsx(" ", {
     "rounded-full focus:border-accentColor focus:ring-soilGreen-500 block w-full border border-zinc-400/50 ml-2 py-1 px-2 text-base shadow-sm focus:outline-transparent focus:ring focus:ring-opacity-50 disabled:text-slate-300":
       shape === "rounded",
-    "border-l border-zinc-400/50 px-2 mr-4 font-Inter text-soilBody focus:ring-soilGreen-500 flex w-full text-base focus:border-none focus:outline-transparent focus:ring focus:ring-opacity-50":
+    "border-l border-zinc-400/50 px-2 mr-4 font-Unica focus:ring-soilGreen-500 flex w-full text-base focus:border-none focus:outline-transparent focus:ring focus:ring-opacity-50":
       shape === "square",
   });
 

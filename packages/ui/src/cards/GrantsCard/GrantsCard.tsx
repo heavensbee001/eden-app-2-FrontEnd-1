@@ -72,7 +72,7 @@ export const GrantsCard = ({ grant }: IGrantsCardProps) => {
         <LongText
           cutText={100}
           text={(grant?.smallDescription as string) || ""}
-          className={`text-darkGreen font-Inter my-2 text-sm`}
+          className={`text-darkGreen font-Unica my-2 text-sm`}
         />
       </div>
       <div
@@ -81,13 +81,13 @@ export const GrantsCard = ({ grant }: IGrantsCardProps) => {
         <TextHeading2>{grant?.amount}</TextHeading2>
         <TextHeading3>🗓 by Dec 15th</TextHeading3>
       </div>
-      <div className={`font-Inter text-lg font-medium text-zinc-400`}>
+      <div className={`font-Unica text-lg font-medium text-zinc-400`}>
         Difficulty:{" "}
         <span className={`text-accentColor text-xl uppercase`}>
           {grant?.difficulty}
         </span>
       </div>
-      <div className={`font-Inter text-lg font-medium text-zinc-400`}>
+      <div className={`font-Unica text-lg font-medium text-zinc-400`}>
         Distributed to date:{" "}
         <span className={`text-accentColor text-xl uppercase`}>
           {grant?.distributed || 0}/{grant?.maxDistributed}

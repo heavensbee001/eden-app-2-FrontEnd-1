@@ -48,7 +48,7 @@ export const RoleSelector = ({
   return (
     <Combobox as="div" value={query} onChange={(val: any) => handleSelect(val)}>
       {removeLabel ? (
-        <Combobox.Label className="font-Inter block text-lg text-black">
+        <Combobox.Label className="font-Unica block text-lg text-black">
           TO GET STARTED, TELL US YOUR ROLE:
         </Combobox.Label>
       ) : (

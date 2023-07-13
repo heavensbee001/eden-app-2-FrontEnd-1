@@ -94,7 +94,7 @@ export const LoginButton = ({ inApp }: ILoginButtonProps) => {
                       />
                     </div>
                     <div
-                      className={`font-Inter my-auto ml-4 text-lg font-semibold`}
+                      className={`font-Unica my-auto ml-4 text-lg font-semibold`}
                     >
                       {currentUser?.discordName}
                     </div>

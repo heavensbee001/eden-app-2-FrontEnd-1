@@ -235,7 +235,7 @@ const PositionExpanded = ({
               <LongText
                 cutText={250}
                 text={(activeItem?.projectRole?.description as string) || ""}
-                className={`text-darkGreen font-Inter my-2 text-sm tracking-wide`}
+                className={`text-darkGreen font-Unica my-2 text-sm tracking-wide`}
               />
             </div>
           </div>

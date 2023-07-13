@@ -57,7 +57,7 @@ export const ViewUserProfileContainer = ({
             }`}
           >
             <TextLabel1>🪪 Short bio</TextLabel1>
-            <p className="text-soilBody font-Inter whitespace-pre-wrap font-normal">
+            <p className="font-Unica whitespace-pre-wrap font-normal">
               {user?.bio}
             </p>
           </div>
@@ -83,7 +83,7 @@ export const ViewUserProfileContainer = ({
                     key={index}
                     text={PREFERENCES_TITLE[preference]}
                     colorRGB={`255,255,167`}
-                    className={`font-Inter text-sm`}
+                    className={`font-Unica text-sm`}
                     closeButton={false}
                     cutText={16}
                   />
