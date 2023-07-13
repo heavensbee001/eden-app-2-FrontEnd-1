@@ -11,7 +11,7 @@ import {
 import { useRouter } from "next/router";
 import { HiOutlineLink } from "react-icons/hi";
 
-import type { NextPageWithLayout } from "../../_app";
+import type { NextPageWithLayout } from "../../../_app";
 
 const FIND_COMPANY = gql`
   query ($fields: findCompanyInput) {
