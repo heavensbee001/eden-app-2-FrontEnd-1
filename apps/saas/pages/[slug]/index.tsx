@@ -2,12 +2,12 @@ import {
   AppUserLayout,
   Button,
   Card,
-  LeftToggleMenu,
+  // LeftToggleMenu,
   ProgressCircle,
   SEO,
   TextLabel1,
 } from "@eden/package-ui";
-import Link from "next/link";
+// import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiOutlineLink } from "react-icons/hi";
 
@@ -66,7 +66,7 @@ const HomePage: NextPageWithLayout = () => {
       <SEO />
       {findCompanyFromSlugData?.findCompanyFromSlug && (
         <div className="w-full p-8">
-          <LeftToggleMenu defaultVisible={true}>
+          {/* <LeftToggleMenu defaultVisible={true}>
             <div className="px-4 py-2">
               <h2>{findCompanyFromSlugData?.findCompanyFromSlug?.name}</h2>
               <ul>
@@ -92,7 +92,7 @@ const HomePage: NextPageWithLayout = () => {
                 </li>
               </ul>
             </div>
-          </LeftToggleMenu>
+          </LeftToggleMenu> */}
           <div className="mx-auto max-w-3xl">
             <section className="w-full">
               <h3 className="mb-4">Positions</h3>
