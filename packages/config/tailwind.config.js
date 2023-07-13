@@ -8,19 +8,19 @@ module.exports = {
     extend: {
       colors: {
         edenGreen: {
-          50: "#F6F8F5",
-          100: "#F0F4F2",
+          100: "#F6F8F5",
+          200: "#F0F4F2",
           300: "#B2C7BF",
-          500: "#7FA294",
-          700: "#19563F",
-          900: "#00462C",
+          400: "#7FA294",
+          500: "#19563F",
+          600: "#00462C",
         },
         edenPink: {
           100: "#FEF9FB",
-          300: "#FAE7F1",
-          500: "#FCEEF5",
-          700: "#F9E1ED",
-          900: "#F5C7DE",
+          200: "#FAE7F1",
+          300: "#FCEEF5",
+          400: "#F9E1ED",
+          500: "#F5C7DE",
         },
         edenGray: {
           100: "#F2F2F2",
@@ -77,6 +77,18 @@ module.exports = {
         headerShadow: "0px 1px 15px 0px rgba(0, 0, 0, 0.15)",
         cardShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.15)",
         focusShadow: "0px 0px 0px 2px #74FA6D",
+      },
+      fontSize: {
+        "2xl": "1.5rem",
+        xl: "1.25rem",
+        lg: "1.125rem",
+        md: "1rem",
+        sm: "0.875rem",
+        xs: "",
+        "2xs": "",
+      },
+      transitionProperty: {
+        width: "width",
       },
     },
   },

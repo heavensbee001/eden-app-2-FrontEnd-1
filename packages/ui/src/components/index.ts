@@ -13,7 +13,7 @@ export * from "./EdenTooltip";
 export * from "./ExperienceCreateProfileChatTalentSearch";
 export * from "./FillSocialLinks";
 export * from "./InterviewEdenAI";
-export * from "./LeftToggleMenu";
+export * from "./LeftToggleNav";
 export * from "./LifetimeTRST";
 export * from "./LoginButton";
 export * from "./MultiSelectPopup";

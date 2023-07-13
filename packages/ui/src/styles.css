@@ -36,7 +36,7 @@
   a,
   span,
   div {
-    @apply font-Unica;
+    font-family: Unica, sans-serif;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
