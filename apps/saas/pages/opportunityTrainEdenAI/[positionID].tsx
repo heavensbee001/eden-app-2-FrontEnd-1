@@ -674,7 +674,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className=" bg-cottonPink text-edenGreen-900 rounded-lg p-1 text-center font-medium">
+              <p className=" bg-cottonPink text-edenGreen-600 rounded-lg p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>

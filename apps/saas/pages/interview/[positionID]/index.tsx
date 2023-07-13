@@ -269,7 +269,7 @@ const UploadCVContainer = ({
       </section>
       <section className="grid h-[50vh] grid-cols-3 gap-6">
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-edenGreen-900 mb-4 text-center text-2xl font-semibold">
+          <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Role Description
           </h3>
           <ul className="list-disc pl-4">
@@ -283,7 +283,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-edenGreen-900 mb-4 text-center text-2xl font-semibold">
+          <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
           <ul className="list-disc pl-4">
@@ -297,7 +297,7 @@ const UploadCVContainer = ({
           </ul>
         </div>
         <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
-          <h3 className="text-edenGreen-900 text-center text-2xl font-semibold">
+          <h3 className="text-edenGreen-600 text-center text-2xl font-semibold">
             You x {position?.company?.name}
           </h3>
           <p className="mb-4 text-center text-gray-500">
@@ -445,7 +445,7 @@ const ApplicationStepContainer = ({
 
               <section className="h-[42vh] overflow-y-scroll">
                 <div className="px-8">
-                  <h3 className="text-edenGreen-900 text-lg font-semibold">
+                  <h3 className="text-edenGreen-600 text-lg font-semibold">
                     Strong suit:
                   </h3>
                   <p className="mb-4 whitespace-pre-wrap">
@@ -453,7 +453,7 @@ const ApplicationStepContainer = ({
                   </p>
                 </div>
                 <div className="px-8">
-                  <h3 className="text-edenGreen-900 text-lg font-semibold">
+                  <h3 className="text-edenGreen-600 text-lg font-semibold">
                     Areas to improve:
                   </h3>
                   <p className="mb-8 whitespace-pre-wrap">
@@ -675,7 +675,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-cottonPink text-edenGreen-900 rounded-sm p-1 text-center font-medium">
+              <p className="bg-cottonPink text-edenGreen-600 rounded-sm p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>

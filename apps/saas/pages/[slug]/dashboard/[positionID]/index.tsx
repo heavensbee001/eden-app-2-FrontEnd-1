@@ -110,9 +110,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1361,7 +1360,7 @@ const PositionCRM: NextPageWithLayout = () => {
             selectedUserId ? "w-[50vw]" : "w-0"
           )}
         >
-          <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
+          <div className="scrollbar-hide min-h-screen overflow-y-scroll bg-white shadow-md">
             {/* {selectedUserId ? ( */}
 
             <CandidateInfo
@@ -1418,7 +1417,7 @@ const PositionCRM: NextPageWithLayout = () => {
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1450,7 +1449,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}
