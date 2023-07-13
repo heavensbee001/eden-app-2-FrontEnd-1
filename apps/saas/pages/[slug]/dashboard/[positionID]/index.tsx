@@ -1497,7 +1497,7 @@ export default PositionCRM;
 
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
-import { getSession, signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -1505,16 +1505,16 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  // const url = ctx.req.url
+  const url = ctx.req.url;
 
   if (!session) {
-    // return {
-    //   redirect: {
-    //     destination: `/?redirect=${url}`,
-    //     permanent: false,
-    //   },
-    // };
-    signIn("google");
+    return {
+      redirect: {
+        destination: `/?redirect=${url}`,
+        permanent: false,
+      },
+    };
+    // signIn("google");
   }
 
   return {
