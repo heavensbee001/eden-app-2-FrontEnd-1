@@ -110,8 +110,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -264,6 +265,8 @@ const PositionCRM: NextPageWithLayout = () => {
         );
 
         // setCandidatesList(sortedCandidatesList);
+
+        console.log("sortedCandidatesList = ", sortedCandidatesList);
 
         setCandidatesOriginalList(sortedCandidatesList);
 

@@ -182,8 +182,10 @@ const PositionCRM: NextPageWithLayout = () => {
               candidate?.skillMatch != undefined &&
               candidate?.skillMatch > 0
             ) {
-              totalMatchPerc += candidate.skillMatch;
-              totalMatchPercCount++;
+              if (candidate?.skillMatch > 25) {
+                totalMatchPerc += candidate.skillMatch;
+                totalMatchPercCount++;
+              }
               flagSkill = true;
 
               letterAndColor = {
@@ -193,8 +195,10 @@ const PositionCRM: NextPageWithLayout = () => {
             }
 
             if (candidate?.overallScore) {
-              totalMatchPerc += candidate.overallScore;
-              totalMatchPercCount++;
+              if (candidate?.overallScore > 25) {
+                totalMatchPerc += candidate.overallScore;
+                totalMatchPercCount++;
+              }
 
               letterAndColor = {
                 ...letterAndColor,
@@ -203,8 +207,10 @@ const PositionCRM: NextPageWithLayout = () => {
             }
 
             if (candidate?.skillScore) {
-              totalMatchPerc += candidate.skillScore;
-              totalMatchPercCount++;
+              if (candidate?.skillScore > 25) {
+                totalMatchPerc += candidate.skillScore;
+                totalMatchPercCount++;
+              }
 
               letterAndColor = {
                 ...letterAndColor,
@@ -218,10 +224,15 @@ const PositionCRM: NextPageWithLayout = () => {
               candidate?.compareCandidatePosition
                 ?.CV_ConvoToPositionAverageScore
             ) {
-              totalMatchPerc +=
+              if (
                 candidate?.compareCandidatePosition
-                  ?.CV_ConvoToPositionAverageScore;
-              totalMatchPercCount++;
+                  ?.CV_ConvoToPositionAverageScore > 25
+              ) {
+                totalMatchPerc +=
+                  candidate?.compareCandidatePosition
+                    ?.CV_ConvoToPositionAverageScore;
+                totalMatchPercCount++;
+              }
 
               letterAndColor = {
                 ...letterAndColor,
@@ -368,11 +379,11 @@ const PositionCRM: NextPageWithLayout = () => {
   const getGrade = (percentage: number, mainColumn: boolean): Grade => {
     let grade: Grade = { letter: "", color: "" };
 
-    if (percentage >= 85) {
+    if (percentage >= 80) {
       grade = { letter: "A", color: "text-green-600" };
-    } else if (percentage >= 70) {
+    } else if (percentage >= 60) {
       grade = { letter: "B", color: "text-green-300" };
-    } else if (percentage >= 50) {
+    } else if (percentage >= 40) {
       grade = { letter: "C", color: "text-orange-300" };
       // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
       // else grade = { letter: "C", color: "text-black" };
