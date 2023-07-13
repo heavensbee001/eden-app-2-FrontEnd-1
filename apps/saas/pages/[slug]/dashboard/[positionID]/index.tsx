@@ -1002,15 +1002,15 @@ const PositionCRM: NextPageWithLayout = () => {
           </Button>
         </div>
       </Modal>
-      <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
+      <div className="mx-auto max-w-screen-2xl flex-grow p-8">
         <div
           className={classNames(
             `z-20 transition-all duration-200 ease-in-out`,
             selectedUserId ? "w-[calc(50%-1rem)]" : "w-full"
           )}
         >
-          <div className="mb-4 flex h-10 items-center">
-            <h1 className="mr-6 text-2xl font-medium">
+          <div className="mb-4 flex items-center">
+            <h1 className="text-edenGreen-600 mr-6">
               {findPositionData && findPositionData.findPosition.name
                 ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
                   findPositionData.findPosition.name.slice(1)
