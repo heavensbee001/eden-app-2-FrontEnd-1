@@ -22,9 +22,8 @@ import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsCalendarPlus } from "react-icons/bs";
-import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
-import { IoMdAdd, IoMdAddCircle } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
 import ReactTooltip from "react-tooltip";
 
 import { EdenAiLetter } from "../../components/EdenAiLetter";
@@ -220,43 +219,43 @@ export const CandidateInfo = ({
   //     "On a mission to empower anyone anywhere to do meaningful work";
   // }
 
-  // console.log("dataMember LLLLLLLLLLLL", dataMember);
-
   return (
-    <>
-      <div className="fontfont-Interolute z-20 h-56 w-full flex-col bg-white text-center">
-        <FaChevronLeft
-          className="absolute left-2 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
-          onClick={onClose}
-        />
+    <div className="bg-white">
+      <div className="w-full flex-col h-full overflow-y-scroll">
+        <div className="flex items-center justify-center bg-edenGreen-100 h-6 w-6 rounded-md absolute right-10 top-9 cursor-pointer hover:bg-edenGreen-200">
+          <IoClose color="#19563F" size={"1rem"} onClick={onClose} />
+        </div>
 
-        <div className="px-8 py-4">
-          <div className="items-end text-left">
-            <Avatar src={dataMember?.findMember.discordAvatar!} size={`md`} />
-            <div className="">
-              <h1 className=" text-lg font-semibold">
+        {/* ---- Header ---- */}
+        <div className="">
+          <div className="flex p-8 pb-4 mb-6">
+            <div className="mr-3">
+              <Avatar src={dataMember?.findMember.discordAvatar!} size={`md`} />
+            </div>
+            <div>
+              <h3 className="font-Unica text-edenGreen-600">
                 {dataMember?.findMember?.discordName}
-              </h1>
-              <div className="flex items-center  space-x-1 text-sm text-gray-400">
-                <p>{dataMember?.findMember?.location} </p>
-                {dataMember?.findMember?.timeZone && (
-                  <p> ({dataMember?.findMember?.timeZone})</p>
-                )}
+              </h3>
+              <div>
+                <p className="text-xs text-edenGray-700">
+                  <span>{dataMember?.findMember?.location}</span>
+                  {dataMember?.findMember?.timeZone && " | "}
+                  <span>{dataMember?.findMember?.timeZone}</span>
+                </p>
               </div>
-
-              <div className="max-h-20 overflow-y-scroll">
+              <div>
                 <LongText
-                  cutText={100}
+                  cutText={80}
                   text={(dataMember?.findMember?.bio as string) || ""}
-                  className={`whitespace-pre-wrap text-sm`}
+                  className={`whitespace-pre-wrap text-sm text-edenGray-900`}
                 />
               </div>
             </div>
           </div>
 
-          <div className="absolute right-8 top-4 flex gap-4">
-            {/* ------- add to talent pool button ------- */}
-            <div className="">
+          {/* <div className="absolute right-8 top-4 flex gap-4">
+            ------- add to talent pool button ------- 
+            <div>
               <span
                 // onClick={() => {
                 //   setAddToListOpen(true);
@@ -279,7 +278,7 @@ export const CandidateInfo = ({
                 ></ReactTooltip>
               </span>
 
-              {/* ------- Add candidate to list ------- */}
+              ------- Add candidate to list ------- 
 
               {addToListOpen && (
                 <div
@@ -344,7 +343,7 @@ export const CandidateInfo = ({
               ></ReactTooltip>
             </span>
 
-            {/* ------- schedule 2nd interview button ------- */}
+           ------- schedule 2nd interview button -------
             <span
               className="cursor-pointer text-xs"
               data-tip={"Schedule 2nd interview"}
@@ -367,90 +366,47 @@ export const CandidateInfo = ({
                 padding="0.25rem"
               ></ReactTooltip>
             </span>
-          </div>
+          </div> */}
         </div>
-
-        {/* <div className="grid w-full grid-cols-3 bg-white">
-          <div className="col-1 mt-5 w-full py-2 text-center">
-            {!router.pathname.includes("/talentlist") && !qualified ? (
-              <div className="flex w-full justify-end">
-                <Button
-                  className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
-                  radius="pill"
-                  onClick={handleRejectCandidate}
-                >
-                  REJECT
-                </Button>
-              </div>
-            ) : null}
-          </div>
-          <div className="col-2 p-2 pb-1">
-            <div className="flex w-full justify-center">
-              <Avatar src={dataMember?.findMember.discordAvatar!} size={`lg`} />
-            </div>
-          </div>
-          <div className="col-3 mt-5 w-full py-2 text-center text-sm">
-            {!router.pathname.includes("/talentlist") && !qualified ? (
-              <div className="flex w-full justify-start">
-                <Button
-                  variant="primary"
-                  radius="pill"
-                  className="border-none font-bold text-white"
-                  onClick={handleApproveCandidate}
-                >
-                  APPROVE
-                </Button>
-              </div>
-            ) : null}
-          </div>
-        </div> */}
-
-        {/* <div className="flex w-full justify-center px-4"></div>
-        <TextHeading3 className="w-full justify-center px-4 !text-sm font-bold text-gray-400">
-          {dataMember?.findMember?.memberRole?.title}
-        </TextHeading3> */}
       </div>
-      <div className="bg-background h-full w-full">
+      <div className="">
         <Tab.Group
           defaultIndex={index}
           onChange={(index: number) => {
-            console.log("Changed selected tab to:", index);
+            // console.log("Changed selected tab to:", index);
             setIndex(index);
           }}
         >
-          <Tab.List className="absolute top-56 z-20 flex h-8  w-full justify-between bg-white text-lg">
+          <Tab.List className="flex h-8 w-full justify-between border-b border-edenGreen-300">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}
                 className={({ selected }) =>
                   classNames(
-                    "pt-px text-[14px]",
+                    "text-edenGreen-400 pb-2 -mb-px w-full text-xs",
                     selected
-                      ? "border-b-soilGreen-700 w-full border-b-2 bg-lime-50 text-gray-600 outline-none"
-                      : "font-avenir-roman w-full border-b-2 text-gray-400 hover:bg-gray-50 hover:text-gray-500"
+                      ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                      : "hover:border-b hover:text-edenGreen-500 hover:border-edenGreen-600"
                   )
                 }
               >
-                {tab}
+                {tab.toUpperCase()}
               </Tab>
             ))}
           </Tab.List>
           <Tab.Panels>
-            <div className="bg-background relative top-64">
+            <div className="">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
-                  {/* <div className="h-[calc(100vh-17rem)]"> */}
-                  {/* <div className="relative"> */}
                   <div className="abolute px-6">
                     <Content />
                   </div>
-                  {/* </div> */}
                 </Tab.Panel>
               ))}
             </div>
           </Tab.Panels>
         </Tab.Group>
       </div>
-    </>
+    </div>
   );
 };

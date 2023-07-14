@@ -12,18 +12,21 @@ export const LongText = ({ text, className, cutText = 50 }: LongTextProps) => {
 
   if (!text) return null;
   return (
-    <p className={className}>
-      {text.slice(0, cutText)}
-      {showAll && text.slice(cutText)}
+    <>
+      <p className={className}>
+        {text.slice(0, cutText)}
+        {showAll && text.slice(cutText)}
+      </p>
       {text.length >= cutText && (
-        <Button
-          className="ml-1 border-none text-blue-400"
-          style={{ display: "inline-block", padding: 0 }}
-          onClick={() => setShowAll((show) => !show)}
-        >
-          {showAll ? "less" : "more"}...
-        </Button>
+        <p className="text-center">
+          <span
+            className="cursor-pointer mx-auto text-xs text-edenGray-500"
+            onClick={() => setShowAll((show) => !show)}
+          >
+            {showAll ? "less" : "more"}...
+          </span>
+        </p>
       )}
-    </p>
+    </>
   );
 };
