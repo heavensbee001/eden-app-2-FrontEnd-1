@@ -126,7 +126,9 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
               key={categoryName}
             >
               <div className="flex justify-between pr-10">
-                <h2 className="mb-3 text-lg font-medium">{categoryName}</h2>
+                <h1 className="mb-3 text-lg font-bold font-medium">
+                  {categoryName.substring(categoryName.indexOf(":") + 1).trim()}
+                </h1>
                 <span className="font-medium">
                   Average: {reportNotesData[categoryName].average}
                 </span>

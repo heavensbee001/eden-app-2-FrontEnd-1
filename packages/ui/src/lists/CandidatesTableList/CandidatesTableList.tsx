@@ -113,6 +113,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     }
   };
 
+  console.log("candidatesList = ", candidatesList);
+
   return (
     <section className="scrollbar-hide w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
       <table className="text-md relative w-full">
