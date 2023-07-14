@@ -1133,19 +1133,21 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   // };
 
   useEffect(() => {
-    setScraping(true);
+    if (scraping == false) {
+      setScraping(true);
 
-    positionTextAndConvoToReportCriteria({
-      variables: {
-        // fields: { message: textResponse, userID: currentUser?._id },
-        fields: {
-          positionID: positionID,
+      positionTextAndConvoToReportCriteria({
+        variables: {
+          // fields: { message: textResponse, userID: currentUser?._id },
+          fields: {
+            positionID: positionID,
+          },
         },
-      },
-    });
-    return () => {
-      setScraping(false);
-    };
+      });
+      return () => {
+        setScraping(false);
+      };
+    }
   }, []);
 
   return (
