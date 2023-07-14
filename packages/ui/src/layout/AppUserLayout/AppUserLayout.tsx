@@ -24,7 +24,7 @@ export const AppUserLayout = ({
         />
         <main
           className={classNames(
-            "transition-all ease-in-out transition-pl",
+            "transition-all ease-in-out transition-pl bg-bgColor",
             unwrappedNav ? "pl-56" : "pl-16"
           )}
         >
