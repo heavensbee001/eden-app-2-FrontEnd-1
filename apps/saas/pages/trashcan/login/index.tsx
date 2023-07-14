@@ -1,7 +1,7 @@
 import { LoginSection, SEO } from "@eden/package-ui";
 import type { GetServerSideProps, NextPage } from "next";
 
-import wave from "../../public/wave.gif";
+import wave from "../../../public/wave.gif";
 
 const LoginPage: NextPage = () => {
   return (

@@ -4,6 +4,7 @@ import { Avatar, LoginButton } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
@@ -51,7 +52,7 @@ export const LeftToggleNav = ({
           />
         )}
         <div
-          className="w-6 h-6 color-edenGreen-600 bg-edenPink-500 absolute -right-2 -bottom-3 z-10 flex h-12 w-5 cursor-pointer items-center justify-center rounded-md"
+          className="w-6 -mb-px h-6 color-edenGreen-600 bg-edenPink-500 absolute -right-2 -bottom-3 z-10 flex h-12 w-5 cursor-pointer items-center justify-center rounded-md"
           onClick={onToggleNav}
         >
           {unwrapped ? (
@@ -76,6 +77,11 @@ export interface UserButtonProps {
 const UserButton = ({ unwrapped }: UserButtonProps) => {
   const { currentUser } = useContext(UserContext);
 
+  const handleLogout = () => {
+    signOut();
+    localStorage.removeItem("eden_access_token");
+  };
+
   return currentUser ? (
     <div
       className={classNames(
@@ -93,7 +99,7 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
           </span>
         </div>
       )}
-      <FiLogOut className="cursor-pointer" size={20} />
+      <FiLogOut className="cursor-pointer" size={20} onClick={handleLogout} />
     </div>
   ) : null;
 };
