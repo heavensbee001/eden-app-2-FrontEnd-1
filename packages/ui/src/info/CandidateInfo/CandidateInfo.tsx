@@ -398,7 +398,7 @@ export const CandidateInfo = ({
             <div className="">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
-                  <div className="abolute px-6">
+                  <div className="px-8 py-4">
                     <Content />
                   </div>
                 </Tab.Panel>
