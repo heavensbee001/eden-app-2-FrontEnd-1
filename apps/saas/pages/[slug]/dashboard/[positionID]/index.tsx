@@ -110,9 +110,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1344,56 +1343,52 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "fixed right-0 top-0 z-20 transform overflow-y-scroll border-l-2 border-gray-300 transition-all duration-200 ease-in-out",
+            "fixed right-0 top-0 z-20 shadow-md h-screen overflow-y-scroll transition-width duration-200 ease-in-out",
             selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
-          <div className="scrollbar-hide min-h-screen overflow-y-scroll bg-white shadow-md">
-            {/* {selectedUserId ? ( */}
-
-            <CandidateInfo
-              key={selectedUserId || ""}
-              memberID={selectedUserId || ""}
-              // percentage={selectedUserScore}
-              summaryQuestions={selectedUserSummaryQuestions}
-              mostRelevantMemberNode={mostRelevantMemberNode}
-              candidate={candidatesOriginalList?.find(
-                (candidate) =>
-                  candidate?.user?._id?.toString() == selectedUserId?.toString()
-              )}
-              onClose={() => {
-                setSelectedUserId(null);
-              }}
-              rejectCandidateFn={handleRejectCandidate}
-              approveCandidateFn={handleApproveCandidate}
-              qualified={
-                Boolean(
-                  approvedTalentListCandidatesList?.find(
-                    (candidate) =>
-                      candidate?.user?._id?.toString() ==
-                      selectedUserId?.toString()
-                  )
-                ) ||
-                Boolean(
-                  rejectedTalentListCandidatesList?.find(
-                    (candidate) =>
-                      candidate?.user?._id?.toString() ==
-                      selectedUserId?.toString()
-                  )
+          <CandidateInfo
+            key={selectedUserId || ""}
+            memberID={selectedUserId || ""}
+            // percentage={selectedUserScore}
+            summaryQuestions={selectedUserSummaryQuestions}
+            mostRelevantMemberNode={mostRelevantMemberNode}
+            candidate={candidatesOriginalList?.find(
+              (candidate) =>
+                candidate?.user?._id?.toString() == selectedUserId?.toString()
+            )}
+            onClose={() => {
+              setSelectedUserId(null);
+            }}
+            rejectCandidateFn={handleRejectCandidate}
+            approveCandidateFn={handleApproveCandidate}
+            qualified={
+              Boolean(
+                approvedTalentListCandidatesList?.find(
+                  (candidate) =>
+                    candidate?.user?._id?.toString() ==
+                    selectedUserId?.toString()
                 )
-              }
-              handleCreateNewList={handleCreateNewList}
-              talentListsAvailables={talentListsAvailables}
-              handleAddCandidatesToList={function (): Promise<void> {
-                throw new Error("Function not implemented.");
-              }}
-            />
-            {/* ) : (
+              ) ||
+              Boolean(
+                rejectedTalentListCandidatesList?.find(
+                  (candidate) =>
+                    candidate?.user?._id?.toString() ==
+                    selectedUserId?.toString()
+                )
+              )
+            }
+            handleCreateNewList={handleCreateNewList}
+            talentListsAvailables={talentListsAvailables}
+            handleAddCandidatesToList={function (): Promise<void> {
+              throw new Error("Function not implemented.");
+            }}
+          />
+          {/* ) : (
             <div className="w-full pt-20 text-center">
               <p className="text-gray-400">Select a candidate</p>
             </div>
           )} */}
-          </div>
         </div>
         <div
           className={classNames(
