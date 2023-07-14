@@ -1,3 +1,4 @@
+export * from "./CompanyContext";
 export * from "./DiscoverContext";
 export * from "./GrantsContext";
 export * from "./ProjectsContext";

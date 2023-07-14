@@ -1,13 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { UserContext } from "@eden/package-context";
+import {
+  CompanyContext,
+  DiscoverActionKind,
+  UserContext,
+} from "@eden/package-context";
 import { Avatar, LoginButton } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
+import { HiCodeBracket } from "react-icons/hi2";
 
 export interface LeftToggleNavProps {
   unwrapped: boolean;
@@ -21,14 +27,16 @@ export const LeftToggleNav = ({
   onToggleNav,
 }: LeftToggleNavProps) => {
   const router = useRouter();
+  const { company } = useContext(CompanyContext);
 
   return (
     <nav
       className={classNames(
-        "flex flex-col absolute left-0 top-0 h-screen bg-edenPink-400 ease-in-out transition-width",
-        unwrapped ? "w-56" : "w-16"
+        "flex flex-col fixed left-0 top-0 h-screen bg-edenPink-400 ease-in-out transition-width",
+        unwrapped ? "w-[14.5rem]" : "w-16"
       )}
     >
+      {/* ---- Eden logo section ---- */}
       <section className="flex items-center relative p-4 border-b border-edenPink-500 h-[4.5rem]">
         {unwrapped ? (
           <span
@@ -62,7 +70,55 @@ export const LeftToggleNav = ({
           )}
         </div>
       </section>
-      <section></section>
+
+      {/* ---- Talent Pools Section ---- */}
+      <section className="relative px-4 py-8">
+        <h3
+          className={classNames(
+            "mb-4 overflow-hidden whitespace-nowrap ease-in-out transition-height",
+            unwrapped ? "h-6" : "h-0"
+          )}
+        >
+          Your Talent Pools
+        </h3>
+        {company &&
+          company.positions &&
+          company.positions.map((position, index) => (
+            <Link
+              key={index}
+              href={`/${company.slug}/dashboard/${position?._id}`}
+            >
+              <div
+                className={classNames(
+                  "relative flex justify-center items-center w-[calc(100%+2rem)] min-h-[3rem] -mx-4 px-4 py-2 hover:bg-edenPink-200",
+                  unwrapped ? "border-b border-edenPink-500" : "",
+                  router.query.positionID === position?._id
+                    ? "bg-edenPink-200"
+                    : ""
+                )}
+              >
+                {router.query.positionID === position?._id && (
+                  <div className="absolute left-0 top-0 h-full w-1 bg-edenGreen-500"></div>
+                )}
+                <div className="w-6 h-6 rounded-md bg-white bg-opacity-30 text-edenGreen-500 flex justify-center items-center">
+                  <HiCodeBracket size={"1rem"} />
+                </div>
+                {unwrapped && (
+                  <div className="ml-2 mr-auto">
+                    <p className="text-sm font-bold whitespace-nowrap">
+                      {position?.name}
+                    </p>
+                    <p className="text-xs text-edenGray-700 whitespace-nowrap">
+                      {company?.name}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+      </section>
+
+      {/* ---- User Button Section ---- */}
       <section className="mt-auto">
         <UserButton unwrapped={unwrapped} />
       </section>

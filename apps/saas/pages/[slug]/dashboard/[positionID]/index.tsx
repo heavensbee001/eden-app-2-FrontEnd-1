@@ -1003,19 +1003,13 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
       </Modal>
       <div className="mx-auto max-w-screen-2xl flex-grow p-8">
-        <div
-          className={classNames(
-            `z-20 transition-all duration-200 ease-in-out`,
-            selectedUserId ? "w-[calc(50%-1rem)]" : "w-full"
-          )}
-        >
+        <div className="z-20 transition-all duration-200 ease-in-out w-full">
           <div className="mb-4 flex items-center">
             <h1 className="text-edenGreen-600 mr-6">
               {findPositionData && findPositionData.findPosition.name
                 ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
                   findPositionData.findPosition.name.slice(1)
-                : ""}{" "}
-              Dashboard
+                : ""}
             </h1>
             <Button
               size="sm"
@@ -1074,15 +1068,6 @@ const PositionCRM: NextPageWithLayout = () => {
                 </div>
               </div>
             </Button>
-
-            {/* <Button
-            variant="secondary"
-            onClick={() => {
-              router.push(`/train-ai/${positionID}`);
-            }}
-            >
-            Train AI
-          </Button> */}
           </div>
           <div className="">
             <div className="mb-4 flex items-center">
@@ -1356,8 +1341,8 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll border-l-2 border-gray-300 transition-all duration-200 ease-in-out",
-            selectedUserId ? "w-[50vw]" : "w-0"
+            "fixed right-0 top-0 z-20 transform overflow-y-scroll border-l-2 border-gray-300 transition-all duration-200 ease-in-out",
+            selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
           <div className="scrollbar-hide min-h-screen overflow-y-scroll bg-white shadow-md">

@@ -2,7 +2,7 @@ import "../styles/global.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ApolloProvider } from "@apollo/client";
-import { UserProvider } from "@eden/package-context";
+import { CompanyProvider, UserProvider } from "@eden/package-context";
 import { apolloClient } from "@eden/package-graphql";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
@@ -35,7 +35,11 @@ const App = ({
   return (
     <SessionProvider session={session}>
       <ApolloProvider client={apolloClient}>
-        <UserProvider>{getLayout(<Component {...pageProps} />)}</UserProvider>
+        <UserProvider>
+          <CompanyProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </CompanyProvider>
+        </UserProvider>
         <ToastContainer />
       </ApolloProvider>
     </SessionProvider>

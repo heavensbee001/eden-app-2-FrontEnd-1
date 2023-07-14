@@ -224,7 +224,7 @@ export const CandidateInfo = ({
 
   return (
     <>
-      <div className="font-Unica absolute z-20 h-56 w-full flex-col bg-white text-center">
+      <div className="fontfont-Interolute z-20 h-56 w-full flex-col bg-white text-center">
         <FaChevronLeft
           className="absolute left-2 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
           onClick={onClose}
