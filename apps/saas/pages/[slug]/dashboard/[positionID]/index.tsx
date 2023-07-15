@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
+import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
@@ -1106,6 +1107,13 @@ const PositionCRM: NextPageWithLayout = () => {
               {opportunityDetailsOpen
                 ? "Close opportunity details"
                 : "See opportunity details"}
+              <div className={classNames("ml-auto")}>
+                {bestPicksOpen ? (
+                  <BiChevronUp color="#626262" size={"1.2rem"} />
+                ) : (
+                  <BiChevronDown color="#626262" size={"1.2rem"} />
+                )}
+              </div>
             </div>
           </section>
 
@@ -1127,11 +1135,15 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
             <div
               className={classNames(
-                "cursor-pointer p-2 flex items-center h-6 absolute right-0 top-0 text-xs text-edenGray-700"
+                "cursor-pointer px-2 py-3 flex items-center absolute right-0 top-0 text-xs text-edenGray-700"
               )}
               onClick={() => setBestPicksOpen(!bestPicksOpen)}
             >
-              {bestPicksOpen ? "^" : "v"}
+              {bestPicksOpen ? (
+                <BiChevronUp color="#626262" size={"1.2rem"} />
+              ) : (
+                <BiChevronDown color="#626262" size={"1.2rem"} />
+              )}
             </div>
           </section>
 
