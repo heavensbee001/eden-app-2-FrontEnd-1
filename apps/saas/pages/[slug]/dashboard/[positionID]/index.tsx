@@ -1112,7 +1112,7 @@ const PositionCRM: NextPageWithLayout = () => {
           <section className="relative mb-4">
             <div className="w-full bg-edenPink-100 overflow-hidden px-4 py-4 rounded-md">
               <h2 className="text-edenGreen-600">
-                Let's find your perfect candidate today.
+                Let&apos;s find your perfect candidate today.
               </h2>
               <p>Here are some candidates picked by me, to get you started. </p>
 
