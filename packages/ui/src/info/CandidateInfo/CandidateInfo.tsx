@@ -227,12 +227,12 @@ export const CandidateInfo = ({
         </div>
 
         {/* ---- Header ---- */}
-        <div className="">
+        <div>
           <div className="flex p-8 pb-4 mb-6">
             <div className="mr-3">
               <Avatar src={dataMember?.findMember.discordAvatar!} size={`md`} />
             </div>
-            <div>
+            <div className="w-full">
               <h3 className="font-Unica text-edenGreen-600">
                 {dataMember?.findMember?.discordName}
               </h3>
@@ -247,7 +247,7 @@ export const CandidateInfo = ({
                 <LongText
                   cutText={80}
                   text={(dataMember?.findMember?.bio as string) || ""}
-                  className={`whitespace-pre-wrap text-sm text-edenGray-900`}
+                  className={`whitespace-pre-wrap text-sm text-edenGray-900 w-full`}
                 />
               </div>
             </div>
@@ -398,7 +398,7 @@ export const CandidateInfo = ({
             <div className="">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
-                  <div className="abolute px-6">
+                  <div className="px-8 py-4">
                     <Content />
                   </div>
                 </Tab.Panel>
