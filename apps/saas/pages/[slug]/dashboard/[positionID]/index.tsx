@@ -20,7 +20,7 @@ import {
 } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
@@ -82,6 +82,7 @@ type relevantNodeObj = {
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID, slug } = router.query;
+  const { company } = useContext(CompanyContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
   const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
@@ -131,6 +132,9 @@ const PositionCRM: NextPageWithLayout = () => {
   >([]);
 
   const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
+  const [opportunityDetailsOpen, setOpportunityDetailsOpen] =
+    useState<boolean>(false);
+  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(false);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
     string[]
@@ -1007,12 +1011,16 @@ const PositionCRM: NextPageWithLayout = () => {
       <div className="mx-auto max-w-screen-2xl flex-grow p-8">
         <div className="z-20 transition-all duration-200 ease-in-out w-full">
           <div className="mb-4 flex items-center">
-            <h1 className="text-edenGreen-600 mr-6">
-              {findPositionData && findPositionData.findPosition.name
-                ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
-                  findPositionData.findPosition.name.slice(1)
-                : ""}
-            </h1>
+            <div>
+              <h1 className="text-edenGreen-600 mr-6">
+                {findPositionData && findPositionData.findPosition.name
+                  ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
+                    findPositionData.findPosition.name.slice(1)
+                  : ""}
+              </h1>
+              <p>{company?.name}</p>
+            </div>
+
             <Button
               size="sm"
               className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
@@ -1071,6 +1079,62 @@ const PositionCRM: NextPageWithLayout = () => {
               </div>
             </Button>
           </div>
+
+          <section
+            className={classNames(
+              "relative mb-4 transition-all ease-in-out",
+              opportunityDetailsOpen ? "pt-6" : "pt-3 mb-7"
+            )}
+          >
+            <div
+              className={classNames(
+                "border-t border-edenGreen-200 w-full bg-edenGreen-200 overflow-hidden px-4 rounded-md transition-all ease-in-out",
+                opportunityDetailsOpen
+                  ? "max-h-[30vh] py-4 rounded-tr-none"
+                  : "max-h-[0px] py-0"
+              )}
+            >
+              Opportunity details
+            </div>
+            <div
+              className={classNames(
+                "w-44 rounded-md cursor-pointer px-2 flex items-center h-6 absolute right-0 top-0 bg-edenGreen-200 text-xs text-edenGray-700",
+                opportunityDetailsOpen ? "rounded-bl-none rounded-br-none" : ""
+              )}
+              onClick={() => setOpportunityDetailsOpen(!opportunityDetailsOpen)}
+            >
+              {opportunityDetailsOpen
+                ? "Close opportunity details"
+                : "See opportunity details"}
+            </div>
+          </section>
+
+          <section className="relative mb-4">
+            <div className="w-full bg-edenPink-100 overflow-hidden px-4 py-4 rounded-md">
+              <h2 className="text-edenGreen-600">
+                Let's find your perfect candidate today.
+              </h2>
+              <p>Here are some candidates picked by me, to get you started. </p>
+
+              <div
+                className={classNames(
+                  "overflow-hidden transition-all ease-in-out",
+                  bestPicksOpen ? "max-h-[30vh]" : "max-h-0"
+                )}
+              >
+                Showing some picks :P
+              </div>
+            </div>
+            <div
+              className={classNames(
+                "cursor-pointer p-2 flex items-center h-6 absolute right-0 top-0 text-xs text-edenGray-700"
+              )}
+              onClick={() => setBestPicksOpen(!bestPicksOpen)}
+            >
+              {bestPicksOpen ? "^" : "v"}
+            </div>
+          </section>
+
           <div className="">
             <div className="mb-4 flex items-center">
               <div className="mr-4 max-w-[200px]">
@@ -1485,6 +1549,7 @@ export default PositionCRM;
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
+import { CompanyContext } from "@eden/package-context";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
