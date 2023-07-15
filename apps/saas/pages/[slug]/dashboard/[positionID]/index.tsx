@@ -1546,10 +1546,10 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default PositionCRM;
 
+import { CompanyContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
-import { CompanyContext } from "@eden/package-context";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
