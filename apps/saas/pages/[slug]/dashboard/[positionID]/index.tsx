@@ -1304,7 +1304,11 @@ const PositionCRM: NextPageWithLayout = () => {
               )}
             </div>
           </div>
-          <div className="grid grid-flow-row">
+          <div className="">
+            <h2 className="mb-5 text-edenGreen-600">
+              All candidates
+              <span className="inline-block ml-2 -mt-2 text-xs font-Unica font-normal text-edenGreen-500">{`(${candidatesFromTalentList.length})`}</span>
+            </h2>
             <CandidatesTableList
               candidateIDRowSelected={selectedUserId || null}
               candidatesList={
