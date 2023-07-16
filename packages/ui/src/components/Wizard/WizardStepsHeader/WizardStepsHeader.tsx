@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
+import { BiChevronRight } from "react-icons/bi";
 
 export interface IWizardStepsHeaderProps {
   steps: Array<string>;
@@ -34,18 +35,21 @@ export const WizardStepsHeader = ({
           <div
             className={classNames(
               currentStep === index
-                ? " bg-[#DEFEFF]"
-                : "cursor-pointer bg-[#70B2B4] text-slate-600",
-              "rounded-xl px-4 py-1"
+                ? "text-edenGreen-600"
+                : "cursor-pointer text-edenGreen-400"
             )}
             onClick={() => {
               if (currentStep != index) setStep(index);
             }}
           >
-            <span className="whitespace-nowrap text-sm">{step}</span>
+            <span className="whitespace-nowrap text-xs">
+              {step.toUpperCase()}
+            </span>
           </div>
           {index < steps.length - 1 && (
-            <div className="h-0 w-[15px] border-b-2 border-slate-500"></div>
+            <span className="px-2 pt-[2px]">
+              <BiChevronRight size={"1rem"} color="#00462C" />
+            </span>
           )}
         </div>
       ))}

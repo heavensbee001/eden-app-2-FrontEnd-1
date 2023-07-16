@@ -122,13 +122,12 @@ export const ChatSimple = ({
         <div className="h-[calc(100%-38px)] py-4">
           <Card
             border
-            shadow
-            className="scrollbar-hide h-full overflow-y-scroll bg-white"
+            className="border-edenGray-100 scrollbar-hide h-full overflow-y-scroll bg-white"
           >
             <div
               ref={componentRef}
               // className="h-full overflow-y-auto bg-white p-4"
-              className="scrollbar-thumb-blue scrollbar-thumb-rounded  scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3"
+              className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3"
             >
               {/* <div className="p:2 flex h-screen flex-1 flex-col justify-between sm:p-6"> */}
               {/* <p className="text-lg font-bold">Message Title</p> */}
@@ -149,11 +148,11 @@ export const ChatSimple = ({
                               "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                             )}
                           >
-                            <div className="text-start">
+                            <div className="relative">
                               <div>
                                 {chat.user !== "01" && (
                                   <>
-                                    <span className="text-deepBlack ml-2 text-xs font-semibold">
+                                    <span className="text-xs text-edenGray-700 font-semibold float-right">
                                       {currentUser?.discordName}
                                     </span>
                                   </>
@@ -161,7 +160,7 @@ export const ChatSimple = ({
 
                                 {chat.user !== "02" && (
                                   <>
-                                    <span className="text-edenGreen-600 text-xs font-semibold">
+                                    <span className="font-Moret text-edenGreen-600 text-sm font-semibold">
                                       Eden
                                     </span>
                                   </>
@@ -171,20 +170,28 @@ export const ChatSimple = ({
                               <span
                                 className={classNames(
                                   chat.user === "01"
-                                    ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                    : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                  "inline-block whitespace-pre-wrap rounded-lg px-4 py-2 text-xs"
+                                    ? "bg-edenPink-300"
+                                    : "bg-edenGray-100",
+                                  "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
                                 )}
                               >
                                 {chat.message}
                               </span>
+                              <div
+                                className={classNames(
+                                  "h-4 w-4 absolute bottom-2 -rotate-45 rounded-sm",
+                                  chat.user === "01"
+                                    ? "bg-edenPink-300 -left-[0.3rem]"
+                                    : "bg-edenGray-100 -right-[0.3rem]"
+                                )}
+                              ></div>
                             </div>
                           </div>
-                          <img
+                          {/* <img
                             src={Users[chat.user].img}
                             alt="My profile"
                             className="order-1 h-8 w-8 rounded-full"
-                          />
+                          /> */}
                         </div>
                       </div>
                     ))}
@@ -215,8 +222,7 @@ export const ChatSimple = ({
         </div>
         <Card
           border
-          shadow
-          className="flex w-full items-center justify-between  bg-white px-3"
+          className="flex w-full items-center justify-between border-edenGray-100 bg-white px-3"
         >
           <textarea
             className="max-height: 200px; height: 24px; overflow-y: hidden; min-w-11/12 m-0 w-full resize-none border-0 bg-transparent   py-4 pl-3 pr-10 focus:outline-none  md:pl-0 md:pr-12"

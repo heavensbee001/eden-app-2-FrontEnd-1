@@ -67,7 +67,7 @@ export const Wizard = ({
   }, [step]);
 
   return (
-    <div className="h-full">
+    <div className="relative h-full">
       {showStepsHeader && (
         <WizardStepsHeader
           currentStep={step}
