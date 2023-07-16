@@ -5,7 +5,6 @@ import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
   Button,
-  Card,
   ChatMessage,
   EdenAiProcessingModal,
   EdenTooltip,
@@ -300,12 +299,9 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <Card
-        className="mx-auto mt-2 h-[90vh] w-full max-w-5xl overflow-y-scroll bg-white"
-        shadow
-      >
+      <div className="relative mx-auto h-screen p-8 w-full max-w-5xl overflow-y-scroll bg-white">
         {currentUser && (
-          <div className="h-full w-full px-8">
+          <div className="h-full w-full">
             {/* <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
             </div> */}
@@ -314,19 +310,22 @@ const HomePage: NextPageWithLayout = () => {
               canPrev={false}
               // onStepChange={handleProgress}
             >
-              <WizardStep label={"Upload Description"}>
+              <WizardStep label={"Description"}>
                 <div className="flex h-full items-center justify-center">
-                  <form className="w-4/12" onSubmit={handleTextSubmit}>
-                    <p className="mb-4 text-center">
-                      Hi - {currentUser.discordName}.<br />
-                      Tell me about your opportunity. 👀
+                  <form
+                    className="w-full max-w-[33rem]"
+                    onSubmit={handleTextSubmit}
+                  >
+                    <p className="mb-4 text-edenGray-700 text-sm">
+                      Copy/paste your job description from LinkedIn, Greenhouse,
+                      ... below
                     </p>
 
                     <TextArea
                       value={pastedText}
                       onChange={handlePastedTextChange}
                       placeholder="Copy/paste your job description here."
-                      className="mb-4 pb-20 pl-4 pt-32 text-sm"
+                      className="mb-4 pb-20 px-4 pt-32 text-sm outline-0"
                     />
 
                     <Button
@@ -373,7 +372,7 @@ const HomePage: NextPageWithLayout = () => {
 
               {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
               <WizardStep label={"Eden Convo"}>
-                <div className="mx-auto h-[70vh] max-w-lg">
+                <div className="mx-auto h-[70vh] max-w-2xl">
                   <InterviewEdenAIContainer
                     handleEnd={handleInterviewEnd}
                     interviewQuestionsForPosition={
@@ -387,14 +386,14 @@ const HomePage: NextPageWithLayout = () => {
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">Key Priorities</h2>
                   <p className="mb-8 text-sm leading-tight text-gray-500">
-                    Here’s what I got your priorities are - please re-arrange as
-                    you see fit.
+                    Here&apos;s what I got your priorities are - please
+                    re-arrange as you see fit.
                   </p>
                   <PrioritiesAndTradeOffsContainer />
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Eden Alignment"}>
+              <WizardStep label={"Alignment"}>
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">
                     Complete Checks & Balances List
@@ -409,7 +408,7 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Edit Eden’s Suggestions"}>
+              <WizardStep label={"Eden Suggestions"}>
                 <div className="mx-auto h-full max-w-lg">
                   <h2 className="mb-4 text-xl font-medium">
                     Eden Seed Interview Questions
@@ -432,7 +431,7 @@ const HomePage: NextPageWithLayout = () => {
                   <FinalFormContainer />
                 </div>
               </WizardStep>
-              <WizardStep label={"Share Interview Link"}>
+              <WizardStep label={"Share Link"}>
                 <div className="flex h-full flex-col items-center justify-center pb-28">
                   <div className="max-w-lg">
                     <h2 className="mb-4 text-center text-xl font-medium">
@@ -488,7 +487,7 @@ const HomePage: NextPageWithLayout = () => {
             </Wizard>
           </div>
         )}
-      </Card>
+      </div>
     </>
   );
 };
