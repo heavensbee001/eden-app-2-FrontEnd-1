@@ -362,6 +362,8 @@ const PositionCRM: NextPageWithLayout = () => {
     if (user.overallScore) setSelectedUserScore(user.overallScore);
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
+
+    console.log("user.summaryQuestions = ", user.summaryQuestions);
   };
 
   const [updateSkillScore, setUpdateSkillScore] = useState<boolean>(false);
