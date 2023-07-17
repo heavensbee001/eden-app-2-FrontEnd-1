@@ -683,6 +683,7 @@ const InterviewEdenAIContainer = ({
             handleEnd={() => {
               if (handleEnd) handleEnd();
             }}
+            headerText={"Front End Dev @ Eden Protocol (hardcoded)"}
           />
         }
         {/* <CountdownTimer /> */}

@@ -80,6 +80,7 @@ export interface IInterviewEdenAIProps {
   setConversationID?: (conversationID: string) => void;
 
   placeholder?: any;
+  headerText?: any;
   handleEnd?: () => void;
 }
 
@@ -104,6 +105,7 @@ export const InterviewEdenAI = ({
   setConversationID,
   placeholder = "",
   handleEnd,
+  headerText,
 }: IInterviewEdenAIProps) => {
   // const { currentUser } = useContext(UserContext);
 
@@ -490,7 +492,7 @@ export const InterviewEdenAI = ({
 
       // setUnansweredQuestions(unansweredQuestions);
 
-      console.log("questionsT = ", questionsT);
+      // console.log("questionsT = ", questionsT);
 
       const conversationID = dataInterviewEdenAI?.interviewEdenAI
         ?.conversationID as string;
@@ -519,10 +521,11 @@ export const InterviewEdenAI = ({
       for (let i = 0; i < chatT.length; i++) {
         if (chatT[i].user == "01")
           chatNprepareGPTP += "Eden AI: " + chatT[i].message + "\n";
+        // eslint-disable-next-line no-unused-vars
         else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
       }
 
-      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+      // console.log("chatNprepareGPTP = ", chatNprepareGPTP);
 
       // setChatNprepareGPT(chatNprepareGPTP);
       setEdenAIsentMessage(false);
@@ -692,6 +695,7 @@ export const InterviewEdenAI = ({
         chatN={chatN}
         handleSentMessage={handleSentMessage}
         placeholder={placeholder}
+        headerText={headerText}
       />
       {/* <div>
         <button onClick={toraFunc}>Start Timer</button>
