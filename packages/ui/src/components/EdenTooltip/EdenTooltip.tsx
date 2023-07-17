@@ -8,16 +8,21 @@ export interface IEdenTooltipProps extends TooltipProps {
   children: React.ReactNode;
   innerTsx: React.ReactNode;
   id: string;
+  containerClassName?: string;
 }
 
 export const EdenTooltip: FC<IEdenTooltipProps> = (
   props: IEdenTooltipProps
 ) => {
-  const { id, innerTsx, children, className } = props;
+  const { id, innerTsx, children, className, containerClassName } = props;
 
   return (
     <>
-      <div data-tip={id} data-for={`badgeTip-${id}-description`}>
+      <div
+        data-tip={id}
+        data-for={`badgeTip-${id}-description`}
+        className={classNames(containerClassName ? containerClassName : "")}
+      >
         {children}
         <ReactTooltip
           {...(props as TooltipProps)}
