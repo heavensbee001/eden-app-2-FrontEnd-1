@@ -310,11 +310,6 @@ const HomePage: NextPageWithLayout = () => {
               canPrev={false}
               // onStepChange={handleProgress}
             >
-              <WizardStep label={"Priorities & TradeOffs"}>
-                <div className="mx-auto h-full max-w-5xl">
-                  <PrioritiesAndTradeOffsContainer />
-                </div>
-              </WizardStep>
               <WizardStep label={"Description"}>
                 <div className="flex h-full items-center justify-center">
                   <form
@@ -388,7 +383,7 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               <WizardStep label={"Priorities & TradeOffs"}>
-                <div className="mx-auto h-full max-w-4xl">
+                <div className="mx-auto h-full max-w-5xl">
                   <PrioritiesAndTradeOffsContainer />
                 </div>
               </WizardStep>
