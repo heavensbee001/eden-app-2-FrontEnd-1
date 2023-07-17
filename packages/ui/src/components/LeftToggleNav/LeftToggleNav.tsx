@@ -33,7 +33,7 @@ export const LeftToggleNav = ({
   return (
     <nav
       className={classNames(
-        "flex flex-col fixed left-0 top-0 h-screen bg-edenPink-400 ease-in-out transition-width",
+        "z-30 flex flex-col fixed left-0 top-0 h-screen bg-edenPink-400 ease-in-out transition-width",
         unwrapped ? "w-[14.5rem]" : "w-16"
       )}
     >
