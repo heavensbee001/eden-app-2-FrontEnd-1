@@ -299,7 +299,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen p-8 w-full max-w-5xl overflow-y-scroll bg-white">
+      <div className="relative mx-auto h-screen p-8 w-full max-w-5xl overflow-y-scroll">
         {currentUser && (
           <div className="h-full w-full">
             {/* <div className="absolute left-0 top-0 w-full">
@@ -310,6 +310,11 @@ const HomePage: NextPageWithLayout = () => {
               canPrev={false}
               // onStepChange={handleProgress}
             >
+              <WizardStep label={"Priorities & TradeOffs"}>
+                <div className="mx-auto h-full max-w-5xl">
+                  <PrioritiesAndTradeOffsContainer />
+                </div>
+              </WizardStep>
               <WizardStep label={"Description"}>
                 <div className="flex h-full items-center justify-center">
                   <form
@@ -383,18 +388,13 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               <WizardStep label={"Priorities & TradeOffs"}>
-                <div className="mx-auto h-full max-w-lg">
-                  <h2 className="mb-4 text-xl font-medium">Key Priorities</h2>
-                  <p className="mb-8 text-sm leading-tight text-gray-500">
-                    Here&apos;s what I got your priorities are - please
-                    re-arrange as you see fit.
-                  </p>
+                <div className="mx-auto h-full max-w-4xl">
                   <PrioritiesAndTradeOffsContainer />
                 </div>
               </WizardStep>
 
               <WizardStep label={"Alignment"}>
-                <div className="mx-auto h-full max-w-lg">
+                <div className="mx-auto h-full max-w-2xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Complete Checks & Balances List
                   </h2>
@@ -409,7 +409,7 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               <WizardStep label={"Eden Suggestions"}>
-                <div className="mx-auto h-full max-w-lg">
+                <div className="mx-auto h-full max-w-2xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Eden Seed Interview Questions
                   </h2>
@@ -433,7 +433,7 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
               <WizardStep label={"Share Link"}>
                 <div className="flex h-full flex-col items-center justify-center pb-28">
-                  <div className="max-w-lg">
+                  <div className="max-w-2xl">
                     <h2 className="mb-4 text-center text-xl font-medium">
                       Let&apos;s get the interviews rolling! 🎉
                     </h2>
@@ -837,63 +837,102 @@ const PrioritiesAndTradeOffsContainer =
     };
 
     return (
-      // <ul className="space-y-2">
-      //   {priorities.map((priority, index) => (
-      //     <li
-      //       key={index}
-      //       className="relative cursor-pointer"
-      //       onMouseEnter={() => setHoveredIndex(index)}
-      //       onMouseLeave={() => setHoveredIndex(null)}
-      //     >
-      //       <div className="font-bold">{priority.priority}</div>
-      //       {hoveredIndex === index && (
-      //         <div className="absolute left-0 top-full rounded-md bg-white p-2 shadow-lg">
-      //           {priority.reason}
-      //         </div>
-      //       )}
-      //     </li>
-      //   ))}
-      // </ul>
-      // <ul className="space-y-4">
-      //   {priorities.map((priority, index) => (
-      //     <li
-      //       key={index}
-      //       className="relative cursor-pointer text-xl"
-      //       onMouseEnter={() => setHoveredIndex(index)}
-      //       onMouseLeave={() => setHoveredIndex(null)}
-      //     >
-      //       <div className="font-bold">
-      //         {index + 1}. {priority.priority}
-      //       </div>
-      //       {hoveredIndex === index && (
-      //         <div className="absolute left-0 top-full z-50 rounded-md bg-white p-2 shadow-lg">
-      //           {priority.reason}
-      //         </div>
-      //       )}
-      //     </li>
-      //   ))}
-      // </ul>
-      <>
+      <div className="grid grid-cols-12 w-full h-full gap-4">
         {scraping && (
           <EdenAiProcessingModal
             open={scraping}
             title="Calculating criteria"
           ></EdenAiProcessingModal>
         )}
-        <ul className="mb-8">
-          {priorities &&
-            priorities.length > 0 &&
-            priorities.map((priority, index) => (
-              <li
-                key={index}
-                className="group relative cursor-pointer py-1 pl-10 text-xl"
-              >
+        <section className="px-12 py-4 col-span-6 bg-edenPink-200 rounded-md">
+          <h2 className="mb-2 text-edenGreen-600 text-center">
+            Key Priorities
+          </h2>
+          <p className="mb-6 text-center">
+            Here&apos;s what I got your priorities are - please re-arrange as
+            you see fit.
+          </p>
+          <ul className="">
+            {priorities &&
+              priorities.length > 0 &&
+              priorities.map((priority, index) => (
+                <li
+                  key={index}
+                  className="relative cursor-pointer py-4 px-4 bg-white rounded-md mb-2"
+                >
+                  <EdenTooltip
+                    id={priority.reason.split(" ").join("")}
+                    innerTsx={
+                      <div className="w-60">
+                        <h3>Reason for Priority: </h3>
+                        <p>{priority.reason}</p>
+                      </div>
+                    }
+                    place="top"
+                    effect="solid"
+                    backgroundColor="white"
+                    border
+                    borderColor="#e5e7eb"
+                    padding="0.5rem"
+                    offset={{ left: 100 }}
+                  >
+                    <div className="w-full flex items-center">
+                      <div className="-my-2 mr-4">
+                        <div
+                          className={classNames(
+                            "text-edenGreen-500 hover:text-edenGreen-300",
+                            index === 0 ? "hidden" : "",
+                            index === priorities.length - 1 ? "" : "-mb-2"
+                          )}
+                        >
+                          <BiChevronUp
+                            size={"1.5rem"}
+                            onClick={() => {
+                              permutePriorities(index, index - 1);
+                            }}
+                          />
+                        </div>
+                        <div
+                          className={classNames(
+                            "text-edenGreen-500 hover:text-edenGreen-300",
+                            index === priorities.length - 1 ? "hidden" : "",
+                            index === 0 ? "" : "-mt-2"
+                          )}
+                        >
+                          <BiChevronDown
+                            size={"1.5rem"}
+                            onClick={() => {
+                              permutePriorities(index, index + 1);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="">
+                        {index + 1}. {priority.priority}
+                      </div>
+                    </div>
+                  </EdenTooltip>
+                </li>
+              ))}
+          </ul>
+        </section>
+        <section className="px-12 py-4 col-span-6 bg-edenPink-200 rounded-md">
+          <h2 className="mb-2 text-edenGreen-600 text-center">Tradeoffs</h2>
+          <p className="mb-6 text-center">
+            From what I gathered, these are your tradeoff preferences - feel
+            free to adjust
+          </p>
+
+          <div className="flex flex-col items-center justify-center">
+            {tradeOffs &&
+              tradeOffs.length > 0 &&
+              tradeOffs.map((tradeOff, index) => (
                 <EdenTooltip
-                  id={priority.reason.split(" ").join("")}
+                  key={index}
+                  id={`tradeoff-${index}`}
                   innerTsx={
                     <div className="w-60">
-                      <h3>Reason for Priority: </h3>
-                      <p>{priority.reason}</p>
+                      <p>{tradeOff.reason}</p>
                     </div>
                   }
                   place="top"
@@ -902,167 +941,63 @@ const PrioritiesAndTradeOffsContainer =
                   border
                   borderColor="#e5e7eb"
                   padding="0.5rem"
-                  offset={{ left: 100 }}
+                  containerClassName="w-full"
                 >
-                  <div className="w-full">
-                    <div className="text-lg font-bold">
-                      {index + 1}. {priority.priority}
-                    </div>
-                    <div className="absolute left-2 top-0 hidden text-gray-400 group-hover:block">
-                      <div className="hover:text-gray-600">
-                        <div
-                          className={classNames(
-                            "hover:text-gray-600",
-                            index === 0 ? "hidden" : ""
-                          )}
-                        >
-                          <BiChevronUp
-                            onClick={() => {
-                              permutePriorities(index, index - 1);
-                            }}
-                          />
-                        </div>
+                  <div className="grid grid-cols-2">
+                    <label
+                      className={classNames(
+                        "col-span-1 cursor-pointer py-2 px-4 flex items-center justify-center w-full transition-all ease-in-out mb-2 text-center",
+                        selected[index] === tradeOff.tradeOff1
+                          ? "scale-[1.05] text-edenGreen-500 border border-edenGreen-300 bg-white rounded-md"
+                          : "bg-edenGreen-100 border border-edenGreen-100 text-edenGray-500 rounded-tl-md rounded-bl-md"
+                      )}
+                      htmlFor={`tradeoff-${index}-1`}
+                    >
+                      <div className="flex items-center justify-end">
+                        <span className="">{tradeOff.tradeOff1}</span>
+                        <input
+                          type="radio"
+                          className="ml-2 hidden"
+                          id={`tradeoff-${index}-1`}
+                          name={`tradeoff-${index}-1`}
+                          value={tradeOff.tradeOff1}
+                          checked={selected[index] === tradeOff.tradeOff1}
+                          onChange={() =>
+                            handleSelect(index, tradeOff.tradeOff1)
+                          }
+                        />
                       </div>
-                      <div className="hover:text-gray-600">
-                        <div
-                          className={classNames(
-                            "hover:text-gray-600",
-                            index === priorities.length - 1 ? "hidden" : "",
-                            index === 0 ? "mt-4" : ""
-                          )}
-                        >
-                          <BiChevronDown
-                            onClick={() => {
-                              permutePriorities(index, index + 1);
-                            }}
-                          />
-                        </div>
+                    </label>
+                    <label
+                      className={classNames(
+                        "col-span-1 cursor-pointer py-2 px-4 flex items-center justify-center w-full transition-all ease-in-out mb-2 text-center",
+                        selected[index] === tradeOff.tradeOff2
+                          ? "scale-[1.05] text-edenGreen-500 border border-edenGreen-300 bg-white rounded-md"
+                          : "bg-edenGreen-100 border border-edenGreen-100 text-edenGray-500 rounded-tr-md rounded-br-md"
+                      )}
+                      htmlFor={`tradeoff-${index}-2`}
+                    >
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          className="mr-2 hidden"
+                          id={`tradeoff-${index}-2`}
+                          name={`tradeoff-${index}-2`}
+                          value={tradeOff.tradeOff2}
+                          checked={selected[index] === tradeOff.tradeOff2}
+                          onChange={() =>
+                            handleSelect(index, tradeOff.tradeOff2)
+                          }
+                        />
+                        <span className="">{tradeOff.tradeOff2}</span>
                       </div>
-                    </div>
+                    </label>
                   </div>
                 </EdenTooltip>
-              </li>
-            ))}
-        </ul>
-
-        <h2 className="mb-4 text-xl font-medium">Tradeoffs</h2>
-        <p className="mb-8 text-sm leading-tight text-gray-500">
-          From what I gathered, these are your tradeoff preferences - feel free
-          to adjust
-        </p>
-
-        {/* <div className="flex flex-col items-center justify-center">
-          {tradeOffs.map((tradeOff, index) => (
-            <div key={index} className="flex flex-col gap-2">
-              <div className="flex flex-row items-center gap-4">
-                <label className="flex items-center gap-2 text-lg">
-                  <input
-                    type="radio"
-                    name={`tradeoff-${index}`}
-                    value={tradeOff.tradeOff1}
-                    checked={selected[index] === tradeOff.tradeOff1}
-                    onChange={() => handleSelect(index, tradeOff.tradeOff1)}
-                  />
-                  <span className="text-xl">{tradeOff.tradeOff1}</span>
-                </label>
-                <label className="flex items-center gap-2 text-lg">
-                  <input
-                    type="radio"
-                    name={`tradeoff-${index}`}
-                    value={tradeOff.tradeOff2}
-                    checked={selected[index] === tradeOff.tradeOff2}
-                    onChange={() => handleSelect(index, tradeOff.tradeOff2)}
-                  />
-                  <span className="text-xl">{tradeOff.tradeOff2}</span>
-                </label>
-              </div>
-            </div>
-          ))}
-        </div> */}
-        <div className="flex flex-col items-center justify-center">
-          {tradeOffs &&
-            tradeOffs.length > 0 &&
-            tradeOffs.map((tradeOff, index) => (
-              <EdenTooltip
-                key={index}
-                id={`tradeoff-${index}`}
-                innerTsx={
-                  <div className="w-60">
-                    <p>{tradeOff.reason}</p>
-                  </div>
-                }
-                place="top"
-                effect="solid"
-                backgroundColor="white"
-                border
-                borderColor="#e5e7eb"
-                padding="0.5rem"
-              >
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="col-span-1">
-                    <label className="flex cursor-pointer items-center justify-end text-lg">
-                      <span className="text-xl">{tradeOff.tradeOff1}</span>
-                      <input
-                        type="radio"
-                        name={`tradeoff-${index}`}
-                        value={tradeOff.tradeOff1}
-                        checked={selected[index] === tradeOff.tradeOff1}
-                        onChange={() => handleSelect(index, tradeOff.tradeOff1)}
-                        className="ml-2"
-                      />
-                    </label>
-                  </div>
-                  <div className="col-span-1">
-                    <label className="flex cursor-pointer items-center text-lg">
-                      <input
-                        type="radio"
-                        className="mr-2"
-                        name={`tradeoff-${index}`}
-                        value={tradeOff.tradeOff2}
-                        checked={selected[index] === tradeOff.tradeOff2}
-                        onChange={() => handleSelect(index, tradeOff.tradeOff2)}
-                      />
-                      <span className="text-xl">{tradeOff.tradeOff2}</span>
-                    </label>
-                  </div>
-                </div>
-              </EdenTooltip>
-            ))}
-        </div>
-      </>
-
-      // <div className="w-full">
-      //   {scraping && (
-      //     <p className="text-center text-gray-400">
-      //       Clculating criteria{" "}
-      //       <svg
-      //         className="inline-block animate-spin"
-      //         xmlns="http://www.w3.org/2000/svg"
-      //         width="21px"
-      //         height="21px"
-      //         viewBox="0 0 24 24"
-      //         fill="none"
-      //       >
-      //         <path
-      //           opacity="0.2"
-      //           fillRule="evenodd"
-      //           clipRule="evenodd"
-      //           d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-      //           fill="#000000"
-      //         />
-      //         <path
-      //           d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
-      //           fill="#000000"
-      //         />
-      //       </svg>
-      //     </p>
-      //   )}
-      //   {report && (
-      //     <div className="whitespace-pre-wrap">
-      //       {convertTextCategoriesToHTML(report)}
-      //     </div>
-      //   )}
-      // </div>
+              ))}
+          </div>
+        </section>
+      </div>
     );
   };
 
