@@ -4,13 +4,14 @@ import {
   DiscoverActionKind,
   UserContext,
 } from "@eden/package-context";
-import { Avatar, LoginButton } from "@eden/package-ui";
+import { Avatar, Button, LoginButton } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
+import { BiPlus } from "react-icons/bi";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { HiCodeBracket } from "react-icons/hi2";
@@ -72,7 +73,7 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- Talent Pools Section ---- */}
-      <section className="relative px-4 py-8">
+      <section className="relative px-4 py-8 mb-auto">
         <h3
           className={classNames(
             "mb-4 overflow-hidden whitespace-nowrap ease-in-out transition-height",
@@ -119,7 +120,23 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- User Button Section ---- */}
-      <section className="mt-auto">
+      <section className="pt-4 h-20">
+        <Button
+          className={classNames(
+            "mx-auto flex items-center whitespace-nowrap",
+            unwrapped ? "" : "!px-2"
+          )}
+          onClick={() => {
+            // handle add talent pool
+          }}
+        >
+          <BiPlus size={"1.3rem"} className="" />
+          {unwrapped && <span className="ml-1 font-Moret">Add Pool</span>}
+        </Button>
+      </section>
+
+      {/* ---- User Button Section ---- */}
+      <section className="">
         <UserButton unwrapped={unwrapped} />
       </section>
     </nav>
