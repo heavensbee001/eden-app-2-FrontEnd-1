@@ -318,7 +318,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <div style={{ width: "92%" }}>
           <div className="h-auto">
             {summaryQuestions
-              ? summaryQuestions.slice(-3).map((item, index) => (
+              ? summaryQuestions.map((item, index) => (
                   <div
                     key={index}
                     className={classNames(
