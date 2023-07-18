@@ -2,6 +2,7 @@
 import {
   Badge,
   CandidateTypeSkillMatch,
+  LongText,
   NodeList,
   ReadMore,
   // SocialMediaComp,
@@ -38,100 +39,40 @@ export const InfoTab: FC<Props> = ({
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
   const [seeMore, setSeeMore] = useState(false);
 
-  console.log("candidate = 998", candidate);
+  // console.log("candidate = 998", candidate);
 
   return (
     <>
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className=" mb-2 mt-4 flex  items-center  ">
-          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
-            <p
-              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
-            >
-              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
-            </p>
-            {candidate?.analysisCandidateEdenAI?.background?.content && (
-              <>
-                <hr className=" mx-2 my-0 h-8 border-gray-400" />
-                <div className="">
-                  <p className="text-lg font-bold">Eden First Impression 👀</p>
+        <div className="p-4 bg-edenPink-100 rounded-md mb-8 min-h-[3rem]">
+          <p
+            className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl font-bold float-right -mt-2`}
+          >
+            {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
+          </p>
+          {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+            <div className="">
+              <h2 className="text-edenGreen-600 mb-3">Eden First Impression</h2>
 
-                  {candidate?.analysisCandidateEdenAI?.background?.content}
-                </div>
-              </>
-            )}
-          </div>
+              {candidate?.analysisCandidateEdenAI?.background?.content}
+            </div>
+          )}
         </div>
       )}
 
-      <div className=" grid grid-cols-2">
-        <div className="col-span-2 ">
-          <div className="mb-2 flex flex-col items-start justify-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-6">
-            <TextLabel1>🌸 Short bio</TextLabel1>
-            {member?.user?.bio ? (
-              <>
-                <p className="font-Unica whitespace-pre-wrap font-normal">
-                  {seeMore
-                    ? member?.user.bio
-                    : member?.user.bio.length > 600
-                    ? member?.user.bio.substring(0, 600) + "..."
-                    : member?.user.bio}
-                </p>
-                {member?.user.bio.length > 600 && (
-                  <p
-                    className="mt-1 w-full cursor-pointer text-center text-sm"
-                    onClick={() => setSeeMore(!seeMore)}
-                  >
-                    {`see ${seeMore ? "less" : "more"}`}
-                    <span>
-                      {seeMore ? (
-                        <ChevronUpIcon width={16} className="ml-2 inline" />
-                      ) : (
-                        <ChevronDownIcon width={16} className="ml-2 inline" />
-                      )}
-                    </span>
-                  </p>
-                )}
-              </>
-            ) : (
-              <div className="flex w-full animate-pulse space-x-4">
-                <div className="flex-1 space-y-2 py-1">
-                  <div className="h-3 rounded bg-slate-200"></div>
-                  <div className="h-3 rounded bg-slate-200"></div>
-                </div>
-              </div>
-            )}
-          </div>
+      {/* ---- Bio ---- */}
+      <div className="mb-10">
+        <div className="px-4 mb-4 border-b border-edenGreen-300">
+          <h3 className="mb-3 text-edenGreen-500">Bio</h3>
         </div>
-
-        {/* <div className="col-2 p-2">
-          <section className="mb-2 w-full text-left">
-            <TextLabel1 className="text-xs">🔎 INTERESTS</TextLabel1>
-            <div className="ml-4 inline-flex flex-wrap">
-              {["Travelling", "Trading", "Community", "DAOs"].map(
-                (preference: string, index: number) => (
-                  <Badge
-                    key={index}
-                    text={preference}
-                    colorRGB="224,151,232"
-                    className={`font-Unica text-sm`}
-                    closeButton={false}
-                    cutText={16}
-                  />
-                )
-              )}
-            </div>
-          </section>
-
-          <section className="mb-2 w-full text-center">
-            <div className="my-4 flex justify-center">
-              {member?.links && member?.links.length > 0 && (
-                <SocialMediaComp size="sm" links={member?.links} />
-              )}
-            </div>
-          </section>
-        </div> */}
+        <LongText
+          cutText={600}
+          text={(member?.user?.bio as string) || ""}
+          className={`px-4 whitespace-pre-wrap text-sm text-edenGray-900 w-full max-h-40`}
+        />
       </div>
+
+      {/* ---- Skills and other data ---- */}
       <div className="mb-2 grid grid-cols-2 rounded-lg border-[1px] border-gray-300 bg-white px-2">
         {mostRelevantMemberNode &&
         member &&

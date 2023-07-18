@@ -1,7 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { SummaryQuestionType } from "@eden/package-graphql/generated";
 import { EdenTooltip } from "@eden/package-ui";
-
 import {
   BackgroundMatchChart,
   CandidateTypeSkillMatch,
@@ -291,204 +290,162 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   return (
     // <div className="relative pb-4 pt-12">
     //   <div className={`mx-auto mb-2`}>
-    <div className="relative pb-4 pt-2">
-      <div className=" mb-2 mt-4   flex items-center ">
-        <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
-          <p
-            className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
-          >
-            {/* {`${member?.letterAndColor?.totalMatchPerc?.letter}`} */}
-          </p>
 
-          <>
-            <hr className="mx-2 my-0 h-8 border-gray-400" />
-            <div className="">
-              <p className="text-xl font-bold">
-                Seed Questions that was Asked on the Interview 🙋
-              </p>
-              Here you can find the questions that were asked on the interview
-              together with the score, reason and actual answer if you click the
-              cards
-            </div>
-          </>
+    <div className="">
+      <div className="mb-10">
+        <div className="mb-4 px-4">
+          <h3 className="text-edenGreen-600">
+            Seed Questions that were asked on the Interview 🙋
+          </h3>
         </div>
+        <p className="text-edenGray-500 text-sm px-4">
+          Here you can find the questions that were asked on the interview
+          together with the score, reason and actual answer if you click the
+          cards
+        </p>
       </div>
 
-      <div className="mx-auto mb-2 flex justify-start pt-12">
-        <div style={{ width: "92%" }}>
-          <div className="h-auto">
-            {summaryQuestions
-              ? summaryQuestions.slice(-3).map((item, index) => (
-                  <div
-                    key={index}
-                    className={classNames(
-                      "transition-scale z-10 mb-2 h-full w-full cursor-pointer rounded-lg border-[1px] bg-white px-4 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
-                      summaryQuestionSelected?.questionID === item.questionID
-                        ? "border-accentColor scale-[1.02] bg-lime-50"
-                        : ""
-                    )}
-                    onClick={() => {
-                      setSummaryQuestionSelected(item);
-                      if (document) {
-                        setTimeout(() => {
-                          document
-                            .getElementById("summary-question-chat")
-                            ?.scrollIntoView({ behavior: "smooth" });
-                        }, 200);
-                      }
-                    }}
-                    style={{ marginBottom: "1.7rem" }}
+      <div>
+        <ul className="list-none space-y-1">
+          {summaryQuestions
+            ? summaryQuestions.slice(-3).map((item, index) => (
+                <li
+                  key={index}
+                  className="w-full cursor-pointer px-4 rounded-md border-b border-edenGray-100"
+                  onClick={() => {
+                    setSummaryQuestionSelected(item);
+                    if (document) {
+                      setTimeout(() => {
+                        document
+                          .getElementById("summary-question-chat")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                      }, 200);
+                    }
+                  }}
+                >
+                  <EdenTooltip
+                    id={index.toString()}
+                    innerTsx={
+                      <div className="w-60">
+                        <span className="text-gray-600">
+                          {item?.answerContent}
+                        </span>
+                      </div>
+                    }
+                    place="top"
+                    effect="solid"
+                    backgroundColor="white"
+                    border
+                    borderColor="#e5e7eb"
+                    padding="0.5rem"
                   >
-                    <EdenTooltip
-                      id={index.toString()}
-                      innerTsx={
-                        <div className="w-60">
-                          <span className="text-gray-600">
-                            {item?.answerContent}
-                          </span>
-                        </div>
-                      }
-                      place="top"
-                      effect="solid"
-                      backgroundColor="white"
-                      border
-                      borderColor="#e5e7eb"
-                      padding="0.5rem"
-                    >
-                      <div className=" py-3">
-                        {/* <p className="mb-4 font-bold text-lg text-gray-900">
-                    {item.questionContentSmall?.replace(".", "") ||
-                      item.questionContent?.replace(".", "")}
-                  </p> */}
-                        <div className="flex w-full">
-                          <div className="pl- w-3/4">
-                            <p className="mb-4 text-lg text-gray-900">
-                              {item.questionContentSmall?.replace(".", "") ||
-                                item.questionContent?.replace(".", "")}
-                            </p>
-                            {/* <p className="whitespace-pre-wrap text-gray-300">
-                        {item?.answerContent?.slice(0, 120)}
-                      </p> */}
-                          </div>
-                          <div className="flex w-1/4 justify-center px-2 py-2">
-                            {/* {!item.score ? (
-                        <TextInputLabel className="mr-auto text-center text-xs text-black">
-                          {item.answerContent?.replace(".", "")}
-                        </TextInputLabel>
-                      ) : null} */}
-                            <div className="text-md text-center font-bold leading-tight">
-                              {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
-                              <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
-                              {item.score ? (
-                                <p
-                                  className={classNames(
-                                    `text-${getPercentageColor(
-                                      item.score * 10
-                                    )}`
-                                    // `text-[#00462C]`
-                                  )}
-                                >
-                                  {getPercentageText(item.score * 10)}
-                                </p>
-                              ) : null}
+                    <div className="">
+                      <div className="flex w-full py-4">
+                        <p className="w-3/4 text-gray-900 text-sm">
+                          {item.questionContentSmall?.replace(".", "") ||
+                            item.questionContent?.replace(".", "")}
+                        </p>
+                        <div className="ml-auto flex items-center p-2">
+                          {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
+                          <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
+                          {item.score ? (
+                            <div className="px-4 -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                              <p
+                                className={classNames(
+                                  "text-2xs font-bold leading-tight",
+                                  `text-${getPercentageColor(item.score * 10)}`
+                                )}
+                              >
+                                {getPercentageText(item.score * 10)}
+                              </p>
                             </div>
-                          </div>
-                          {/* <div className="w-3/4 pl-12">
-                      <p className="mb-4 font-bold text-xl text-gray-900">
-                        {item.questionContentSmall?.replace(".", "") ||
-                          item.questionContent?.replace(".", "")}
-                      </p>
-                      <p className="whitespace-pre-wrap text-gray-300">
-                        {item?.answerContent?.slice(0, 120)}
-                      </p>
-                    </div> */}
+                          ) : null}
                         </div>
                       </div>
-                      <Modal
-                        open={
-                          summaryQuestionSelected?.questionID ===
-                          item.questionID
-                        }
-                        onClose={() => {
-                          setSummaryQuestionSelected(undefined);
-                        }}
-                        closeOnEsc
-                      >
-                        <h3 className="mb-4 text-xl font-medium">
-                          Candidate chat
-                        </h3>
-                        {summaryQuestionSelected &&
-                        summaryQuestionSelected.subConversationAnswer ? (
-                          <Card
-                            border
-                            shadow
-                            className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white  pb-4"
+                    </div>
+                    <Modal
+                      open={
+                        summaryQuestionSelected?.questionID === item.questionID
+                      }
+                      onClose={() => {
+                        setSummaryQuestionSelected(undefined);
+                      }}
+                      closeOnEsc
+                    >
+                      <h3 className="mb-4 text-xl font-medium">
+                        Candidate chat
+                      </h3>
+                      {summaryQuestionSelected &&
+                      summaryQuestionSelected.subConversationAnswer ? (
+                        <Card
+                          border
+                          shadow
+                          className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white pb-4"
+                        >
+                          <div
+                            id="summary-question-chat"
+                            className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
                           >
-                            <div
-                              id="summary-question-chat"
-                              className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
-                            >
-                              <div className="">
-                                {summaryQuestionSelected.subConversationAnswer.map(
-                                  (conversation: any, index: number) => (
-                                    <>
+                            <div className="">
+                              {summaryQuestionSelected.subConversationAnswer.map(
+                                (conversation: any, index: number) => (
+                                  <>
+                                    <div
+                                      className="chat-message p-2"
+                                      key={index}
+                                    >
                                       <div
-                                        className="chat-message p-2"
-                                        key={index}
+                                        className={classNames(
+                                          conversation.role == "assistant"
+                                            ? ""
+                                            : "justify-end",
+                                          "flex items-start"
+                                        )}
                                       >
                                         <div
                                           className={classNames(
                                             conversation.role == "assistant"
-                                              ? ""
-                                              : "justify-end",
-                                            "flex items-start"
+                                              ? "order-2"
+                                              : "order-1",
+                                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                                           )}
                                         >
-                                          <div
+                                          <span
+                                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
                                             className={classNames(
                                               conversation.role == "assistant"
-                                                ? "order-2"
-                                                : "order-1",
-                                              "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
                                             )}
                                           >
-                                            <span
-                                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                                              className={classNames(
-                                                conversation.role == "assistant"
-                                                  ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                                  : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
-                                              )}
-                                            >
-                                              {conversation.content}
-                                            </span>
-                                          </div>
-                                          <img
-                                            src={
-                                              conversation.role == "assistant"
-                                                ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                                                : member?.user?.discordAvatar ||
-                                                  ""
-                                            }
-                                            className="order-1 h-6 w-6 rounded-full"
-                                          />
+                                            {conversation.content}
+                                          </span>
                                         </div>
+                                        <img
+                                          src={
+                                            conversation.role == "assistant"
+                                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                                              : member?.user?.discordAvatar ||
+                                                ""
+                                          }
+                                          className="order-1 h-6 w-6 rounded-full"
+                                        />
                                       </div>
-                                    </>
-                                  )
-                                )}
-                              </div>
+                                    </div>
+                                  </>
+                                )
+                              )}
                             </div>
-                          </Card>
-                        ) : null}
-                      </Modal>
-                    </EdenTooltip>
-                  </div>
-                ))
-              : null}
-          </div>
-        </div>
+                          </div>
+                        </Card>
+                      ) : null}
+                    </Modal>
+                  </EdenTooltip>
+                </li>
+              ))
+            : null}
+        </ul>
       </div>
 
       {/* <div className="mb-8 grid grid-cols-12 border-[1px] bg-white pt-2"> */}
@@ -614,7 +571,7 @@ const getPercentageColor = (percentage: number) => {
   } else if (percentage >= 40) {
     color = "[#F5C7DE]";
   } else {
-    color = "[#F9E1ED]";
+    color = "edenGray-500";
   }
   return color;
 };
