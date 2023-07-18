@@ -129,7 +129,7 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- Talent Pools Section ---- */}
-      <section className="relative px-4 py-8 mb-auto max-h-[100%-30rem] overflow-y-scroll">
+      <section className="relative px-4 py-8 mb-auto max-h-[calc(100vh-15rem)] overflow-y-scroll">
         <h3
           className={classNames(
             "mb-4 overflow-hidden whitespace-nowrap ease-in-out transition-height",
