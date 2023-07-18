@@ -248,7 +248,11 @@ export const CandidateInfo = ({
               <div>
                 <LongText
                   cutText={80}
-                  text={(dataMember?.findMember?.bio as string) || ""}
+                  text={
+                    (dataMember?.findMember?.oneLiner as string) ||
+                    (dataMember?.findMember?.bio as string) ||
+                    ""
+                  }
                   className={`text-edenGray-900 w-full whitespace-pre-wrap text-sm`}
                 />
               </div>
