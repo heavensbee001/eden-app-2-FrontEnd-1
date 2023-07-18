@@ -26,11 +26,14 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
         {children}
         <ReactTooltip
           {...(props as TooltipProps)}
-          className={classNames("rounded-xl !opacity-100", className || "")}
+          className={classNames(
+            "w-fit rounded-xl !opacity-100",
+            className || ""
+          )}
           id={`badgeTip-${id}-description`}
         >
           <div className="chat-message  text-gray-700">
-            <div className={"flex items-start"}>
+            <div className={"flex "}>
               <div
                 className={
                   "order-2 mx-2 flex max-w-[78%] flex-col items-start  text-xs"
@@ -38,16 +41,14 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
               >
                 <span
                   // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                  className={
-                    "inline-block rounded-2xl rounded-tl-none  px-4 pb-2"
-                  }
+                  className={"inline-block rounded-2xl rounded-tl-none   pb-2"}
                 >
-                  <div className="text-md flex  items-center gap-1 text-zinc-600">
-                    <h1 className="text-edenGreen-600 text-lg">Eden&apos;s</h1>
-                    <p className="mt-[2px]">insights</p>
+                  <div className=" flex  items-center gap-1 text-[18px]  text-zinc-600">
+                    <h1 className="text-edenGreen-600 text-md ">Eden&apos;s</h1>
+                    <p className="mt-[2px] text-[14px]">insights</p>
                   </div>
 
-                  <div className="text-md"> {innerTsx}</div>
+                  <div className="mt-[1px] text-[14px]"> {innerTsx}</div>
                 </span>
               </div>
             </div>
