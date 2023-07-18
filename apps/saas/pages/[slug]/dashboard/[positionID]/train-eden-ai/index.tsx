@@ -878,7 +878,6 @@ const PrioritiesAndTradeOffsContainer =
                     id={priority.reason.split(" ").join("")}
                     innerTsx={
                       <div className="w-60">
-                        <h3>Reason for Priority: </h3>
                         <p>{priority.reason}</p>
                       </div>
                     }
