@@ -32,7 +32,7 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
           )}
           id={`badgeTip-${id}-description`}
         >
-          <div className="chat-message  text-gray-700">
+          <div className="chat-message text-gray-700">
             <div className={"flex "}>
               <div
                 className={
@@ -41,9 +41,9 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
               >
                 <span
                   // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                  className={"inline-block rounded-2xl rounded-tl-none   pb-2"}
+                  className={"inline-block rounded-2xl rounded-tl-none pb-2"}
                 >
-                  <div className=" flex  items-center gap-1 text-[18px]  text-zinc-600">
+                  <div className="flex items-center gap-1 text-[18px] text-zinc-600">
                     <h1 className="text-edenGreen-600 text-md ">Eden&apos;s</h1>
                     <p className="mt-[2px] text-[14px]">insights</p>
                   </div>

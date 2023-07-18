@@ -1,5 +1,6 @@
 import { CandidateTypeSkillMatch, EdenTooltip } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
+
 import { classNames } from "../../../../utils";
 
 type Grade = {

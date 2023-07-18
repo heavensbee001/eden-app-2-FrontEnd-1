@@ -317,14 +317,14 @@ const HomePage: NextPageWithLayout = () => {
                     onSubmit={handleTextSubmit}
                   >
                     <p className="text-edenGray-700 mb-4 text-sm">
-                      Copy/paste your job description from LinkedIn, Greenhouse,
-                      ... below
+                      Copy/paste your job description from LinkedIn,
+                      Greenhouse...
                     </p>
 
                     <TextArea
                       value={pastedText}
                       onChange={handlePastedTextChange}
-                      placeholder="Copy/paste your job description here."
+                      placeholder="This is a sample text..."
                       className="mb-4 px-4 pb-20 pt-32 text-sm outline-0"
                     />
 

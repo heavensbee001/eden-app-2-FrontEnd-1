@@ -144,11 +144,11 @@ export const ChatSimple = ({
               >
                 {/* <div className="p:2 flex h-screen flex-1 flex-col justify-between sm:p-6"> */}
                 {/* <p className="text-lg font-bold">Message Title</p> */}
-                <div className="mb-4">
+                <div className="">
                   {chatN && chatN.length ? (
                     <>
                       {chatN.map((chat: any, index: any) => (
-                        <div className="chat-message" key={index}>
+                        <div className="chat-message mb-4" key={index}>
                           <div
                             className={classNames(
                               chat.user === "01" ? "" : "justify-end",
