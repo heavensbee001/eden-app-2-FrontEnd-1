@@ -94,7 +94,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   };
   // const [showMatchDetails, setShowMatchDetails] = useState(true);
 
-  console.log("candidatesList 00 0 = ", candidatesList);
+  // console.log("candidatesList 00 0 = ", candidatesList);
 
   //@TODO this is a mock
   const getSkillsNumber = (letter: string) => {

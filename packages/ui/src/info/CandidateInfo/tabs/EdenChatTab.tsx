@@ -28,7 +28,6 @@ export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
     <>
       <Card
         border
-        shadow
         className="mx-auto mt-3 h-[calc(100vh-17rem)] max-w-lg overflow-scroll !border-gray-200 bg-white"
       >
         <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3">

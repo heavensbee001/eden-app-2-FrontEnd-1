@@ -8,6 +8,7 @@ import {
 import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
+  Avatar,
   Button,
   CandidateInfo,
   CandidatesTableList,
@@ -1128,11 +1129,23 @@ const PositionCRM: NextPageWithLayout = () => {
 
               <div
                 className={classNames(
-                  "overflow-hidden transition-all ease-in-out",
-                  bestPicksOpen ? "max-h-[30vh]" : "max-h-0"
+                  "overflow-x-scroll scrollbar-hide transition-all ease-in-out",
+                  bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
-                Showing some picks :P
+                <div className="whitespace-nowrap">
+                  {candidatesUnqualifiedList
+                    .slice(0, 3)
+                    .map((candidate, index) => (
+                      <CandidateCard
+                        candidate={candidate}
+                        onClick={() => {
+                          setSelectedUserId(candidate.user?._id!);
+                        }}
+                        key={index}
+                      />
+                    ))}
+                </div>
               </div>
             </div>
             <div
@@ -1391,7 +1404,7 @@ const PositionCRM: NextPageWithLayout = () => {
               candidateIDRowSelected={selectedUserId || null}
               candidatesList={
                 talentListSelected?._id === "000"
-                  ? candidatesUnqualifiedList
+                  ? candidatesUnqualifiedList.slice(3, -1)
                   : candidatesFromTalentList
               }
               fetchIsLoading={findPositionIsLoading}
@@ -1564,6 +1577,7 @@ import { CompanyContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
+import { FaArrowRight } from "react-icons/fa";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -1587,3 +1601,30 @@ export async function getServerSideProps(ctx: {
     props: {},
   };
 }
+interface ICandidateCardProps {
+  candidate: CandidateTypeSkillMatch;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
+}
+const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
+  return (
+    <div
+      className="group inline-block cursor-pointer relative rounded-md bg-white border border-edenGray-100 w-80 mr-4 last:mr-0"
+      onClick={onClick}
+    >
+      <div className="py-6 px-4 flex" onClick={onClick}>
+        <div className="mr-4">
+          <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
+        </div>
+        <p className="text-edenGreen-600 font-bold">
+          {candidate.user?.discordName}
+        </p>
+        <Button
+          className="absolute bottom-2 right-2 h-6 w-6 !p-0 !rounded-full bg-edenGreen-100 flex items-center justify-center group-hover:bg-edenGreen-200"
+          variant="tertiary"
+        >
+          <FaArrowRight size={"0.75rem"} />
+        </Button>
+      </div>
+    </div>
+  );
+};
