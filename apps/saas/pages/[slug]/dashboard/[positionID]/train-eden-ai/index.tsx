@@ -299,7 +299,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen p-8 w-full max-w-5xl overflow-y-scroll">
+      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8">
         {currentUser && (
           <div className="h-full w-full">
             {/* <div className="absolute left-0 top-0 w-full">
@@ -316,7 +316,7 @@ const HomePage: NextPageWithLayout = () => {
                     className="w-full max-w-[33rem]"
                     onSubmit={handleTextSubmit}
                   >
-                    <p className="mb-4 text-edenGray-700 text-sm">
+                    <p className="text-edenGray-700 mb-4 text-sm">
                       Copy/paste your job description from LinkedIn,
                       Greenhouse...
                     </p>
@@ -325,7 +325,7 @@ const HomePage: NextPageWithLayout = () => {
                       value={pastedText}
                       onChange={handlePastedTextChange}
                       placeholder="This is a sample text..."
-                      className="mb-4 pb-20 px-4 pt-32 text-sm outline-0"
+                      className="mb-4 px-4 pb-20 pt-32 text-sm outline-0"
                     />
 
                     <Button
@@ -713,6 +713,7 @@ export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
         tradeOff1
         tradeOff2
         reason
+        selected
       }
     }
   }
@@ -727,6 +728,7 @@ interface TradeOffsObj {
   tradeOff1: string;
   tradeOff2: string;
   reason: string;
+  selected: string;
 }
 
 interface IPrioritiesAndTradeOffsContainerProps {}
@@ -772,9 +774,25 @@ const PrioritiesAndTradeOffsContainer =
 
           setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
 
+          console.log(
+            "findPrioritiesTrainEdenAI.tradeOffs = ",
+            findPrioritiesTrainEdenAI.tradeOffs
+          );
+
+          // setSelected(
+          //   findPrioritiesTrainEdenAI.tradeOffs.map(
+          //     (tradeOff: TradeOffsObj) => tradeOff.tradeOff2
+          //   )
+          // );
           setSelected(
             findPrioritiesTrainEdenAI.tradeOffs.map(
-              (tradeOff: TradeOffsObj) => tradeOff.tradeOff2
+              (tradeOff: TradeOffsObj) => {
+                if (tradeOff.selected == tradeOff.tradeOff1) {
+                  return tradeOff.tradeOff1;
+                } else {
+                  return tradeOff.tradeOff2;
+                }
+              }
             )
           );
         },
@@ -833,15 +851,15 @@ const PrioritiesAndTradeOffsContainer =
     };
 
     return (
-      <div className="grid grid-cols-12 w-full h-full gap-4">
+      <div className="grid h-full w-full grid-cols-12 gap-4">
         {scraping && (
           <EdenAiProcessingModal
             open={scraping}
             title="Calculating criteria"
           ></EdenAiProcessingModal>
         )}
-        <section className="px-12 py-4 col-span-6 bg-edenPink-200 rounded-md">
-          <h2 className="mb-2 text-edenGreen-600 text-center">
+        <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+          <h2 className="text-edenGreen-600 mb-2 text-center">
             Key Priorities
           </h2>
           <p className="mb-6 text-center">
@@ -854,13 +872,12 @@ const PrioritiesAndTradeOffsContainer =
               priorities.map((priority, index) => (
                 <li
                   key={index}
-                  className="relative cursor-pointer py-4 px-4 bg-white rounded-md mb-2"
+                  className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-4"
                 >
                   <EdenTooltip
                     id={priority.reason.split(" ").join("")}
                     innerTsx={
                       <div className="w-60">
-                        <h3>Reason for Priority: </h3>
                         <p>{priority.reason}</p>
                       </div>
                     }
@@ -872,7 +889,7 @@ const PrioritiesAndTradeOffsContainer =
                     padding="0.5rem"
                     offset={{ left: 100 }}
                   >
-                    <div className="w-full flex items-center">
+                    <div className="flex w-full items-center">
                       <div className="-my-2 mr-4">
                         <div
                           className={classNames(
@@ -912,8 +929,8 @@ const PrioritiesAndTradeOffsContainer =
               ))}
           </ul>
         </section>
-        <section className="px-12 py-4 col-span-6 bg-edenPink-200 rounded-md">
-          <h2 className="mb-2 text-edenGreen-600 text-center">Tradeoffs</h2>
+        <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+          <h2 className="text-edenGreen-600 mb-2 text-center">Tradeoffs</h2>
           <p className="mb-6 text-center">
             From what I gathered, these are your tradeoff preferences - feel
             free to adjust
@@ -942,10 +959,10 @@ const PrioritiesAndTradeOffsContainer =
                   <div className="grid grid-cols-2">
                     <label
                       className={classNames(
-                        "col-span-1 cursor-pointer py-2 px-4 flex items-center justify-center w-full transition-all ease-in-out mb-2 text-center",
+                        "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
                         selected[index] === tradeOff.tradeOff1
-                          ? "scale-[1.05] text-edenGreen-500 border border-edenGreen-300 bg-white rounded-md"
-                          : "bg-edenGreen-100 border border-edenGreen-100 text-edenGray-500 rounded-tl-md rounded-bl-md"
+                          ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                          : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
                       )}
                       htmlFor={`tradeoff-${index}-1`}
                     >
@@ -966,10 +983,10 @@ const PrioritiesAndTradeOffsContainer =
                     </label>
                     <label
                       className={classNames(
-                        "col-span-1 cursor-pointer py-2 px-4 flex items-center justify-center w-full transition-all ease-in-out mb-2 text-center",
+                        "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
                         selected[index] === tradeOff.tradeOff2
-                          ? "scale-[1.05] text-edenGreen-500 border border-edenGreen-300 bg-white rounded-md"
-                          : "bg-edenGreen-100 border border-edenGreen-100 text-edenGray-500 rounded-tr-md rounded-br-md"
+                          ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                          : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
                       )}
                       htmlFor={`tradeoff-${index}-2`}
                     >

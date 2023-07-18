@@ -26,30 +26,31 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
         {children}
         <ReactTooltip
           {...(props as TooltipProps)}
-          className={classNames("!opacity-100", className || "")}
+          className={classNames(
+            "w-fit rounded-xl !opacity-100",
+            className || ""
+          )}
           id={`badgeTip-${id}-description`}
         >
-          <div className="chat-message p-2 text-gray-700">
-            <div className={"flex items-start"}>
+          <div className="chat-message  text-gray-700">
+            <div className={"flex "}>
               <div
                 className={
-                  "order-2 mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                  "order-2 mx-2 flex max-w-[78%] flex-col items-start  text-xs"
                 }
               >
                 <span
                   // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                  className={
-                    "inline-block whitespace-pre-wrap rounded-lg rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7] px-4 py-2"
-                  }
+                  className={"inline-block rounded-2xl rounded-tl-none   pb-2"}
                 >
-                  {innerTsx}
+                  <div className=" flex  items-center gap-1 text-[18px]  text-zinc-600">
+                    <h1 className="text-edenGreen-600 text-md ">Eden&apos;s</h1>
+                    <p className="mt-[2px] text-[14px]">insights</p>
+                  </div>
+
+                  <div className="mt-[1px] text-[14px]"> {innerTsx}</div>
                 </span>
               </div>
-              <img
-                src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                alt="My profile"
-                className="order-1 h-6 w-6 rounded-full"
-              />
             </div>
           </div>
         </ReactTooltip>

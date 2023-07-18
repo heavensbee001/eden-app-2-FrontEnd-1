@@ -142,33 +142,33 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     }
   );
 
-  type radiochartType = {
-    memberInfo: {
-      discordName: string;
-      attributes: {
-        [key: string]: number;
-      };
-    };
-  };
+  // type radiochartType = {
+  //   memberInfo: {
+  //     discordName: string;
+  //     attributes: {
+  //       [key: string]: number;
+  //     };
+  //   };
+  // };
 
-  const [radioChart, setRadioChart] = useState<radiochartType[]>([]);
+  // const [radioChart, setRadioChart] = useState<radiochartType[]>([]);
 
-  const optionsRadar = {
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-    },
-    scales: {
-      r: {
-        suggestedMin: 30,
-        suggestedMax: 100,
-        ticks: {
-          stepSize: 20, // Optional: Specify the step size between ticks
-        },
-      },
-    },
-  };
+  // const optionsRadar = {
+  //   plugins: {
+  //     legend: {
+  //       position: "bottom",
+  //     },
+  //   },
+  //   scales: {
+  //     r: {
+  //       suggestedMin: 30,
+  //       suggestedMax: 100,
+  //       ticks: {
+  //         stepSize: 20, // Optional: Specify the step size between ticks
+  //       },
+  //     },
+  //   },
+  // };
 
   // const { loading: radioChartLoading } = useQuery(
   //   MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES,
@@ -308,7 +308,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       <div>
         <ul className="list-none space-y-1">
           {summaryQuestions
-            ? summaryQuestions.slice(-3).map((item, index) => (
+            ? summaryQuestions.map((item, index) => (
                 <li
                   key={index}
                   className="w-full cursor-pointer px-4 rounded-md border-b border-edenGray-100"

@@ -189,6 +189,7 @@ export const CandidateInfo = ({
       tab: "Transcript",
       Content: () => (
         <EdenChatTab
+          member={dataMember?.findMember}
           memberImg={dataMember?.findMember.discordAvatar}
           conversationID={candidate?.conversationID || undefined}
         />
@@ -221,14 +222,14 @@ export const CandidateInfo = ({
 
   return (
     <div className="bg-white">
-      <div className="w-full flex-col h-full overflow-y-scroll">
-        <div className="flex items-center justify-center bg-edenGreen-100 h-6 w-6 rounded-md absolute right-10 top-9 cursor-pointer hover:bg-edenGreen-200">
+      <div className="h-full w-full flex-col overflow-y-scroll">
+        <div className="bg-edenGreen-100 hover:bg-edenGreen-200 absolute right-10 top-9 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md">
           <IoClose color="#19563F" size={"1rem"} onClick={onClose} />
         </div>
 
         {/* ---- Header ---- */}
         <div>
-          <div className="flex p-8 pb-4 mb-6">
+          <div className="mb-6 flex p-8 pb-4">
             <div className="mr-3">
               <Avatar src={dataMember?.findMember.discordAvatar!} size={`md`} />
             </div>
@@ -237,7 +238,7 @@ export const CandidateInfo = ({
                 {dataMember?.findMember?.discordName}
               </h3>
               <div>
-                <p className="text-xs text-edenGray-700">
+                <p className="text-edenGray-700 text-xs">
                   <span>{dataMember?.findMember?.location}</span>
                   {dataMember?.findMember?.timeZone && " | "}
                   <span>{dataMember?.findMember?.timeZone}</span>
@@ -247,14 +248,14 @@ export const CandidateInfo = ({
                 <LongText
                   cutText={80}
                   text={(dataMember?.findMember?.bio as string) || ""}
-                  className={`whitespace-pre-wrap text-sm text-edenGray-900 w-full`}
+                  className={`text-edenGray-900 w-full whitespace-pre-wrap text-sm`}
                 />
               </div>
             </div>
           </div>
 
           {/* <div className="absolute right-8 top-4 flex gap-4">
-            ------- add to talent pool button ------- 
+            ------- add to talent pool button -------
             <div>
               <span
                 // onClick={() => {
@@ -278,7 +279,7 @@ export const CandidateInfo = ({
                 ></ReactTooltip>
               </span>
 
-              ------- Add candidate to list ------- 
+              ------- Add candidate to list -------
 
               {addToListOpen && (
                 <div
@@ -377,16 +378,16 @@ export const CandidateInfo = ({
             setIndex(index);
           }}
         >
-          <Tab.List className="flex h-8 w-full justify-between border-b border-edenGreen-300">
+          <Tab.List className="border-edenGreen-300 flex h-8 w-full justify-between border-b">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}
                 className={({ selected }) =>
                   classNames(
-                    "text-edenGreen-400 pb-2 -mb-px w-full text-xs",
+                    "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
                     selected
                       ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
-                      : "hover:border-b hover:text-edenGreen-500 hover:border-edenGreen-600"
+                      : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
                   )
                 }
               >
