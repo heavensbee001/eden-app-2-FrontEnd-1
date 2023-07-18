@@ -1,7 +1,7 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 import { Company } from "@eden/package-graphql/generated";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 // import { isAllServers, isEdenStaff } from "../../data";
 import { CompanyContext } from "./CompanyContext";
@@ -26,24 +26,48 @@ export interface CompanyProviderProps {
 
 export const CompanyProvider = ({ children }: CompanyProviderProps) => {
   const router = useRouter();
+  const [company, setCompany] = useState<Company | undefined>(undefined);
 
-  const { data: dataFindCompany } = useQuery(FIND_COMPANY_FROM_SLUG, {
-    variables: {
-      fields: {
-        slug: router.query.slug,
+  // const { data: dataFindCompany } = useQuery(FIND_COMPANY_FROM_SLUG, {
+  //   variables: {
+  //     fields: {
+  //       slug: router.query.slug,
+  //     },
+  //   },
+  //   ssr: false,
+  //   skip: !router.query.slug,
+  // });
+
+  const [getCompany, { data: dataFindCompany }] = useLazyQuery(
+    FIND_COMPANY_FROM_SLUG,
+    {
+      variables: {
+        fields: {
+          slug: router.query.slug,
+        },
       },
-    },
-    ssr: false,
-    skip: !router.query.slug,
-  });
+      ssr: false,
+      fetchPolicy: "network-only",
+    }
+  );
 
-  // useMemo(() => {
-  //   if (dataFindCompany) {
-  //   }
-  // }, [dataFindCompany?.findCompanyFromSlug]);
+  const getCompanyFunc = () => {
+    getCompany();
+  };
 
-  const injectContext: { company: Company | undefined } = {
-    company: dataFindCompany?.findCompanyFromSlug,
+  useEffect(() => {
+    getCompany();
+  }, []);
+
+  useMemo(() => {
+    if (dataFindCompany?.findCompanyFromSlug) {
+      setCompany(dataFindCompany?.findCompanyFromSlug);
+    }
+  }, [dataFindCompany?.findCompanyFromSlug]);
+
+  const injectContext = {
+    company,
+    getCompanyFunc,
   };
 
   return (

@@ -1,10 +1,16 @@
 /* eslint-disable no-unused-vars */
+import { gql, useMutation } from "@apollo/client";
 import {
   CompanyContext,
   DiscoverActionKind,
   UserContext,
 } from "@eden/package-context";
-import { Avatar, Button, LoginButton } from "@eden/package-ui";
+import {
+  Avatar,
+  Button,
+  EdenAiProcessingModal,
+  LoginButton,
+} from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,6 +21,15 @@ import { BiPlus } from "react-icons/bi";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { HiCodeBracket } from "react-icons/hi2";
+import { v4 as uuidv4 } from "uuid";
+
+const UPDATE_POSITION = gql`
+  mutation ($fields: updatePositionInput!) {
+    updatePosition(fields: $fields) {
+      _id
+    }
+  }
+`;
 
 export interface LeftToggleNavProps {
   unwrapped: boolean;
@@ -28,7 +43,48 @@ export const LeftToggleNav = ({
   onToggleNav,
 }: LeftToggleNavProps) => {
   const router = useRouter();
-  const { company } = useContext(CompanyContext);
+  const { company, getCompanyFunc } = useContext(CompanyContext);
+
+  const [updatePositionLoading, setUpdatePositionLoading] =
+    useState<boolean>(false);
+
+  const [updatePosition] = useMutation(UPDATE_POSITION, {
+    onCompleted(updatePositionData) {
+      getCompanyFunc();
+      router
+        .push(
+          `/${company?.slug}/dashboard/${updatePositionData.updatePosition._id}/train-eden-ai`
+        )
+        .then(() => {
+          setUpdatePositionLoading(false);
+        });
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const creatingPositionModal = (
+    <EdenAiProcessingModal
+      title="Creating position"
+      open={updatePositionLoading}
+    ></EdenAiProcessingModal>
+  );
+
+  const handleCreatePosition = () => {
+    const randId = uuidv4();
+
+    setUpdatePositionLoading(true);
+
+    updatePosition({
+      variables: {
+        fields: {
+          name: `New Position ${randId}`,
+          companyID: company?._id,
+        },
+      },
+    });
+  };
 
   return (
     <nav
@@ -73,7 +129,7 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- Talent Pools Section ---- */}
-      <section className="relative px-4 py-8 mb-auto">
+      <section className="relative px-4 py-8 mb-auto max-h-[100%-30rem] overflow-y-scroll">
         <h3
           className={classNames(
             "mb-4 overflow-hidden whitespace-nowrap ease-in-out transition-height",
@@ -107,7 +163,8 @@ export const LeftToggleNav = ({
                 {unwrapped && (
                   <div className="ml-2 mr-auto">
                     <p className="text-sm font-bold whitespace-nowrap">
-                      {position?.name}
+                      {position?.name?.slice(0, 20)}
+                      {position?.name?.length! > 20 ? "..." : ""}
                     </p>
                     <p className="text-xs text-edenGray-700 whitespace-nowrap">
                       {company?.name}
@@ -126,13 +183,12 @@ export const LeftToggleNav = ({
             "mx-auto flex items-center whitespace-nowrap",
             unwrapped ? "" : "!px-2"
           )}
-          onClick={() => {
-            // handle add talent pool
-          }}
+          onClick={handleCreatePosition}
         >
           <BiPlus size={"1.3rem"} className="" />
-          {unwrapped && <span className="ml-1 font-Moret">Add Pool</span>}
+          {unwrapped && <span className="ml-1 font-Moret">Add Position</span>}
         </Button>
+        {creatingPositionModal}
       </section>
 
       {/* ---- User Button Section ---- */}
