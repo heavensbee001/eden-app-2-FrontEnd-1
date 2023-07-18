@@ -7,6 +7,7 @@ export const FIND_MEMBER = gql`
       discordAvatar
       discordName
       bio
+      oneLiner
       archiveProjects
       discriminator
       hoursPerWeek
