@@ -3,12 +3,10 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -339,6 +337,7 @@ export type Members = {
   network?: Maybe<Array<Maybe<Members>>>;
   nodes?: Maybe<Array<Maybe<NodesType>>>;
   onbording?: Maybe<OnboardingType>;
+  oneLiner?: Maybe<Scalars["String"]>;
   positionsApplied?: Maybe<Array<Maybe<PositionsAppliedType>>>;
   preferences?: Maybe<PreferencesType>;
   previousProjects?: Maybe<Array<Maybe<PreviousProjectsType>>>;
@@ -3765,7 +3764,9 @@ export type PositionsRequirementsType = {
   content?: Maybe<Scalars["String"]>;
   originalContent?: Maybe<Scalars["String"]>;
   positionPreparationMemory?: Maybe<Scalars["Boolean"]>;
+  priorities?: Maybe<Array<Maybe<PrioritiesType>>>;
   roleDescription?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  tradeOffs?: Maybe<Array<Maybe<TradeOffsType>>>;
 };
 
 export type PrefPastSearch = {
@@ -4221,6 +4222,7 @@ export type TotalNodeTrustType = {
 export type TradeOffsType = {
   __typename?: "tradeOffsType";
   reason?: Maybe<Scalars["String"]>;
+  selected?: Maybe<Scalars["String"]>;
   tradeOff1?: Maybe<Scalars["String"]>;
   tradeOff2?: Maybe<Scalars["String"]>;
 };
