@@ -388,15 +388,15 @@ const PositionCRM: NextPageWithLayout = () => {
     let grade: Grade = { letter: "", color: "" };
 
     if (percentage >= 85) {
-      grade = { letter: "A", color: "text-green-600" };
+      grade = { letter: "A", color: "text-utilityGreen" };
     } else if (percentage >= 70) {
-      grade = { letter: "B", color: "text-green-300" };
+      grade = { letter: "B", color: "text-utilityYellow" };
     } else if (percentage >= 50) {
-      grade = { letter: "C", color: "text-orange-300" };
+      grade = { letter: "C", color: "text-utilityOrange" };
       // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
       // else grade = { letter: "C", color: "text-black" };
     } else {
-      grade = { letter: "D", color: "text-red-300" };
+      grade = { letter: "D", color: "text-utilityRed" };
       // if (mainColumn) grade = { letter: "D", color: "text-red-300" };
       // else grade = { letter: "D", color: "text-black" };
     }
@@ -1626,9 +1626,12 @@ const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
         <div className="mr-4">
           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
         </div>
-        <p className="text-edenGreen-600 font-bold">
-          {candidate.user?.discordName}
-        </p>
+        <p className="font-bold">{candidate.user?.discordName}</p>
+        {candidate.user?.oneLiner && (
+          <p className="text-sm text-edenGray-600">
+            {candidate.user?.oneLiner}
+          </p>
+        )}
         <Button
           className="absolute bottom-2 right-2 h-6 w-6 !p-0 !rounded-full bg-edenGreen-100 flex items-center justify-center group-hover:bg-edenGreen-200"
           variant="tertiary"

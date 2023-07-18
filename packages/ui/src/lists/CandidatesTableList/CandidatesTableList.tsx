@@ -148,6 +148,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             </th> */}
             {/* <th className="py-2 font-medium">Level</th> */}
             <th className="font-normal">Location</th>
+            <th className="font-normal">Timezone</th>
           </tr>
         </thead>
         <tbody>
@@ -166,7 +167,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   candidateIDRowSelected === candidate.user?._id
                     ? "!bg-edenGreen-300"
                     : ""
-                } group cursor-pointer hover:bg-edenGray-100 border-b border-edenGray-100`}
+                } group cursor-pointer h-12 hover:bg-edenGray-100 border-b border-edenGray-100`}
               >
                 {listMode !== ListModeEnum.list ? (
                   <ColumnStyled className="-mr-1 w-8 px-0 py-0">
@@ -197,11 +198,13 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 <ColumnStyled textColor="text-fuchsia-600 text-center">
                   {candidate.totalMatchPerc &&
                   candidate.letterAndColor?.totalMatchPerc ? (
-                    <TextHeading2
-                      className={`${candidate.letterAndColor.totalMatchPerc.color} font-black`}
-                    >
-                      {`${candidate.letterAndColor.totalMatchPerc.letter}`}
-                    </TextHeading2>
+                    <div className="w-12 mx-auto -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                      <p
+                        className={`${candidate.letterAndColor.totalMatchPerc.color}`}
+                      >
+                        {`${candidate.letterAndColor.totalMatchPerc.letter}`}
+                      </p>
+                    </div>
                   ) : null}
                 </ColumnStyled>
 
@@ -229,17 +232,17 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 )} */}
                 <ColumnStyled textColor="text-[#86C8BC] text-center">
                   {candidate.overallScore ? (
-                    <TextHeading2
-                      className={classNames(
-                        candidate?.letterAndColor?.culture?.letter == "A" ||
-                          candidate?.letterAndColor?.culture?.letter == "B"
-                          ? candidate?.letterAndColor?.culture?.color
-                          : "text-gray-400",
-                        "font-bold"
-                      )}
-                    >
-                      {`${candidate?.letterAndColor?.culture?.letter}`}
-                    </TextHeading2>
+                    <div className="w-12 mx-auto mx-auto -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                      <p
+                        className={classNames(
+                          candidate?.letterAndColor?.culture?.color
+                            ? candidate?.letterAndColor?.culture?.color
+                            : "text-edenGray-600"
+                        )}
+                      >
+                        {`${candidate?.letterAndColor?.culture?.letter}`}
+                      </p>
+                    </div>
                   ) : (
                     <div></div>
                   )}
@@ -249,11 +252,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   {candidate.skillMatch || candidate.skillScore ? (
                     <p
                       className={classNames(
-                        candidate?.letterAndColor?.skill?.letter == "A" ||
-                          candidate?.letterAndColor?.skill?.letter == "B"
+                        candidate?.letterAndColor?.skill?.color
                           ? candidate?.letterAndColor?.skill?.color
-                          : "text-gray-400",
-                        "font-medium"
+                          : "text-edenGray-600"
                       )}
                     >
                       {candidate?.letterAndColor?.skill?.letter &&
@@ -295,12 +296,13 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
 
                 <ColumnStyled textColor="text-center" extraCssClass="w-auto">
                   {candidate.user?.location && (
-                    <p>{candidate.user?.location}</p>
+                    <p className="text-sm">{candidate.user?.location}</p>
                   )}
+                </ColumnStyled>
+
+                <ColumnStyled textColor="text-center" extraCssClass="w-auto">
                   {candidate.user?.timeZone && (
-                    <p className="!text-xs text-gray-500">
-                      {candidate.user?.timeZone}
-                    </p>
+                    <p className="text-sm">{candidate.user?.timeZone}</p>
                   )}
                 </ColumnStyled>
               </tr>

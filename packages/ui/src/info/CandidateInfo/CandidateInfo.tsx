@@ -223,8 +223,11 @@ export const CandidateInfo = ({
   return (
     <div className="bg-white">
       <div className="h-full w-full flex-col overflow-y-scroll">
-        <div className="bg-edenGreen-100 hover:bg-edenGreen-200 absolute right-10 top-9 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md">
-          <IoClose color="#19563F" size={"1rem"} onClick={onClose} />
+        <div
+          onClick={onClose}
+          className="bg-edenGreen-100 hover:bg-edenGreen-200 absolute right-10 top-9 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md"
+        >
+          <IoClose color="#19563F" size={"1rem"} />
         </div>
 
         {/* ---- Header ---- */}
