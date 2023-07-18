@@ -10,7 +10,7 @@ import {
   AppUserLayout,
   Avatar,
   Button,
-  CandidateInfo,
+  // CandidateInfo,
   CandidatesTableList,
   ListModeEnum,
   Loading,
@@ -29,6 +29,16 @@ import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
 import { MdCompare, MdIosShare } from "react-icons/md";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
+
+const CandidateInfo = dynamic(
+  () =>
+    import(`@eden/package-ui/src/info/CandidateInfo/CandidateInfo`).then(
+      (module) => module.CandidateInfo
+    ),
+  {
+    ssr: false,
+  }
+);
 
 import { NextPageWithLayout } from "../../../_app";
 
@@ -1404,7 +1414,7 @@ const PositionCRM: NextPageWithLayout = () => {
               candidateIDRowSelected={selectedUserId || null}
               candidatesList={
                 talentListSelected?._id === "000"
-                  ? candidatesUnqualifiedList.slice(3, -1)
+                  ? candidatesUnqualifiedList.slice(3, -1) //@TODO remove this slice.
                   : candidatesFromTalentList
               }
               fetchIsLoading={findPositionIsLoading}
@@ -1575,6 +1585,7 @@ export default PositionCRM;
 
 import { CompanyContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
 import { FaArrowRight } from "react-icons/fa";

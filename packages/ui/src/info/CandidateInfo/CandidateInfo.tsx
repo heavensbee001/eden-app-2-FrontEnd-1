@@ -245,15 +245,17 @@ export const CandidateInfo = ({
                 </p>
               </div>
               <div>
-                <LongText
-                  cutText={80}
-                  text={
-                    (dataMember?.findMember?.oneLiner as string) ||
-                    (dataMember?.findMember?.bio as string) ||
-                    ""
-                  }
-                  className={`text-edenGray-900 w-full whitespace-pre-wrap text-sm`}
-                />
+                {dataMember?.findMember?.oneLiner ? (
+                  <p className="text-edenGray-900 w-full whitespace-pre-wrap text-sm">
+                    {dataMember?.findMember?.oneLiner}
+                  </p>
+                ) : (
+                  <LongText
+                    cutText={80}
+                    text={(dataMember?.findMember?.bio as string) || ""}
+                    className={`text-edenGray-900 w-full whitespace-pre-wrap text-sm`}
+                  />
+                )}
               </div>
             </div>
           </div>
