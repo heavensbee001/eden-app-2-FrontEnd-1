@@ -16,7 +16,7 @@ export const LongText = ({ text, className, cutText = 50 }: LongTextProps) => {
         className={classNames(
           className || "",
           "relative transition-max-height ease-in-out duration-500 overflow-hidden",
-          showAll ? "!max-h-screen" : "max-h-[2.3rem]"
+          showAll || text.length <= cutText ? "!max-h-screen" : "max-h-[2.3rem]"
         )}
       >
         {/* {showAll
@@ -33,7 +33,7 @@ export const LongText = ({ text, className, cutText = 50 }: LongTextProps) => {
           </span>
         )} */}
         <p>{text}</p>
-        {!showAll && (
+        {!showAll && text.length >= cutText && (
           <div className="absolute bottom-0 bg-gradient-to-b from-transparent to-white h-3 w-full"></div>
         )}
       </div>
