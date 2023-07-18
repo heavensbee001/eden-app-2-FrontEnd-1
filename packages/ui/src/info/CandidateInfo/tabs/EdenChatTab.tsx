@@ -1,18 +1,18 @@
 import { useQuery } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
 import { FIND_CONVERSATIONS } from "@eden/package-graphql";
+import { Members } from "@eden/package-graphql/generated";
 import { Card } from "@eden/package-ui";
-import { useContext } from "react";
 type Props = {
   memberImg?: string;
   conversationID?: string;
+  member?: Members;
 };
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
+export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
   const { data: findConversationsData } = useQuery(FIND_CONVERSATIONS, {
     variables: {
       fields: {
@@ -22,8 +22,6 @@ export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
     skip: conversationID == undefined,
     ssr: false,
   });
-
-  const { currentUser } = useContext(UserContext);
   // console.log("conversationID = ", conversationID);
 
   return (
@@ -34,7 +32,7 @@ export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
         className="mx-auto mt-3 h-[calc(100vh-17rem)] max-w-lg overflow-scroll !border-gray-200 bg-white"
       >
         <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3">
-          <div className="">
+          <div>
             {findConversationsData &&
             findConversationsData.findConversations.length
               ? findConversationsData.findConversations[
@@ -59,7 +57,7 @@ export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
                             {chat.role !== "assistant" ? (
                               <>
                                 <span className="text-edenGray-700 float-right  pl-64 text-right text-xs font-semibold">
-                                  {currentUser?.discordName}
+                                  {member?.discordName}
                                 </span>
                               </>
                             ) : (
