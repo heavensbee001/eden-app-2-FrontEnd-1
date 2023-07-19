@@ -4,6 +4,7 @@ import {
   PreviousProjectsType,
 } from "@eden/package-graphql/generated";
 import React from "react";
+import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 export interface IUserBackgroundProps {
   background: Array<Maybe<PreviousProjectsType>>;
@@ -66,7 +67,7 @@ export const UserBackground = ({
       return newObj;
     });
 
-  console.log("modifiedBackgroundArr", modifiedBackgroundArr);
+  // console.log("modifiedBackgroundArr", modifiedBackgroundArr);
 
   return (
     <div>
@@ -80,25 +81,31 @@ export const UserBackground = ({
           return (
             <div
               key={index}
-              className="my-4 "
+              className="py-4 border-b border-edenGreen-100"
               id="user-background"
               onClick={() => {
                 if (!empty)
                   setExperienceOpen(index === experienceOpen ? null : index);
               }}
             >
-              <div className="mb-2 flex items-center">
+              <div className="flex items-center">
                 <span
-                  className={`mr-3 ${
-                    empty ? "cursor-default text-slate-400" : "cursor-pointer"
+                  className={`mr-2 ${
+                    empty ? "cursor-default" : "cursor-pointer"
                   }`}
                 >
-                  {!empty && index === experienceOpen ? "▼" : "▶"}
+                  {!empty && index === experienceOpen ? (
+                    <BiChevronDown size={20} />
+                  ) : (
+                    <BiChevronRight size={20} />
+                  )}
                 </span>
-                <div className=" outline- 0 flex h-fit cursor-pointer flex-col justify-center  break-words !rounded-full  p-4 text-left">
-                  <p className="font-bold">{item?.title.jobTitle}</p>
-                  <p>{item?.title.companyName}</p>
-                  <p className="text-[12px] text-gray-400">
+                <div className="outline-0 flex h-fit cursor-pointer flex-col justify-center break-words text-left">
+                  <p>
+                    <span className="font-bold">{item?.title.jobTitle}</span>{" "}
+                    <span>@ {item?.title.companyName}</span>
+                  </p>
+                  <p className="text-xs text-edenGray-500">
                     {item?.workPeriod}
                   </p>
                 </div>
