@@ -1,8 +1,10 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { BiChevronRight } from "react-icons/bi";
 
+import { Step } from "../Wizard";
+
 export interface IWizardStepsHeaderProps {
-  steps: Array<string>;
+  steps: Array<Step>;
   currentStep: number;
   setStep: Dispatch<SetStateAction<number>>;
 }
@@ -36,14 +38,18 @@ export const WizardStepsHeader = ({
             className={classNames(
               currentStep === index
                 ? "text-edenGreen-600"
-                : "cursor-pointer text-edenGreen-400"
+                : "cursor-pointer text-edenGreen-400",
+              currentStep !== index && step.navigationDisabled
+                ? "cursor-not-allowed"
+                : ""
             )}
             onClick={() => {
-              if (currentStep != index) setStep(index);
+              if (currentStep != index && !step.navigationDisabled)
+                setStep(index);
             }}
           >
             <span className="whitespace-nowrap text-xs">
-              {step.toUpperCase()}
+              {step.label.toUpperCase()}
             </span>
           </div>
           {index < steps.length - 1 && (
