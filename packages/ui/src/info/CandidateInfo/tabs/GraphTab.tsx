@@ -25,25 +25,22 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
           </div>
         </div>
       )} */}
-      {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="  mt-4 flex  items-center  ">
-          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
-            <p
-              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
-            >
-              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
-            </p>
-            {candidate?.analysisCandidateEdenAI?.skills?.content && (
-              <>
-                <hr className="mx-2 my-0 h-8 border-gray-400" />
-                <div className="">
-                  <p className="text-lg font-bold">Eden First Impression 👀</p>
+      {member?.letterAndColor?.skill?.letter && (
+        <div className="p-4 bg-edenPink-100 rounded-md mb-8 min-h-[3rem]">
+          <p
+            className={`${member?.letterAndColor?.skill?.color} text-3xl font-bold float-right -mt-2`}
+          >
+            {`${member?.letterAndColor?.skill?.letter}`}
+          </p>
+          {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+            <div className="">
+              <h2 className="text-edenGreen-600 mb-3">
+                Eden&apos;s thoughts on skills
+              </h2>
 
-                  {candidate?.analysisCandidateEdenAI?.skills?.content}
-                </div>
-              </>
-            )}
-          </div>
+              {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
+            </div>
+          )}
         </div>
       )}
       <div className="mt-2 h-[900px] w-full rounded-lg border-[1px] bg-white py-36">

@@ -4,12 +4,10 @@ import {
   CandidateTypeSkillMatch,
   LongText,
   NodeList,
-  ReadMore,
   // SocialMediaComp,
   TextLabel1,
   UserBackground,
 } from "@eden/package-ui";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { FC, useState } from "react";
 
 type NodeDisplay = {
@@ -37,9 +35,6 @@ export const InfoTab: FC<Props> = ({
   candidate,
 }) => {
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
-  const [seeMore, setSeeMore] = useState(false);
-
-  // console.log("candidate = 998", candidate);
 
   return (
     <>
@@ -68,7 +63,8 @@ export const InfoTab: FC<Props> = ({
         <LongText
           cutText={600}
           text={(member?.user?.bio as string) || ""}
-          className={`px-4 whitespace-pre-wrap text-sm text-edenGray-900 w-full max-h-40`}
+          className={`px-4 whitespace-pre-wrap text-sm text-edenGray-900 w-full`}
+          maxHeight={"10rem"}
         />
       </div>
 
@@ -197,14 +193,18 @@ export const InfoTab: FC<Props> = ({
       </div>
       {member?.user?.previousProjects &&
       member?.user.previousProjects.length ? (
-        <section className=" w-full rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4  text-left">
-          <TextLabel1 className="text-xs">🍒 BACKGROUND</TextLabel1>
-          <UserBackground
-            background={member?.user.previousProjects || []}
-            setExperienceOpen={setExperienceOpen!}
-            experienceOpen={experienceOpen!}
-          />
-        </section>
+        <div className="mb-10">
+          <div className="px-4 border-b border-edenGreen-300">
+            <h3 className="mb-3 text-edenGreen-500">Background</h3>
+          </div>
+          <div className="px-4">
+            <UserBackground
+              background={member?.user.previousProjects || []}
+              setExperienceOpen={setExperienceOpen!}
+              experienceOpen={experienceOpen!}
+            />
+          </div>
+        </div>
       ) : null}
     </>
   );
