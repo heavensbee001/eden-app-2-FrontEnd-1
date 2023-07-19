@@ -5,8 +5,14 @@ export interface LongTextProps {
   text: string;
   cutText?: number;
   className?: string;
+  maxHeight?: string;
 }
-export const LongText = ({ text, className, cutText = 50 }: LongTextProps) => {
+export const LongText = ({
+  text,
+  className,
+  cutText = 50,
+  maxHeight = "2.3rem",
+}: LongTextProps) => {
   const [showAll, setShowAll] = useState(false);
 
   if (!text) return null;
@@ -14,9 +20,11 @@ export const LongText = ({ text, className, cutText = 50 }: LongTextProps) => {
     <>
       <div
         className={classNames(
-          className || "",
           "relative transition-max-height ease-in-out duration-500 overflow-hidden",
-          showAll || text.length <= cutText ? "!max-h-screen" : "max-h-[2.3rem]"
+          showAll || text.length <= cutText
+            ? "!max-h-screen"
+            : `max-h-[${maxHeight}]`,
+          className || ""
         )}
       >
         {/* {showAll

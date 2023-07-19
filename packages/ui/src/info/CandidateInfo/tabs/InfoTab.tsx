@@ -68,7 +68,8 @@ export const InfoTab: FC<Props> = ({
         <LongText
           cutText={600}
           text={(member?.user?.bio as string) || ""}
-          className={`px-4 whitespace-pre-wrap text-sm text-edenGray-900 w-full max-h-40`}
+          className={`px-4 whitespace-pre-wrap text-sm text-edenGray-900 w-full`}
+          maxHeight={"10rem"}
         />
       </div>
 
