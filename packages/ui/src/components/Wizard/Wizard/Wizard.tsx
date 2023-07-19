@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { IWizardStepProps } from "../WizardStep";
 import { WizardStepsHeader } from "../WizardStepsHeader";
 
+export type Step = {
+  label: string;
+  navigationDisabled: boolean;
+};
+
 export interface IWizardProps {
   children: Array<React.ReactElement<IWizardStepProps>>;
   showStepsHeader?: boolean;
@@ -71,7 +76,13 @@ export const Wizard = ({
       {showStepsHeader && (
         <WizardStepsHeader
           currentStep={step}
-          steps={children.map((_step) => _step.props.label)}
+          steps={children.map(
+            (_step) =>
+              ({
+                label: _step.props.label,
+                navigationDisabled: _step.props.navigationDisabled || false,
+              } as Step)
+          )}
           setStep={setStep}
         />
       )}

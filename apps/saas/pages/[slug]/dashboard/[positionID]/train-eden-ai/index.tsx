@@ -310,7 +310,7 @@ const HomePage: NextPageWithLayout = () => {
               canPrev={false}
               // onStepChange={handleProgress}
             >
-              <WizardStep label={"Description"}>
+              <WizardStep label={"Description"} navigationDisabled={true}>
                 <div className="flex h-full items-center justify-center">
                   <form
                     className="w-full max-w-[33rem]"
@@ -371,7 +371,7 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-              <WizardStep label={"Eden Convo"}>
+              <WizardStep label={"Eden Convo"} navigationDisabled={true}>
                 <div className="mx-auto h-[70vh] max-w-2xl">
                   <InterviewEdenAIContainer
                     handleEnd={handleInterviewEnd}
@@ -804,7 +804,7 @@ const PrioritiesAndTradeOffsContainer =
     useEffect(() => {
       setScraping(true);
 
-      console.log("positionID 2= ", positionID);
+      // console.log("positionID 2= ", positionID);
 
       FindPrioritiesTrainEdenAI({
         variables: {
