@@ -81,7 +81,7 @@ export const UserBackground = ({
           return (
             <div
               key={index}
-              className="py-4 border-b border-edenGreen-100"
+              className="py-4 border-b border-edenGray-100"
               id="user-background"
               onClick={() => {
                 if (!empty)
@@ -112,10 +112,10 @@ export const UserBackground = ({
                 {/* {index < 2 && <span className="ml-3 text-xl">⭐️</span>} */}
               </div>
               {index === experienceOpen && (
-                <div className="pl-8">
-                  <div className="text-gray-500">
-                    {/* <TextLabel1>Timeline</TextLabel1> */}
-                    {item?.startDate && (
+                <div className="pl-8 pt-3">
+                  {item?.startDate && (
+                    <div className="text-gray-500">
+                      {/* <TextLabel1>Timeline</TextLabel1> */}
                       <p>
                         {`${new Date(Number(item?.startDate)).toLocaleString(
                           "default",
@@ -135,18 +135,15 @@ export const UserBackground = ({
                             : "present"
                         }`}
                       </p>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   {/* <TextLabel1>Description</TextLabel1> */}
-                  <div className="w-full space-y-4">
-                    {item?.description.map((item, index) => (
-                      <div className="   text-left" key={index}>
-                        <div className="flex">
-                          <p>{"•"}</p>
-                          <p className="ml-2">{item}</p>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="w-full">
+                    <ul className="list-disc space-y-2 text-sm">
+                      {item?.description.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               )}
