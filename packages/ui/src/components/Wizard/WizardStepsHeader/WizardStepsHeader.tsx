@@ -40,7 +40,7 @@ export const WizardStepsHeader = ({
                 ? "text-edenGreen-600"
                 : "cursor-pointer text-edenGreen-400",
               currentStep !== index && step.navigationDisabled
-                ? "cursor-not-allowed"
+                ? "!cursor-not-allowed"
                 : ""
             )}
             onClick={() => {
@@ -48,7 +48,14 @@ export const WizardStepsHeader = ({
                 setStep(index);
             }}
           >
-            <span className="whitespace-nowrap text-xs">
+            <span
+              className={classNames(
+                "whitespace-nowrap text-xs",
+                currentStep === index
+                  ? "text-edenGreen-600"
+                  : "text-edenGreen-400"
+              )}
+            >
               {step.label.toUpperCase()}
             </span>
           </div>
