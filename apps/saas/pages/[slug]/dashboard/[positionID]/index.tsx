@@ -15,10 +15,12 @@ import {
   ListModeEnum,
   Loading,
   Modal,
+  NodeList,
   SelectList,
   TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
+import { Tab } from "@headlessui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
@@ -1108,7 +1110,57 @@ const PositionCRM: NextPageWithLayout = () => {
                   : "max-h-[0px] py-0"
               )}
             >
-              Opportunity details
+              <Tab.Group defaultIndex={0}>
+                <Tab.List className="border-edenGreen-300 flex h-8 w-full border-b mb-4">
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "text-edenGreen-400 -mb-px whitespace-nowrap pb-2 text-xs px-3 pl-0",
+                        selected
+                          ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                          : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                      )
+                    }
+                  >
+                    {"Priorities Summary".toUpperCase()}
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "text-edenGreen-400 -mb-px whitespace-nowrap pb-2 text-xs px-3",
+                        selected
+                          ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                          : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                      )
+                    }
+                  >
+                    {"Required skills".toUpperCase()}
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "text-edenGreen-400 -mb-px whitespace-nowrap pb-2 text-xs px-3",
+                        selected
+                          ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                          : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                      )
+                    }
+                  >
+                    {"Trade off".toUpperCase()}
+                  </Tab>
+                </Tab.List>
+                <Tab.Panels>
+                  <Tab.Panel></Tab.Panel>
+                  <Tab.Panel>
+                    <div className="">
+                      {findPositionData?.findPosition?.nodes && (
+                        <NodeList nodes={findPositionData.findPosition.nodes} />
+                      )}
+                    </div>
+                  </Tab.Panel>
+                  <Tab.Panel></Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
             </div>
             <div
               className={classNames(
