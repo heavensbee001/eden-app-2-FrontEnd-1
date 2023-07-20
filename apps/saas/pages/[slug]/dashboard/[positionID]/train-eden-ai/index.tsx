@@ -14,7 +14,6 @@ import {
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
-  TextArea,
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
@@ -78,16 +77,18 @@ const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { positionID } = router.query;
+
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
+  const [step, setStep] = useState<number>(0);
   // const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  // const [progress, setProgress] = useState<number>(0);
   // const [titleRole, setTitleRole] = useState(null);
   // const [topSkills, setTopSkills] = useState([]);
 
   // console.log("cvEnded = ", cvEnded);
   const {
-    // data: findPositionData,
+    // eslint-disable-next-line no-unused-vars
+    data: findPositionData,
     // error: findPositionError,
   } = useQuery(FIND_POSITION, {
     variables: {
@@ -96,6 +97,14 @@ const HomePage: NextPageWithLayout = () => {
       },
     },
     skip: !positionID,
+    onCompleted(data) {
+      setValue("position", data.findPosition);
+    },
+  });
+
+  // eslint-disable-next-line no-unused-vars
+  const { register, watch, control, setValue, getValues } = useForm<any>({
+    defaultValues: { position: "", pastedText: "" },
   });
 
   const handleInterviewEnd = () => {
@@ -104,27 +113,8 @@ const HomePage: NextPageWithLayout = () => {
     setInterviewEnded(true);
   };
 
-  // const handleProgress = (_step: any) => {
-  //   switch (_step) {
-  //     case 1:
-  //       setProgress(25);
-  //       break;
-  //     case 2:
-  //       setProgress(50);
-  //       break;
-  //     case 3:
-  //       setProgress(75);
-  //       break;
-  //     case 4:
-  //       setProgress(100);
-  //       break;
-  //     default:
-  //   }
-  // };
-
   // const [webpageLink, setWebpageLink] = useState("");
   const [pastedText, setPastedText] = useState("");
-
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   // eslint-disable-next-line no-unused-vars
@@ -176,6 +166,7 @@ const HomePage: NextPageWithLayout = () => {
   //   setWebpageLink(e.target.value);
   // };
 
+  // eslint-disable-next-line no-unused-vars
   const handlePastedTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setPastedText(e.target.value);
   };
@@ -236,6 +227,7 @@ const HomePage: NextPageWithLayout = () => {
   //   }
   // };
 
+  // eslint-disable-next-line no-unused-vars
   const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (pastedText !== "") {
@@ -259,13 +251,6 @@ const HomePage: NextPageWithLayout = () => {
       }
     }
   };
-
-  // console.log(
-  //   "interviewQuestionsForPosition  =  223 0",
-  //   interviewQuestionsForPosition
-  // );
-
-  // console.log("progress = ", progress);
 
   const [notificationOpen, setNotificationOpen] = useState(false);
 
@@ -308,34 +293,65 @@ const HomePage: NextPageWithLayout = () => {
             <Wizard
               showStepsHeader
               canPrev={false}
-              // onStepChange={handleProgress}
+              forceStep={step}
+              onStepChange={(_stepNum: number) => {
+                if (_stepNum !== step) {
+                  setStep(_stepNum);
+                }
+                // handleStepChange
+              }}
+              animate
             >
-              <WizardStep label={"Description"} navigationDisabled={true}>
-                <div className="flex h-full items-center justify-center">
-                  <form
-                    className="w-full max-w-[33rem]"
-                    onSubmit={handleTextSubmit}
+              <WizardStep
+                label={"Description"}
+                navigationDisabled
+                nextDisabled
+                nextButton={
+                  <Button
+                    loading={scraping}
+                    variant="secondary"
+                    // type="submit"
+                    className="ml-auto"
+                    onClick={() => {
+                      setStep(step + 1);
+
+                      // handleTextSubmit
+                    }}
                   >
-                    <p className="text-edenGray-700 mb-4 text-sm">
-                      Copy/paste your job description from LinkedIn,
-                      Greenhouse...
-                    </p>
+                    Save & Next
+                  </Button>
+                }
+              >
+                <div className="flex h-full items-center justify-center">
+                  <form className="w-full max-w-[33rem]">
+                    <div className="mb-6">
+                      <label
+                        htmlFor="name"
+                        className="block text-xs mb-2 text-edenGray-500"
+                      >
+                        Position name
+                      </label>
+                      <input
+                        id="name"
+                        {...register("position.name")}
+                        placeholder="Type name here..."
+                        className="block py-2 px-4 border border-edenGray-100 rounded-md text-sm w-full"
+                      />
+                    </div>
 
-                    <TextArea
-                      value={pastedText}
-                      onChange={handlePastedTextChange}
-                      placeholder="This is a sample text..."
-                      className="mb-4 px-4 pb-20 pt-32 text-sm outline-0"
-                    />
+                    <div className="mb-6">
+                      <label className="block text-edenGray-500 mb-2 text-xs">
+                        Copy/paste your job description from LinkedIn,
+                        Greenhouse...
+                      </label>
 
-                    <Button
-                      loading={scraping}
-                      variant="secondary"
-                      type="submit"
-                      className="mx-auto"
-                    >
-                      Submit Your Description
-                    </Button>
+                      <textarea
+                        {...register("pastedText")}
+                        // onChange={handlePastedTextChange}
+                        placeholder="This is a sample text..."
+                        className="block resize-none mb-4 px-4 pb-20 pt-32 text-sm outline-0 w-full border border-edenGray-100 rounded-md"
+                      />
+                    </div>
                   </form>
                   {/* {report && (
                       <div className="whitespace-pre-wrap">{report}</div>
@@ -382,18 +398,19 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Priorities & TradeOffs"}>
+              <WizardStep
+                label={"Priorities & TradeOffs"}
+                navigationDisabled={step === 0}
+              >
                 <div className="mx-auto h-full max-w-5xl">
                   <PrioritiesAndTradeOffsContainer />
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Alignment"}>
+              <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
                 <div className="mx-auto h-full max-w-2xl">
-                  <h2 className="mb-4 text-xl font-medium">
-                    Complete Checks & Balances List
-                  </h2>
-                  <p className="mb-8 text-sm leading-tight text-gray-500">
+                  <h2 className="mb-4">Complete Checks & Balances List</h2>
+                  <p className="mb-8 text-sm text-edenGray-500">
                     Here&apos;s a list of all the must & nice to haves that I
                     will look for in the candidate based in the info you&apos;ve
                     provided to me. Feel free to edit any line by changing,
@@ -403,7 +420,10 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Eden Suggestions"}>
+              <WizardStep
+                label={"Eden Suggestions"}
+                navigationDisabled={step === 0}
+              >
                 <div className="mx-auto h-full max-w-2xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Eden Seed Interview Questions
@@ -418,7 +438,10 @@ const HomePage: NextPageWithLayout = () => {
                   <CreateQuestions />
                 </div>
               </WizardStep>
-              <WizardStep label={"Final Details"}>
+              <WizardStep
+                label={"Final Details"}
+                navigationDisabled={step === 0}
+              >
                 <div className="mx-auto max-w-3xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Final Important Details
@@ -426,7 +449,7 @@ const HomePage: NextPageWithLayout = () => {
                   <FinalFormContainer />
                 </div>
               </WizardStep>
-              <WizardStep label={"Share Link"}>
+              <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
                 <div className="flex h-full flex-col items-center justify-center pb-28">
                   <div className="max-w-2xl">
                     <h2 className="mb-4 text-center text-xl font-medium">
@@ -735,10 +758,12 @@ interface IPrioritiesAndTradeOffsContainerProps {}
 
 const PrioritiesAndTradeOffsContainer =
   ({}: IPrioritiesAndTradeOffsContainerProps) => {
-    const { currentUser } = useContext(UserContext);
+    const router = useRouter();
+    const { positionID } = router.query;
+    // const { currentUser } = useContext(UserContext);
+
     // eslint-disable-next-line no-unused-vars
     const [submitting, setSubmitting] = useState(false);
-    const router = useRouter();
 
     const [scraping, setScraping] = useState<boolean>(false);
 
@@ -748,10 +773,8 @@ const PrioritiesAndTradeOffsContainer =
 
     // eslint-disable-next-line no-unused-vars
     const { register, watch, control, setValue, getValues } = useForm<Members>({
-      defaultValues: { ...currentUser },
+      defaultValues: {},
     });
-
-    const { positionID } = router.query;
 
     const [FindPrioritiesTrainEdenAI] = useMutation(
       FIND_PRIORITIES_TRAIN_EDEN_AI,
@@ -1046,10 +1069,10 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     POSITION_TEXT_CONVO_TO_REPORT,
     {
       onCompleted({ positionTextAndConvoToReportCriteria }) {
-        console.log(
-          "positionTextAndConvoToReportCriteria = ",
-          positionTextAndConvoToReportCriteria
-        );
+        // console.log(
+        //   "positionTextAndConvoToReportCriteria = ",
+        //   positionTextAndConvoToReportCriteria
+        // );
 
         setScraping(false);
 
@@ -1123,6 +1146,71 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     </div>
   );
 };
+
+function convertTextCategoriesToHTML(text: string): JSX.Element {
+  interface Category {
+    name: string;
+    bullets: string[];
+  }
+  const categories: Category[] = [];
+
+  // Split the text into lines
+  const lines = text.split("\n");
+
+  let currentCategory: Category | null = null;
+
+  // Process each line
+  lines.forEach((line) => {
+    // Remove leading/trailing white spaces and colons
+    const trimmedLine = line.trim();
+
+    // Check if it's a category line
+    if (trimmedLine.startsWith("Category")) {
+      const categoryName = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+
+      currentCategory = { name: categoryName, bullets: [] };
+      categories.push(currentCategory);
+    }
+
+    // Check if it's a bullet point line
+    if (trimmedLine.startsWith("•")) {
+      if (currentCategory) {
+        const bulletText = trimmedLine
+          .replace("•", "")
+          .substring(trimmedLine.indexOf(":") + 1)
+          .trim();
+
+        currentCategory.bullets.push(bulletText);
+      }
+    }
+  });
+
+  // Render the elements
+  const elements = categories.map((category, index) => (
+    <div key={index} className="mb-6">
+      <div className="flex justify-between px-4 border-b border-edenGreen-300">
+        <h3 className="mb-3 text-edenGreen-500">{category.name}</h3>
+      </div>
+      <ul>
+        {category.bullets.map((bullet: string, bulletIndex: number) => (
+          <li
+            className="w-full px-4 rounded-md border-b border-edenGray-100"
+            key={bulletIndex}
+          >
+            <div className="flex w-full py-4 columns-2 items-center justify-between">
+              <p className="text-sm pr-4 w-full">{bullet}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ));
+
+  // Render the elements inside a div
+  return <div>{elements}</div>;
+}
 
 export const POSITION_SUGGEST_QUESTIONS = gql`
   mutation ($fields: positionSuggestQuestionsAskCandidateInput!) {
@@ -1285,8 +1373,9 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   // console.log("questionsSuggest = ", questionsSuggest);
 
   const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
+    // eslint-disable-next-line no-unused-vars
     onCompleted({ updateNodesToMember }: Mutation) {
-      console.log("updateNodesToMember = ", updateNodesToMember);
+      // console.log("updateNodesToMember = ", updateNodesToMember);
       setScrapingSave(false);
     },
     // skip: positionID == "" || positionID == null,
@@ -1402,64 +1491,6 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     </div>
   );
 };
-
-function convertTextCategoriesToHTML(text: string): JSX.Element {
-  interface Category {
-    name: string;
-    bullets: string[];
-  }
-  const categories: Category[] = [];
-
-  // Split the text into lines
-  const lines = text.split("\n");
-
-  let currentCategory: Category | null = null;
-
-  // Process each line
-  lines.forEach((line) => {
-    // Remove leading/trailing white spaces and colons
-    const trimmedLine = line.trim();
-
-    // Check if it's a category line
-    if (trimmedLine.startsWith("Category")) {
-      const categoryName = trimmedLine
-        .substring(trimmedLine.indexOf(":") + 1)
-        .trim();
-
-      currentCategory = { name: categoryName, bullets: [] };
-      categories.push(currentCategory);
-    }
-
-    // Check if it's a bullet point line
-    if (trimmedLine.startsWith("•")) {
-      if (currentCategory) {
-        const bulletText = trimmedLine
-          .replace("•", "")
-          .substring(trimmedLine.indexOf(":") + 1)
-          .trim();
-
-        currentCategory.bullets.push(bulletText);
-      }
-    }
-  });
-
-  // Render the elements
-  const elements = categories.map((category, index) => (
-    <div key={index} className="mb-4">
-      <h3 className="text-xl font-medium">{category.name}</h3>
-      <ul>
-        {category.bullets.map((bullet: string, bulletIndex: number) => (
-          <li className="list-disc" key={bulletIndex}>
-            {bullet}
-          </li>
-        ))}
-      </ul>
-    </div>
-  ));
-
-  // Render the elements inside a div
-  return <div>{elements}</div>;
-}
 
 interface IFinalFormContainerProps {}
 
