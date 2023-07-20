@@ -317,6 +317,7 @@ const HomePage: NextPageWithLayout = () => {
 
                       // handleTextSubmit
                     }}
+                    disabled={!watch("position.name") || !watch("pastedText")}
                   >
                     Save & Next
                   </Button>
@@ -336,6 +337,9 @@ const HomePage: NextPageWithLayout = () => {
                         {...register("position.name")}
                         placeholder="Type name here..."
                         className="block py-2 px-4 border border-edenGray-100 rounded-md text-sm w-full"
+                        onFocus={(event) => {
+                          event.target.select();
+                        }}
                       />
                     </div>
 
@@ -350,6 +354,9 @@ const HomePage: NextPageWithLayout = () => {
                         // onChange={handlePastedTextChange}
                         placeholder="This is a sample text..."
                         className="block resize-none mb-4 px-4 pb-20 pt-32 text-sm outline-0 w-full border border-edenGray-100 rounded-md"
+                        onFocus={(event) => {
+                          event.target.select();
+                        }}
                       />
                     </div>
                   </form>
