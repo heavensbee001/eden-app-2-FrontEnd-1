@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
-import { Members, Mutation } from "@eden/package-graphql/generated";
+import { Members, Mutation, Position } from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
@@ -78,16 +78,17 @@ const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { positionID } = router.query;
+
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
+  const [step, setStep] = useState<number>(0);
   // const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  // const [progress, setProgress] = useState<number>(0);
   // const [titleRole, setTitleRole] = useState(null);
   // const [topSkills, setTopSkills] = useState([]);
 
   // console.log("cvEnded = ", cvEnded);
   const {
-    // data: findPositionData,
+    data: findPositionData,
     // error: findPositionError,
   } = useQuery(FIND_POSITION, {
     variables: {
@@ -96,6 +97,13 @@ const HomePage: NextPageWithLayout = () => {
       },
     },
     skip: !positionID,
+    onCompleted(data) {
+      setValue("position", data.findPosition);
+    },
+  });
+
+  const { register, watch, control, setValue, getValues } = useForm<any>({
+    defaultValues: { position: "", pastedText: "" },
   });
 
   const handleInterviewEnd = () => {
@@ -104,27 +112,8 @@ const HomePage: NextPageWithLayout = () => {
     setInterviewEnded(true);
   };
 
-  // const handleProgress = (_step: any) => {
-  //   switch (_step) {
-  //     case 1:
-  //       setProgress(25);
-  //       break;
-  //     case 2:
-  //       setProgress(50);
-  //       break;
-  //     case 3:
-  //       setProgress(75);
-  //       break;
-  //     case 4:
-  //       setProgress(100);
-  //       break;
-  //     default:
-  //   }
-  // };
-
   // const [webpageLink, setWebpageLink] = useState("");
   const [pastedText, setPastedText] = useState("");
-
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   // eslint-disable-next-line no-unused-vars
@@ -260,13 +249,6 @@ const HomePage: NextPageWithLayout = () => {
     }
   };
 
-  // console.log(
-  //   "interviewQuestionsForPosition  =  223 0",
-  //   interviewQuestionsForPosition
-  // );
-
-  // console.log("progress = ", progress);
-
   const [notificationOpen, setNotificationOpen] = useState(false);
 
   const handleCopyLink = (positionID: string) => {
@@ -308,34 +290,65 @@ const HomePage: NextPageWithLayout = () => {
             <Wizard
               showStepsHeader
               canPrev={false}
-              // onStepChange={handleProgress}
+              forceStep={step}
+              onStepChange={(_stepNum: number) => {
+                if (_stepNum !== step) {
+                  setStep(_stepNum);
+                }
+                // handleStepChange
+              }}
+              animate
             >
-              <WizardStep label={"Description"} navigationDisabled={true}>
-                <div className="flex h-full items-center justify-center">
-                  <form
-                    className="w-full max-w-[33rem]"
-                    onSubmit={handleTextSubmit}
+              <WizardStep
+                label={"Description"}
+                navigationDisabled
+                nextDisabled
+                nextButton={
+                  <Button
+                    loading={scraping}
+                    variant="secondary"
+                    // type="submit"
+                    className="ml-auto"
+                    onClick={() => {
+                      setStep(step + 1);
+
+                      // handleTextSubmit
+                    }}
                   >
-                    <p className="text-edenGray-700 mb-4 text-sm">
-                      Copy/paste your job description from LinkedIn,
-                      Greenhouse...
-                    </p>
+                    Save & Next
+                  </Button>
+                }
+              >
+                <div className="flex h-full items-center justify-center">
+                  <form className="w-full max-w-[33rem]">
+                    <div className="mb-6">
+                      <label
+                        htmlFor="name"
+                        className="block text-xs mb-2 text-edenGray-500"
+                      >
+                        Position name
+                      </label>
+                      <input
+                        id="name"
+                        {...register("position.name")}
+                        placeholder="Type name here..."
+                        className="block py-2 px-4 border border-edenGray-100 rounded-md text-sm w-full"
+                      />
+                    </div>
 
-                    <TextArea
-                      value={pastedText}
-                      onChange={handlePastedTextChange}
-                      placeholder="This is a sample text..."
-                      className="mb-4 px-4 pb-20 pt-32 text-sm outline-0"
-                    />
+                    <div className="mb-6">
+                      <label className="block text-edenGray-500 mb-2 text-xs">
+                        Copy/paste your job description from LinkedIn,
+                        Greenhouse...
+                      </label>
 
-                    <Button
-                      loading={scraping}
-                      variant="secondary"
-                      type="submit"
-                      className="mx-auto"
-                    >
-                      Submit Your Description
-                    </Button>
+                      <textarea
+                        {...register("pastedText")}
+                        // onChange={handlePastedTextChange}
+                        placeholder="This is a sample text..."
+                        className="block resize-none mb-4 px-4 pb-20 pt-32 text-sm outline-0 w-full border border-edenGray-100 rounded-md"
+                      />
+                    </div>
                   </form>
                   {/* {report && (
                       <div className="whitespace-pre-wrap">{report}</div>
@@ -382,13 +395,16 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Priorities & TradeOffs"}>
+              <WizardStep
+                label={"Priorities & TradeOffs"}
+                navigationDisabled={step === 0}
+              >
                 <div className="mx-auto h-full max-w-5xl">
                   <PrioritiesAndTradeOffsContainer />
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Alignment"}>
+              <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
                 <div className="mx-auto h-full max-w-2xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Complete Checks & Balances List
@@ -403,7 +419,10 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Eden Suggestions"}>
+              <WizardStep
+                label={"Eden Suggestions"}
+                navigationDisabled={step === 0}
+              >
                 <div className="mx-auto h-full max-w-2xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Eden Seed Interview Questions
@@ -418,7 +437,10 @@ const HomePage: NextPageWithLayout = () => {
                   <CreateQuestions />
                 </div>
               </WizardStep>
-              <WizardStep label={"Final Details"}>
+              <WizardStep
+                label={"Final Details"}
+                navigationDisabled={step === 0}
+              >
                 <div className="mx-auto max-w-3xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Final Important Details
@@ -426,7 +448,7 @@ const HomePage: NextPageWithLayout = () => {
                   <FinalFormContainer />
                 </div>
               </WizardStep>
-              <WizardStep label={"Share Link"}>
+              <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
                 <div className="flex h-full flex-col items-center justify-center pb-28">
                   <div className="max-w-2xl">
                     <h2 className="mb-4 text-center text-xl font-medium">
@@ -735,10 +757,12 @@ interface IPrioritiesAndTradeOffsContainerProps {}
 
 const PrioritiesAndTradeOffsContainer =
   ({}: IPrioritiesAndTradeOffsContainerProps) => {
-    const { currentUser } = useContext(UserContext);
+    const router = useRouter();
+    const { positionID } = router.query;
+    // const { currentUser } = useContext(UserContext);
+
     // eslint-disable-next-line no-unused-vars
     const [submitting, setSubmitting] = useState(false);
-    const router = useRouter();
 
     const [scraping, setScraping] = useState<boolean>(false);
 
@@ -748,10 +772,8 @@ const PrioritiesAndTradeOffsContainer =
 
     // eslint-disable-next-line no-unused-vars
     const { register, watch, control, setValue, getValues } = useForm<Members>({
-      defaultValues: { ...currentUser },
+      defaultValues: {},
     });
-
-    const { positionID } = router.query;
 
     const [FindPrioritiesTrainEdenAI] = useMutation(
       FIND_PRIORITIES_TRAIN_EDEN_AI,

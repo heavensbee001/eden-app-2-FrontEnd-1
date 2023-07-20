@@ -1,4 +1,5 @@
 import { Button } from "@eden/package-ui";
+import { Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
 
 import { IWizardStepProps } from "../WizardStep";
@@ -15,6 +16,8 @@ export interface IWizardProps {
   // eslint-disable-next-line no-unused-vars
   onStepChange?: (val: any) => void;
   canPrev?: boolean;
+  forceStep?: number | undefined; //forces the step to change from outside the component
+  animate?: boolean;
 }
 
 export const Wizard = ({
@@ -22,15 +25,21 @@ export const Wizard = ({
   showStepsHeader = false,
   onStepChange,
   canPrev = true,
+  forceStep,
+  animate = false,
 }: IWizardProps) => {
   const [step, setStep] = useState<number>(0);
 
-  // console.log(children);
+  useEffect(() => {
+    if (typeof forceStep === "number" && forceStep !== step) {
+      setStep(forceStep);
+    }
+  }, [forceStep]);
 
   const isHidePrev = () => {
     let _disabled = false;
 
-    if (step <= 0) _disabled = true;
+    if (step <= 0 || !canPrev) _disabled = true;
 
     return _disabled;
   };
@@ -42,7 +51,8 @@ export const Wizard = ({
   const isHideNext = () => {
     let _hide = false;
 
-    if (step >= children.length - 1) _hide = true;
+    if (step >= children.length - 1 || children[step].props.hideNext)
+      _hide = true;
 
     return _hide;
   };
@@ -93,22 +103,27 @@ export const Wizard = ({
           "w-full"
         )}
       >
-        {/* {children.map((item, index) => (
-          <div
-            className={classNames(
-              step === index ? "visible" : "hidden",
-              "h-full"
-            )}
-            key={index}
-          >
-            {item}
-          </div>
-        ))} */}
-        {children[step]}
+        {animate
+          ? children.map((item, index) => (
+              <Transition
+                key={index}
+                className=""
+                show={index === step}
+                enter="transition-all ease-in-out duration-500 delay-[200ms]"
+                enterFrom="opacity-0 translate-x-6"
+                enterTo="opacity-100 translate-x-0"
+                leave="transition-all ease-in-out duration-200"
+                leaveFrom="opacity-100 translate-x-0"
+                leaveTo="opacity-0 -translate-x-6"
+              >
+                {item}
+              </Transition>
+            ))
+          : children[step]}
       </div>
       {/* <div className="pt-20"></div> */}
       <div className="absolute bottom-0 left-0 flex w-full rounded-b-2xl p-4">
-        {!isHidePrev() && canPrev && (
+        {!isHidePrev() && (
           <Button
             className="mr-auto"
             variant="secondary"
@@ -131,16 +146,19 @@ export const Wizard = ({
         </Button>
         {/* ------ */}
 
-        {!isHideNext() && (
-          <Button
-            className="ml-auto"
-            variant="secondary"
-            onClick={handleNextClick}
-            disabled={isNextDisabled()}
-          >
-            Next
-          </Button>
-        )}
+        {!isHideNext() &&
+          (children[step].props.nextButton ? (
+            children[step].props.nextButton
+          ) : (
+            <Button
+              className="ml-auto"
+              variant="secondary"
+              onClick={handleNextClick}
+              disabled={isNextDisabled()}
+            >
+              Next
+            </Button>
+          ))}
       </div>
     </div>
   );
