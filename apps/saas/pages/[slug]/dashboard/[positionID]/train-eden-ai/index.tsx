@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
-import { Members, Mutation, Position } from "@eden/package-graphql/generated";
+import { Members, Mutation } from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
@@ -14,7 +14,6 @@ import {
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
-  TextArea,
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
