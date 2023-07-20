@@ -9,6 +9,7 @@ export interface INodeListProps {
   nodes?: Maybe<NodesType>[];
   label?: string;
   colorRGB?: string;
+  color?: string;
   closeButton?: boolean;
   overflowNumber?: number;
   // eslint-disable-next-line no-unused-vars
@@ -17,7 +18,8 @@ export interface INodeListProps {
 export const NodeList = ({
   nodes,
   label,
-  colorRGB,
+  colorRGB, //@TODO remove color RGB from all badges
+  color,
   closeButton = false,
   overflowNumber = 6,
   handleDeleteNode,
@@ -30,6 +32,7 @@ export const NodeList = ({
         key={index}
         text={trimParentheses(node?.nodeData?.name || "")}
         colorRGB={colorRGB}
+        color={color}
         className={`font-Unica text-sm`}
         closeButton={closeButton}
         onClose={() => {
