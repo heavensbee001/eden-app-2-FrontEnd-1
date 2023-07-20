@@ -9,7 +9,7 @@ export interface LongTextProps {
 }
 export const LongText = ({
   text,
-  className,
+  className = "",
   cutText = 50,
   maxHeight = "2.3rem",
 }: LongTextProps) => {
@@ -21,11 +21,10 @@ export const LongText = ({
       <div
         className={classNames(
           "relative transition-max-height ease-in-out duration-500 overflow-hidden",
-          showAll || text.length <= cutText
-            ? "!max-h-screen"
-            : `max-h-[${maxHeight}]`,
-          className || ""
+          showAll || text.length <= cutText ? "!max-h-screen" : "",
+          className
         )}
+        style={{ maxHeight: maxHeight }}
       >
         {/* {showAll
           ? text
