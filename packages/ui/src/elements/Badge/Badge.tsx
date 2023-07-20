@@ -15,6 +15,7 @@ const useIsMounted = () => {
 
 export interface BadgeProps {
   colorRGB?: string;
+  color?: string;
   text?: string;
   className?: string;
   closeButton?: boolean;
@@ -24,6 +25,7 @@ export interface BadgeProps {
 }
 export const Badge = ({
   colorRGB,
+  color = "#FCEEF5",
   text,
   className = "",
   closeButton = false,
@@ -44,8 +46,8 @@ export const Badge = ({
       <div
         data-tip={isHover}
         data-for={`badgeTip-${text}`}
-        className={`mb-1 mr-2 inline-block cursor-default rounded-full last:mb-0 last:mr-0 ${className}`}
-        style={{ background: `rgba(${colorRGB})` }}
+        className={`mb-1 mr-2 inline-block cursor-default rounded-sm last:mb-0 last:mr-0 ${className}`}
+        style={{ background: color ? color : `rgba(${colorRGB})` }}
         onMouseEnter={() => {
           setIsHover(`${text}`);
         }}
@@ -53,9 +55,9 @@ export const Badge = ({
           setIsHover("");
         }}
       >
-        <div className="flex h-full w-full items-center justify-between px-3">
+        <div className="flex h-full w-full items-center justify-between px-2 py-1">
           <>
-            <span className="mb-px whitespace-nowrap">{textShort}</span>
+            <span className="mb-px whitespace-nowrap text-sm">{textShort}</span>
             {closeButton && (
               <button className={`-mr-1 -mt-1 ml-1`} onClick={onClose}>
                 <XIcon
