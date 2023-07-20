@@ -107,7 +107,7 @@ export const Wizard = ({
           ? children.map((item, index) => (
               <Transition
                 key={index}
-                className=""
+                className="w-full h-full"
                 show={index === step}
                 enter="transition-all ease-in-out duration-500 delay-[200ms]"
                 enterFrom="opacity-0 translate-x-6"
