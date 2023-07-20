@@ -405,10 +405,8 @@ const HomePage: NextPageWithLayout = () => {
 
               <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
                 <div className="mx-auto h-full max-w-2xl">
-                  <h2 className="mb-4 text-xl font-medium">
-                    Complete Checks & Balances List
-                  </h2>
-                  <p className="mb-8 text-sm leading-tight text-gray-500">
+                  <h2 className="mb-4">Complete Checks & Balances List</h2>
+                  <p className="mb-8 text-sm text-edenGray-500">
                     Here&apos;s a list of all the must & nice to haves that I
                     will look for in the candidate based in the info you&apos;ve
                     provided to me. Feel free to edit any line by changing,
@@ -1067,10 +1065,10 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     POSITION_TEXT_CONVO_TO_REPORT,
     {
       onCompleted({ positionTextAndConvoToReportCriteria }) {
-        console.log(
-          "positionTextAndConvoToReportCriteria = ",
-          positionTextAndConvoToReportCriteria
-        );
+        // console.log(
+        //   "positionTextAndConvoToReportCriteria = ",
+        //   positionTextAndConvoToReportCriteria
+        // );
 
         setScraping(false);
 
@@ -1144,6 +1142,71 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     </div>
   );
 };
+
+function convertTextCategoriesToHTML(text: string): JSX.Element {
+  interface Category {
+    name: string;
+    bullets: string[];
+  }
+  const categories: Category[] = [];
+
+  // Split the text into lines
+  const lines = text.split("\n");
+
+  let currentCategory: Category | null = null;
+
+  // Process each line
+  lines.forEach((line) => {
+    // Remove leading/trailing white spaces and colons
+    const trimmedLine = line.trim();
+
+    // Check if it's a category line
+    if (trimmedLine.startsWith("Category")) {
+      const categoryName = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+
+      currentCategory = { name: categoryName, bullets: [] };
+      categories.push(currentCategory);
+    }
+
+    // Check if it's a bullet point line
+    if (trimmedLine.startsWith("•")) {
+      if (currentCategory) {
+        const bulletText = trimmedLine
+          .replace("•", "")
+          .substring(trimmedLine.indexOf(":") + 1)
+          .trim();
+
+        currentCategory.bullets.push(bulletText);
+      }
+    }
+  });
+
+  // Render the elements
+  const elements = categories.map((category, index) => (
+    <div key={index} className="mb-6">
+      <div className="flex justify-between px-4 border-b border-edenGreen-300">
+        <h3 className="mb-3 text-edenGreen-500">{category.name}</h3>
+      </div>
+      <ul>
+        {category.bullets.map((bullet: string, bulletIndex: number) => (
+          <li
+            className="w-full px-4 rounded-md border-b border-edenGray-100"
+            key={bulletIndex}
+          >
+            <div className="flex w-full py-4 columns-2 items-center justify-between">
+              <p className="text-sm pr-4 w-full">{bullet}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ));
+
+  // Render the elements inside a div
+  return <div>{elements}</div>;
+}
 
 export const POSITION_SUGGEST_QUESTIONS = gql`
   mutation ($fields: positionSuggestQuestionsAskCandidateInput!) {
@@ -1307,7 +1370,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 
   const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
     onCompleted({ updateNodesToMember }: Mutation) {
-      console.log("updateNodesToMember = ", updateNodesToMember);
+      // console.log("updateNodesToMember = ", updateNodesToMember);
       setScrapingSave(false);
     },
     // skip: positionID == "" || positionID == null,
@@ -1423,64 +1486,6 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     </div>
   );
 };
-
-function convertTextCategoriesToHTML(text: string): JSX.Element {
-  interface Category {
-    name: string;
-    bullets: string[];
-  }
-  const categories: Category[] = [];
-
-  // Split the text into lines
-  const lines = text.split("\n");
-
-  let currentCategory: Category | null = null;
-
-  // Process each line
-  lines.forEach((line) => {
-    // Remove leading/trailing white spaces and colons
-    const trimmedLine = line.trim();
-
-    // Check if it's a category line
-    if (trimmedLine.startsWith("Category")) {
-      const categoryName = trimmedLine
-        .substring(trimmedLine.indexOf(":") + 1)
-        .trim();
-
-      currentCategory = { name: categoryName, bullets: [] };
-      categories.push(currentCategory);
-    }
-
-    // Check if it's a bullet point line
-    if (trimmedLine.startsWith("•")) {
-      if (currentCategory) {
-        const bulletText = trimmedLine
-          .replace("•", "")
-          .substring(trimmedLine.indexOf(":") + 1)
-          .trim();
-
-        currentCategory.bullets.push(bulletText);
-      }
-    }
-  });
-
-  // Render the elements
-  const elements = categories.map((category, index) => (
-    <div key={index} className="mb-4">
-      <h3 className="text-xl font-medium">{category.name}</h3>
-      <ul>
-        {category.bullets.map((bullet: string, bulletIndex: number) => (
-          <li className="list-disc" key={bulletIndex}>
-            {bullet}
-          </li>
-        ))}
-      </ul>
-    </div>
-  ));
-
-  // Render the elements inside a div
-  return <div>{elements}</div>;
-}
 
 interface IFinalFormContainerProps {}
 
