@@ -87,6 +87,7 @@ const HomePage: NextPageWithLayout = () => {
 
   // console.log("cvEnded = ", cvEnded);
   const {
+    // eslint-disable-next-line no-unused-vars
     data: findPositionData,
     // error: findPositionError,
   } = useQuery(FIND_POSITION, {
@@ -101,6 +102,7 @@ const HomePage: NextPageWithLayout = () => {
     },
   });
 
+  // eslint-disable-next-line no-unused-vars
   const { register, watch, control, setValue, getValues } = useForm<any>({
     defaultValues: { position: "", pastedText: "" },
   });
@@ -164,6 +166,7 @@ const HomePage: NextPageWithLayout = () => {
   //   setWebpageLink(e.target.value);
   // };
 
+  // eslint-disable-next-line no-unused-vars
   const handlePastedTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setPastedText(e.target.value);
   };
@@ -224,6 +227,7 @@ const HomePage: NextPageWithLayout = () => {
   //   }
   // };
 
+  // eslint-disable-next-line no-unused-vars
   const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (pastedText !== "") {
@@ -1369,6 +1373,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   // console.log("questionsSuggest = ", questionsSuggest);
 
   const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
+    // eslint-disable-next-line no-unused-vars
     onCompleted({ updateNodesToMember }: Mutation) {
       // console.log("updateNodesToMember = ", updateNodesToMember);
       setScrapingSave(false);
