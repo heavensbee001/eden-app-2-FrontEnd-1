@@ -829,12 +829,8 @@ const PrioritiesAndTradeOffsContainer =
       }
     );
 
-    // console.log("tradeOffs = ", tradeOffs);
-
     useEffect(() => {
       setScraping(true);
-
-      // console.log("positionID 2= ", positionID);
 
       FindPrioritiesTrainEdenAI({
         variables: {

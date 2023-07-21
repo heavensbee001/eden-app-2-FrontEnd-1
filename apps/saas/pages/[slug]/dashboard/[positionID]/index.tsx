@@ -5,13 +5,19 @@ import {
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
-import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
+import {
+  CandidateType,
+  PrioritiesType,
+  TalentListType,
+  TradeOffsType,
+} from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
   Avatar,
   Button,
   // CandidateInfo,
   CandidatesTableList,
+  EdenTooltip,
   ListModeEnum,
   Loading,
   Modal,
@@ -50,6 +56,24 @@ const CREATE_FAKE_USER_CV = gql`
       _id
       discordName
       discordAvatar
+    }
+  }
+`;
+
+const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
+  mutation FindPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
+    findPrioritiesTrainEdenAI(fields: $fields) {
+      success
+      priorities {
+        priority
+        reason
+      }
+      tradeOffs {
+        tradeOff1
+        tradeOff2
+        reason
+        selected
+      }
     }
   }
 `;
@@ -980,6 +1004,31 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("Candidate added to Approved Candidates list!");
   };
 
+  const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
+
+  const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
+
+  const [findPrioritiesTrainEdenAI] = useMutation(
+    FIND_PRIORITIES_TRAIN_EDEN_AI,
+    {
+      onCompleted({ findPrioritiesTrainEdenAI }) {
+        setPriorities(findPrioritiesTrainEdenAI.priorities);
+        setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
+      },
+    }
+  );
+
+  useEffect(() => {
+    findPrioritiesTrainEdenAI({
+      variables: {
+        // fields: { message: textResponse, userID: currentUser?._id },
+        fields: {
+          positionID: positionID,
+        },
+      },
+    });
+  }, []);
+
   return (
     <>
       <Head>
@@ -1106,7 +1155,7 @@ const PositionCRM: NextPageWithLayout = () => {
               className={classNames(
                 "border-t border-edenGreen-200 w-full bg-edenGreen-200 overflow-hidden px-4 rounded-md transition-all ease-in-out",
                 opportunityDetailsOpen
-                  ? "max-h-[30vh] py-4 rounded-tr-none"
+                  ? "max-h-[50vh] py-4 rounded-tr-none overflow-y-scroll"
                   : "max-h-[0px] py-0"
               )}
             >
@@ -1146,11 +1195,47 @@ const PositionCRM: NextPageWithLayout = () => {
                       )
                     }
                   >
-                    {"Trade off".toUpperCase()}
+                    {"Trade offs".toUpperCase()}
                   </Tab>
                 </Tab.List>
                 <Tab.Panels>
-                  <Tab.Panel></Tab.Panel>
+                  <Tab.Panel>
+                    <ul className="">
+                      {priorities &&
+                        priorities.length > 0 &&
+                        priorities.map((priority, index) => (
+                          <li
+                            key={index}
+                            className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-3 w-80"
+                          >
+                            <EdenTooltip
+                              id={
+                                priority.reason?.split(" ").join("") ||
+                                `priority-tooltip-${index}`
+                              }
+                              innerTsx={
+                                <div className="w-60">
+                                  <p>{priority.reason}</p>
+                                </div>
+                              }
+                              place="top"
+                              effect="solid"
+                              backgroundColor="white"
+                              border
+                              borderColor="#e5e7eb"
+                              padding="0.5rem"
+                              offset={{ left: 100 }}
+                            >
+                              <div className="flex w-full items-center">
+                                <div className="">
+                                  {index + 1}. {priority.priority}
+                                </div>
+                              </div>
+                            </EdenTooltip>
+                          </li>
+                        ))}
+                    </ul>
+                  </Tab.Panel>
                   <Tab.Panel>
                     <div className="">
                       {findPositionData?.findPosition?.nodes && (
@@ -1158,7 +1243,81 @@ const PositionCRM: NextPageWithLayout = () => {
                       )}
                     </div>
                   </Tab.Panel>
-                  <Tab.Panel></Tab.Panel>
+                  <Tab.Panel>
+                    <div className="flex flex-col items-center justify-center max-w-lg">
+                      {tradeOffs &&
+                        tradeOffs.length > 0 &&
+                        tradeOffs.map((tradeOff, index) => (
+                          <EdenTooltip
+                            key={index}
+                            id={`tradeoff-${index}`}
+                            innerTsx={
+                              <div className="w-60">
+                                <p>{tradeOff.reason}</p>
+                              </div>
+                            }
+                            place="top"
+                            effect="solid"
+                            backgroundColor="white"
+                            border
+                            borderColor="#e5e7eb"
+                            padding="0.5rem"
+                            containerClassName="w-full"
+                          >
+                            <div className="grid grid-cols-2">
+                              <label
+                                className={classNames(
+                                  "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                                  tradeOff.selected === tradeOff.tradeOff1
+                                    ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                                    : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
+                                )}
+                                htmlFor={`tradeoff-${index}-1`}
+                              >
+                                <div className="flex items-center justify-end">
+                                  <span className="">{tradeOff.tradeOff1}</span>
+                                  <input
+                                    type="radio"
+                                    className="ml-2 hidden"
+                                    id={`tradeoff-${index}-1`}
+                                    name={`tradeoff-${index}-1`}
+                                    value={tradeOff.tradeOff1!}
+                                    checked={
+                                      tradeOff.selected === tradeOff.tradeOff1
+                                    }
+                                    disabled
+                                  />
+                                </div>
+                              </label>
+                              <label
+                                className={classNames(
+                                  "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                                  tradeOff.selected === tradeOff.tradeOff2
+                                    ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                                    : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
+                                )}
+                                htmlFor={`tradeoff-${index}-2`}
+                              >
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    className="mr-2 hidden"
+                                    id={`tradeoff-${index}-2`}
+                                    name={`tradeoff-${index}-2`}
+                                    value={tradeOff.tradeOff2!}
+                                    checked={
+                                      tradeOff.selected === tradeOff.tradeOff2
+                                    }
+                                    disabled
+                                  />
+                                  <span className="">{tradeOff.tradeOff2}</span>
+                                </div>
+                              </label>
+                            </div>
+                          </EdenTooltip>
+                        ))}
+                    </div>
+                  </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
             </div>
