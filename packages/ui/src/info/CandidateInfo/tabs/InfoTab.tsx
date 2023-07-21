@@ -5,7 +5,6 @@ import {
   LongText,
   NodeList,
   // SocialMediaComp,
-  TextLabel1,
   UserBackground,
 } from "@eden/package-ui";
 import { FC, useState } from "react";
@@ -39,9 +38,9 @@ export const InfoTab: FC<Props> = ({
   return (
     <>
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="p-4 bg-edenPink-100 rounded-md mb-8 min-h-[3rem]">
+        <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
           <p
-            className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl font-bold float-right -mt-2`}
+            className={`${member?.letterAndColor?.totalMatchPerc?.color} float-right -mt-2 text-3xl font-bold`}
           >
             {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
           </p>
@@ -56,146 +55,143 @@ export const InfoTab: FC<Props> = ({
       )}
 
       {/* ---- Bio ---- */}
-      <div className="mb-10">
-        <div className="px-4 mb-4 border-b border-edenGreen-300">
-          <h3 className="mb-3 text-edenGreen-500">Bio</h3>
+      <div className="mb-6">
+        <div className="border-edenGreen-300 mb-4 border-b px-4">
+          <h3 className="text-edenGreen-500 mb-3">Bio</h3>
         </div>
         <LongText
           cutText={600}
           text={(member?.user?.bio as string) || ""}
-          className={`px-4 whitespace-pre-wrap text-sm text-edenGray-900 w-full`}
+          className={`text-edenGray-900 w-full whitespace-pre-wrap px-4 text-sm`}
           maxHeight={"10rem"}
         />
       </div>
 
-      {/* ---- Skills and other data ---- */}
-      <div className="mb-2 grid grid-cols-2 rounded-lg border-[1px] border-gray-300 bg-white px-2">
+      {/* ---- other data ---- */}
+      <section className="mb-10 px-12">
+        <div className="grid grid-cols-12 gap-4">
+          <section className="bg-edenPink-300 col-span-4 w-full rounded-md py-3">
+            <div className="border-edenGreen-300 mb-2 border-b px-4">
+              <h3 className="text-edenGreen-500 mb-1">Level</h3>
+            </div>
+            <div className="px-4">
+              {member?.user?.experienceLevel?.total ? (
+                <Badge
+                  className="!text-white"
+                  color="#7FA294"
+                  text={
+                    member?.user.experienceLevel?.total <= 3
+                      ? "Junior"
+                      : member?.user.experienceLevel?.total <= 6
+                      ? "Mid"
+                      : "Senior"
+                  }
+                />
+              ) : (
+                <span className="font-bold">-</span>
+              )}
+            </div>
+          </section>
+
+          <section className="bg-edenPink-300 col-span-4 w-full rounded-md py-3">
+            <div className="border-edenGreen-300 mb-2 border-b px-4">
+              <h3 className="text-edenGreen-500 mb-1">Hourly rate</h3>
+            </div>
+            <div className="px-4">
+              {member?.user?.budget?.perHour !== null &&
+              member?.user?.budget?.perHour !== undefined &&
+              member?.user.budget?.perHour >= 0 ? (
+                <p className="">
+                  <span className="font-bold">
+                    ${member.user.budget.perHour}
+                  </span>
+                  /hour
+                </p>
+              ) : (
+                <span className="">-</span>
+              )}
+            </div>
+          </section>
+
+          <section className="bg-edenPink-300 col-span-4 w-full rounded-md py-3">
+            <div className="border-edenGreen-300 mb-2 border-b px-4">
+              <h3 className="text-edenGreen-500 mb-1">Availability</h3>
+            </div>
+            <p className="px-4">
+              {member?.user?.hoursPerWeek
+                ? `${member?.user.hoursPerWeek} hrs\\week`
+                : "unavailable"}
+            </p>
+          </section>
+
+          <section className="bg-edenPink-300 col-span-4 w-full rounded-md py-3">
+            <div className="border-edenGreen-300 mb-2 border-b px-4">
+              <h3 className="text-edenGreen-500 mb-1">Location</h3>
+            </div>
+            <p className="px-4">
+              {member?.user?.location ? `${member?.user.location}` : "-"}
+            </p>
+          </section>
+
+          <section className="bg-edenPink-300 col-span-4 w-full rounded-md py-3">
+            <div className="border-edenGreen-300 mb-2 border-b px-4">
+              <h3 className="text-edenGreen-500 mb-1">Timezone</h3>
+            </div>
+            <p className="px-4">
+              {member?.user?.timeZone ? `${member?.user.timeZone}` : "-"}
+            </p>
+          </section>
+
+          <section className="bg-edenPink-300 col-span-4 w-full rounded-md py-3">
+            <div className="border-edenGreen-300 mb-2 border-b px-4">
+              <h3 className="text-edenGreen-500 mb-1">Notice</h3>
+            </div>
+            <p className="px-4">2 Weeks {`(hardcoded)`}</p>
+          </section>
+        </div>
+      </section>
+
+      {/* ---- skills ---- */}
+      <section className="mb-10">
+        <div className="border-edenGreen-300 mb-2 border-b px-4">
+          <h3 className="text-edenGreen-500 mb-3">Top Skills</h3>
+        </div>
         {mostRelevantMemberNode &&
         member &&
         member?.user?._id &&
         Object.keys(mostRelevantMemberNode).length > 0 &&
         mostRelevantMemberNode[member?.user._id] ? (
           <>
-            <div className="col-1 p-2">
-              <section className="mb-2 w-full text-left">
-                <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
-                <div className="ml-4  flex-wrap">
-                  {mostRelevantMemberNode[member?.user._id].nodes
-                    .slice(0, 7)
-                    .map((node: NodeDisplay, index: number) => (
-                      <Badge
-                        text={node?.nameRelevantNode || ""}
-                        key={index}
-                        // className={`bg-soilPurple/20 py-px text-xs`}
-                        // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
-                        // className={`px-2 py-1 text-white rounded bg-purple-400`}
-                        className={`rounded px-1 py-1 text-xs text-white ${node.color}`}
-                        cutText={100}
-                      />
-                    ))}
-                </div>
-              </section>
+            <div className="ml-4 flex-wrap">
+              {mostRelevantMemberNode[member?.user._id].nodes
+                .slice(0, 7)
+                .map((node: NodeDisplay, index: number) => (
+                  <Badge
+                    text={node?.nameRelevantNode || ""}
+                    key={index}
+                    // className={`bg-soilPurple/20 py-px text-xs`}
+                    // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
+                    // className={`px-2 py-1 text-white rounded bg-purple-400`}
+                    cutText={100}
+                  />
+                ))}
             </div>
           </>
         ) : (
           <div className="col-1 p-2">
-            <section className="mb-2 w-full text-left">
-              <TextLabel1 className="text-xs">🌺 TOP SKILLS</TextLabel1>
-              <div className="ml-4 inline-flex flex-wrap">
-                {member?.user?.nodes && member?.user.nodes.length > 0 && (
-                  <NodeList
-                    overflowNumber={3}
-                    nodes={member?.user.nodes}
-                    colorRGB={`224,151,232`}
-                  />
-                )}
-              </div>
-            </section>
+            <div className="ml-4 inline-flex flex-wrap">
+              {member?.user?.nodes && member?.user.nodes.length > 0 && (
+                <NodeList overflowNumber={7} nodes={member?.user.nodes} />
+              )}
+            </div>
           </div>
         )}
-        <div className="col-1 grid grid-cols-2">
-          {/* First Column: Availability, Location, Timezone */}
-          <div className="col-1 p-2">
-            <section className="mb-2 w-full text-left">
-              <TextLabel1 className="mb-2 text-xs">⏳️ AVAILABILITY</TextLabel1>
-              <p className="ml-4 font-bold text-slate-600">
-                {member?.user?.hoursPerWeek
-                  ? `${member?.user.hoursPerWeek} hrs\\week`
-                  : "unavailable"}
-              </p>
-            </section>
-            <section className="mb-2 w-full text-left">
-              <TextLabel1 className="mb-2 text-xs">🌍 Location</TextLabel1>
-              <p className="ml-4 font-bold text-slate-600">
-                {member?.user?.location ? `${member?.user.location}` : "-"}
-              </p>
-            </section>
-            <section className="mb-2 w-full text-left">
-              <p>
-                <TextLabel1 className="mb-2 text-xs">🧭 Timezone</TextLabel1>
-              </p>
-              <div className="ml-4 inline-flex">
-                <p className="font-bold text-slate-600">
-                  {member?.user?.timeZone ? `${member?.user.timeZone}` : "-"}
-                </p>
-              </div>
-            </section>
-          </div>
-          {/* Second Column: Hourly Rate, Level, Notice */}
-          <div className="col-2 p-2">
-            <section className="mb-2 w-full text-left">
-              <p>
-                <TextLabel1 className="text-xs">💰 Hourly rate</TextLabel1>
-              </p>
-              <div>
-                {member?.user?.budget?.perHour !== null &&
-                member?.user?.budget?.perHour !== undefined &&
-                member?.user.budget?.perHour >= 0 ? (
-                  <p className="ml-4 text-sm">
-                    <span className="text-xl font-bold text-[#fcba03]">
-                      ${member.user.budget.perHour}
-                    </span>{" "}
-                    / hour
-                  </p>
-                ) : (
-                  <span className="ml-4 font-bold text-slate-600">-</span>
-                )}
-              </div>
-            </section>
-            <section className="mb-2 w-full text-left">
-              <p>
-                <TextLabel1 className="text-xs">⭐ Level</TextLabel1>
-              </p>
-              <div>
-                {member?.user?.experienceLevel?.total ? (
-                  <Badge
-                    className="ml-4 text-sm"
-                    colorRGB="151,232,163"
-                    text={
-                      member?.user.experienceLevel?.total <= 3
-                        ? "Junior"
-                        : member?.user.experienceLevel?.total <= 6
-                        ? "Mid"
-                        : "Senior"
-                    }
-                  />
-                ) : (
-                  <span className="ml-4 font-bold text-slate-600">-</span>
-                )}
-              </div>
-            </section>
-            <section className="mb-2 w-full text-left">
-              <TextLabel1 className="text-xs">🍀 Notice</TextLabel1>
-              <p className="ml-4">2 Weeks</p>
-            </section>
-          </div>
-        </div>
-      </div>
+      </section>
       {member?.user?.previousProjects &&
       member?.user.previousProjects.length ? (
         <div className="mb-10">
-          <div className="px-4 border-b border-edenGreen-300">
-            <h3 className="mb-3 text-edenGreen-500">Background</h3>
+          <div className="border-edenGreen-300 border-b px-4">
+            <h3 className="text-edenGreen-500 mb-3">Background</h3>
           </div>
           <div className="px-4">
             <UserBackground

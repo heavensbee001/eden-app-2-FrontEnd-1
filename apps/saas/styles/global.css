@@ -40,7 +40,7 @@
     @apply font-Unica;
   }
 
-  * {
+  body {
     white-space: pre-wrap;
     color: #393939;
   }
