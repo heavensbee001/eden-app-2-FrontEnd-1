@@ -19,7 +19,15 @@ import {
 } from "@eden/package-ui";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import Confetti from "react-confetti";
 import { useForm } from "react-hook-form";
 import { HiBadgeCheck } from "react-icons/hi";
 
@@ -265,6 +273,25 @@ const HomePage: NextPageWithLayout = () => {
     }, 3000);
   };
 
+  // ---- confetti setup ----
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [confettiRun, setConfettiRun] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (step === 6) {
+      setConfettiRun(true);
+      // @ts-ignore
+      setWidth(ref.current?.clientWidth || 0);
+      // @ts-ignore
+      setHeight(ref.current?.clientHeight || 0);
+      setTimeout(() => {
+        setConfettiRun(false);
+      }, 2500);
+    }
+  }, [step]);
+
   return (
     <>
       <Head>
@@ -328,7 +355,7 @@ const HomePage: NextPageWithLayout = () => {
                     <div className="mb-6">
                       <label
                         htmlFor="name"
-                        className="block text-xs mb-2 text-edenGray-500"
+                        className="text-edenGray-500 mb-2 block text-xs"
                       >
                         Position name
                       </label>
@@ -336,7 +363,7 @@ const HomePage: NextPageWithLayout = () => {
                         id="name"
                         {...register("position.name")}
                         placeholder="Type name here..."
-                        className="block py-2 px-4 border border-edenGray-100 rounded-md text-sm w-full"
+                        className="border-edenGray-100 block w-full rounded-md border px-4 py-2 text-sm"
                         onFocus={(event) => {
                           event.target.select();
                         }}
@@ -344,7 +371,7 @@ const HomePage: NextPageWithLayout = () => {
                     </div>
 
                     <div className="mb-6">
-                      <label className="block text-edenGray-500 mb-2 text-xs">
+                      <label className="text-edenGray-500 mb-2 block text-xs">
                         Copy/paste your job description from LinkedIn,
                         Greenhouse...
                       </label>
@@ -353,7 +380,7 @@ const HomePage: NextPageWithLayout = () => {
                         {...register("pastedText")}
                         // onChange={handlePastedTextChange}
                         placeholder="This is a sample text..."
-                        className="block resize-none mb-4 px-4 pb-20 pt-32 text-sm outline-0 w-full border border-edenGray-100 rounded-md"
+                        className="border-edenGray-100 mb-4 block w-full resize-none rounded-md border px-4 pb-20 pt-32 text-sm outline-0"
                         onFocus={(event) => {
                           event.target.select();
                         }}
@@ -417,7 +444,7 @@ const HomePage: NextPageWithLayout = () => {
               <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
                 <div className="mx-auto h-full max-w-2xl">
                   <h2 className="mb-4">Complete Checks & Balances List</h2>
-                  <p className="mb-8 text-sm text-edenGray-500">
+                  <p className="text-edenGray-500 mb-8 text-sm">
                     Here&apos;s a list of all the must & nice to haves that I
                     will look for in the candidate based in the info you&apos;ve
                     provided to me. Feel free to edit any line by changing,
@@ -458,36 +485,36 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
               <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
                 <div className="flex h-full flex-col items-center justify-center pb-28">
-                  <div className="max-w-2xl">
-                    <h2 className="mb-4 text-center text-xl font-medium">
-                      Let&apos;s get the interviews rolling! 🎉
-                    </h2>
+                  <div className="max-w-3xl">
+                    <h1 className="text-edenGreen-600 mb-4 text-center">
+                      Let&apos;s get the interviews rolling!
+                    </h1>
                     <p className="mb-8 text-center">
-                      Copy & share this link wherever you want candidates to
-                      kickoff their first interview.
+                      Sit back and relax, we&apos;re all set! Share the link to
+                      to whoever you want to kickoff the interview with!
                     </p>
                   </div>
                   <div className="flex w-2/3 justify-center">
-                    <div className="mr-2 flex w-full items-center overflow-x-scroll rounded-md border border-gray-400 bg-gray-200 px-2 text-sm text-gray-500">
+                    <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll rounded-md border bg-white px-2 text-sm">
+                      <MdLink size={18} className="mr-2" />
                       {window.location.origin + "/interview/" + positionID}
                     </div>
                     <Button
-                      size="md"
-                      className="bg-soilBlue border-soilBlue scrollbar-hide relative flex h-10 items-center whitespace-nowrap !text-sm text-white"
-                      variant="default"
+                      className="border-edenGray-500 whitespace-nowrap border font-normal"
+                      variant="tertiary"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCopyLink(positionID as string);
                       }}
                     >
-                      <div className="flex w-full items-center justify-center">
+                      <div className="flex w-full items-center justify-center whitespace-nowrap text-sm">
                         {!notificationOpen ? (
                           <>
-                            <HiOutlineLink className="mr-1" />
-                            <span>interview link</span>
+                            <MdContentCopy className="mr-2" />
+                            interview link
                           </>
                         ) : (
-                          <span className="text-sm">Link copied!</span>
+                          "Link copied!"
                         )}
                       </div>
                     </Button>
@@ -510,6 +537,19 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
             </Wizard>
+            {step === 6 && (
+              <div
+                className={`pointer-events-none fixed left-0 top-0 z-20 h-screen w-screen	`}
+                ref={ref}
+              >
+                <Confetti
+                  width={width}
+                  height={height}
+                  numberOfPieces={confettiRun ? 250 : 0}
+                  colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -524,7 +564,7 @@ export default HomePage;
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { HiOutlineLink } from "react-icons/hi2";
+import { MdContentCopy, MdLink } from "react-icons/md";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -1193,17 +1233,17 @@ function convertTextCategoriesToHTML(text: string): JSX.Element {
   // Render the elements
   const elements = categories.map((category, index) => (
     <div key={index} className="mb-6">
-      <div className="flex justify-between px-4 border-b border-edenGreen-300">
-        <h3 className="mb-3 text-edenGreen-500">{category.name}</h3>
+      <div className="border-edenGreen-300 flex justify-between border-b px-4">
+        <h3 className="text-edenGreen-500 mb-3">{category.name}</h3>
       </div>
       <ul>
         {category.bullets.map((bullet: string, bulletIndex: number) => (
           <li
-            className="w-full px-4 rounded-md border-b border-edenGray-100"
+            className="border-edenGray-100 w-full rounded-md border-b px-4"
             key={bulletIndex}
           >
-            <div className="flex w-full py-4 columns-2 items-center justify-between">
-              <p className="text-sm pr-4 w-full">{bullet}</p>
+            <div className="flex w-full columns-2 items-center justify-between py-4">
+              <p className="w-full pr-4 text-sm">{bullet}</p>
             </div>
           </li>
         ))}
