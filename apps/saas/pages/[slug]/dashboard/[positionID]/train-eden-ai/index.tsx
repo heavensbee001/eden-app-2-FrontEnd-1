@@ -1618,19 +1618,55 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
     //   </div>
     // </form>
     <form>
-      <div className="mt-6  rounded-lg bg-gray-50 p-8">
+      <div className="mt-6 h-full w-full  rounded-lg bg-gray-50 p-8">
         <div className="flex">
-          <div className="flex flex-col">
+          <div className="flex w-56 flex-col">
             {" "}
-            <label className="w-2/5 pr-2 text-xs">Targetted Start Date</label>
+            <label className=" text-xs">Targetted Start Date</label>
             <input
               type="date"
               name="targettedStartDate"
+              className=" input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 l-4 w-3/5 appearance-none rounded-lg"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs">Visa Required</label>
+            <input
+              type="text"
+              name="visaRequirements"
               className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
             />
           </div>
           <div className="flex flex-col">
-            <label className="w-2/5 pr-2">Visa Requirements</label>
+            <label className="text-xs">Office Policy</label>
+            <input
+              type="text"
+              name="officePolicy"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+        </div>
+        <div>
+          <div className="flex flex-col">
+            <label className="text-xs">Office Locations</label>
+            <input
+              type="text"
+              name="officeLocations"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+        </div>
+        <div className="flex">
+          <div className="flex flex-col">
+            <label className="text-xs">Office Policy</label>
+            <input
+              type="text"
+              name="visaRequirements"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs">Office Policy</label>
             <input
               type="text"
               name="visaRequirements"
