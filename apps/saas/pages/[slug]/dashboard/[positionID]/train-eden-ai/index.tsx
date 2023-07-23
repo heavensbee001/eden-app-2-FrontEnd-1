@@ -1617,62 +1617,71 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
     //     <FillSocialLinks />
     //   </div>
     // </form>
-    <form>
-      <div className="mt-6 h-full w-full  rounded-lg bg-gray-50 p-8">
-        <div className="text-red-600">Uncomment 476!!!</div>
-        <div className="flex">
-          <div className="flex w-56 flex-col items-start">
+    <form className="flex justify-center">
+      <div className="mt-6 h-96 w-[40rem]  rounded-lg bg-gray-50 p-8">
+        {/* <div className="text-red-600">Uncomment 476!!!</div> */}
+        <div className="flex  gap-x-6">
+          <div className="flex  flex-col items-start">
             {" "}
             <label className=" text-xs">Targetted Start Date</label>
             <input
               type="date"
               name="targettedStartDate"
-              className=" input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 l-4 w-3/5 appearance-none rounded-lg"
+              className=" input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-56 appearance-none  rounded-lg py-[.45rem] "
             />
           </div>
           <div className="flex flex-col items-start">
             <label className="text-xs">Visa Required</label>
-            <input
-              type="text"
-              name="visaRequirements"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
+
+            <div className="mt-2 rounded-lg bg-white p-2">
+              <select className=" pr-12">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
           </div>
-          <div className="flex flex-col items-start">
-            <label className="text-xs">Office Policy</label>
-            <input
-              type="text"
-              name="officePolicy"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
+          <div className="flex   w-full flex-col items-start">
+            <label className="text-xs ">Office Policy</label>
+            <div className="mt-2 w-full  rounded-lg bg-white p-2">
+              <select className="  w-full">
+                <option className=" text-gray-400" value="">
+                  Select an option
+                </option>
+
+                <option value="On Site">On Site</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+            </div>
           </div>
         </div>
         <div>
-          <div className="flex flex-col items-start">
+          <div className="mb-12 mt-6 flex flex-col items-start">
             <label className="text-xs">Office Locations</label>
-            <input
-              type="text"
-              name="officeLocations"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
+            <div className="mt-2 w-full rounded-lg bg-white p-2">
+              <select className=" w-full ">
+                <option> Search for a location </option>
+              </select>
+            </div>
           </div>
         </div>
-        <div className="flex">
+        <div className="flex gap-x-8 ">
           <div className="flex flex-col items-start">
             <label className="text-xs">Contact Type</label>
-            <input
-              type="text"
-              name="visaRequirements"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
+            <div className="mt-2 w-64 rounded-lg bg-white p-2">
+              <select className=" w-full pr-12">
+                <option value="part-time">Part-time</option>
+                <option value="full-time">Full-time</option>
+              </select>
+            </div>
           </div>
-          <div className="flex flex-col items-start">
+          <div className="flex w-full flex-col items-start">
             <label className="text-xs">Contract Duration</label>
-            <input
-              type="text"
-              name="visaRequirements"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
+            <div className="mt-2 w-full rounded-lg bg-white p-2">
+              <select className=" w-full ">
+                <option>Select duration of contract</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
