@@ -474,7 +474,7 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
               <WizardStep
                 label={"Final Details"}
-                navigationDisabled={step === 0}
+                // navigationDisabled={step === 0}
               >
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="text-xl font-medium">
@@ -1619,8 +1619,9 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
     // </form>
     <form>
       <div className="mt-6 h-full w-full  rounded-lg bg-gray-50 p-8">
+        <div className="text-red-600">Uncomment 476!!!</div>
         <div className="flex">
-          <div className="flex w-56 flex-col">
+          <div className="flex w-56 flex-col items-start">
             {" "}
             <label className=" text-xs">Targetted Start Date</label>
             <input
@@ -1629,7 +1630,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
               className=" input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 l-4 w-3/5 appearance-none rounded-lg"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-start">
             <label className="text-xs">Visa Required</label>
             <input
               type="text"
@@ -1637,7 +1638,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
               className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-start">
             <label className="text-xs">Office Policy</label>
             <input
               type="text"
@@ -1647,7 +1648,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
           </div>
         </div>
         <div>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-start">
             <label className="text-xs">Office Locations</label>
             <input
               type="text"
@@ -1657,16 +1658,16 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
           </div>
         </div>
         <div className="flex">
-          <div className="flex flex-col">
-            <label className="text-xs">Office Policy</label>
+          <div className="flex flex-col items-start">
+            <label className="text-xs">Contact Type</label>
             <input
               type="text"
               name="visaRequirements"
               className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
             />
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs">Office Policy</label>
+          <div className="flex flex-col items-start">
+            <label className="text-xs">Contract Duration</label>
             <input
               type="text"
               name="visaRequirements"
