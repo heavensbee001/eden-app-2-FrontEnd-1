@@ -9,6 +9,7 @@ import {
   CandidateType,
   PrioritiesType,
   TalentListType,
+  TalentType,
   TradeOffsType,
 } from "@eden/package-graphql/generated";
 import {
@@ -149,8 +150,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1074,7 +1076,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
       </Modal>
       <div className="mx-auto max-w-screen-2xl flex-grow p-8">
-        <div className="z-20 transition-all duration-200 ease-in-out w-full">
+        <div className="z-20 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
               <h1 className="text-edenGreen-600 mr-6">
@@ -1148,23 +1150,23 @@ const PositionCRM: NextPageWithLayout = () => {
           <section
             className={classNames(
               "relative mb-4 transition-all ease-in-out",
-              opportunityDetailsOpen ? "pt-6" : "pt-3 mb-7"
+              opportunityDetailsOpen ? "pt-6" : "mb-7 pt-3"
             )}
           >
             <div
               className={classNames(
-                "border-t border-edenGreen-200 w-full bg-edenGreen-200 overflow-hidden px-4 rounded-md transition-all ease-in-out",
+                "border-edenGreen-200 bg-edenGreen-200 w-full overflow-hidden rounded-md border-t px-4 transition-all ease-in-out",
                 opportunityDetailsOpen
-                  ? "max-h-[50vh] py-4 rounded-tr-none overflow-y-scroll"
+                  ? "max-h-[50vh] overflow-y-scroll rounded-tr-none py-4"
                   : "max-h-[0px] py-0"
               )}
             >
               <Tab.Group defaultIndex={0}>
-                <Tab.List className="border-edenGreen-300 flex h-8 w-full border-b mb-4">
+                <Tab.List className="border-edenGreen-300 mb-4 flex h-8 w-full border-b">
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "text-edenGreen-400 -mb-px whitespace-nowrap pb-2 text-xs px-3 pl-0",
+                        "text-edenGreen-400 -mb-px whitespace-nowrap px-3 pb-2 pl-0 text-xs",
                         selected
                           ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                           : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
@@ -1176,7 +1178,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "text-edenGreen-400 -mb-px whitespace-nowrap pb-2 text-xs px-3",
+                        "text-edenGreen-400 -mb-px whitespace-nowrap px-3 pb-2 text-xs",
                         selected
                           ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                           : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
@@ -1188,7 +1190,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "text-edenGreen-400 -mb-px whitespace-nowrap pb-2 text-xs px-3",
+                        "text-edenGreen-400 -mb-px whitespace-nowrap px-3 pb-2 text-xs",
                         selected
                           ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                           : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
@@ -1206,7 +1208,7 @@ const PositionCRM: NextPageWithLayout = () => {
                         priorities.map((priority, index) => (
                           <li
                             key={index}
-                            className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-3 w-80"
+                            className="relative mb-2 w-80 cursor-pointer rounded-md bg-white px-4 py-3"
                           >
                             <EdenTooltip
                               id={
@@ -1244,7 +1246,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     </div>
                   </Tab.Panel>
                   <Tab.Panel>
-                    <div className="flex flex-col items-center justify-center max-w-lg">
+                    <div className="flex max-w-lg flex-col items-center justify-center">
                       {tradeOffs &&
                         tradeOffs.length > 0 &&
                         tradeOffs.map((tradeOff, index) => (
@@ -1323,7 +1325,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
             <div
               className={classNames(
-                "w-44 rounded-md cursor-pointer px-2 flex items-center h-6 absolute right-0 top-0 bg-edenGreen-200 text-xs text-edenGray-700",
+                "bg-edenGreen-200 text-edenGray-700 absolute right-0 top-0 flex h-6 w-44 cursor-pointer items-center rounded-md px-2 text-xs",
                 opportunityDetailsOpen ? "rounded-bl-none rounded-br-none" : ""
               )}
               onClick={() => setOpportunityDetailsOpen(!opportunityDetailsOpen)}
@@ -1342,7 +1344,7 @@ const PositionCRM: NextPageWithLayout = () => {
           </section>
 
           <section className="relative mb-4">
-            <div className="w-full bg-edenPink-100 overflow-hidden px-4 py-4 rounded-md">
+            <div className="bg-edenPink-100 w-full overflow-hidden rounded-md px-4 py-4">
               <h2 className="text-edenGreen-600">
                 Let&apos;s find your perfect candidate today.
               </h2>
@@ -1350,7 +1352,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
               <div
                 className={classNames(
-                  "overflow-x-scroll scrollbar-hide transition-all ease-in-out",
+                  "scrollbar-hide overflow-x-scroll transition-all ease-in-out",
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
@@ -1371,7 +1373,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
             <div
               className={classNames(
-                "cursor-pointer px-2 py-3 flex items-center absolute right-0 top-0 text-xs text-edenGray-700"
+                "text-edenGray-700 absolute right-0 top-0 flex cursor-pointer items-center px-2 py-3 text-xs"
               )}
               onClick={() => setBestPicksOpen(!bestPicksOpen)}
             >
@@ -1386,25 +1388,29 @@ const PositionCRM: NextPageWithLayout = () => {
           <div className="">
             <div className="mb-4 flex items-center">
               <div className="mr-4 max-w-[200px]">
-                {/* {!newTalentListCreationMode ? ( */}
-                <SelectList
-                  items={[
-                    { _id: "000", name: "All candidates" },
-                    ...talentListsAvailables,
-                  ]}
-                  onChange={handleSelectedTalentList}
-                  newValue={talentListSelected ? talentListSelected : undefined}
-                  // isDisabled={editTalentListMode}
-                />
-                {/* ) : (
-                <TextField
-                  onChange={handleNewTalentListNameChange}
-                  placeholder="Name your custom list"
-                  radius="pill-shadow"
-                  required={true}
-                  className="mt-0 h-[30px] !px-2 !py-1"
-                />
-              )} */}
+                {talentListsAvailables.length && (
+                  <SelectList
+                    items={[
+                      {
+                        _id: "000",
+                        name: "All candidates",
+                        talent: candidatesUnqualifiedList.map((candidate) => ({
+                          user: candidate.user,
+                        })) as TalentType[],
+                        positionID:
+                          typeof positionID === "string"
+                            ? positionID
+                            : undefined,
+                      },
+                      ...talentListsAvailables,
+                    ]}
+                    onChange={handleSelectedTalentList}
+                    newValue={
+                      talentListSelected ? talentListSelected : undefined
+                    }
+                    // isDisabled={editTalentListMode}
+                  />
+                )}
               </div>
               {/* <>
               {talentListSelected?._id === "000" ? (
@@ -1617,10 +1623,6 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="">
-            <h2 className="mb-5 text-edenGreen-600">
-              All candidates
-              <span className="inline-block ml-2 -mt-2 text-xs font-Unica font-normal text-edenGreen-500">{`(${candidatesFromTalentList.length})`}</span>
-            </h2>
             <CandidatesTableList
               candidateIDRowSelected={selectedUserId || null}
               candidatesList={
@@ -1659,7 +1661,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "fixed right-0 top-0 z-20 bg-white shadow-md h-screen overflow-y-scroll transition-width duration-200 ease-in-out",
+            "transition-width fixed right-0 top-0 z-20 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
             selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
@@ -1830,21 +1832,21 @@ interface ICandidateCardProps {
 const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
   return (
     <div
-      className="group inline-block cursor-pointer relative rounded-md bg-white border border-edenGray-100 w-80 mr-4 last:mr-0"
+      className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0"
       onClick={onClick}
     >
-      <div className="py-6 px-4 flex" onClick={onClick}>
+      <div className="flex px-4 py-6" onClick={onClick}>
         <div className="mr-4">
           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
         </div>
         <p className="font-bold">{candidate.user?.discordName}</p>
         {candidate.user?.oneLiner && (
-          <p className="text-sm text-edenGray-600">
+          <p className="text-edenGray-600 text-sm">
             {candidate.user?.oneLiner}
           </p>
         )}
         <Button
-          className="absolute bottom-2 right-2 h-6 w-6 !p-0 !rounded-full bg-edenGreen-100 flex items-center justify-center group-hover:bg-edenGreen-200"
+          className="bg-edenGreen-100 group-hover:bg-edenGreen-200 absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center !rounded-full !p-0"
           variant="tertiary"
         >
           <FaArrowRight size={"0.75rem"} />

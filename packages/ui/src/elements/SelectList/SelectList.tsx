@@ -1,42 +1,27 @@
-import { Maybe } from "@eden/package-graphql/generated";
+import { TalentListType } from "@eden/package-graphql/generated";
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import { CheckIcon } from "@heroicons/react/solid";
-import clsx from "clsx";
-import isEmpty from "lodash/isEmpty";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
-interface IItems {
-  _id?: Maybe<string> | undefined;
-  name?: Maybe<string> | undefined;
-  [key: string]: any;
-}
-
 export interface ISelectListProps {
-  items: IItems[];
+  items: TalentListType[];
   btnBGcolor?: string;
   // eslint-disable-next-line no-unused-vars
   onChange?: (items?: any) => void;
   // eslint-disable-next-line no-unused-vars
-  newValue?: IItems;
+  newValue?: TalentListType;
   isDisabled?: boolean;
 }
 
 export const SelectList = ({
   items,
   onChange,
-  btnBGcolor = "bg-gray-200",
   newValue,
   isDisabled = false,
 }: ISelectListProps) => {
-  const [selected, setSelected] = useState<IItems | undefined>(items[0]);
-
-  const btnClasses = clsx(
-    "relative flex justify-between items-center w-full border border-gray-300 text-center cursor-pointer rounded-2xl py-1 px-3 shadow-xl hover:border-gray-500 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-green-300 sm:text-sm",
-    btnBGcolor,
-    {
-      "border-green-500": !isEmpty(selected),
-    }
+  const [selected, setSelected] = useState<TalentListType | undefined>(
+    items[0]
   );
 
   useMemo(() => {
@@ -61,9 +46,12 @@ export const SelectList = ({
         disabled={isDisabled}
       >
         <div className="relative">
-          <Listbox.Button className={btnClasses}>
-            <span className="mr-2 block truncate">{selected?.name}</span>
-            <ChevronDownIcon width={12} />
+          <Listbox.Button className="text-edenGreen-600 relative flex w-full cursor-pointer items-center justify-between text-center text-xl focus:outline-none">
+            <span className="font-Moret mr-2 block truncate font-bold">
+              {selected?.name}
+            </span>{" "}
+            <span className="font-Unica text-edenGreen-500 mr-2 inline-block text-xs font-normal">{`(${selected?.talent?.length})`}</span>
+            <ChevronDownIcon width={18} />
           </Listbox.Button>
           <Transition
             as={Fragment}
