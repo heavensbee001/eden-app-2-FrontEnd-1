@@ -1388,7 +1388,7 @@ const PositionCRM: NextPageWithLayout = () => {
           <div className="">
             <div className="mb-4 flex items-center">
               <div className="mr-4 max-w-[200px]">
-                {talentListsAvailables.length && (
+                {!!talentListsAvailables.length && (
                   <SelectList
                     items={[
                       {
@@ -1822,7 +1822,7 @@ export async function getServerSideProps(ctx: {
   }
 
   return {
-    props: {},
+    props: { key: url },
   };
 }
 interface ICandidateCardProps {
