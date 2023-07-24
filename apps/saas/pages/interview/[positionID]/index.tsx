@@ -33,6 +33,7 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID } = router.query;
   const [interviewEnded, setInterviewEnded] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [titleRole, setTitleRole] = useState<string>("");
