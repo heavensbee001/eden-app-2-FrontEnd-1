@@ -5,7 +5,6 @@ import {
   AppUserLayout,
   Badge,
   Button,
-  Card,
   ChatMessage,
   CountdownTimer,
   CVUploadGPT,
