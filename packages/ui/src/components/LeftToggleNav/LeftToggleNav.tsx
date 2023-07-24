@@ -1,16 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { gql, useMutation } from "@apollo/client";
-import {
-  CompanyContext,
-  DiscoverActionKind,
-  UserContext,
-} from "@eden/package-context";
-import {
-  Avatar,
-  Button,
-  EdenAiProcessingModal,
-  LoginButton,
-} from "@eden/package-ui";
+import { CompanyContext, UserContext } from "@eden/package-context";
+import { Avatar, Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +9,12 @@ import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
 import { BiPlus } from "react-icons/bi";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import {
+  BsChevronDown,
+  BsChevronLeft,
+  BsChevronRight,
+  BsChevronUp,
+} from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { HiCodeBracket } from "react-icons/hi2";
 import { v4 as uuidv4 } from "uuid";
@@ -47,6 +43,9 @@ export const LeftToggleNav = ({
 
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
+  const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
+    null
+  );
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
@@ -147,29 +146,64 @@ export const LeftToggleNav = ({
             >
               <div
                 className={classNames(
-                  "hover:bg-edenPink-200 relative -mx-4 flex min-h-[3rem] w-[calc(100%+2rem)] items-center justify-center px-4 py-2",
+                  "hover:bg-edenPink-200 relative -mx-4 min-h-[3rem] w-[calc(100%+2rem)] px-4 py-2",
                   unwrapped ? "border-edenPink-500 border-b" : "",
                   router.query.positionID === position?._id
                     ? "bg-edenPink-200"
                     : ""
                 )}
               >
-                {router.query.positionID === position?._id && (
-                  <div className="bg-edenGreen-500 absolute left-0 top-0 h-full w-1"></div>
-                )}
-                <div className="text-edenGreen-500 flex h-6 w-6 items-center justify-center rounded-md bg-white bg-opacity-30">
-                  <HiCodeBracket size={"1rem"} />
-                </div>
-                {unwrapped && (
-                  <div className="ml-2 mr-auto">
-                    <p className="whitespace-nowrap text-sm font-bold">
-                      {position?.name?.slice(0, 20)}
-                      {position?.name?.length! > 20 ? "..." : ""}
-                    </p>
-                    <p className="text-edenGray-700 whitespace-nowrap text-xs">
-                      {company?.name}
-                    </p>
+                <div className="flex items-center justify-center">
+                  {router.query.positionID === position?._id && (
+                    <div className="bg-edenGreen-500 absolute left-0 top-0 h-full w-1"></div>
+                  )}
+                  <div className="text-edenGreen-500 flex h-6 w-6 items-center justify-center rounded-md bg-white bg-opacity-30">
+                    <HiCodeBracket size={"1rem"} />
                   </div>
+                  {unwrapped && (
+                    <div className="ml-2 mr-auto w-full">
+                      <p className="whitespace-nowrap text-sm font-bold">
+                        {position?.name?.slice(0, 20)}
+                        {position?.name?.length! > 20 ? "..." : ""}
+                        {position?.talentList ? (
+                          <div
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setUnwrappedPosition(
+                                unwrappedPosition === position?._id
+                                  ? null
+                                  : position._id!
+                              );
+                            }}
+                            className="hover:bg-edenPink-500 flexitems-center absolute right-1 top-5 flex h-5 w-5 items-center justify-center justify-center rounded-full"
+                          >
+                            {unwrappedPosition === position?._id ? (
+                              <BsChevronUp className="-mb-px w-3" />
+                            ) : (
+                              <BsChevronDown className="-mb-px w-3" />
+                            )}
+                          </div>
+                        ) : null}
+                      </p>
+                      <p className="text-edenGray-700 whitespace-nowrap text-xs">
+                        {company?.name}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {unwrapped && unwrappedPosition === position?._id && (
+                  <ul className="mb-2 mt-2 pl-6">
+                    {[
+                      { _id: "000", name: "All candidates" },
+                      ...position?.talentList!,
+                    ]?.map((_talentList, index) => (
+                      <li key={index}>
+                        <Link href={""} className="text-xs hover:font-bold">
+                          {_talentList?.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             </Link>
