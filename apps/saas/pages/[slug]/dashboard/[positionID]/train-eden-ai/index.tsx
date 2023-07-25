@@ -122,6 +122,7 @@ const HomePage: NextPageWithLayout = () => {
   };
 
   // const [webpageLink, setWebpageLink] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [pastedText, setPastedText] = useState("");
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
