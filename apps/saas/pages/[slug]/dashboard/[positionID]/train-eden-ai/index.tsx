@@ -1620,60 +1620,60 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
     //   </div>
     // </form>
     <form className="flex items-start justify-start">
-      <div className="mt-6 h-96 w-[40rem]  rounded-lg bg-gray-50  px-8 pb-8 pt-3">
+      <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
         <Tab.Group>
-          <Tab.List className="  z-0 flex flex-col ">
+          <Tab.List className="  border-edenGreen-300 flex h-7 w-full justify-between border-b ">
             <div className="flex items-start gap-x-6">
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "focus:outline-none",
-                    selected ? "text-edenGreen-600" : "text-edenGreen-400"
+                    "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                    selected
+                      ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                      : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
                   )
                 }
               >
                 GENERAL
-                <div className="border-edenGreen-600 relative -top-1 z-20 mt-2 border-b-2"></div>
               </Tab>
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    " focus:outline-none",
-                    selected ? "text-edenGreen-600" : "text-edenGreen-400"
+                    "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                    selected
+                      ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                      : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
                   )
                 }
               >
                 SOCIALS
               </Tab>
             </div>
-            <div className=" border-edenGreen-300 z-0 -mt-2 mb-2 ml-[-2rem] w-[40rem] border-b-2"></div>
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel className="pt-8">
               <div className="flex  gap-x-6">
                 <div className="flex  flex-col items-start">
-                  {" "}
                   <label className=" text-xs">Targetted Start Date</label>
                   <input
                     type="date"
                     name="targettedStartDate"
-                    className=" input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-56 appearance-none  rounded-lg py-[.45rem] "
+                    className=" input-primary border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
                   />
                 </div>
                 <div className="flex flex-col items-start">
                   <label className="text-xs">Visa Required</label>
-
-                  <div className="mt-2 rounded-lg bg-white p-2">
-                    <select className=" pr-12">
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
+                  <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2">
+                    <select className="w-full outline-none">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
                     </select>
                   </div>
                 </div>
-                <div className="flex   w-full flex-col items-start">
+                <div className="flex   w-full flex-col items-start pr-2">
                   <label className="text-xs ">Office Policy</label>
-                  <div className="mt-2 w-full  rounded-lg bg-white p-2">
-                    <select className="  w-full">
+                  <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2">
+                    <select className="w-full outline-none">
                       <option className=" text-gray-400" value="">
                         Select an option
                       </option>
@@ -1685,21 +1685,20 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                   </div>
                 </div>
               </div>
+
               <div>
                 <div className="mb-12 mt-6 flex flex-col items-start">
                   <label className="text-xs">Office Locations</label>
-                  <div className="mt-2 w-full rounded-lg bg-white p-2">
-                    <select className=" w-full ">
-                      <option> Search for a location </option>
-                    </select>
+                  <div className="mt-2 w-full rounded-lg bg-white">
+                    <input className=" border-edenGray-100  w-full rounded-lg border  p-2"></input>
                   </div>
                 </div>
               </div>
               <div className="flex gap-x-8 ">
                 <div className="flex flex-col items-start">
                   <label className="text-xs">Contact Type</label>
-                  <div className="mt-2 w-64 rounded-lg bg-white p-2">
-                    <select className=" w-full pr-12">
+                  <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2">
+                    <select className=" w-full outline-none">
                       <option value="part-time">Part-time</option>
                       <option value="full-time">Full-time</option>
                     </select>
@@ -1707,8 +1706,8 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                 </div>
                 <div className="flex w-full flex-col items-start">
                   <label className="text-xs">Contract Duration</label>
-                  <div className="mt-2 w-full rounded-lg bg-white p-2">
-                    <select className=" w-full ">
+                  <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2">
+                    <select className="w-full outline-none">
                       <option>Select duration of contract</option>
                     </select>
                   </div>

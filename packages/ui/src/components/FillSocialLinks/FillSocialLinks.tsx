@@ -13,6 +13,8 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 
+import { TextInputLabel } from "../../atoms";
+
 type LinkValues = {
   links: { name: string; url: string }[];
 };
@@ -71,22 +73,15 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
     defaultValues: {
       links: [
         {
-          ...(cleanLink("twitter")
-            ? cleanLink("twitter")
-            : { name: "twitter", url: "" }),
-        },
-        { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
-        { ...(cleanLink("github") ?? { name: "github", url: "" }) },
-        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
-        {
-          ...(cleanLink("linkedIn") ?? {
-            name: "linkedIn",
+          ...(cleanLink("portfolio") ?? {
+            name: "portfolio",
             url: "",
           }),
         },
+        { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
         {
-          ...(cleanLink("portfolio") ?? {
-            name: "portfolio",
+          ...(cleanLink("linkedIn") ?? {
+            name: "linkedIn",
             url: "",
           }),
         },
@@ -96,6 +91,13 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
             url: "",
           }),
         },
+        {
+          ...(cleanLink("twitter")
+            ? cleanLink("twitter")
+            : { name: "twitter", url: "" }),
+        },
+        { ...(cleanLink("github") ?? { name: "github", url: "" }) },
+        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
       ],
     },
   });
@@ -110,6 +112,11 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
     const subscription = watch((data) => {
       const newLinks = data.links?.map((link: any) => {
         switch (link.name) {
+          case "portfolio":
+            return {
+              name: link.name,
+              url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
+            };
           case "twitter":
             return {
               name: link.name,
@@ -143,11 +150,6 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
               name: link.name,
               url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
             };
-          case "portfolio":
-            return {
-              name: link.name,
-              url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
-            };
           case "custom":
             return {
               name: link.name,
@@ -167,20 +169,20 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
 
   const baseUrl = (platform: string) => {
     switch (platform) {
+      case "portfolio":
+        return "https://";
+      case "telegram":
+        return "https://t.me/";
+      case "linkedIn":
+        return "https://www.linkedin.com/";
+      case "custom":
+        return "https://";
       case "twitter":
         return "https://twitter.com/";
       case "github":
         return "https://github.com/";
-      case "telegram":
-        return "https://t.me/";
       case "lens":
         return "https://www.lensfrens.xyz/";
-      case "linkedIn":
-        return "https://www.linkedin.com/";
-      case "portfolio":
-        return "https://";
-      case "custom":
-        return "https://";
       default:
         return "";
     }
@@ -188,44 +190,44 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
 
   const platformIcons = (platform: string) => {
     switch (platform) {
+      case "portfolio":
+        return <FaBriefcase size="24px" color="#BCBCBC" />;
+      case "telegram":
+        return <FaTelegram size="24px" color="#BCBCBC" />;
+      case "linkedin":
+        return <FaLinkedin size="24px" color="#0e76a8" />;
+      case "custom":
+        return <FaLink size="24px" color="#BCBCBC" />;
       case "twitter":
         return <FaTwitter size="24px" color="#00acee" />;
       case "discord":
         return <FaDiscord size="24px" color="#BCBCBC" />;
       case "github":
         return <FaGithub size="24px" color="#BCBCBC" />;
-      case "linkedin":
-        return <FaLinkedin size="24px" color="#0e76a8" />;
-      case "telegram":
-        return <FaTelegram size="24px" color="#BCBCBC" />;
       case "lens":
         return <LensIcon />;
       case "linkedIn":
         return <FaLinkedin size="24px" color="#BCBCBC" />;
       default:
         return <FaQuestionCircle size="24px" color="#00acee" />;
-      case "portfolio":
-        return <FaBriefcase size="24px" color="#BCBCBC" />;
-      case "custom":
-        return <FaLink size="24px" color="#BCBCBC" />;
     }
   };
 
   return (
-    <div className="grid-template-rows-repeat(4, auto) grid-auto-flow-column gap mt-2 grid grid-cols-2 gap-x-5 gap-y-4">
+    <div className="grid-template-rows-repeat(4, auto) grid-auto-flow-column gap mt-2 grid grid-cols-2 gap-x-5 gap-y-2">
       {fields.map((field, index) => {
         return (
           <section key={field.id}>
-            {/* <TextInputLabel htmlFor={`link-${field.name}`}>
-              {field.name}
-            </TextInputLabel> */}
             <div>
               <div>
-                <div className={`my-auto px-2`}>
+                <div className={`my-auto flex space-x-2 px-2 capitalize`}>
                   {platformIcons(field.name)}
+                  <TextInputLabel htmlFor={`link-${field.name}`}>
+                    {field.name}
+                  </TextInputLabel>
                 </div>
                 <div
-                  className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-full pl-4`}
+                  className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-lg pl-4`}
                 >
                   <span className={`text-600`}>{baseUrl(field.name)}</span>
 
