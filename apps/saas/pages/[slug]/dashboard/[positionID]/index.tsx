@@ -30,7 +30,7 @@ import {
 import { Tab } from "@headlessui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
@@ -120,7 +120,7 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
-  const { positionID, slug } = router.query;
+  const { positionID, slug, listID } = router.query;
   const { company } = useContext(CompanyContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
@@ -167,6 +167,18 @@ const PositionCRM: NextPageWithLayout = () => {
   const [talentListSelected, setTalentListSelected] =
     useState<TalentListType>();
 
+  useMemo(() => {
+    let _listSelected;
+
+    if (listID && !!talentListsAvailables.length) {
+      _listSelected = talentListsAvailables.find((list) => list._id === listID);
+    } else {
+      _listSelected = talentListsAvailables.find((list) => list._id === "000");
+    }
+
+    setTalentListSelected(_listSelected);
+  }, [listID, talentListsAvailables]);
+
   const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
     CandidateTypeSkillMatch[]
   >([]);
@@ -180,7 +192,7 @@ const PositionCRM: NextPageWithLayout = () => {
     string[]
   >([]);
 
-  const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
+  // const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
 
   const [newTalentListNameInputOpen, setNewTalentListNameInputOpen] =
     useState<boolean>(false);
@@ -309,7 +321,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
         // setCandidatesList(sortedCandidatesList);
 
-        console.log("sortedCandidatesList = ", sortedCandidatesList);
+        // console.log("sortedCandidatesList = ", sortedCandidatesList);
 
         setCandidatesOriginalList(sortedCandidatesList);
 
@@ -393,12 +405,12 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  useEffect(() => {
-    if (talentListToShow && talentListsAvailables.length) {
-      setTalentListSelected(talentListToShow);
-      // setNewTalentListName(talentListToShow?.name!);
-    }
-  }, [talentListToShow, talentListsAvailables]);
+  // useEffect(() => {
+  //   if (talentListToShow && talentListsAvailables.length) {
+  //     setTalentListSelected(talentListToShow);
+  //     // setNewTalentListName(talentListToShow?.name!);
+  //   }
+  // }, [talentListToShow, talentListsAvailables]);
 
   const handleRowClick = (user: CandidateTypeSkillMatch) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
@@ -690,7 +702,14 @@ const PositionCRM: NextPageWithLayout = () => {
                     !approvedCandidatesIDs.includes(candidate.user._id)
                 )
             );
-            setTalentListSelected({ _id: "000", name: "All candidates" });
+            // setTalentListSelected({ _id: "000", name: "All candidates" });
+            router.push(
+              {
+                pathname: `/${company?.slug}/dashboard/${positionID}`,
+              },
+              undefined,
+              { shallow: true }
+            );
           } else {
             setCandidatesFromTalentList(candidatesUnqualifiedList);
           }
@@ -701,7 +720,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 talentList._id === workingTalentListID
             );
 
-          const editedTalentList =
+          const editedTalentList: TalentListType =
             data?.updateUsersTalentListPosition.talentList[
               editedTalentListIndex
             ];
@@ -720,7 +739,17 @@ const PositionCRM: NextPageWithLayout = () => {
           }
 
           setCandidatesFromTalentList(candidatesOnTalentListSelected);
-          setTalentListSelected(editedTalentList);
+          // setTalentListSelected(editedTalentList);
+          router.push(
+            {
+              pathname: `/${company?.slug}/dashboard/${positionID}`,
+              query: {
+                listID: editedTalentList._id,
+              },
+            },
+            undefined,
+            { shallow: true }
+          );
           setNewTalentListCandidatesIds([]);
         }
       } else {
@@ -788,7 +817,7 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleCalculateSkillScore = () => {
-    console.log("change = 232322");
+    // console.log("change = 232322");
 
     setUpdateSkillScore(true);
   };
@@ -796,20 +825,31 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    if (talentListToShow) {
-      for (let i = 0; i < candidatesOriginalList.length; i++) {
-        for (let j = 0; j < talentListToShow.talent!.length; j++) {
-          if (
-            candidatesOriginalList[i].user?._id ===
-            talentListToShow.talent![j]!.user!._id
-          ) {
-            candidatesOnTalentListSelected.push(candidatesOriginalList[i]);
-          }
-        }
-      }
-      setTalentListSelected(talentListToShow);
-      setTalentListToShow(undefined);
-    } else if (list._id !== "000") {
+    // if (talentListToShow) {
+    //   for (let i = 0; i < candidatesOriginalList.length; i++) {
+    //     for (let j = 0; j < talentListToShow.talent!.length; j++) {
+    //       if (
+    //         candidatesOriginalList[i].user?._id ===
+    //         talentListToShow.talent![j]!.user!._id
+    //       ) {
+    //         candidatesOnTalentListSelected.push(candidatesOriginalList[i]);
+    //       }
+    //     }
+    //   }
+    //   // setTalentListSelected(talentListToShow);
+    //   router.push(
+    //     {
+    //       pathname: `/${company?.slug}/dashboard/${positionID}`,
+    //       query: {
+    //         listID: talentListToShow._id,
+    //       },
+    //     },
+    //     undefined,
+    //     { shallow: true }
+    //   );
+    //   setTalentListToShow(undefined);
+    // } else
+    if (list._id !== "000") {
       for (let i = 0; i < candidatesOriginalList.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (
@@ -819,10 +859,27 @@ const PositionCRM: NextPageWithLayout = () => {
           }
         }
       }
-      setTalentListSelected(list);
+      // setTalentListSelected(list);
+      router.push(
+        {
+          pathname: `/${company?.slug}/dashboard/${positionID}`,
+          query: {
+            listID: list._id,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
     } else {
       candidatesOnTalentListSelected.push(...candidatesUnqualifiedList);
-      setTalentListSelected({ _id: "000", name: "All candidates" });
+      // setTalentListSelected({ _id: "000", name: "All candidates" });
+      router.push(
+        {
+          pathname: `/${company?.slug}/dashboard/${positionID}`,
+        },
+        undefined,
+        { shallow: true }
+      );
     }
 
     setNewTalentListCandidatesIds([]);
@@ -832,8 +889,6 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleCreateNewList = () => {
     setNewTalentListNameInputOpen(true);
-
-    console.log("click =-=-=-=-=-=-=-");
 
     setAddToListOpen(false);
 
@@ -846,9 +901,6 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleAddCandidatesToList = async (listID: string) => {
     setAddToListOpen(false);
-    console.log(
-      "iwefijnwefijnrfijnewio;fnrwijonhiowernfojngvjonwойбнефо;рбнво;йшбнвой;шнефой;ншреoifnwoirnfgv'efrnvg;o'ienр"
-    );
 
     const _prevTalent = findPositionData?.findPosition.talentList
       .find((_list: any) => _list._id === listID)
@@ -1596,7 +1648,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
                       router.push(
                         {
-                          pathname: "/dashboard/" + positionID,
+                          pathname: `/${company?.slug}/dashboard/${positionID}`,
                           query: {
                             candidate1: newTalentListCandidatesIds[0],
                             candidate2: newTalentListCandidatesIds[1],
@@ -1829,6 +1881,7 @@ interface ICandidateCardProps {
   candidate: CandidateTypeSkillMatch;
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
+
 const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
   return (
     <div

@@ -198,7 +198,14 @@ export const LeftToggleNav = ({
                       ...position?.talentList!,
                     ]?.map((_talentList, index) => (
                       <li key={index}>
-                        <Link href={""} className="text-xs hover:font-bold">
+                        <Link
+                          href={`/${company.slug}/dashboard/${position?._id}${
+                            _talentList?._id !== "000"
+                              ? "?listID=" + _talentList?._id
+                              : ""
+                          }`}
+                          className="text-xs hover:font-bold"
+                        >
                           {_talentList?.name}
                         </Link>
                       </li>
