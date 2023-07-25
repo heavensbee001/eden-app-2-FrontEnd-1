@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
+import { CompanyContext, UserContext } from "@eden/package-context";
 import { Members, Mutation } from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
@@ -19,17 +19,9 @@ import {
 } from "@eden/package-ui";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import {
-  ChangeEvent,
-  FormEvent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import { useForm } from "react-hook-form";
-import { HiBadgeCheck } from "react-icons/hi";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
@@ -47,6 +39,14 @@ export const WEBPAGE_TO_MEMORY = gql`
         originalContent
         personalizedContent
       }
+    }
+  }
+`;
+
+const UPDATE_POSITION = gql`
+  mutation ($fields: updatePositionInput!) {
+    updatePosition(fields: $fields) {
+      _id
     }
   }
 `;
@@ -83,6 +83,7 @@ type Question = {
 
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
+  const { company, getCompanyFunc } = useContext(CompanyContext);
   const router = useRouter();
   const { positionID } = router.query;
 
@@ -116,8 +117,7 @@ const HomePage: NextPageWithLayout = () => {
   });
 
   const handleInterviewEnd = () => {
-    console.log("interview end");
-
+    // console.log("interview end");
     setInterviewEnded(true);
   };
 
@@ -170,15 +170,11 @@ const HomePage: NextPageWithLayout = () => {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
-  // const handleWebpageLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setWebpageLink(e.target.value);
-  // };
-
-  // eslint-disable-next-line no-unused-vars
-  const handlePastedTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setPastedText(e.target.value);
-  };
+  const [updatePosition] = useMutation(UPDATE_POSITION, {
+    onCompleted() {
+      getCompanyFunc();
+    },
+  });
 
   // const handleLinkSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
@@ -236,31 +232,37 @@ const HomePage: NextPageWithLayout = () => {
   //   }
   // };
 
-  // eslint-disable-next-line no-unused-vars
-  const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleDescriptionStepSubmit = async () => {
     const _pastedText = getValues("pastedText");
+
+    setScraping(true);
 
     if (_pastedText !== "") {
       try {
-        // console.log("_pastedText");
+        await Promise.all([
+          websiteToMemoryCompany({
+            variables: {
+              fields: { message: _pastedText, positionID: positionID },
+            },
+          }),
+          updatePosition({
+            variables: {
+              fields: {
+                _id: positionID,
+                name: getValues("position.name"),
+                companyID: company?._id,
+              },
+            },
+          }),
+        ]);
 
-        websiteToMemoryCompany({
-          variables: {
-            fields: { message: _pastedText, positionID: positionID },
-          },
-        });
-        // setPastedText("");
-        setScraping(true);
-      } catch (error) {
-        setScraping(false);
-        setError(
-          ` Error:  ${(error as Error).message}
-  
-          Please try again`
-        );
+        setStep(step + 1);
+      } catch {
+        toast.error("Couldn't save data");
       }
     }
+
+    setScraping(false);
   };
 
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -328,7 +330,6 @@ const HomePage: NextPageWithLayout = () => {
                 if (_stepNum !== step) {
                   setStep(_stepNum);
                 }
-                // handleStepChange
               }}
               animate
             >
@@ -343,21 +344,16 @@ const HomePage: NextPageWithLayout = () => {
                     // type="submit"
                     className="ml-auto"
                     onClick={() => {
-                      setStep(step + 1);
-
-                      // handleTextSubmit
+                      handleDescriptionStepSubmit();
                     }}
                     disabled={!watch("position.name") || !watch("pastedText")}
                   >
-                    Save & Next
+                    Save & Continue
                   </Button>
                 }
               >
                 <div className="flex h-full items-center justify-center">
-                  <form
-                    className="w-full max-w-[33rem]"
-                    onSubmit={handleTextSubmit}
-                  >
+                  <form className="w-full max-w-[33rem]">
                     <div className="mb-6">
                       <label
                         htmlFor="name"
@@ -392,33 +388,7 @@ const HomePage: NextPageWithLayout = () => {
                         }}
                       />
                     </div>
-                    <Button
-                      loading={scraping}
-                      variant="secondary"
-                      type="submit"
-                      className="mx-auto"
-                    >
-                      Submit Your Description
-                    </Button>
                   </form>
-                  {/* {report && (
-                      <div className="whitespace-pre-wrap">{report}</div>
-                    )} */}
-                  <div>
-                    {report && (
-                      <p className="text-gray-500">
-                        Job description was processed successfully.{" "}
-                        <HiBadgeCheck
-                          className="inline-block"
-                          size={24}
-                          color="#40f837"
-                        />
-                        <br />
-                        Click Next to continue.
-                      </p>
-                    )}
-                    {error && <div className="text-red-500">{error}</div>}
-                  </div>
                   <EdenAiProcessingModal
                     open={scraping}
                     title="Give me 30 seconds!"
@@ -579,6 +549,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { MdContentCopy, MdLink } from "react-icons/md";
+import { toast } from "react-toastify";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
