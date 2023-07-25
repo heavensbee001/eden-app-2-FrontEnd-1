@@ -26,9 +26,9 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
         </div>
       )} */}
       {member?.letterAndColor?.skill?.letter && (
-        <div className="p-4 bg-edenPink-100 rounded-md mb-8 min-h-[3rem]">
+        <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
           <p
-            className={`${member?.letterAndColor?.skill?.color} text-3xl font-bold float-right -mt-2`}
+            className={`${member?.letterAndColor?.skill?.color} float-right -mt-2 text-3xl font-bold`}
           >
             {`${member?.letterAndColor?.skill?.letter}`}
           </p>
@@ -43,7 +43,7 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
           )}
         </div>
       )}
-      <div className="mt-2 h-[900px] w-full rounded-lg border-[1px] bg-white py-36">
+      <div className="mt-2 h-[450px] w-full rounded-lg border-[1px] bg-white py-2">
         <DynamicSearchMemberGraph
           memberID={member?.user?._id!}
           nodesID={
