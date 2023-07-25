@@ -17,11 +17,13 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import { Tab } from "@headlessui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import {
   ChangeEvent,
   FormEvent,
+  Fragment,
   useContext,
   useEffect,
   useRef,
@@ -1617,73 +1619,110 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
     //     <FillSocialLinks />
     //   </div>
     // </form>
-    <form className="flex justify-center">
-      <div className="mt-6 h-96 w-[40rem]  rounded-lg bg-gray-50 p-8">
+    <form className="flex items-start justify-start">
+      <div className="mt-6 h-96 w-[40rem]  rounded-lg bg-gray-50  px-8 pb-8 pt-3">
+        <Tab.Group>
+          <Tab.List className="  z-0 flex flex-col ">
+            <div className="flex items-start gap-x-6">
+              <Tab
+                className={({ selected }) =>
+                  classNames(
+                    "focus:outline-none",
+                    selected ? "text-edenGreen-600" : "text-edenGreen-400"
+                  )
+                }
+              >
+                GENERAL
+                <div className="border-edenGreen-600 relative -top-1 z-20 mt-2 border-b-2"></div>
+              </Tab>
+              <Tab
+                className={({ selected }) =>
+                  classNames(
+                    " focus:outline-none",
+                    selected ? "text-edenGreen-600" : "text-edenGreen-400"
+                  )
+                }
+              >
+                SOCIALS
+              </Tab>
+            </div>
+            <div className=" border-edenGreen-300 z-0 -mt-2 mb-2 ml-[-2rem] w-[40rem] border-b-2"></div>
+          </Tab.List>
+          <Tab.Panels>
+            <Tab.Panel className="pt-8">
+              <div className="flex  gap-x-6">
+                <div className="flex  flex-col items-start">
+                  {" "}
+                  <label className=" text-xs">Targetted Start Date</label>
+                  <input
+                    type="date"
+                    name="targettedStartDate"
+                    className=" input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-56 appearance-none  rounded-lg py-[.45rem] "
+                  />
+                </div>
+                <div className="flex flex-col items-start">
+                  <label className="text-xs">Visa Required</label>
+
+                  <div className="mt-2 rounded-lg bg-white p-2">
+                    <select className=" pr-12">
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex   w-full flex-col items-start">
+                  <label className="text-xs ">Office Policy</label>
+                  <div className="mt-2 w-full  rounded-lg bg-white p-2">
+                    <select className="  w-full">
+                      <option className=" text-gray-400" value="">
+                        Select an option
+                      </option>
+
+                      <option value="On Site">On Site</option>
+                      <option value="Remote">Remote</option>
+                      <option value="Hybrid">Hybrid</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="mb-12 mt-6 flex flex-col items-start">
+                  <label className="text-xs">Office Locations</label>
+                  <div className="mt-2 w-full rounded-lg bg-white p-2">
+                    <select className=" w-full ">
+                      <option> Search for a location </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-x-8 ">
+                <div className="flex flex-col items-start">
+                  <label className="text-xs">Contact Type</label>
+                  <div className="mt-2 w-64 rounded-lg bg-white p-2">
+                    <select className=" w-full pr-12">
+                      <option value="part-time">Part-time</option>
+                      <option value="full-time">Full-time</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex w-full flex-col items-start">
+                  <label className="text-xs">Contract Duration</label>
+                  <div className="mt-2 w-full rounded-lg bg-white p-2">
+                    <select className=" w-full ">
+                      <option>Select duration of contract</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </Tab.Panel>
+            <Tab.Panel>
+              <div className=" gird grid-cols-2">
+                <FillSocialLinks />
+              </div>
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
         {/* <div className="text-red-600">Uncomment 476!!!</div> */}
-        <div className="flex  gap-x-6">
-          <div className="flex  flex-col items-start">
-            {" "}
-            <label className=" text-xs">Targetted Start Date</label>
-            <input
-              type="date"
-              name="targettedStartDate"
-              className=" input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-56 appearance-none  rounded-lg py-[.45rem] "
-            />
-          </div>
-          <div className="flex flex-col items-start">
-            <label className="text-xs">Visa Required</label>
-
-            <div className="mt-2 rounded-lg bg-white p-2">
-              <select className=" pr-12">
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex   w-full flex-col items-start">
-            <label className="text-xs ">Office Policy</label>
-            <div className="mt-2 w-full  rounded-lg bg-white p-2">
-              <select className="  w-full">
-                <option className=" text-gray-400" value="">
-                  Select an option
-                </option>
-
-                <option value="On Site">On Site</option>
-                <option value="Remote">Remote</option>
-                <option value="Hybrid">Hybrid</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="mb-12 mt-6 flex flex-col items-start">
-            <label className="text-xs">Office Locations</label>
-            <div className="mt-2 w-full rounded-lg bg-white p-2">
-              <select className=" w-full ">
-                <option> Search for a location </option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-x-8 ">
-          <div className="flex flex-col items-start">
-            <label className="text-xs">Contact Type</label>
-            <div className="mt-2 w-64 rounded-lg bg-white p-2">
-              <select className=" w-full pr-12">
-                <option value="part-time">Part-time</option>
-                <option value="full-time">Full-time</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex w-full flex-col items-start">
-            <label className="text-xs">Contract Duration</label>
-            <div className="mt-2 w-full rounded-lg bg-white p-2">
-              <select className=" w-full ">
-                <option>Select duration of contract</option>
-              </select>
-            </div>
-          </div>
-        </div>
       </div>
     </form>
   );

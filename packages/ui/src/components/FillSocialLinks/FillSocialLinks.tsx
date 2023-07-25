@@ -212,31 +212,35 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
   };
 
   return (
-    <div>
+    <div className="grid-template-rows-repeat(4, auto) grid-auto-flow-column gap mt-2 grid grid-cols-2 gap-x-5 gap-y-4">
       {fields.map((field, index) => {
         return (
           <section key={field.id}>
             {/* <TextInputLabel htmlFor={`link-${field.name}`}>
               {field.name}
             </TextInputLabel> */}
-            <div className={`flex`}>
-              <div className={`my-auto px-2`}>{platformIcons(field.name)}</div>
-              <div
-                className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-full pl-4`}
-              >
-                <span className={`text-600`}>{baseUrl(field.name)}</span>
+            <div>
+              <div>
+                <div className={`my-auto px-2`}>
+                  {platformIcons(field.name)}
+                </div>
+                <div
+                  className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-full pl-4`}
+                >
+                  <span className={`text-600`}>{baseUrl(field.name)}</span>
 
-                <input
-                  id={`link-${field.name}`}
-                  className={`w-full border-none pl-0.5 outline-none`}
-                  type="text"
-                  placeholder={
-                    field.name === "portfolio" || "custom"
-                      ? `your ${field.name} url`
-                      : `${field.name} handle`
-                  }
-                  {...register(`links.${index}.url`)}
-                />
+                  <input
+                    id={`link-${field.name}`}
+                    className={`w-full border-none pl-0.5 outline-none`}
+                    type="text"
+                    placeholder={
+                      field.name === "portfolio" || "custom"
+                        ? `your ${field.name} url`
+                        : `${field.name} handle`
+                    }
+                    {...register(`links.${index}.url`)}
+                  />
+                </div>
               </div>
             </div>
           </section>
