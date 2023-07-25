@@ -122,6 +122,7 @@ const HomePage: NextPageWithLayout = () => {
   };
 
   // const [webpageLink, setWebpageLink] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [pastedText, setPastedText] = useState("");
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
@@ -238,16 +239,18 @@ const HomePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (pastedText !== "") {
+    const _pastedText = getValues("pastedText");
+
+    if (_pastedText !== "") {
       try {
-        console.log("pastedText", pastedText);
+        // console.log("_pastedText");
 
         websiteToMemoryCompany({
           variables: {
-            fields: { message: pastedText, positionID: positionID },
+            fields: { message: _pastedText, positionID: positionID },
           },
         });
-        setPastedText("");
+        // setPastedText("");
         setScraping(true);
       } catch (error) {
         setScraping(false);
@@ -351,7 +354,10 @@ const HomePage: NextPageWithLayout = () => {
                 }
               >
                 <div className="flex h-full items-center justify-center">
-                  <form className="w-full max-w-[33rem]">
+                  <form
+                    className="w-full max-w-[33rem]"
+                    onSubmit={handleTextSubmit}
+                  >
                     <div className="mb-6">
                       <label
                         htmlFor="name"
@@ -386,6 +392,14 @@ const HomePage: NextPageWithLayout = () => {
                         }}
                       />
                     </div>
+                    <Button
+                      loading={scraping}
+                      variant="secondary"
+                      type="submit"
+                      className="mx-auto"
+                    >
+                      Submit Your Description
+                    </Button>
                   </form>
                   {/* {report && (
                       <div className="whitespace-pre-wrap">{report}</div>
