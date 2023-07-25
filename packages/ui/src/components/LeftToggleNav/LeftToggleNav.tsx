@@ -78,7 +78,7 @@ export const LeftToggleNav = ({
     updatePosition({
       variables: {
         fields: {
-          name: `New Position ${randId}`,
+          name: `New Opportunity ${randId}`,
           companyID: company?._id,
         },
       },
@@ -220,7 +220,9 @@ export const LeftToggleNav = ({
           onClick={handleCreatePosition}
         >
           <BiPlus size={"1.3rem"} className="" />
-          {unwrapped && <span className="font-Moret ml-1">Add Position</span>}
+          {unwrapped && (
+            <span className="font-Moret ml-1">Add Opportunity</span>
+          )}
         </Button>
         {creatingPositionModal}
       </section>

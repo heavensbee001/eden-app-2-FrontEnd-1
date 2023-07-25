@@ -363,7 +363,7 @@ const HomePage: NextPageWithLayout = () => {
                         htmlFor="name"
                         className="text-edenGray-500 mb-2 block text-xs"
                       >
-                        Position name
+                        Opportunity name
                       </label>
                       <input
                         id="name"
