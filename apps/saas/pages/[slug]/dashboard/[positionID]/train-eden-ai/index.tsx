@@ -1619,7 +1619,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
     //     <FillSocialLinks />
     //   </div>
     // </form>
-    <form className="flex items-start justify-start">
+    <form className="flex items-center justify-center">
       <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
         <Tab.Group>
           <Tab.List className="  border-edenGreen-300 flex h-7 w-full justify-between border-b ">
@@ -1653,17 +1653,17 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
           <Tab.Panels>
             <Tab.Panel className="pt-8">
               <div className="flex  gap-x-6">
-                <div className="flex  flex-col items-start">
-                  <label className=" text-xs">Targetted Start Date</label>
+                <div className="flex  flex-col items-start text-xs">
+                  <label>Targeted Start Date</label>
                   <input
                     type="date"
-                    name="targettedStartDate"
+                    name="targetedStartDate"
                     className=" input-primary border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
                   />
                 </div>
                 <div className="flex flex-col items-start">
                   <label className="text-xs">Visa Required</label>
-                  <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2">
+                  <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
                     <select className="w-full outline-none">
                       <option value="yes">Yes</option>
                       <option value="no">No</option>
@@ -1672,7 +1672,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                 </div>
                 <div className="flex   w-full flex-col items-start pr-2">
                   <label className="text-xs ">Office Policy</label>
-                  <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2">
+                  <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
                     <select className="w-full outline-none">
                       <option className=" text-gray-400" value="">
                         Select an option
@@ -1689,7 +1689,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
               <div>
                 <div className="mb-12 mt-6 flex flex-col items-start">
                   <label className="text-xs">Office Locations</label>
-                  <div className="mt-2 w-full rounded-lg bg-white">
+                  <div className="mt-2 w-full rounded-lg bg-white text-xs">
                     <input className=" border-edenGray-100  w-full rounded-lg border  p-2"></input>
                   </div>
                 </div>
@@ -1697,7 +1697,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
               <div className="flex gap-x-8 ">
                 <div className="flex flex-col items-start">
                   <label className="text-xs">Contact Type</label>
-                  <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2">
+                  <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
                     <select className=" w-full outline-none">
                       <option value="part-time">Part-time</option>
                       <option value="full-time">Full-time</option>
@@ -1706,7 +1706,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                 </div>
                 <div className="flex w-full flex-col items-start">
                   <label className="text-xs">Contract Duration</label>
-                  <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2">
+                  <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
                     <select className="w-full outline-none">
                       <option>Select duration of contract</option>
                     </select>
