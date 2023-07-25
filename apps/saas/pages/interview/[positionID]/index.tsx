@@ -67,12 +67,10 @@ const HomePage: NextPageWithLayout = () => {
 
   const handleCvEnd = () => {
     // console.log("cv end");
-
     setCvEnded(true);
   };
   const handleInterviewEnd = () => {
     // console.log("interview end");
-
     setInterviewEnded(true);
   };
 

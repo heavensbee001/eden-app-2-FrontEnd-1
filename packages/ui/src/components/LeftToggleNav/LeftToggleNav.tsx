@@ -78,7 +78,7 @@ export const LeftToggleNav = ({
     updatePosition({
       variables: {
         fields: {
-          name: `New Position ${randId}`,
+          name: `New Opportunity ${randId}`,
           companyID: company?._id,
         },
       },
@@ -198,7 +198,14 @@ export const LeftToggleNav = ({
                       ...position?.talentList!,
                     ]?.map((_talentList, index) => (
                       <li key={index}>
-                        <Link href={""} className="text-xs hover:font-bold">
+                        <Link
+                          href={`/${company.slug}/dashboard/${position?._id}${
+                            _talentList?._id !== "000"
+                              ? "?listID=" + _talentList?._id
+                              : ""
+                          }`}
+                          className="text-xs hover:font-bold"
+                        >
                           {_talentList?.name}
                         </Link>
                       </li>
@@ -220,7 +227,9 @@ export const LeftToggleNav = ({
           onClick={handleCreatePosition}
         >
           <BiPlus size={"1.3rem"} className="" />
-          {unwrapped && <span className="font-Moret ml-1">Add Position</span>}
+          {unwrapped && (
+            <span className="font-Moret ml-1">Add Opportunity</span>
+          )}
         </Button>
         {creatingPositionModal}
       </section>
