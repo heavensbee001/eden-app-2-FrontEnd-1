@@ -191,25 +191,25 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
   const platformIcons = (platform: string) => {
     switch (platform) {
       case "portfolio":
-        return <FaBriefcase size="24px" color="#BCBCBC" />;
+        return <FaBriefcase size="1rem" color="#BCBCBC" />;
       case "telegram":
-        return <FaTelegram size="24px" color="0088cc" />;
+        return <FaTelegram size="1rem" color="0088cc" />;
       case "linkedin":
-        return <FaLinkedin size="24px" color="#0a66c2" />;
+        return <FaLinkedin size="1rem" color="#0a66c2" />;
       case "custom":
-        return <FaLink size="24px" color="#BCBCBC" />;
+        return <FaLink size="1rem" color="#BCBCBC" />;
       case "twitter":
-        return <FaTwitter size="24px" color="#1da1f2" />;
+        return <FaTwitter size="1rem" color="#1da1f2" />;
       case "discord":
-        return <FaDiscord size="24px" color="#5865f2" />;
+        return <FaDiscord size="1rem" color="#5865f2" />;
       case "github":
-        return <FaGithub size="24px" color="#333" />;
+        return <FaGithub size="1rem" color="#333" />;
       case "lens":
         return <LensIcon />;
       case "linkedIn":
-        return <FaLinkedin size="24px" color="#0a66c2" />;
+        return <FaLinkedin size="1rem" color="#0a66c2" />;
       default:
-        return <FaQuestionCircle size="24px" color="#00acee" />;
+        return <FaQuestionCircle size="1rem" color="#00acee" />;
     }
   };
 
@@ -220,20 +220,24 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
           <section key={field.id}>
             <div>
               <div>
-                <div className={`my-auto flex space-x-2 px-2 capitalize`}>
+                <div
+                  className={`my-auto flex items-center space-x-2 px-2 capitalize`}
+                >
                   {platformIcons(field.name)}
-                  <TextInputLabel htmlFor={`link-${field.name}`}>
+                  <label className="text-sm" htmlFor={`link-${field.name}`}>
                     {field.name}
-                  </TextInputLabel>
+                  </label>
                 </div>
                 <div
                   className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-lg pl-4`}
                 >
-                  <span className={`text-600`}>{baseUrl(field.name)}</span>
+                  <span className={`text-600 text-sm`}>
+                    {baseUrl(field.name)}
+                  </span>
 
                   <input
                     id={`link-${field.name}`}
-                    className={`w-full border-none pl-0.5 outline-none`}
+                    className={`w-full border-none pl-0.5 text-sm outline-none`}
                     type="text"
                     placeholder={
                       field.name === "portfolio" || "custom"

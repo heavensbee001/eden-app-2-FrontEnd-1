@@ -32,6 +32,7 @@ import {
 import Confetti from "react-confetti";
 import { useForm } from "react-hook-form";
 import { HiBadgeCheck } from "react-icons/hi";
+import { SlLocationPin } from "react-icons/sl";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
@@ -1687,10 +1688,11 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
               </div>
 
               <div>
-                <div className="mb-12 mt-6 flex flex-col items-start">
+                <div className="relative mb-12 mt-6 flex flex-col items-start">
                   <label className="text-xs">Office Locations</label>
                   <div className="mt-2 w-full rounded-lg bg-white text-xs">
-                    <input className=" border-edenGray-100  w-full rounded-lg border  p-2"></input>
+                    <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
+                    <input className=" border-edenGray-100  w-full rounded-lg border p-2 pl-9  outline-none"></input>
                   </div>
                 </div>
               </div>
