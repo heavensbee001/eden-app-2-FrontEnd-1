@@ -625,6 +625,7 @@ const InterviewEdenAIContainer = ({
 
   // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
+  const { company } = useContext(CompanyContext);
 
   // console.log("currentUser = ", currentUser?._id);
 
@@ -738,7 +739,7 @@ const InterviewEdenAIContainer = ({
             handleEnd={() => {
               if (handleEnd) handleEnd();
             }}
-            headerText={"Front End Dev @ Eden Protocol (hardcoded)"}
+            headerText={`${findPositionData?.findPosition?.name} @ ${company?.name}`}
           />
         }
         {/* <CountdownTimer /> */}
