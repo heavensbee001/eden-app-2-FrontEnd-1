@@ -27,10 +27,10 @@ import {
 import { Tab } from "@headlessui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import { Controller, useForm } from "react-hook-form";
+import { SlLocationPin } from "react-icons/sl";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
