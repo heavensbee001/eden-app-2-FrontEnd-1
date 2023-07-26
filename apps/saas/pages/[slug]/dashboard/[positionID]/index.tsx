@@ -9,6 +9,7 @@ import {
   CandidateType,
   PrioritiesType,
   TalentListType,
+  TalentType,
   TradeOffsType,
 } from "@eden/package-graphql/generated";
 import {
@@ -29,7 +30,7 @@ import {
 import { Tab } from "@headlessui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
@@ -56,24 +57,6 @@ const CREATE_FAKE_USER_CV = gql`
       _id
       discordName
       discordAvatar
-    }
-  }
-`;
-
-const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
-  mutation FindPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
-    findPrioritiesTrainEdenAI(fields: $fields) {
-      success
-      priorities {
-        priority
-        reason
-      }
-      tradeOffs {
-        tradeOff1
-        tradeOff2
-        reason
-        selected
-      }
     }
   }
 `;
@@ -119,7 +102,7 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
-  const { positionID, slug } = router.query;
+  const { positionID, slug, listID } = router.query;
   const { company } = useContext(CompanyContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
@@ -166,6 +149,18 @@ const PositionCRM: NextPageWithLayout = () => {
   const [talentListSelected, setTalentListSelected] =
     useState<TalentListType>();
 
+  useMemo(() => {
+    let _listSelected;
+
+    if (listID && !!talentListsAvailables.length) {
+      _listSelected = talentListsAvailables.find((list) => list._id === listID);
+    } else {
+      _listSelected = talentListsAvailables.find((list) => list._id === "000");
+    }
+
+    setTalentListSelected(_listSelected);
+  }, [listID, talentListsAvailables]);
+
   const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
     CandidateTypeSkillMatch[]
   >([]);
@@ -179,7 +174,7 @@ const PositionCRM: NextPageWithLayout = () => {
     string[]
   >([]);
 
-  const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
+  // const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
 
   const [newTalentListNameInputOpen, setNewTalentListNameInputOpen] =
     useState<boolean>(false);
@@ -308,7 +303,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
         // setCandidatesList(sortedCandidatesList);
 
-        console.log("sortedCandidatesList = ", sortedCandidatesList);
+        // console.log("sortedCandidatesList = ", sortedCandidatesList);
 
         setCandidatesOriginalList(sortedCandidatesList);
 
@@ -392,12 +387,12 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  useEffect(() => {
-    if (talentListToShow && talentListsAvailables.length) {
-      setTalentListSelected(talentListToShow);
-      // setNewTalentListName(talentListToShow?.name!);
-    }
-  }, [talentListToShow, talentListsAvailables]);
+  // useEffect(() => {
+  //   if (talentListToShow && talentListsAvailables.length) {
+  //     setTalentListSelected(talentListToShow);
+  //     // setNewTalentListName(talentListToShow?.name!);
+  //   }
+  // }, [talentListToShow, talentListsAvailables]);
 
   const handleRowClick = (user: CandidateTypeSkillMatch) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
@@ -689,7 +684,14 @@ const PositionCRM: NextPageWithLayout = () => {
                     !approvedCandidatesIDs.includes(candidate.user._id)
                 )
             );
-            setTalentListSelected({ _id: "000", name: "All candidates" });
+            // setTalentListSelected({ _id: "000", name: "All candidates" });
+            router.push(
+              {
+                pathname: `/${company?.slug}/dashboard/${positionID}`,
+              },
+              undefined,
+              { shallow: true }
+            );
           } else {
             setCandidatesFromTalentList(candidatesUnqualifiedList);
           }
@@ -700,7 +702,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 talentList._id === workingTalentListID
             );
 
-          const editedTalentList =
+          const editedTalentList: TalentListType =
             data?.updateUsersTalentListPosition.talentList[
               editedTalentListIndex
             ];
@@ -719,7 +721,17 @@ const PositionCRM: NextPageWithLayout = () => {
           }
 
           setCandidatesFromTalentList(candidatesOnTalentListSelected);
-          setTalentListSelected(editedTalentList);
+          // setTalentListSelected(editedTalentList);
+          router.push(
+            {
+              pathname: `/${company?.slug}/dashboard/${positionID}`,
+              query: {
+                listID: editedTalentList._id,
+              },
+            },
+            undefined,
+            { shallow: true }
+          );
           setNewTalentListCandidatesIds([]);
         }
       } else {
@@ -787,7 +799,7 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleCalculateSkillScore = () => {
-    console.log("change = 232322");
+    // console.log("change = 232322");
 
     setUpdateSkillScore(true);
   };
@@ -795,20 +807,31 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    if (talentListToShow) {
-      for (let i = 0; i < candidatesOriginalList.length; i++) {
-        for (let j = 0; j < talentListToShow.talent!.length; j++) {
-          if (
-            candidatesOriginalList[i].user?._id ===
-            talentListToShow.talent![j]!.user!._id
-          ) {
-            candidatesOnTalentListSelected.push(candidatesOriginalList[i]);
-          }
-        }
-      }
-      setTalentListSelected(talentListToShow);
-      setTalentListToShow(undefined);
-    } else if (list._id !== "000") {
+    // if (talentListToShow) {
+    //   for (let i = 0; i < candidatesOriginalList.length; i++) {
+    //     for (let j = 0; j < talentListToShow.talent!.length; j++) {
+    //       if (
+    //         candidatesOriginalList[i].user?._id ===
+    //         talentListToShow.talent![j]!.user!._id
+    //       ) {
+    //         candidatesOnTalentListSelected.push(candidatesOriginalList[i]);
+    //       }
+    //     }
+    //   }
+    //   // setTalentListSelected(talentListToShow);
+    //   router.push(
+    //     {
+    //       pathname: `/${company?.slug}/dashboard/${positionID}`,
+    //       query: {
+    //         listID: talentListToShow._id,
+    //       },
+    //     },
+    //     undefined,
+    //     { shallow: true }
+    //   );
+    //   setTalentListToShow(undefined);
+    // } else
+    if (list._id !== "000") {
       for (let i = 0; i < candidatesOriginalList.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (
@@ -818,10 +841,27 @@ const PositionCRM: NextPageWithLayout = () => {
           }
         }
       }
-      setTalentListSelected(list);
+      // setTalentListSelected(list);
+      router.push(
+        {
+          pathname: `/${company?.slug}/dashboard/${positionID}`,
+          query: {
+            listID: list._id,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
     } else {
       candidatesOnTalentListSelected.push(...candidatesUnqualifiedList);
-      setTalentListSelected({ _id: "000", name: "All candidates" });
+      // setTalentListSelected({ _id: "000", name: "All candidates" });
+      router.push(
+        {
+          pathname: `/${company?.slug}/dashboard/${positionID}`,
+        },
+        undefined,
+        { shallow: true }
+      );
     }
 
     setNewTalentListCandidatesIds([]);
@@ -831,8 +871,6 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleCreateNewList = () => {
     setNewTalentListNameInputOpen(true);
-
-    console.log("click =-=-=-=-=-=-=-");
 
     setAddToListOpen(false);
 
@@ -845,9 +883,6 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleAddCandidatesToList = async (listID: string) => {
     setAddToListOpen(false);
-    console.log(
-      "iwefijnwefijnrfijnewio;fnrwijonhiowernfojngvjonwойбнефо;рбнво;йшбнвой;шнефой;ншреoifnwoirnfgv'efrnvg;o'ienр"
-    );
 
     const _prevTalent = findPositionData?.findPosition.talentList
       .find((_list: any) => _list._id === listID)
@@ -1009,26 +1044,23 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
 
-  const [findPrioritiesTrainEdenAI] = useMutation(
-    FIND_PRIORITIES_TRAIN_EDEN_AI,
-    {
-      onCompleted({ findPrioritiesTrainEdenAI }) {
-        setPriorities(findPrioritiesTrainEdenAI.priorities);
-        setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
-      },
+  useMemo(() => {
+    if (
+      findPositionData?.findPosition?.positionsRequirements?.priorities &&
+      findPositionData?.findPosition?.positionsRequirements?.tradeOffs &&
+      findPositionData?.findPosition?.positionsRequirements?.priorities.length >
+        0 &&
+      findPositionData?.findPosition?.positionsRequirements?.tradeOffs.length >
+        0
+    ) {
+      setPriorities(
+        findPositionData.findPosition.positionsRequirements.priorities
+      );
+      setTradeOffs(
+        findPositionData.findPosition.positionsRequirements.tradeOffs
+      );
     }
-  );
-
-  useEffect(() => {
-    findPrioritiesTrainEdenAI({
-      variables: {
-        // fields: { message: textResponse, userID: currentUser?._id },
-        fields: {
-          positionID: positionID,
-        },
-      },
-    });
-  }, []);
+  }, [findPositionData?.findPosition]);
 
   return (
     <>
@@ -1387,25 +1419,29 @@ const PositionCRM: NextPageWithLayout = () => {
           <div className="">
             <div className="mb-4 flex items-center">
               <div className="mr-4 max-w-[200px]">
-                {/* {!newTalentListCreationMode ? ( */}
-                <SelectList
-                  items={[
-                    { _id: "000", name: "All candidates" },
-                    ...talentListsAvailables,
-                  ]}
-                  onChange={handleSelectedTalentList}
-                  newValue={talentListSelected ? talentListSelected : undefined}
-                  // isDisabled={editTalentListMode}
-                />
-                {/* ) : (
-                <TextField
-                  onChange={handleNewTalentListNameChange}
-                  placeholder="Name your custom list"
-                  radius="pill-shadow"
-                  required={true}
-                  className="mt-0 h-[30px] !px-2 !py-1"
-                />
-              )} */}
+                {!!talentListsAvailables.length && (
+                  <SelectList
+                    items={[
+                      {
+                        _id: "000",
+                        name: "All candidates",
+                        talent: candidatesUnqualifiedList.map((candidate) => ({
+                          user: candidate.user,
+                        })) as TalentType[],
+                        positionID:
+                          typeof positionID === "string"
+                            ? positionID
+                            : undefined,
+                      },
+                      ...talentListsAvailables,
+                    ]}
+                    onChange={handleSelectedTalentList}
+                    newValue={
+                      talentListSelected ? talentListSelected : undefined
+                    }
+                    // isDisabled={editTalentListMode}
+                  />
+                )}
               </div>
               {/* <>
               {talentListSelected?._id === "000" ? (
@@ -1591,7 +1627,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
                       router.push(
                         {
-                          pathname: "/dashboard/" + positionID,
+                          pathname: `/${company?.slug}/dashboard/${positionID}`,
                           query: {
                             candidate1: newTalentListCandidatesIds[0],
                             candidate2: newTalentListCandidatesIds[1],
@@ -1618,10 +1654,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="">
-            <h2 className="text-edenGreen-600 mb-5">
-              All candidates
-              <span className="font-Unica text-edenGreen-500 -mt-2 ml-2 inline-block text-xs font-normal">{`(${candidatesFromTalentList.length})`}</span>
-            </h2>
+
             <CandidatesTableList
               candidateIDRowSelected={selectedUserId || null}
               candidatesList={
@@ -1821,13 +1854,14 @@ export async function getServerSideProps(ctx: {
   }
 
   return {
-    props: {},
+    props: { key: url },
   };
 }
 interface ICandidateCardProps {
   candidate: CandidateTypeSkillMatch;
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
+
 const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
   return (
     <div

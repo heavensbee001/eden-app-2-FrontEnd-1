@@ -1,16 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { gql, useMutation } from "@apollo/client";
-import {
-  CompanyContext,
-  DiscoverActionKind,
-  UserContext,
-} from "@eden/package-context";
-import {
-  Avatar,
-  Button,
-  EdenAiProcessingModal,
-  LoginButton,
-} from "@eden/package-ui";
+import { CompanyContext, UserContext } from "@eden/package-context";
+import { Avatar, Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +9,12 @@ import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
 import { BiPlus } from "react-icons/bi";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import {
+  BsChevronDown,
+  BsChevronLeft,
+  BsChevronRight,
+  BsChevronUp,
+} from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { HiCodeBracket } from "react-icons/hi2";
 import { v4 as uuidv4 } from "uuid";
@@ -47,6 +43,9 @@ export const LeftToggleNav = ({
 
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
+  const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
+    null
+  );
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
@@ -79,7 +78,7 @@ export const LeftToggleNav = ({
     updatePosition({
       variables: {
         fields: {
-          name: `New Position ${randId}`,
+          name: `New Opportunity ${randId}`,
           companyID: company?._id,
         },
       },
@@ -89,15 +88,15 @@ export const LeftToggleNav = ({
   return (
     <nav
       className={classNames(
-        "z-30 flex flex-col fixed left-0 top-0 h-screen bg-edenPink-400 ease-in-out transition-width",
+        "bg-edenPink-400 transition-width fixed left-0 top-0 z-30 flex h-screen flex-col ease-in-out",
         unwrapped ? "w-[14.5rem]" : "w-16"
       )}
     >
       {/* ---- Eden logo section ---- */}
-      <section className="flex items-center relative p-4 border-b border-edenPink-500 h-[4.5rem]">
+      <section className="border-edenPink-500 relative flex h-[4.5rem] items-center border-b p-4">
         {unwrapped ? (
           <span
-            className="text-2xl text-edenGreen-600 font-Moret font-bold cursor-pointer"
+            className="text-edenGreen-600 font-Moret cursor-pointer text-2xl font-bold"
             onClick={() => {
               router.push(logoLink);
             }}
@@ -117,7 +116,7 @@ export const LeftToggleNav = ({
           />
         )}
         <div
-          className="w-6 -mb-px h-6 color-edenGreen-600 bg-edenPink-500 absolute -right-2 -bottom-3 z-10 flex h-12 w-5 cursor-pointer items-center justify-center rounded-md"
+          className="color-edenGreen-600 bg-edenPink-500 absolute -bottom-3 -right-2 z-10 -mb-px flex h-12 h-6 w-5 w-6 cursor-pointer items-center justify-center rounded-md"
           onClick={onToggleNav}
         >
           {unwrapped ? (
@@ -129,10 +128,10 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- Talent Pools Section ---- */}
-      <section className="relative px-4 py-8 mb-auto max-h-[calc(100vh-15rem)] overflow-y-scroll">
+      <section className="relative mb-auto max-h-[calc(100vh-15rem)] overflow-y-scroll px-4 py-8">
         <h3
           className={classNames(
-            "mb-4 overflow-hidden whitespace-nowrap ease-in-out transition-height",
+            "transition-height mb-4 overflow-hidden whitespace-nowrap ease-in-out",
             unwrapped ? "h-6" : "h-0"
           )}
         >
@@ -147,29 +146,71 @@ export const LeftToggleNav = ({
             >
               <div
                 className={classNames(
-                  "relative flex justify-center items-center w-[calc(100%+2rem)] min-h-[3rem] -mx-4 px-4 py-2 hover:bg-edenPink-200",
-                  unwrapped ? "border-b border-edenPink-500" : "",
+                  "hover:bg-edenPink-200 relative -mx-4 min-h-[3rem] w-[calc(100%+2rem)] px-4 py-2",
+                  unwrapped ? "border-edenPink-500 border-b" : "",
                   router.query.positionID === position?._id
                     ? "bg-edenPink-200"
                     : ""
                 )}
               >
-                {router.query.positionID === position?._id && (
-                  <div className="absolute left-0 top-0 h-full w-1 bg-edenGreen-500"></div>
-                )}
-                <div className="w-6 h-6 rounded-md bg-white bg-opacity-30 text-edenGreen-500 flex justify-center items-center">
-                  <HiCodeBracket size={"1rem"} />
-                </div>
-                {unwrapped && (
-                  <div className="ml-2 mr-auto">
-                    <p className="text-sm font-bold whitespace-nowrap">
-                      {position?.name?.slice(0, 20)}
-                      {position?.name?.length! > 20 ? "..." : ""}
-                    </p>
-                    <p className="text-xs text-edenGray-700 whitespace-nowrap">
-                      {company?.name}
-                    </p>
+                <div className="flex items-center justify-center">
+                  {router.query.positionID === position?._id && (
+                    <div className="bg-edenGreen-500 absolute left-0 top-0 h-full w-1"></div>
+                  )}
+                  <div className="text-edenGreen-500 flex h-6 w-6 items-center justify-center rounded-md bg-white bg-opacity-30">
+                    <HiCodeBracket size={"1rem"} />
                   </div>
+                  {unwrapped && (
+                    <div className="ml-2 mr-auto w-full">
+                      <p className="whitespace-nowrap text-sm font-bold">
+                        {position?.name?.slice(0, 20)}
+                        {position?.name?.length! > 20 ? "..." : ""}
+                        {position?.talentList ? (
+                          <div
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setUnwrappedPosition(
+                                unwrappedPosition === position?._id
+                                  ? null
+                                  : position._id!
+                              );
+                            }}
+                            className="hover:bg-edenPink-500 flexitems-center absolute right-1 top-5 flex h-5 w-5 items-center justify-center justify-center rounded-full"
+                          >
+                            {unwrappedPosition === position?._id ? (
+                              <BsChevronUp className="-mb-px w-3" />
+                            ) : (
+                              <BsChevronDown className="-mb-px w-3" />
+                            )}
+                          </div>
+                        ) : null}
+                      </p>
+                      <p className="text-edenGray-700 whitespace-nowrap text-xs">
+                        {company?.name}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {unwrapped && unwrappedPosition === position?._id && (
+                  <ul className="mb-2 mt-2 pl-6">
+                    {[
+                      { _id: "000", name: "All candidates" },
+                      ...position?.talentList!,
+                    ]?.map((_talentList, index) => (
+                      <li key={index}>
+                        <Link
+                          href={`/${company.slug}/dashboard/${position?._id}${
+                            _talentList?._id !== "000"
+                              ? "?listID=" + _talentList?._id
+                              : ""
+                          }`}
+                          className="text-xs hover:font-bold"
+                        >
+                          {_talentList?.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             </Link>
@@ -177,7 +218,7 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- User Button Section ---- */}
-      <section className="pt-4 h-20">
+      <section className="h-20 pt-4">
         <Button
           className={classNames(
             "mx-auto flex items-center whitespace-nowrap",
@@ -186,7 +227,9 @@ export const LeftToggleNav = ({
           onClick={handleCreatePosition}
         >
           <BiPlus size={"1.3rem"} className="" />
-          {unwrapped && <span className="ml-1 font-Moret">Add Position</span>}
+          {unwrapped && (
+            <span className="font-Moret ml-1">Add Opportunity</span>
+          )}
         </Button>
         {creatingPositionModal}
       </section>
@@ -214,16 +257,16 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
   return currentUser ? (
     <div
       className={classNames(
-        "flex p-4 items-center h-[5.5rem] border-t border-edenPink-500",
+        "border-edenPink-500 flex h-[5.5rem] items-center border-t p-4",
         unwrapped ? "" : "justify-center"
       )}
     >
       {unwrapped && (
-        <div className={"w-2/3 flex items-center mr-auto"}>
+        <div className={"mr-auto flex w-2/3 items-center"}>
           {currentUser.discordAvatar && (
             <Avatar size="xs" src={currentUser.discordAvatar} />
           )}
-          <span className="ml-2 font-Moret text-edenGreen-600">
+          <span className="font-Moret text-edenGreen-600 ml-2">
             {currentUser.discordName}
           </span>
         </div>

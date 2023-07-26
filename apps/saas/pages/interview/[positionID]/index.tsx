@@ -5,7 +5,6 @@ import {
   AppUserLayout,
   Badge,
   Button,
-  Card,
   ChatMessage,
   CountdownTimer,
   CVUploadGPT,
@@ -34,6 +33,7 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID } = router.query;
   const [interviewEnded, setInterviewEnded] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [titleRole, setTitleRole] = useState<string>("");
@@ -52,7 +52,7 @@ const HomePage: NextPageWithLayout = () => {
     experienceAreas: null,
   });
 
-  console.log("cvEnded = ", cvEnded);
+  // console.log("cvEnded = ", cvEnded);
   const {
     data: findPositionData,
     // error: findPositionError,
@@ -67,12 +67,10 @@ const HomePage: NextPageWithLayout = () => {
 
   const handleCvEnd = () => {
     // console.log("cv end");
-
     setCvEnded(true);
   };
   const handleInterviewEnd = () => {
     // console.log("interview end");
-
     setInterviewEnded(true);
   };
 
@@ -113,13 +111,14 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4">
+      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8">
+        {/* <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4"> */}
         {currentUser && (
           <div className="h-full w-full">
-            <div className="absolute left-0 top-0 w-full">
+            <div className="mb-4 w-full">
               <ProgressBarGeneric progress={progress} />
             </div>
-            <Wizard canPrev={false} onStepChange={handleProgress}>
+            <Wizard canPrev={false} onStepChange={handleProgress} animate>
               <WizardStep
                 // nextDisabled={!cvEnded}
                 label={"cv"}
@@ -176,7 +175,7 @@ const HomePage: NextPageWithLayout = () => {
             </Wizard>
           </div>
         )}
-      </Card>
+      </div>
     </>
   );
 };
