@@ -13,6 +13,8 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 
+import { TextInputLabel } from "../../atoms";
+
 type LinkValues = {
   links: { name: string; url: string }[];
 };
@@ -71,25 +73,25 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
     defaultValues: {
       links: [
         {
+          ...(cleanLink("portfolio") ?? {
+            name: "portfolio",
+            url: "",
+          }),
+        },
+        {
           ...(cleanLink("twitter")
             ? cleanLink("twitter")
             : { name: "twitter", url: "" }),
         },
         { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
         { ...(cleanLink("github") ?? { name: "github", url: "" }) },
-        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
         {
           ...(cleanLink("linkedIn") ?? {
             name: "linkedIn",
             url: "",
           }),
         },
-        {
-          ...(cleanLink("portfolio") ?? {
-            name: "portfolio",
-            url: "",
-          }),
-        },
+        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
         {
           ...(cleanLink("custom") ?? {
             name: "custom",
@@ -110,6 +112,11 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
     const subscription = watch((data) => {
       const newLinks = data.links?.map((link: any) => {
         switch (link.name) {
+          case "portfolio":
+            return {
+              name: link.name,
+              url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
+            };
           case "twitter":
             return {
               name: link.name,
@@ -143,11 +150,6 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
               name: link.name,
               url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
             };
-          case "portfolio":
-            return {
-              name: link.name,
-              url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
-            };
           case "custom":
             return {
               name: link.name,
@@ -167,20 +169,20 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
 
   const baseUrl = (platform: string) => {
     switch (platform) {
+      case "portfolio":
+        return "https://";
+      case "telegram":
+        return "https://t.me/";
+      case "linkedIn":
+        return "https://www.linkedin.com/";
+      case "custom":
+        return "https://";
       case "twitter":
         return "https://twitter.com/";
       case "github":
         return "https://github.com/";
-      case "telegram":
-        return "https://t.me/";
       case "lens":
         return "https://www.lensfrens.xyz/";
-      case "linkedIn":
-        return "https://www.linkedin.com/";
-      case "portfolio":
-        return "https://";
-      case "custom":
-        return "https://";
       default:
         return "";
     }
@@ -188,55 +190,63 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
 
   const platformIcons = (platform: string) => {
     switch (platform) {
-      case "twitter":
-        return <FaTwitter size="24px" color="#00acee" />;
-      case "discord":
-        return <FaDiscord size="24px" color="#BCBCBC" />;
-      case "github":
-        return <FaGithub size="24px" color="#BCBCBC" />;
-      case "linkedin":
-        return <FaLinkedin size="24px" color="#0e76a8" />;
+      case "portfolio":
+        return <FaBriefcase size="1rem" color="#BCBCBC" />;
       case "telegram":
-        return <FaTelegram size="24px" color="#BCBCBC" />;
+        return <FaTelegram size="1rem" color="0088cc" />;
+      case "linkedin":
+        return <FaLinkedin size="1rem" color="#0a66c2" />;
+      case "custom":
+        return <FaLink size="1rem" color="#BCBCBC" />;
+      case "twitter":
+        return <FaTwitter size="1rem" color="#1da1f2" />;
+      case "discord":
+        return <FaDiscord size="1rem" color="#5865f2" />;
+      case "github":
+        return <FaGithub size="1rem" color="#333" />;
       case "lens":
         return <LensIcon />;
       case "linkedIn":
-        return <FaLinkedin size="24px" color="#BCBCBC" />;
+        return <FaLinkedin size="1rem" color="#0a66c2" />;
       default:
-        return <FaQuestionCircle size="24px" color="#00acee" />;
-      case "portfolio":
-        return <FaBriefcase size="24px" color="#BCBCBC" />;
-      case "custom":
-        return <FaLink size="24px" color="#BCBCBC" />;
+        return <FaQuestionCircle size="1rem" color="#00acee" />;
     }
   };
 
   return (
-    <div>
+    <div className="grid-template-rows-repeat(4, auto) grid-auto-flow-column gap mt-2 grid grid-cols-2 gap-x-5 gap-y-2">
       {fields.map((field, index) => {
         return (
           <section key={field.id}>
-            {/* <TextInputLabel htmlFor={`link-${field.name}`}>
-              {field.name}
-            </TextInputLabel> */}
-            <div className={`flex`}>
-              <div className={`my-auto px-2`}>{platformIcons(field.name)}</div>
-              <div
-                className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-full pl-4`}
-              >
-                <span className={`text-600`}>{baseUrl(field.name)}</span>
+            <div>
+              <div>
+                <div
+                  className={`my-auto flex items-center space-x-2 px-2 capitalize`}
+                >
+                  {platformIcons(field.name)}
+                  <label className="text-sm" htmlFor={`link-${field.name}`}>
+                    {field.name}
+                  </label>
+                </div>
+                <div
+                  className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-lg pl-4`}
+                >
+                  <span className={`text-600 text-sm`}>
+                    {baseUrl(field.name)}
+                  </span>
 
-                <input
-                  id={`link-${field.name}`}
-                  className={`w-full border-none pl-0.5 outline-none`}
-                  type="text"
-                  placeholder={
-                    field.name === "portfolio" || "custom"
-                      ? `your ${field.name} url`
-                      : `${field.name} handle`
-                  }
-                  {...register(`links.${index}.url`)}
-                />
+                  <input
+                    id={`link-${field.name}`}
+                    className={`w-full border-none pl-0.5 text-sm outline-none`}
+                    type="text"
+                    placeholder={
+                      field.name === "portfolio" || "custom"
+                        ? `your ${field.name} url`
+                        : `${field.name} handle`
+                    }
+                    {...register(`links.${index}.url`)}
+                  />
+                </div>
               </div>
             </div>
           </section>

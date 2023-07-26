@@ -1654,6 +1654,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="">
+
             <CandidatesTableList
               candidateIDRowSelected={selectedUserId || null}
               candidatesList={

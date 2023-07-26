@@ -24,11 +24,13 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import { Tab } from "@headlessui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import { Controller, useForm } from "react-hook-form";
+import { SlLocationPin } from "react-icons/sl";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
@@ -496,12 +498,16 @@ const TrainAiPage: NextPageWithLayout = () => {
               </WizardStep>
               <WizardStep
                 label={"Final Details"}
-                navigationDisabled={step === 0}
+                // navigationDisabled={step === 0}
               >
-                <div className="mx-auto max-w-3xl">
-                  <h2 className="mb-4 text-xl font-medium">
+                <div className="mx-auto max-w-3xl text-center">
+                  <h2 className="text-xl font-medium">
                     Final Important Details
                   </h2>
+                  <p className="text-sm text-zinc-400">
+                    All done, this is the final step. Fill in some quick
+                    information and we’re off!
+                  </p>
                   <FinalFormContainer />
                 </div>
               </WizardStep>
@@ -1567,79 +1573,222 @@ interface IFinalFormContainerProps {}
 
 const FinalFormContainer = ({}: IFinalFormContainerProps) => {
   return (
-    <form className="grid grid-cols-2 gap-16">
-      <div className="col-span-1">
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Targetted Start Date</label>
-          <input
-            type="date"
-            name="targettedStartDate"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
+    <>
+      {/* <form className="grid grid-cols-2 gap-16">
+        <div className="col-span-1">
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Targetted Start Date</label>
+            <input
+              type="date"
+              name="targettedStartDate"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Visa Requirements</label>
+            <input
+              type="text"
+              name="visaRequirements"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Office Locations</label>
+            <input
+              type="text"
+              name="officeLocations"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Office Policy</label>
+            <select
+              name="officePolicy"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+              defaultValue={""}
+            >
+              <option value={""} disabled hidden>
+                Select an option...
+              </option>
+              <option value="on-site">On site</option>
+              <option value="remote">Remote</option>
+              <option value="hybrid-1-day-office">Hybrid - 1 day office</option>
+              <option value="hybrid-2-day-office">Hybrid - 2 day office</option>
+              <option value="hybrid-3-day-office">Hybrid - 3 day office</option>
+              <option value="hybrid-4-day-office">Hybrid - 4 day office</option>
+            </select>
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Contract Type</label>
+            <select
+              name="contractType"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+              defaultValue={""}
+            >
+              <option value={""} disabled hidden>
+                Select an option...
+              </option>
+              <option value="fulltime">Full time</option>
+              <option value="parttime">Part time</option>
+              <option value="freelance">Freelance</option>
+              <option value="intern">Intern</option>
+            </select>
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Contract Duration</label>
+            <input
+              type="text"
+              name="contractDuration"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
         </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Visa Requirements</label>
-          <input
-            type="text"
-            name="visaRequirements"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
+        <div className="col-span-1">
+          <label>Key Company Links</label>
+          <FillSocialLinks />
         </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Office Locations</label>
-          <input
-            type="text"
-            name="officeLocations"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
+      </form> */}
+      <form className="flex items-center justify-center">
+        <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
+          <Tab.Group>
+            <Tab.List className="  border-edenGreen-300 flex  w-full justify-between border-b ">
+              <div className="flex items-start gap-x-6">
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                      selected
+                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                    )
+                  }
+                >
+                  GENERAL
+                </Tab>
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                      selected
+                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                    )
+                  }
+                >
+                  SOCIALS
+                </Tab>
+              </div>
+            </Tab.List>
+            <Tab.Panels>
+              <Tab.Panel className="pt-8">
+                <div className="flex  gap-x-6">
+                  <div className="flex  flex-col items-start text-xs">
+                    <label>Targeted Start Date</label>
+                    <input
+                      type="date"
+                      name="targetedStartDate"
+                      className=" input-primary border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                    />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <label className="text-xs">Visa Required</label>
+                    <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
+                      <select
+                        name="visaRequirements"
+                        className="w-full outline-none"
+                      >
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex   w-full flex-col items-start pr-2">
+                    <label className="text-xs ">Office Policy</label>
+                    <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
+                      <select
+                        name="officeLocations"
+                        className="w-full outline-none"
+                        defaultValue={""}
+                      >
+                        <option value={""} disabled hidden>
+                          Select an option...
+                        </option>
+                        <option value="on-site">On site</option>
+                        <option value="remote">Remote</option>
+                        <option value="hybrid-1-day-office">
+                          Hybrid - 1 day office
+                        </option>
+                        <option value="hybrid-2-day-office">
+                          Hybrid - 2 day office
+                        </option>
+                        <option value="hybrid-3-day-office">
+                          Hybrid - 3 day office
+                        </option>
+                        <option value="hybrid-4-day-office">
+                          Hybrid - 4 day office
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="relative mb-12 mt-6 flex flex-col items-start">
+                    <label className="text-xs">Office Locations</label>
+                    <div className="mt-2 w-full rounded-lg bg-white text-xs">
+                      <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
+                      <input
+                        type="text"
+                        className=" border-edenGray-100  w-full rounded-lg border p-2 pl-9  outline-none"
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-x-8 ">
+                  <div className="flex flex-col items-start">
+                    <label className="text-xs">Contact Type</label>
+                    <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
+                      <select
+                        className=" w-full outline-none"
+                        name="contractType"
+                        defaultValue={""}
+                      >
+                        <option value={""} disabled hidden>
+                          Select an option...
+                        </option>
+                        <option value="fulltime">Full time</option>
+                        <option value="parttime">Part time</option>
+                        <option value="freelance">Freelance</option>
+                        <option value="intern">Intern</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex w-full flex-col items-start">
+                    <label className="text-xs">Contract Duration</label>
+                    <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
+                      <select
+                        className="w-full outline-none "
+                        name="contractDuration"
+                        defaultValue={""}
+                      >
+                        <option value={""} disabled hidden>
+                          Select duration of contract
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </Tab.Panel>
+              <Tab.Panel>
+                <div className=" gird grid-cols-2">
+                  <FillSocialLinks />
+                </div>
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
+          {/* <div className="text-red-600">Uncomment 476!!!</div> */}
         </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Office Policy</label>
-          <select
-            name="officePolicy"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            defaultValue={""}
-          >
-            <option value={""} disabled hidden>
-              Select an option...
-            </option>
-            <option value="on-site">On site</option>
-            <option value="remote">Remote</option>
-            <option value="hybrid-1-day-office">Hybrid - 1 day office</option>
-            <option value="hybrid-2-day-office">Hybrid - 2 day office</option>
-            <option value="hybrid-3-day-office">Hybrid - 3 day office</option>
-            <option value="hybrid-4-day-office">Hybrid - 4 day office</option>
-          </select>
-        </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Contract Type</label>
-          <select
-            name="contractType"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            defaultValue={""}
-          >
-            <option value={""} disabled hidden>
-              Select an option...
-            </option>
-            <option value="fulltime">Full time</option>
-            <option value="parttime">Part time</option>
-            <option value="freelance">Freelance</option>
-            <option value="intern">Intern</option>
-          </select>
-        </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Contract Duration</label>
-          <input
-            type="text"
-            name="contractDuration"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
-        </div>
-      </div>
-      <div className="col-span-1">
-        <label>Key Company Links</label>
-        <FillSocialLinks />
-      </div>
-    </form>
+      </form>
+    </>
   );
 };
