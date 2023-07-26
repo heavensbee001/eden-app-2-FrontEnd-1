@@ -17,6 +17,7 @@ import {
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
+  Loading,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -27,7 +28,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
@@ -87,7 +88,7 @@ type Question = {
   bestAnswer: string;
 };
 
-const HomePage: NextPageWithLayout = () => {
+const TrainAiPage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const router = useRouter();
@@ -100,9 +101,7 @@ const HomePage: NextPageWithLayout = () => {
   // const [titleRole, setTitleRole] = useState(null);
   // const [topSkills, setTopSkills] = useState([]);
 
-  // console.log("cvEnded = ", cvEnded);
   const {
-    // eslint-disable-next-line no-unused-vars
     data: findPositionData,
     // error: findPositionError,
   } = useQuery(FIND_POSITION, {
@@ -128,12 +127,8 @@ const HomePage: NextPageWithLayout = () => {
   };
 
   // const [webpageLink, setWebpageLink] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const [pastedText, setPastedText] = useState("");
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
-  // eslint-disable-next-line no-unused-vars
-  const [error, setError] = useState<string | null>(null);
   // eslint-disable-next-line no-unused-vars
   const [report, setReport] = useState<string | null>(null);
 
@@ -266,6 +261,34 @@ const HomePage: NextPageWithLayout = () => {
       } catch {
         toast.error("Couldn't save data");
       }
+    }
+
+    setScraping(false);
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const handlePrioritiesStepSubmit = async () => {
+    const _positionsRequirements = getValues("positionsRequirements");
+
+    setScraping(true);
+    try {
+      const _fields = {
+        _id: positionID,
+        companyID: company?._id,
+        positionsRequirements: {
+          priorities: _positionsRequirements.priorities,
+          tradeOffs: _positionsRequirements.tradeOffs,
+        },
+      };
+
+      updatePosition({
+        variables: {
+          fields: _fields,
+        },
+      }),
+        setStep(step + 1);
+    } catch {
+      toast.error("Couldn't save data");
     }
 
     setScraping(false);
@@ -427,8 +450,15 @@ const HomePage: NextPageWithLayout = () => {
                 navigationDisabled={step === 0}
               >
                 <div className="mx-auto h-full max-w-5xl">
-                  <PrioritiesAndTradeOffsContainer
-                    position={findPositionData.findPosition}
+                  <Controller
+                    name={"positionsRequirements"}
+                    control={control}
+                    render={({ field: { onChange } }) => (
+                      <PrioritiesAndTradeOffsContainer
+                        position={findPositionData.findPosition}
+                        onChange={onChange}
+                      />
+                    )}
                   />
                 </div>
               </WizardStep>
@@ -549,9 +579,9 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+TrainAiPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
-export default HomePage;
+export default TrainAiPage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
@@ -744,10 +774,9 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className=" bg-cottonPink text-edenGreen-600 rounded-lg p-1 text-center font-medium">
-                Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
-                interview
-              </p>
+              <div className="pt-4">
+                <Loading title="Loading Eden AI" />
+              </div>
             }
             questions={questions}
             setQuestions={setQuestions}
@@ -797,10 +826,13 @@ export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
 
 interface IPrioritiesAndTradeOffsContainerProps {
   position: Position;
+  // eslint-disable-next-line no-unused-vars
+  onChange: (val: any) => void;
 }
 
 const PrioritiesAndTradeOffsContainer = ({
   position,
+  onChange,
 }: IPrioritiesAndTradeOffsContainerProps) => {
   const router = useRouter();
   const { positionID } = router.query;
@@ -815,10 +847,9 @@ const PrioritiesAndTradeOffsContainer = ({
 
   const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
 
-  // eslint-disable-next-line no-unused-vars
-  const { register, watch, control, setValue, getValues } = useForm<Members>({
-    defaultValues: {},
-  });
+  // const { register, watch, control, setValue, getValues } = useForm<Members>({
+  //   defaultValues: {},
+  // });
 
   const [FindPrioritiesTrainEdenAI] = useMutation(
     FIND_PRIORITIES_TRAIN_EDEN_AI,
@@ -829,16 +860,17 @@ const PrioritiesAndTradeOffsContainer = ({
         setScraping(false);
 
         setPriorities(findPrioritiesTrainEdenAI.priorities);
-        setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
+        setTradeOffs(
+          (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
+            (tradeOff: TradeOffsType) => {
+              const _selected =
+                tradeOff.selected == tradeOff.tradeOff1
+                  ? tradeOff.tradeOff1!
+                  : tradeOff.tradeOff2!;
 
-        setSelected(
-          findPrioritiesTrainEdenAI.tradeOffs.map((tradeOff: TradeOffsType) => {
-            if (tradeOff.selected == tradeOff.tradeOff1) {
-              return tradeOff.tradeOff1;
-            } else {
-              return tradeOff.tradeOff2;
+              return { ...tradeOff, selected: _selected };
             }
-          })
+          )! as TradeOffsType[]
         );
       },
       onError() {
@@ -858,19 +890,16 @@ const PrioritiesAndTradeOffsContainer = ({
         position.positionsRequirements?.priorities! as PrioritiesType[]
       );
       setTradeOffs(
-        position.positionsRequirements?.tradeOffs! as TradeOffsType[]
-      );
-
-      setSelected(
         (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
           (tradeOff: TradeOffsType) => {
-            if (tradeOff.selected == tradeOff.tradeOff1) {
-              return tradeOff.tradeOff1!;
-            } else {
-              return tradeOff.tradeOff2!;
-            }
+            const _selected =
+              tradeOff.selected == tradeOff.tradeOff1
+                ? tradeOff.tradeOff1!
+                : tradeOff.tradeOff2!;
+
+            return { ...tradeOff, selected: _selected };
           }
-        )
+        )! as TradeOffsType[]
       );
     } else {
       setScraping(true);
@@ -885,15 +914,11 @@ const PrioritiesAndTradeOffsContainer = ({
     }
   }, [position.positionsRequirements]);
 
-  const [selected, setSelected] = useState<string[]>(
-    tradeOffs.map((tradeOff) => tradeOff.tradeOff2!)
-  );
-
   const handleSelect = (index: number, option: string) => {
-    const newSelected = [...selected];
+    const newTradeoffs = [...tradeOffs];
 
-    newSelected[index] = option;
-    setSelected(newSelected);
+    newTradeoffs[index] = { ...newTradeoffs[index], selected: option };
+    setTradeOffs(newTradeoffs);
   };
 
   const permutePriorities = (index1: number, index2: number) => {
@@ -912,6 +937,10 @@ const PrioritiesAndTradeOffsContainer = ({
 
     setPriorities(newArray);
   };
+
+  useEffect(() => {
+    onChange({ priorities: priorities, tradeOffs: tradeOffs });
+  }, [priorities, tradeOffs]);
 
   return (
     <div className="grid h-full w-full grid-cols-12 gap-4">
@@ -1021,7 +1050,7 @@ const PrioritiesAndTradeOffsContainer = ({
                   <label
                     className={classNames(
                       "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
-                      selected[index] === tradeOff.tradeOff1
+                      tradeOffs[index].selected === tradeOff.tradeOff1
                         ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
                         : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
                     )}
@@ -1035,7 +1064,9 @@ const PrioritiesAndTradeOffsContainer = ({
                         id={`tradeoff-${index}-1`}
                         name={`tradeoff-${index}-1`}
                         value={tradeOff.tradeOff1!}
-                        checked={selected[index] === tradeOff.tradeOff1}
+                        checked={
+                          tradeOffs[index].selected === tradeOff.tradeOff1
+                        }
                         onChange={() =>
                           handleSelect(index, tradeOff.tradeOff1!)
                         }
@@ -1045,7 +1076,7 @@ const PrioritiesAndTradeOffsContainer = ({
                   <label
                     className={classNames(
                       "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
-                      selected[index] === tradeOff.tradeOff2
+                      tradeOffs[index].selected === tradeOff.tradeOff2
                         ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
                         : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
                     )}
@@ -1058,7 +1089,9 @@ const PrioritiesAndTradeOffsContainer = ({
                         id={`tradeoff-${index}-2`}
                         name={`tradeoff-${index}-2`}
                         value={tradeOff.tradeOff2!}
-                        checked={selected[index] === tradeOff.tradeOff2}
+                        checked={
+                          tradeOffs[index].selected === tradeOff.tradeOff2
+                        }
                         onChange={() =>
                           handleSelect(index, tradeOff.tradeOff2!)
                         }
