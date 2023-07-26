@@ -78,26 +78,26 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
             url: "",
           }),
         },
+        {
+          ...(cleanLink("twitter")
+            ? cleanLink("twitter")
+            : { name: "twitter", url: "" }),
+        },
         { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
+        { ...(cleanLink("github") ?? { name: "github", url: "" }) },
         {
           ...(cleanLink("linkedIn") ?? {
             name: "linkedIn",
             url: "",
           }),
         },
+        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
         {
           ...(cleanLink("custom") ?? {
             name: "custom",
             url: "",
           }),
         },
-        {
-          ...(cleanLink("twitter")
-            ? cleanLink("twitter")
-            : { name: "twitter", url: "" }),
-        },
-        { ...(cleanLink("github") ?? { name: "github", url: "" }) },
-        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
       ],
     },
   });
@@ -193,21 +193,21 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
       case "portfolio":
         return <FaBriefcase size="24px" color="#BCBCBC" />;
       case "telegram":
-        return <FaTelegram size="24px" color="#BCBCBC" />;
+        return <FaTelegram size="24px" color="0088cc" />;
       case "linkedin":
-        return <FaLinkedin size="24px" color="#0e76a8" />;
+        return <FaLinkedin size="24px" color="#0a66c2" />;
       case "custom":
         return <FaLink size="24px" color="#BCBCBC" />;
       case "twitter":
-        return <FaTwitter size="24px" color="#00acee" />;
+        return <FaTwitter size="24px" color="#1da1f2" />;
       case "discord":
-        return <FaDiscord size="24px" color="#BCBCBC" />;
+        return <FaDiscord size="24px" color="#5865f2" />;
       case "github":
-        return <FaGithub size="24px" color="#BCBCBC" />;
+        return <FaGithub size="24px" color="#333" />;
       case "lens":
         return <LensIcon />;
       case "linkedIn":
-        return <FaLinkedin size="24px" color="#BCBCBC" />;
+        return <FaLinkedin size="24px" color="#0a66c2" />;
       default:
         return <FaQuestionCircle size="24px" color="#00acee" />;
     }
