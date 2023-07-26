@@ -1,6 +1,12 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
-import { Members, Mutation } from "@eden/package-graphql/generated";
+import {
+  Members,
+  Mutation,
+  Position,
+  PrioritiesType,
+  TradeOffsType,
+} from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
@@ -11,6 +17,7 @@ import {
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
+  Loading,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -21,7 +28,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
@@ -81,7 +88,7 @@ type Question = {
   bestAnswer: string;
 };
 
-const HomePage: NextPageWithLayout = () => {
+const TrainAiPage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const router = useRouter();
@@ -94,9 +101,7 @@ const HomePage: NextPageWithLayout = () => {
   // const [titleRole, setTitleRole] = useState(null);
   // const [topSkills, setTopSkills] = useState([]);
 
-  // console.log("cvEnded = ", cvEnded);
   const {
-    // eslint-disable-next-line no-unused-vars
     data: findPositionData,
     // error: findPositionError,
   } = useQuery(FIND_POSITION, {
@@ -122,12 +127,8 @@ const HomePage: NextPageWithLayout = () => {
   };
 
   // const [webpageLink, setWebpageLink] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const [pastedText, setPastedText] = useState("");
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
-  // eslint-disable-next-line no-unused-vars
-  const [error, setError] = useState<string | null>(null);
   // eslint-disable-next-line no-unused-vars
   const [report, setReport] = useState<string | null>(null);
 
@@ -260,6 +261,34 @@ const HomePage: NextPageWithLayout = () => {
       } catch {
         toast.error("Couldn't save data");
       }
+    }
+
+    setScraping(false);
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const handlePrioritiesStepSubmit = async () => {
+    const _positionsRequirements = getValues("positionsRequirements");
+
+    setScraping(true);
+    try {
+      const _fields = {
+        _id: positionID,
+        companyID: company?._id,
+        positionsRequirements: {
+          priorities: _positionsRequirements.priorities,
+          tradeOffs: _positionsRequirements.tradeOffs,
+        },
+      };
+
+      updatePosition({
+        variables: {
+          fields: _fields,
+        },
+      }),
+        setStep(step + 1);
+    } catch {
+      toast.error("Couldn't save data");
     }
 
     setScraping(false);
@@ -421,7 +450,16 @@ const HomePage: NextPageWithLayout = () => {
                 navigationDisabled={step === 0}
               >
                 <div className="mx-auto h-full max-w-5xl">
-                  <PrioritiesAndTradeOffsContainer />
+                  <Controller
+                    name={"positionsRequirements"}
+                    control={control}
+                    render={({ field: { onChange } }) => (
+                      <PrioritiesAndTradeOffsContainer
+                        position={findPositionData.findPosition}
+                        onChange={onChange}
+                      />
+                    )}
+                  />
                 </div>
               </WizardStep>
 
@@ -541,9 +579,9 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+TrainAiPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
-export default HomePage;
+export default TrainAiPage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
@@ -580,6 +618,18 @@ const FIND_POSITION = gql`
     findPosition(fields: $fields) {
       _id
       name
+      positionsRequirements {
+        priorities {
+          priority
+          reason
+        }
+        tradeOffs {
+          reason
+          selected
+          tradeOff1
+          tradeOff2
+        }
+      }
       interviewQuestionsForPosition {
         originalQuestionID
         originalContent
@@ -625,6 +675,7 @@ const InterviewEdenAIContainer = ({
 
   // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
+  const { company } = useContext(CompanyContext);
 
   // console.log("currentUser = ", currentUser?._id);
 
@@ -723,10 +774,9 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className=" bg-cottonPink text-edenGreen-600 rounded-lg p-1 text-center font-medium">
-                Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
-                interview
-              </p>
+              <div className="pt-4">
+                <Loading title="Loading Eden AI" />
+              </div>
             }
             questions={questions}
             setQuestions={setQuestions}
@@ -738,7 +788,7 @@ const InterviewEdenAIContainer = ({
             handleEnd={() => {
               if (handleEnd) handleEnd();
             }}
-            headerText={"Front End Dev @ Eden Protocol (hardcoded)"}
+            headerText={`${findPositionData?.findPosition?.name} @ ${company?.name}`}
           />
         }
         {/* <CountdownTimer /> */}
@@ -774,89 +824,85 @@ export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
   }
 `;
 
-interface PriorityObj {
-  priority: string;
-  reason: string;
+interface IPrioritiesAndTradeOffsContainerProps {
+  position: Position;
+  // eslint-disable-next-line no-unused-vars
+  onChange: (val: any) => void;
 }
 
-interface TradeOffsObj {
-  tradeOff1: string;
-  tradeOff2: string;
-  reason: string;
-  selected: string;
-}
+const PrioritiesAndTradeOffsContainer = ({
+  position,
+  onChange,
+}: IPrioritiesAndTradeOffsContainerProps) => {
+  const router = useRouter();
+  const { positionID } = router.query;
+  // const { currentUser } = useContext(UserContext);
 
-interface IPrioritiesAndTradeOffsContainerProps {}
+  // eslint-disable-next-line no-unused-vars
+  const [submitting, setSubmitting] = useState(false);
 
-const PrioritiesAndTradeOffsContainer =
-  ({}: IPrioritiesAndTradeOffsContainerProps) => {
-    const router = useRouter();
-    const { positionID } = router.query;
-    // const { currentUser } = useContext(UserContext);
+  const [scraping, setScraping] = useState<boolean>(false);
 
-    // eslint-disable-next-line no-unused-vars
-    const [submitting, setSubmitting] = useState(false);
+  const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
 
-    const [scraping, setScraping] = useState<boolean>(false);
+  const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
 
-    const [priorities, setPriorities] = useState<PriorityObj[]>([]);
+  // const { register, watch, control, setValue, getValues } = useForm<Members>({
+  //   defaultValues: {},
+  // });
 
-    const [tradeOffs, setTradeOffs] = useState<TradeOffsObj[]>([]);
+  const [FindPrioritiesTrainEdenAI] = useMutation(
+    FIND_PRIORITIES_TRAIN_EDEN_AI,
+    {
+      onCompleted({ findPrioritiesTrainEdenAI }) {
+        // console.log("findPrioritiesTrainEdenAI = ", findPrioritiesTrainEdenAI);
 
-    // eslint-disable-next-line no-unused-vars
-    const { register, watch, control, setValue, getValues } = useForm<Members>({
-      defaultValues: {},
-    });
+        setScraping(false);
 
-    const [FindPrioritiesTrainEdenAI] = useMutation(
-      FIND_PRIORITIES_TRAIN_EDEN_AI,
-      {
-        onCompleted({ findPrioritiesTrainEdenAI }) {
-          console.log(
-            "findPrioritiesTrainEdenAI = ",
-            findPrioritiesTrainEdenAI
-          );
+        setPriorities(findPrioritiesTrainEdenAI.priorities);
+        setTradeOffs(
+          (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
+            (tradeOff: TradeOffsType) => {
+              const _selected =
+                tradeOff.selected == tradeOff.tradeOff1
+                  ? tradeOff.tradeOff1!
+                  : tradeOff.tradeOff2!;
 
-          setScraping(false);
+              return { ...tradeOff, selected: _selected };
+            }
+          )! as TradeOffsType[]
+        );
+      },
+      onError() {
+        setScraping(false);
+      },
+    }
+  );
 
-          // let jobDescription =
-          //   FindPrioritiesTrainEdenAI.report.replace(/<|>/g, "");
+  useEffect(() => {
+    if (
+      position.positionsRequirements?.priorities &&
+      position.positionsRequirements?.tradeOffs &&
+      position.positionsRequirements?.priorities.length > 0 &&
+      position.positionsRequirements?.tradeOffs.length > 0
+    ) {
+      setPriorities(
+        position.positionsRequirements?.priorities! as PrioritiesType[]
+      );
+      setTradeOffs(
+        (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
+          (tradeOff: TradeOffsType) => {
+            const _selected =
+              tradeOff.selected == tradeOff.tradeOff1
+                ? tradeOff.tradeOff1!
+                : tradeOff.tradeOff2!;
 
-          // //Change - to •
-          // jobDescription = jobDescription.replace(/-\s/g, "• ");
-
-          setPriorities(findPrioritiesTrainEdenAI.priorities);
-
-          setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
-
-          console.log(
-            "findPrioritiesTrainEdenAI.tradeOffs = ",
-            findPrioritiesTrainEdenAI.tradeOffs
-          );
-
-          // setSelected(
-          //   findPrioritiesTrainEdenAI.tradeOffs.map(
-          //     (tradeOff: TradeOffsObj) => tradeOff.tradeOff2
-          //   )
-          // );
-          setSelected(
-            findPrioritiesTrainEdenAI.tradeOffs.map(
-              (tradeOff: TradeOffsObj) => {
-                if (tradeOff.selected == tradeOff.tradeOff1) {
-                  return tradeOff.tradeOff1;
-                } else {
-                  return tradeOff.tradeOff2;
-                }
-              }
-            )
-          );
-        },
-      }
-    );
-
-    useEffect(() => {
+            return { ...tradeOff, selected: _selected };
+          }
+        )! as TradeOffsType[]
+      );
+    } else {
       setScraping(true);
-
       FindPrioritiesTrainEdenAI({
         variables: {
           // fields: { message: textResponse, userID: currentUser?._id },
@@ -865,138 +911,64 @@ const PrioritiesAndTradeOffsContainer =
           },
         },
       });
-      return () => {
-        setScraping(false);
-      };
-    }, []);
+    }
+  }, [position.positionsRequirements]);
 
-    const [selected, setSelected] = useState<string[]>(
-      tradeOffs.map((tradeOff) => tradeOff.tradeOff2)
-    );
+  const handleSelect = (index: number, option: string) => {
+    const newTradeoffs = [...tradeOffs];
 
-    const handleSelect = (index: number, option: string) => {
-      const newSelected = [...selected];
+    newTradeoffs[index] = { ...newTradeoffs[index], selected: option };
+    setTradeOffs(newTradeoffs);
+  };
 
-      newSelected[index] = option;
-      setSelected(newSelected);
-    };
+  const permutePriorities = (index1: number, index2: number) => {
+    if (
+      index1 < 0 ||
+      index1 >= priorities.length ||
+      index2 < 0 ||
+      index2 >= priorities.length
+    ) {
+      throw new Error("Invalid index");
+    }
 
-    const permutePriorities = (index1: number, index2: number) => {
-      if (
-        index1 < 0 ||
-        index1 >= priorities.length ||
-        index2 < 0 ||
-        index2 >= priorities.length
-      ) {
-        throw new Error("Invalid index");
-      }
+    const newArray = [...priorities];
 
-      const newArray = [...priorities];
+    [newArray[index1], newArray[index2]] = [newArray[index2], newArray[index1]];
 
-      [newArray[index1], newArray[index2]] = [
-        newArray[index2],
-        newArray[index1],
-      ];
+    setPriorities(newArray);
+  };
 
-      setPriorities(newArray);
-    };
+  useEffect(() => {
+    onChange({ priorities: priorities, tradeOffs: tradeOffs });
+  }, [priorities, tradeOffs]);
 
-    return (
-      <div className="grid h-full w-full grid-cols-12 gap-4">
-        {scraping && (
-          <EdenAiProcessingModal
-            open={scraping}
-            title="Calculating criteria"
-          ></EdenAiProcessingModal>
-        )}
-        <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
-          <h2 className="text-edenGreen-600 mb-2 text-center">
-            Key Priorities
-          </h2>
-          <p className="mb-6 text-center">
-            Here&apos;s what I got your priorities are - please re-arrange as
-            you see fit.
-          </p>
-          <ul className="">
-            {priorities &&
-              priorities.length > 0 &&
-              priorities.map((priority, index) => (
-                <li
-                  key={index}
-                  className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-4"
-                >
-                  <EdenTooltip
-                    id={priority.reason.split(" ").join("")}
-                    innerTsx={
-                      <div className="w-60">
-                        <p>{priority.reason}</p>
-                      </div>
-                    }
-                    place="top"
-                    effect="solid"
-                    backgroundColor="white"
-                    border
-                    borderColor="#e5e7eb"
-                    padding="0.5rem"
-                    offset={{ left: 100 }}
-                  >
-                    <div className="flex w-full items-center">
-                      <div className="-my-2 mr-4">
-                        <div
-                          className={classNames(
-                            "text-edenGreen-500 hover:text-edenGreen-300",
-                            index === 0 ? "hidden" : "",
-                            index === priorities.length - 1 ? "" : "-mb-2"
-                          )}
-                        >
-                          <BiChevronUp
-                            size={"1.5rem"}
-                            onClick={() => {
-                              permutePriorities(index, index - 1);
-                            }}
-                          />
-                        </div>
-                        <div
-                          className={classNames(
-                            "text-edenGreen-500 hover:text-edenGreen-300",
-                            index === priorities.length - 1 ? "hidden" : "",
-                            index === 0 ? "" : "-mt-2"
-                          )}
-                        >
-                          <BiChevronDown
-                            size={"1.5rem"}
-                            onClick={() => {
-                              permutePriorities(index, index + 1);
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="">
-                        {index + 1}. {priority.priority}
-                      </div>
-                    </div>
-                  </EdenTooltip>
-                </li>
-              ))}
-          </ul>
-        </section>
-        <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
-          <h2 className="text-edenGreen-600 mb-2 text-center">Tradeoffs</h2>
-          <p className="mb-6 text-center">
-            From what I gathered, these are your tradeoff preferences - feel
-            free to adjust
-          </p>
-
-          <div className="flex flex-col items-center justify-center">
-            {tradeOffs &&
-              tradeOffs.length > 0 &&
-              tradeOffs.map((tradeOff, index) => (
+  return (
+    <div className="grid h-full w-full grid-cols-12 gap-4">
+      {scraping && (
+        <EdenAiProcessingModal
+          open={scraping}
+          title="Calculating criteria"
+        ></EdenAiProcessingModal>
+      )}
+      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+        <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
+        <p className="mb-6 text-center">
+          Here&apos;s what I got your priorities are - please re-arrange as you
+          see fit.
+        </p>
+        <ul className="">
+          {priorities &&
+            priorities.length > 0 &&
+            priorities.map((priority, index) => (
+              <li
+                key={index}
+                className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-4"
+              >
                 <EdenTooltip
-                  key={index}
-                  id={`tradeoff-${index}`}
+                  id={priority.reason!.split(" ").join("")}
                   innerTsx={
                     <div className="w-60">
-                      <p>{tradeOff.reason}</p>
+                      <p>{priority.reason}</p>
                     </div>
                   }
                   place="top"
@@ -1005,65 +977,136 @@ const PrioritiesAndTradeOffsContainer =
                   border
                   borderColor="#e5e7eb"
                   padding="0.5rem"
-                  containerClassName="w-full"
+                  offset={{ left: 100 }}
                 >
-                  <div className="grid grid-cols-2">
-                    <label
-                      className={classNames(
-                        "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
-                        selected[index] === tradeOff.tradeOff1
-                          ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
-                          : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
-                      )}
-                      htmlFor={`tradeoff-${index}-1`}
-                    >
-                      <div className="flex items-center justify-end">
-                        <span className="">{tradeOff.tradeOff1}</span>
-                        <input
-                          type="radio"
-                          className="ml-2 hidden"
-                          id={`tradeoff-${index}-1`}
-                          name={`tradeoff-${index}-1`}
-                          value={tradeOff.tradeOff1}
-                          checked={selected[index] === tradeOff.tradeOff1}
-                          onChange={() =>
-                            handleSelect(index, tradeOff.tradeOff1)
-                          }
+                  <div className="flex w-full items-center">
+                    <div className="-my-2 mr-4">
+                      <div
+                        className={classNames(
+                          "text-edenGreen-500 hover:text-edenGreen-300",
+                          index === 0 ? "hidden" : "",
+                          index === priorities.length - 1 ? "" : "-mb-2"
+                        )}
+                      >
+                        <BiChevronUp
+                          size={"1.5rem"}
+                          onClick={() => {
+                            permutePriorities(index, index - 1);
+                          }}
                         />
                       </div>
-                    </label>
-                    <label
-                      className={classNames(
-                        "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
-                        selected[index] === tradeOff.tradeOff2
-                          ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
-                          : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
-                      )}
-                      htmlFor={`tradeoff-${index}-2`}
-                    >
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          className="mr-2 hidden"
-                          id={`tradeoff-${index}-2`}
-                          name={`tradeoff-${index}-2`}
-                          value={tradeOff.tradeOff2}
-                          checked={selected[index] === tradeOff.tradeOff2}
-                          onChange={() =>
-                            handleSelect(index, tradeOff.tradeOff2)
-                          }
+                      <div
+                        className={classNames(
+                          "text-edenGreen-500 hover:text-edenGreen-300",
+                          index === priorities.length - 1 ? "hidden" : "",
+                          index === 0 ? "" : "-mt-2"
+                        )}
+                      >
+                        <BiChevronDown
+                          size={"1.5rem"}
+                          onClick={() => {
+                            permutePriorities(index, index + 1);
+                          }}
                         />
-                        <span className="">{tradeOff.tradeOff2}</span>
                       </div>
-                    </label>
+                    </div>
+                    <div className="">
+                      {index + 1}. {priority.priority}
+                    </div>
                   </div>
                 </EdenTooltip>
-              ))}
-          </div>
-        </section>
-      </div>
-    );
-  };
+              </li>
+            ))}
+        </ul>
+      </section>
+      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+        <h2 className="text-edenGreen-600 mb-2 text-center">Tradeoffs</h2>
+        <p className="mb-6 text-center">
+          From what I gathered, these are your tradeoff preferences - feel free
+          to adjust
+        </p>
+
+        <div className="flex flex-col items-center justify-center">
+          {tradeOffs &&
+            tradeOffs.length > 0 &&
+            tradeOffs.map((tradeOff, index) => (
+              <EdenTooltip
+                key={index}
+                id={`tradeoff-${index}`}
+                innerTsx={
+                  <div className="w-60">
+                    <p>{tradeOff.reason}</p>
+                  </div>
+                }
+                place="top"
+                effect="solid"
+                backgroundColor="white"
+                border
+                borderColor="#e5e7eb"
+                padding="0.5rem"
+                containerClassName="w-full"
+              >
+                <div className="grid grid-cols-2">
+                  <label
+                    className={classNames(
+                      "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                      tradeOffs[index].selected === tradeOff.tradeOff1
+                        ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                        : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
+                    )}
+                    htmlFor={`tradeoff-${index}-1`}
+                  >
+                    <div className="flex items-center justify-end">
+                      <span className="">{tradeOff.tradeOff1}</span>
+                      <input
+                        type="radio"
+                        className="ml-2 hidden"
+                        id={`tradeoff-${index}-1`}
+                        name={`tradeoff-${index}-1`}
+                        value={tradeOff.tradeOff1!}
+                        checked={
+                          tradeOffs[index].selected === tradeOff.tradeOff1
+                        }
+                        onChange={() =>
+                          handleSelect(index, tradeOff.tradeOff1!)
+                        }
+                      />
+                    </div>
+                  </label>
+                  <label
+                    className={classNames(
+                      "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                      tradeOffs[index].selected === tradeOff.tradeOff2
+                        ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                        : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
+                    )}
+                    htmlFor={`tradeoff-${index}-2`}
+                  >
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        className="mr-2 hidden"
+                        id={`tradeoff-${index}-2`}
+                        name={`tradeoff-${index}-2`}
+                        value={tradeOff.tradeOff2!}
+                        checked={
+                          tradeOffs[index].selected === tradeOff.tradeOff2
+                        }
+                        onChange={() =>
+                          handleSelect(index, tradeOff.tradeOff2!)
+                        }
+                      />
+                      <span className="">{tradeOff.tradeOff2}</span>
+                    </div>
+                  </label>
+                </div>
+              </EdenTooltip>
+            ))}
+        </div>
+      </section>
+    </div>
+  );
+};
 
 export const POSITION_TEXT_CONVO_TO_REPORT = gql`
   mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {

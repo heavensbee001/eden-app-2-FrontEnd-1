@@ -30,7 +30,7 @@ import {
 import { Tab } from "@headlessui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
@@ -57,24 +57,6 @@ const CREATE_FAKE_USER_CV = gql`
       _id
       discordName
       discordAvatar
-    }
-  }
-`;
-
-const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
-  mutation FindPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
-    findPrioritiesTrainEdenAI(fields: $fields) {
-      success
-      priorities {
-        priority
-        reason
-      }
-      tradeOffs {
-        tradeOff1
-        tradeOff2
-        reason
-        selected
-      }
     }
   }
 `;
@@ -1062,26 +1044,23 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
 
-  const [findPrioritiesTrainEdenAI] = useMutation(
-    FIND_PRIORITIES_TRAIN_EDEN_AI,
-    {
-      onCompleted({ findPrioritiesTrainEdenAI }) {
-        setPriorities(findPrioritiesTrainEdenAI.priorities);
-        setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
-      },
+  useMemo(() => {
+    if (
+      findPositionData?.findPosition?.positionsRequirements?.priorities &&
+      findPositionData?.findPosition?.positionsRequirements?.tradeOffs &&
+      findPositionData?.findPosition?.positionsRequirements?.priorities.length >
+        0 &&
+      findPositionData?.findPosition?.positionsRequirements?.tradeOffs.length >
+        0
+    ) {
+      setPriorities(
+        findPositionData.findPosition.positionsRequirements.priorities
+      );
+      setTradeOffs(
+        findPositionData.findPosition.positionsRequirements.tradeOffs
+      );
     }
-  );
-
-  useEffect(() => {
-    findPrioritiesTrainEdenAI({
-      variables: {
-        // fields: { message: textResponse, userID: currentUser?._id },
-        fields: {
-          positionID: positionID,
-        },
-      },
-    });
-  }, []);
+  }, [findPositionData?.findPosition]);
 
   return (
     <>
