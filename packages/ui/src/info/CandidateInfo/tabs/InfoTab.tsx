@@ -40,7 +40,7 @@ export const InfoTab: FC<Props> = ({
       {member?.letterAndColor?.totalMatchPerc?.letter && (
         <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
           <p
-            className={`${member?.letterAndColor?.totalMatchPerc?.color} float-right -mt-2 text-3xl font-bold`}
+            className={`${member?.letterAndColor?.totalMatchPerc?.color} float-right -mt-2 text-3xl`}
           >
             {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
           </p>
