@@ -98,15 +98,20 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
     <>
       {member?.letterAndColor?.totalMatchPerc?.letter && (
         <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
-          <p
-            className={`${member?.letterAndColor?.totalMatchPerc?.color} float-right -mt-2 text-3xl`}
-          >
-            {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
-          </p>
+          <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
+            <span
+              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
+            >
+              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
+            </span>
+          </div>
           {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
             <div className="">
               <h2 className="text-edenGreen-600 mb-3">
-                Eden&apos;s thoughts on fit
+                Eden&apos;s{"  "}
+                <span className="font-Unica text-edenGray-900 text-md font-normal">
+                  thoughts on fit
+                </span>
               </h2>
 
               {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
@@ -124,18 +129,21 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                 <h3 className="text-edenGreen-500 mb-3">
                   {categoryName.substring(categoryName.indexOf(":") + 1).trim()}
                 </h3>
-                <span className="text-edenGray-700 mr-4 text-sm font-medium">
+                <div className="text-edenGray-700 flex items-center text-sm">
                   Average:
-                  <span
-                    className={classNames(
-                      getGradeFromLetter(reportNotesData[categoryName].average)
-                        .color,
-                      "text-md ml-2 font-bold"
-                    )}
-                  >
-                    {reportNotesData[categoryName].average}
-                  </span>
-                </span>
+                  <div className="bg-edenPink-300 ml-2 flex h-6 w-6 items-center justify-center rounded-full pb-px">
+                    <span
+                      className={classNames(
+                        getGradeFromLetter(
+                          reportNotesData[categoryName].average
+                        ).color,
+                        "text-md"
+                      )}
+                    >
+                      {reportNotesData[categoryName].average}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <ul className="list-none space-y-1">
