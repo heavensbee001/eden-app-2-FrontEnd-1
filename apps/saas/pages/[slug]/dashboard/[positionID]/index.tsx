@@ -1708,7 +1708,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "transition-width fixed right-0 top-0 z-20 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
+            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
             selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
