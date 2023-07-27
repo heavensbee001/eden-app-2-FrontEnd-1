@@ -32,10 +32,11 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useMemo, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { FaArrowRight, FaShare } from "react-icons/fa";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
-import { MdCompare, MdIosShare } from "react-icons/md";
+import { MdCompare } from "react-icons/md";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 
@@ -132,9 +133,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -991,7 +991,7 @@ const PositionCRM: NextPageWithLayout = () => {
       window.location.origin + "/talentlist/" + talentListSelected?._id!;
 
     navigator.clipboard.writeText(url);
-    toast.success("Link copied to clipboard!");
+    toast.success("List link copied!");
   };
 
   const handleRejectCandidate = async (candidateID: string) => {
@@ -1482,11 +1482,6 @@ const PositionCRM: NextPageWithLayout = () => {
                 )
               ) : !editTalentListMode ? (
                 <div className="flex"> */}
-              <MdIosShare
-                size={24}
-                className="mr-4 cursor-pointer text-gray-900 hover:text-gray-500"
-                onClick={handleShareTalentListButton}
-              />
               {/* <Button
                     className="mr-2"
                     variant="secondary"
@@ -1651,6 +1646,27 @@ const PositionCRM: NextPageWithLayout = () => {
                   )}
                 </div>
               )}
+
+              <div
+                className="border-edenGray-100 group ml-auto flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border"
+                onClick={handleShareTalentListButton}
+                data-tip="Share talent list"
+                data-for={`share-button`}
+              >
+                <FaShare
+                  size={18}
+                  className="text-edenGray-700 group-hover:text-edenGray-500"
+                />
+              </div>
+              <ReactTooltip
+                id="share-button"
+                place="left"
+                effect="solid"
+                backgroundColor="#3B4756"
+                padding="0.125rem"
+              >
+                <span className="px-2">Share talent list</span>
+              </ReactTooltip>
             </div>
           </div>
           <div className="">
@@ -1832,7 +1848,6 @@ import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
-import { FaArrowRight } from "react-icons/fa";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
