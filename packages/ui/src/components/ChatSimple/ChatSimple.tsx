@@ -232,7 +232,7 @@ export const ChatSimple = ({
                 </div>
               </div>
             </section>
-            <section className="flex w-full h-20 items-center justify-between px-3">
+            <section className="flex w-full h-20 items-center justify-between px-3 gap-3">
               <textarea
                 className="rounded-md border border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none bg-transparent py-4 px-4 focus:outline-none"
                 placeholder="Type your message here..."
