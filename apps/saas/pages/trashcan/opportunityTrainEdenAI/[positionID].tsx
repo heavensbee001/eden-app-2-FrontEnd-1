@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 import { HiBadgeCheck } from "react-icons/hi";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
-import type { NextPageWithLayout } from "../_app";
+import type { NextPageWithLayout } from "../../_app";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -674,7 +674,7 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className=" bg-cottonPink text-forestGreen rounded-lg p-1 text-center font-medium">
+              <p className=" bg-cottonPink text-edenGreen-600 rounded-lg p-1 text-center font-medium">
                 Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
                 interview
               </p>
@@ -1133,19 +1133,21 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   // };
 
   useEffect(() => {
-    setScraping(true);
+    if (scraping == false) {
+      setScraping(true);
 
-    positionTextAndConvoToReportCriteria({
-      variables: {
-        // fields: { message: textResponse, userID: currentUser?._id },
-        fields: {
-          positionID: positionID,
+      positionTextAndConvoToReportCriteria({
+        variables: {
+          // fields: { message: textResponse, userID: currentUser?._id },
+          fields: {
+            positionID: positionID,
+          },
         },
-      },
-    });
-    return () => {
-      setScraping(false);
-    };
+      });
+      return () => {
+        setScraping(false);
+      };
+    }
   }, []);
 
   return (

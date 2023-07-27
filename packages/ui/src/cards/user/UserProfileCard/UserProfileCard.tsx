@@ -21,7 +21,7 @@ export const UserProfileCard = ({}: IUserProfileCardProps) => {
               <TextLabel1> #{currentUser?.discriminator}</TextLabel1>
             )}
           </div>
-          <div className={`font-Inter text-xl text-zinc-500`}>
+          <div className={`font-Unica text-xl text-zinc-500`}>
             {currentUser?.memberRole?.title}
           </div>
         </div>

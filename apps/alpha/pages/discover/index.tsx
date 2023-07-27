@@ -752,7 +752,7 @@ const UserDiscoverCard = ({
         <LongText
           cutText={100}
           text={(member?.bio as string) || ""}
-          className={`text-darkGreen font-Inter my-2 text-sm`}
+          className={`text-darkGreen font-Unica my-2 text-sm`}
         />
       </div>
       <div className="grid grid-cols-6">
@@ -767,7 +767,7 @@ const UserDiscoverCard = ({
 
           {nodesPercentage && (
             <div>
-              <p className="font-Inter mb-1 text-sm font-bold text-zinc-500">
+              <p className="font-Unica mb-1 text-sm font-bold text-zinc-500">
                 🪄 Relevant skills
               </p>
               <div>

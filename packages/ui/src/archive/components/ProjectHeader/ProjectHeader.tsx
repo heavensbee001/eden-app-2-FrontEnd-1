@@ -68,7 +68,7 @@ export const ProjectHeader = ({
             <div className="mr-5">
               <button
                 disabled={submitting}
-                className="text-soilBody flex flex-row content-center items-center rounded-md bg-[#FFEEEE] py-1 px-3 text-lg font-normal tracking-wide"
+                className="flex flex-row content-center items-center rounded-md bg-[#FFEEEE] py-1 px-3 text-lg font-normal tracking-wide"
                 onClick={onSetFavorite}
               >
                 <span className={`mr-2`}>

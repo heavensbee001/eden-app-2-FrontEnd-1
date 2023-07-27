@@ -107,7 +107,7 @@ export const GrantsInfo = ({ grant }: IGrantsInfoProps) => {
             <TextHeading3>🗓 by Dec 15th</TextHeading3>
           </div>
           {/* <div className={`my-4`}>
-            <div className={`font-Inter text-md font-medium text-zinc-400`}>
+            <div className={`font-Unica text-md font-medium text-zinc-400`}>
               🎤 resources
             </div>
             <div className={`my-1 rounded-xl bg-blue-50 p-4 shadow-md`}>

@@ -1,5 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { SummaryQuestionType } from "@eden/package-graphql/generated";
+import { EdenTooltip } from "@eden/package-ui";
 import {
   BackgroundMatchChart,
   CandidateTypeSkillMatch,
@@ -141,33 +142,33 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     }
   );
 
-  type radiochartType = {
-    memberInfo: {
-      discordName: string;
-      attributes: {
-        [key: string]: number;
-      };
-    };
-  };
+  // type radiochartType = {
+  //   memberInfo: {
+  //     discordName: string;
+  //     attributes: {
+  //       [key: string]: number;
+  //     };
+  //   };
+  // };
 
-  const [radioChart, setRadioChart] = useState<radiochartType[]>([]);
+  // const [radioChart, setRadioChart] = useState<radiochartType[]>([]);
 
-  const optionsRadar = {
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-    },
-    scales: {
-      r: {
-        suggestedMin: 30,
-        suggestedMax: 100,
-        ticks: {
-          stepSize: 20, // Optional: Specify the step size between ticks
-        },
-      },
-    },
-  };
+  // const optionsRadar = {
+  //   plugins: {
+  //     legend: {
+  //       position: "bottom",
+  //     },
+  //   },
+  //   scales: {
+  //     r: {
+  //       suggestedMin: 30,
+  //       suggestedMax: 100,
+  //       ticks: {
+  //         stepSize: 20, // Optional: Specify the step size between ticks
+  //       },
+  //     },
+  //   },
+  // };
 
   // const { loading: radioChartLoading } = useQuery(
   //   MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES,
@@ -287,168 +288,172 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   console.log("summaryQuestions", summaryQuestions);
 
   return (
-    <div className="relative pb-4 pt-24">
-      {member?.letterAndColor?.culture?.letter && (
-        <div className="">
-          <div className="absolute left-0 top-0 mt-[4px] rounded-lg border-[1px] bg-white px-4 py-6">
-            <p
-              className={`${member?.letterAndColor?.culture?.color} text-4xl font-black`}
-            >
-              {`${member?.letterAndColor?.culture?.letter}`}
-            </p>
-          </div>
-        </div>
-      )}
+    // <div className="relative pb-4 pt-12">
+    //   <div className={`mx-auto mb-2`}>
 
-      <p className="mb-2 text-center">
-        <TextLabel1>INTERVIEW QUESTION ANALYSIS</TextLabel1>
-      </p>
-      <div
-        className={`mx-auto mb-2`}
-        // className={`mx-auto grid grid-cols-${
-        //   summaryQuestions?.length === 1 ? 3 : summaryQuestions?.length
-        // } gap-4`}
-      >
-        {summaryQuestions
-          ? summaryQuestions.map((item, index) => (
-              <div
-                key={index}
-                className={classNames(
-                  "transition-scale z-10 mb-2 h-full w-full cursor-pointer rounded-sm border-[1px] bg-white px-4 shadow-sm ease-in-out hover:scale-[1.02] hover:bg-[#EDFEFF]",
-                  summaryQuestionSelected?.questionID === item.questionID
-                    ? "border-accentColor scale-[1.02] bg-lime-50"
-                    : ""
-                )}
-                onClick={() => {
-                  setSummaryQuestionSelected(item);
-                  if (document) {
-                    setTimeout(() => {
-                      document
-                        .getElementById("summary-question-chat")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }, 200);
-                  }
-                }}
-              >
-                <div className=" py-4">
-                  <p className="mb-4 font-medium text-gray-700">
-                    {/* {item.questionContent?.replace(".", "")}
-                     */}
-                    {item.originalQuestionContent?.replace(".", "") ||
-                      item.questionContent?.replace(".", "")}
-                  </p>
-                  <div className="flex w-full">
-                    <div className="flex w-1/4 items-center justify-center">
-                      {/* {!item.score ? (
-                        <TextInputLabel className="mr-auto text-center text-xs text-black">
-                          {item.answerContent?.replace(".", "")}
-                        </TextInputLabel>
-                      ) : null} */}
-                      <div className="text-center text-lg font-bold leading-tight">
-                        <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div>
-                        {item.score ? (
-                          <p
-                            className={classNames(
-                              `text-${getPercentageColor(item.score * 10)}`
-                            )}
-                          >
-                            {getPercentageText(item.score * 10)}
-                          </p>
-                        ) : null}
-                      </div>
-                    </div>
-                    <div className="w-3/4 pl-2">
-                      <p className="whitespace-pre-wrap text-gray-400">
-                        {item.reason}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <Modal
-                  open={summaryQuestionSelected?.questionID === item.questionID}
-                  onClose={() => {
-                    setSummaryQuestionSelected(undefined);
-                  }}
-                  closeOnEsc
-                >
-                  <h3 className="mb-4 text-xl font-medium">Candidate chat</h3>
-                  {summaryQuestionSelected &&
-                  summaryQuestionSelected.subConversationAnswer ? (
-                    <Card
-                      border
-                      shadow
-                      className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white  pb-4"
-                    >
-                      <div
-                        id="summary-question-chat"
-                        className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
-                      >
-                        <div className="">
-                          {summaryQuestionSelected.subConversationAnswer.map(
-                            (conversation: any, index: number) => (
-                              <>
-                                <div className="chat-message p-2" key={index}>
-                                  <div
-                                    className={classNames(
-                                      conversation.role == "assistant"
-                                        ? ""
-                                        : "justify-end",
-                                      "flex items-start"
-                                    )}
-                                  >
-                                    <div
-                                      className={classNames(
-                                        conversation.role == "assistant"
-                                          ? "order-2"
-                                          : "order-1",
-                                        "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
-                                      )}
-                                    >
-                                      <span
-                                        // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                                        className={classNames(
-                                          conversation.role == "assistant"
-                                            ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                            : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                          "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
-                                        )}
-                                      >
-                                        {conversation.content}
-                                      </span>
-                                    </div>
-                                    <img
-                                      src={
-                                        conversation.role == "assistant"
-                                          ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                                          : member?.user?.discordAvatar || ""
-                                      }
-                                      className="order-1 h-6 w-6 rounded-full"
-                                    />
-                                  </div>
-                                </div>
-                              </>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  ) : null}
-                </Modal>
-              </div>
-            ))
-          : null}
+    <div className="">
+      <div className="mb-10">
+        <div className="mb-4 px-4">
+          <h3 className="text-edenGreen-600">
+            Seed Questions that were asked on the Interview 🙋
+          </h3>
+        </div>
+        <p className="text-edenGray-500 text-sm px-4">
+          Here you can find the questions that were asked on the interview
+          together with the score, reason and actual answer if you click the
+          cards
+        </p>
       </div>
 
-      <div className="mb-8 grid grid-cols-12 border-[1px] bg-white pt-2">
-        <div className="col-span-2"></div>
+      <div>
+        <ul className="list-none space-y-1">
+          {summaryQuestions
+            ? summaryQuestions.map((item, index) => (
+                <li
+                  key={index}
+                  className="w-full cursor-pointer px-4 rounded-md border-b border-edenGray-100"
+                  onClick={() => {
+                    setSummaryQuestionSelected(item);
+                    if (document) {
+                      setTimeout(() => {
+                        document
+                          .getElementById("summary-question-chat")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                      }, 200);
+                    }
+                  }}
+                >
+                  <EdenTooltip
+                    id={index.toString()}
+                    innerTsx={
+                      <div className="w-60">
+                        <span className="text-gray-600">
+                          {item?.answerContent}
+                        </span>
+                      </div>
+                    }
+                    place="top"
+                    effect="solid"
+                    backgroundColor="white"
+                    border
+                    borderColor="#e5e7eb"
+                    padding="0.5rem"
+                  >
+                    <div className="">
+                      <div className="flex w-full py-4">
+                        <p className="w-3/4 text-gray-900 text-sm">
+                          {item.questionContentSmall?.replace(".", "") ||
+                            item.questionContent?.replace(".", "")}
+                        </p>
+                        <div className="ml-auto flex items-center p-2">
+                          {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
+                          <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
+                          {item.score ? (
+                            <div className="px-4 -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                              <p
+                                className={classNames(
+                                  "text-2xs font-bold leading-tight",
+                                  `text-${getPercentageColor(item.score * 10)}`
+                                )}
+                              >
+                                {getPercentageText(item.score * 10)}
+                              </p>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                    <Modal
+                      open={
+                        summaryQuestionSelected?.questionID === item.questionID
+                      }
+                      onClose={() => {
+                        setSummaryQuestionSelected(undefined);
+                      }}
+                      closeOnEsc
+                    >
+                      <h3 className="mb-4 text-xl font-medium">
+                        Candidate chat
+                      </h3>
+                      {summaryQuestionSelected &&
+                      summaryQuestionSelected.subConversationAnswer ? (
+                        <Card
+                          border
+                          shadow
+                          className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white pb-4"
+                        >
+                          <div
+                            id="summary-question-chat"
+                            className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
+                          >
+                            <div className="">
+                              {summaryQuestionSelected.subConversationAnswer.map(
+                                (conversation: any, index: number) => (
+                                  <>
+                                    <div
+                                      className="chat-message p-2"
+                                      key={index}
+                                    >
+                                      <div
+                                        className={classNames(
+                                          conversation.role == "assistant"
+                                            ? ""
+                                            : "justify-end",
+                                          "flex items-start"
+                                        )}
+                                      >
+                                        <div
+                                          className={classNames(
+                                            conversation.role == "assistant"
+                                              ? "order-2"
+                                              : "order-1",
+                                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                                          )}
+                                        >
+                                          <span
+                                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                                            className={classNames(
+                                              conversation.role == "assistant"
+                                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                                            )}
+                                          >
+                                            {conversation.content}
+                                          </span>
+                                        </div>
+                                        <img
+                                          src={
+                                            conversation.role == "assistant"
+                                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                                              : member?.user?.discordAvatar ||
+                                                ""
+                                          }
+                                          className="order-1 h-6 w-6 rounded-full"
+                                        />
+                                      </div>
+                                    </div>
+                                  </>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </Card>
+                      ) : null}
+                    </Modal>
+                  </EdenTooltip>
+                </li>
+              ))
+            : null}
+        </ul>
+      </div>
+
+      {/* <div className="mb-8 grid grid-cols-12 border-[1px] bg-white pt-2"> */}
+      {/* <div className="col-span-2"></div>
         <div className="col-span-8">
           <p className="mb-4 text-center">
             <TextLabel1>Background match</TextLabel1>
           </p>
-          {/* <BackgroundMatchChart
-            memberName={member?.discordName ?? ""}
-            backgroundMatchData={exampleData}
-          /> */}
           {dataBarChart.length > 0 ? (
             <div className="h-[300px]">
               <BackgroundMatchChart
@@ -459,13 +464,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ) : (
             <LoadingGraphData />
           )}
-        </div>
-        <div className="col-span-2"></div>
+        </div> */}
+      {/* <div className="col-span-2"></div>
         <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
             <TextLabel1>PieChart</TextLabel1>
           </p>
-          {/* <Pie data={data} options={options} /> */}
           {!!loadingPieNodeCategory ? (
             <LoadingGraphData />
           ) : pieChartData.datasets[0]?.data.length > 0 ? (
@@ -485,8 +489,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           ) : (
             <NoGraphData />
           )}
-        </div>
-        {/* <div className="col-span-6 mb-4">
+        </div> */}
+      {/* <div className="col-span-6 mb-4">
           <p className="mb-2 text-center">
             <TextLabel1>Radar Chart</TextLabel1>
           </p>
@@ -507,7 +511,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             </>
           )}
         </div> */}
-      </div>
+      {/* </div> */}
       {/* <p className="text-soilHeading3 font-poppins mb-6 text-center font-black text-gray-400">
         CULTURE FIT
       </p>
@@ -546,18 +550,29 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 const getPercentageColor = (percentage: number) => {
   let color = "";
 
-  if (percentage >= 90) {
-    color = "[#12A321]";
-  } else if (percentage >= 70) {
-    color = "[#8CE136]";
-  } else if (percentage >= 50) {
-    color = "[#FFCF25]";
-  } else if (percentage >= 40) {
-    color = "[#FF6847]";
-  } else {
-    color = "[#E40000]";
-  }
+  // if (percentage >= 90) {
+  //   color = "[#12A321]";
+  // } else if (percentage >= 70) {
+  //   color = "[#8CE136]";
+  // } else if (percentage >= 50) {
+  //   color = "[#FFCF25]";
+  // } else if (percentage >= 40) {
+  //   color = "[#FF6847]";
+  // } else {
+  //   color = "[#00462C]";
+  // }
 
+  if (percentage >= 90) {
+    color = "[#00462C]";
+  } else if (percentage >= 70) {
+    color = "[#19563F]";
+  } else if (percentage >= 50) {
+    color = "[#7FA294]";
+  } else if (percentage >= 40) {
+    color = "[#F5C7DE]";
+  } else {
+    color = "edenGray-500";
+  }
   return color;
 };
 
@@ -565,15 +580,15 @@ const getPercentageText = (percentage: number) => {
   let text = "";
 
   if (percentage >= 90) {
-    text = "very strong";
+    text = "Must Read";
   } else if (percentage >= 70) {
-    text = "strong";
+    text = "Captivating";
   } else if (percentage >= 50) {
-    text = "neutral";
+    text = "Interesting";
   } else if (percentage >= 40) {
-    text = "weak";
+    text = "Decent";
   } else {
-    text = "very weak";
+    text = "Not Interesting";
   }
 
   return text.toUpperCase();

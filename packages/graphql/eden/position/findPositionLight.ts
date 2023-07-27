@@ -96,6 +96,7 @@ export const FIND_POSITION_LIGHT = gql`
           }
         }
       }
+
       candidatesReadyToDisplay
       nodes {
         nodeData {
@@ -109,6 +110,18 @@ export const FIND_POSITION_LIGHT = gql`
         question {
           _id
           content
+        }
+      }
+      positionsRequirements {
+        priorities {
+          priority
+          reason
+        }
+        tradeOffs {
+          reason
+          selected
+          tradeOff1
+          tradeOff2
         }
       }
     }

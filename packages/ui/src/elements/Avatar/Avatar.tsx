@@ -19,16 +19,13 @@ export const Avatar = ({
   backColorEmoji,
 }: AvatarProps) => {
   const [imageSrc, setImageSrc] = useState(src);
-  const btnCls = clsx(
-    "rounded-full shadow-md inline-block overflow-hidden bg-gray-100",
-    {
-      "w-8 h-8": size === "xs",
-      "w-12 h-12": size === "sm",
-      "w-16 h-16": size === "md",
-      "w-20 h-20": size === "lg",
-      "w-24 h-24": size === "xl",
-    }
-  );
+  const btnCls = clsx("rounded-full inline-block overflow-hidden bg-gray-100", {
+    "w-8 h-8": size === "xs",
+    "w-12 h-12": size === "sm",
+    "w-16 h-16": size === "md",
+    "w-20 h-20": size === "lg",
+    "w-24 h-24": size === "xl",
+  });
 
   const avatarCls = clsx("text-center m-auto", {
     "text-2xl": size === "xs",

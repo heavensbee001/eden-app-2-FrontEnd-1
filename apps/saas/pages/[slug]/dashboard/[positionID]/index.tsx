@@ -5,28 +5,49 @@ import {
   MATCH_NODES_MEMBERS_AI4,
   UPDATE_TALENT_LIST_WITH_TALENT,
 } from "@eden/package-graphql";
-import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
+import {
+  CandidateType,
+  PrioritiesType,
+  TalentListType,
+  TalentType,
+  TradeOffsType,
+} from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
+  Avatar,
   Button,
-  CandidateInfo,
+  // CandidateInfo,
   CandidatesTableList,
+  EdenTooltip,
   ListModeEnum,
   Loading,
   Modal,
+  NodeList,
   SelectList,
   TextField,
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
+import { Tab } from "@headlessui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
+import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { HiOutlineLink } from "react-icons/hi";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoMdAddCircle, IoMdRemoveCircle } from "react-icons/io";
 import { MdCompare, MdIosShare } from "react-icons/md";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
+
+const CandidateInfo = dynamic(
+  () =>
+    import(`@eden/package-ui/src/info/CandidateInfo/CandidateInfo`).then(
+      (module) => module.CandidateInfo
+    ),
+  {
+    ssr: false,
+  }
+);
 
 import { NextPageWithLayout } from "../../../_app";
 
@@ -81,7 +102,8 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
-  const { positionID, slug } = router.query;
+  const { positionID, slug, listID } = router.query;
+  const { company } = useContext(CompanyContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
   const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
@@ -110,8 +132,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -126,17 +149,32 @@ const PositionCRM: NextPageWithLayout = () => {
   const [talentListSelected, setTalentListSelected] =
     useState<TalentListType>();
 
+  useMemo(() => {
+    let _listSelected;
+
+    if (listID && !!talentListsAvailables.length) {
+      _listSelected = talentListsAvailables.find((list) => list._id === listID);
+    } else {
+      _listSelected = talentListsAvailables.find((list) => list._id === "000");
+    }
+
+    setTalentListSelected(_listSelected);
+  }, [listID, talentListsAvailables]);
+
   const [candidatesFromTalentList, setCandidatesFromTalentList] = useState<
     CandidateTypeSkillMatch[]
   >([]);
 
   const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
+  const [opportunityDetailsOpen, setOpportunityDetailsOpen] =
+    useState<boolean>(false);
+  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(false);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
     string[]
   >([]);
 
-  const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
+  // const [talentListToShow, setTalentListToShow] = useState<TalentListType>();
 
   const [newTalentListNameInputOpen, setNewTalentListNameInputOpen] =
     useState<boolean>(false);
@@ -265,6 +303,8 @@ const PositionCRM: NextPageWithLayout = () => {
 
         // setCandidatesList(sortedCandidatesList);
 
+        // console.log("sortedCandidatesList = ", sortedCandidatesList);
+
         setCandidatesOriginalList(sortedCandidatesList);
 
         setCandidatesFromTalentList(sortedCandidatesList);
@@ -347,18 +387,20 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  useEffect(() => {
-    if (talentListToShow && talentListsAvailables.length) {
-      setTalentListSelected(talentListToShow);
-      // setNewTalentListName(talentListToShow?.name!);
-    }
-  }, [talentListToShow, talentListsAvailables]);
+  // useEffect(() => {
+  //   if (talentListToShow && talentListsAvailables.length) {
+  //     setTalentListSelected(talentListToShow);
+  //     // setNewTalentListName(talentListToShow?.name!);
+  //   }
+  // }, [talentListToShow, talentListsAvailables]);
 
   const handleRowClick = (user: CandidateTypeSkillMatch) => {
     if (user.user?._id) setSelectedUserId(user.user?._id);
     if (user.overallScore) setSelectedUserScore(user.overallScore);
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
+
+    console.log("user.summaryQuestions = ", user.summaryQuestions);
   };
 
   const [updateSkillScore, setUpdateSkillScore] = useState<boolean>(false);
@@ -368,15 +410,15 @@ const PositionCRM: NextPageWithLayout = () => {
     let grade: Grade = { letter: "", color: "" };
 
     if (percentage >= 85) {
-      grade = { letter: "A", color: "text-green-600" };
+      grade = { letter: "A", color: "text-utilityGreen" };
     } else if (percentage >= 70) {
-      grade = { letter: "B", color: "text-green-300" };
+      grade = { letter: "B", color: "text-utilityYellow" };
     } else if (percentage >= 50) {
-      grade = { letter: "C", color: "text-orange-300" };
+      grade = { letter: "C", color: "text-utilityOrange" };
       // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
       // else grade = { letter: "C", color: "text-black" };
     } else {
-      grade = { letter: "D", color: "text-red-300" };
+      grade = { letter: "D", color: "text-utilityRed" };
       // if (mainColumn) grade = { letter: "D", color: "text-red-300" };
       // else grade = { letter: "D", color: "text-black" };
     }
@@ -642,7 +684,14 @@ const PositionCRM: NextPageWithLayout = () => {
                     !approvedCandidatesIDs.includes(candidate.user._id)
                 )
             );
-            setTalentListSelected({ _id: "000", name: "All candidates" });
+            // setTalentListSelected({ _id: "000", name: "All candidates" });
+            router.push(
+              {
+                pathname: `/${company?.slug}/dashboard/${positionID}`,
+              },
+              undefined,
+              { shallow: true }
+            );
           } else {
             setCandidatesFromTalentList(candidatesUnqualifiedList);
           }
@@ -653,7 +702,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 talentList._id === workingTalentListID
             );
 
-          const editedTalentList =
+          const editedTalentList: TalentListType =
             data?.updateUsersTalentListPosition.talentList[
               editedTalentListIndex
             ];
@@ -672,7 +721,17 @@ const PositionCRM: NextPageWithLayout = () => {
           }
 
           setCandidatesFromTalentList(candidatesOnTalentListSelected);
-          setTalentListSelected(editedTalentList);
+          // setTalentListSelected(editedTalentList);
+          router.push(
+            {
+              pathname: `/${company?.slug}/dashboard/${positionID}`,
+              query: {
+                listID: editedTalentList._id,
+              },
+            },
+            undefined,
+            { shallow: true }
+          );
           setNewTalentListCandidatesIds([]);
         }
       } else {
@@ -740,7 +799,7 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleCalculateSkillScore = () => {
-    console.log("change = 232322");
+    // console.log("change = 232322");
 
     setUpdateSkillScore(true);
   };
@@ -748,20 +807,31 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleSelectedTalentList = (list: TalentListType) => {
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
-    if (talentListToShow) {
-      for (let i = 0; i < candidatesOriginalList.length; i++) {
-        for (let j = 0; j < talentListToShow.talent!.length; j++) {
-          if (
-            candidatesOriginalList[i].user?._id ===
-            talentListToShow.talent![j]!.user!._id
-          ) {
-            candidatesOnTalentListSelected.push(candidatesOriginalList[i]);
-          }
-        }
-      }
-      setTalentListSelected(talentListToShow);
-      setTalentListToShow(undefined);
-    } else if (list._id !== "000") {
+    // if (talentListToShow) {
+    //   for (let i = 0; i < candidatesOriginalList.length; i++) {
+    //     for (let j = 0; j < talentListToShow.talent!.length; j++) {
+    //       if (
+    //         candidatesOriginalList[i].user?._id ===
+    //         talentListToShow.talent![j]!.user!._id
+    //       ) {
+    //         candidatesOnTalentListSelected.push(candidatesOriginalList[i]);
+    //       }
+    //     }
+    //   }
+    //   // setTalentListSelected(talentListToShow);
+    //   router.push(
+    //     {
+    //       pathname: `/${company?.slug}/dashboard/${positionID}`,
+    //       query: {
+    //         listID: talentListToShow._id,
+    //       },
+    //     },
+    //     undefined,
+    //     { shallow: true }
+    //   );
+    //   setTalentListToShow(undefined);
+    // } else
+    if (list._id !== "000") {
       for (let i = 0; i < candidatesOriginalList.length; i++) {
         for (let j = 0; j < list.talent!.length; j++) {
           if (
@@ -771,10 +841,27 @@ const PositionCRM: NextPageWithLayout = () => {
           }
         }
       }
-      setTalentListSelected(list);
+      // setTalentListSelected(list);
+      router.push(
+        {
+          pathname: `/${company?.slug}/dashboard/${positionID}`,
+          query: {
+            listID: list._id,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
     } else {
       candidatesOnTalentListSelected.push(...candidatesUnqualifiedList);
-      setTalentListSelected({ _id: "000", name: "All candidates" });
+      // setTalentListSelected({ _id: "000", name: "All candidates" });
+      router.push(
+        {
+          pathname: `/${company?.slug}/dashboard/${positionID}`,
+        },
+        undefined,
+        { shallow: true }
+      );
     }
 
     setNewTalentListCandidatesIds([]);
@@ -816,7 +903,7 @@ const PositionCRM: NextPageWithLayout = () => {
       },
     });
 
-    toast.success("Candidate added to list!");
+    // toast.success("Candidate added to list!");
   };
 
   const handleRemoveCandidatesFromList = async (listID: string) => {
@@ -953,6 +1040,28 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("Candidate added to Approved Candidates list!");
   };
 
+  const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
+
+  const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
+
+  useMemo(() => {
+    if (
+      findPositionData?.findPosition?.positionsRequirements?.priorities &&
+      findPositionData?.findPosition?.positionsRequirements?.tradeOffs &&
+      findPositionData?.findPosition?.positionsRequirements?.priorities.length >
+        0 &&
+      findPositionData?.findPosition?.positionsRequirements?.tradeOffs.length >
+        0
+    ) {
+      setPriorities(
+        findPositionData.findPosition.positionsRequirements.priorities
+      );
+      setTradeOffs(
+        findPositionData.findPosition.positionsRequirements.tradeOffs
+      );
+    }
+  }, [findPositionData?.findPosition]);
+
   return (
     <>
       <Head>
@@ -997,21 +1106,19 @@ const PositionCRM: NextPageWithLayout = () => {
           </Button>
         </div>
       </Modal>
-      <div className="bg-background container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
-        <div
-          className={classNames(
-            `z-20 transition-all duration-200 ease-in-out`,
-            selectedUserId ? "w-[calc(50%-1rem)]" : "w-full"
-          )}
-        >
-          <div className="mb-4 flex h-10 items-center">
-            <h1 className="mr-6 text-2xl font-medium">
-              {findPositionData && findPositionData.findPosition.name
-                ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
-                  findPositionData.findPosition.name.slice(1)
-                : ""}{" "}
-              Dashboard
-            </h1>
+      <div className="mx-auto max-w-screen-2xl flex-grow p-8">
+        <div className="z-20 w-full transition-all duration-200 ease-in-out">
+          <div className="mb-4 flex items-center">
+            <div>
+              <h1 className="text-edenGreen-600 mr-6">
+                {findPositionData && findPositionData.findPosition.name
+                  ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
+                    findPositionData.findPosition.name.slice(1)
+                  : ""}
+              </h1>
+              <p>{company?.name}</p>
+            </div>
+
             <Button
               size="sm"
               className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
@@ -1069,38 +1176,272 @@ const PositionCRM: NextPageWithLayout = () => {
                 </div>
               </div>
             </Button>
-
-            {/* <Button
-            variant="secondary"
-            onClick={() => {
-              router.push(`/train-ai/${positionID}`);
-            }}
-            >
-            Train AI
-          </Button> */}
           </div>
+
+          <section
+            className={classNames(
+              "relative mb-4 transition-all ease-in-out",
+              opportunityDetailsOpen ? "pt-6" : "mb-7 pt-3"
+            )}
+          >
+            <div
+              className={classNames(
+                "border-edenGreen-200 bg-edenGreen-200 w-full overflow-hidden rounded-md border-t px-4 transition-all ease-in-out",
+                opportunityDetailsOpen
+                  ? "max-h-[50vh] overflow-y-scroll rounded-tr-none py-4"
+                  : "max-h-[0px] py-0"
+              )}
+            >
+              <Tab.Group defaultIndex={0}>
+                <Tab.List className="border-edenGreen-300 mb-4 flex h-8 w-full border-b">
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "text-edenGreen-400 -mb-px whitespace-nowrap px-3 pb-2 pl-0 text-xs",
+                        selected
+                          ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                          : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                      )
+                    }
+                  >
+                    {"Priorities Summary".toUpperCase()}
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "text-edenGreen-400 -mb-px whitespace-nowrap px-3 pb-2 text-xs",
+                        selected
+                          ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                          : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                      )
+                    }
+                  >
+                    {"Required skills".toUpperCase()}
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "text-edenGreen-400 -mb-px whitespace-nowrap px-3 pb-2 text-xs",
+                        selected
+                          ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                          : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                      )
+                    }
+                  >
+                    {"Trade offs".toUpperCase()}
+                  </Tab>
+                </Tab.List>
+                <Tab.Panels>
+                  <Tab.Panel>
+                    <ul className="">
+                      {priorities &&
+                        priorities.length > 0 &&
+                        priorities.map((priority, index) => (
+                          <li
+                            key={index}
+                            className="relative mb-2 w-80 cursor-pointer rounded-md bg-white px-4 py-3"
+                          >
+                            <EdenTooltip
+                              id={
+                                priority.reason?.split(" ").join("") ||
+                                `priority-tooltip-${index}`
+                              }
+                              innerTsx={
+                                <div className="w-60">
+                                  <p>{priority.reason}</p>
+                                </div>
+                              }
+                              place="top"
+                              effect="solid"
+                              backgroundColor="white"
+                              border
+                              borderColor="#e5e7eb"
+                              padding="0.5rem"
+                              offset={{ left: 100 }}
+                            >
+                              <div className="flex w-full items-center">
+                                <div className="">
+                                  {index + 1}. {priority.priority}
+                                </div>
+                              </div>
+                            </EdenTooltip>
+                          </li>
+                        ))}
+                    </ul>
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <div className="">
+                      {findPositionData?.findPosition?.nodes && (
+                        <NodeList nodes={findPositionData.findPosition.nodes} />
+                      )}
+                    </div>
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <div className="flex max-w-lg flex-col items-center justify-center">
+                      {tradeOffs &&
+                        tradeOffs.length > 0 &&
+                        tradeOffs.map((tradeOff, index) => (
+                          <EdenTooltip
+                            key={index}
+                            id={`tradeoff-${index}`}
+                            innerTsx={
+                              <div className="w-60">
+                                <p>{tradeOff.reason}</p>
+                              </div>
+                            }
+                            place="top"
+                            effect="solid"
+                            backgroundColor="white"
+                            border
+                            borderColor="#e5e7eb"
+                            padding="0.5rem"
+                            containerClassName="w-full"
+                          >
+                            <div className="grid grid-cols-2">
+                              <label
+                                className={classNames(
+                                  "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                                  tradeOff.selected === tradeOff.tradeOff1
+                                    ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                                    : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
+                                )}
+                                htmlFor={`tradeoff-${index}-1`}
+                              >
+                                <div className="flex items-center justify-end">
+                                  <span className="">{tradeOff.tradeOff1}</span>
+                                  <input
+                                    type="radio"
+                                    className="ml-2 hidden"
+                                    id={`tradeoff-${index}-1`}
+                                    name={`tradeoff-${index}-1`}
+                                    value={tradeOff.tradeOff1!}
+                                    checked={
+                                      tradeOff.selected === tradeOff.tradeOff1
+                                    }
+                                    disabled
+                                  />
+                                </div>
+                              </label>
+                              <label
+                                className={classNames(
+                                  "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                                  tradeOff.selected === tradeOff.tradeOff2
+                                    ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                                    : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
+                                )}
+                                htmlFor={`tradeoff-${index}-2`}
+                              >
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    className="mr-2 hidden"
+                                    id={`tradeoff-${index}-2`}
+                                    name={`tradeoff-${index}-2`}
+                                    value={tradeOff.tradeOff2!}
+                                    checked={
+                                      tradeOff.selected === tradeOff.tradeOff2
+                                    }
+                                    disabled
+                                  />
+                                  <span className="">{tradeOff.tradeOff2}</span>
+                                </div>
+                              </label>
+                            </div>
+                          </EdenTooltip>
+                        ))}
+                    </div>
+                  </Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
+            </div>
+            <div
+              className={classNames(
+                "bg-edenGreen-200 text-edenGray-700 absolute right-0 top-0 flex h-6 w-44 cursor-pointer items-center rounded-md px-2 text-xs",
+                opportunityDetailsOpen ? "rounded-bl-none rounded-br-none" : ""
+              )}
+              onClick={() => setOpportunityDetailsOpen(!opportunityDetailsOpen)}
+            >
+              {opportunityDetailsOpen
+                ? "Close opportunity details"
+                : "See opportunity details"}
+              <div className={classNames("ml-auto")}>
+                {bestPicksOpen ? (
+                  <BiChevronUp color="#626262" size={"1.2rem"} />
+                ) : (
+                  <BiChevronDown color="#626262" size={"1.2rem"} />
+                )}
+              </div>
+            </div>
+          </section>
+
+          <section className="relative mb-4">
+            <div className="bg-edenPink-100 w-full overflow-hidden rounded-md px-4 py-4">
+              <h2 className="text-edenGreen-600">
+                Let&apos;s find your perfect candidate today.
+              </h2>
+              <p>Here are some candidates picked by me, to get you started. </p>
+
+              <div
+                className={classNames(
+                  "scrollbar-hide overflow-x-scroll transition-all ease-in-out",
+                  bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
+                )}
+              >
+                <div className="whitespace-nowrap">
+                  {candidatesUnqualifiedList
+                    .slice(0, 3)
+                    .map((candidate, index) => (
+                      <CandidateCard
+                        candidate={candidate}
+                        onClick={() => {
+                          setSelectedUserId(candidate.user?._id!);
+                        }}
+                        key={index}
+                      />
+                    ))}
+                </div>
+              </div>
+            </div>
+            <div
+              className={classNames(
+                "text-edenGray-700 absolute right-0 top-0 flex cursor-pointer items-center px-2 py-3 text-xs"
+              )}
+              onClick={() => setBestPicksOpen(!bestPicksOpen)}
+            >
+              {bestPicksOpen ? (
+                <BiChevronUp color="#626262" size={"1.2rem"} />
+              ) : (
+                <BiChevronDown color="#626262" size={"1.2rem"} />
+              )}
+            </div>
+          </section>
+
           <div className="">
             <div className="mb-4 flex items-center">
               <div className="mr-4 max-w-[200px]">
-                {/* {!newTalentListCreationMode ? ( */}
-                <SelectList
-                  items={[
-                    { _id: "000", name: "All candidates" },
-                    ...talentListsAvailables,
-                  ]}
-                  onChange={handleSelectedTalentList}
-                  newValue={talentListSelected ? talentListSelected : undefined}
-                  // isDisabled={editTalentListMode}
-                />
-                {/* ) : (
-                <TextField
-                  onChange={handleNewTalentListNameChange}
-                  placeholder="Name your custom list"
-                  radius="pill-shadow"
-                  required={true}
-                  className="mt-0 h-[30px] !px-2 !py-1"
-                />
-              )} */}
+                {!!talentListsAvailables.length && (
+                  <SelectList
+                    items={[
+                      {
+                        _id: "000",
+                        name: "All candidates",
+                        talent: candidatesUnqualifiedList.map((candidate) => ({
+                          user: candidate.user,
+                        })) as TalentType[],
+                        positionID:
+                          typeof positionID === "string"
+                            ? positionID
+                            : undefined,
+                      },
+                      ...talentListsAvailables,
+                    ]}
+                    onChange={handleSelectedTalentList}
+                    newValue={
+                      talentListSelected ? talentListSelected : undefined
+                    }
+                    // isDisabled={editTalentListMode}
+                  />
+                )}
               </div>
               {/* <>
               {talentListSelected?._id === "000" ? (
@@ -1286,7 +1627,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
                       router.push(
                         {
-                          pathname: "/dashboard/" + positionID,
+                          pathname: `/${company?.slug}/dashboard/${positionID}`,
                           query: {
                             candidate1: newTalentListCandidatesIds[0],
                             candidate2: newTalentListCandidatesIds[1],
@@ -1312,12 +1653,12 @@ const PositionCRM: NextPageWithLayout = () => {
               )}
             </div>
           </div>
-          <div className="grid grid-flow-row">
+          <div className="">
             <CandidatesTableList
               candidateIDRowSelected={selectedUserId || null}
               candidatesList={
                 talentListSelected?._id === "000"
-                  ? candidatesUnqualifiedList
+                  ? candidatesUnqualifiedList.slice(3, -1) //@TODO remove this slice.
                   : candidatesFromTalentList
               }
               fetchIsLoading={findPositionIsLoading}
@@ -1351,51 +1692,52 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll border-l-2 border-gray-300 transition-all duration-200 ease-in-out",
-            selectedUserId ? "w-[50vw]" : "w-0"
+            "transition-width fixed right-0 top-0 z-20 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
+            selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
-          <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
-            {/* {selectedUserId ? ( */}
-
-            <CandidateInfo
-              key={selectedUserId || ""}
-              memberID={selectedUserId || ""}
-              // percentage={selectedUserScore}
-              summaryQuestions={selectedUserSummaryQuestions}
-              mostRelevantMemberNode={mostRelevantMemberNode}
-              candidate={candidatesOriginalList?.find(
-                (candidate) =>
-                  candidate?.user?._id?.toString() == selectedUserId?.toString()
-              )}
-              onClose={() => {
-                setSelectedUserId(null);
-              }}
-              rejectCandidateFn={handleRejectCandidate}
-              approveCandidateFn={handleApproveCandidate}
-              qualified={
-                Boolean(
-                  approvedTalentListCandidatesList?.find(
-                    (candidate) =>
-                      candidate?.user?._id?.toString() ==
-                      selectedUserId?.toString()
-                  )
-                ) ||
-                Boolean(
-                  rejectedTalentListCandidatesList?.find(
-                    (candidate) =>
-                      candidate?.user?._id?.toString() ==
-                      selectedUserId?.toString()
-                  )
+          <CandidateInfo
+            key={selectedUserId || ""}
+            memberID={selectedUserId || ""}
+            // percentage={selectedUserScore}
+            summaryQuestions={selectedUserSummaryQuestions}
+            mostRelevantMemberNode={mostRelevantMemberNode}
+            candidate={candidatesOriginalList?.find(
+              (candidate) =>
+                candidate?.user?._id?.toString() == selectedUserId?.toString()
+            )}
+            onClose={() => {
+              setSelectedUserId(null);
+            }}
+            rejectCandidateFn={handleRejectCandidate}
+            approveCandidateFn={handleApproveCandidate}
+            qualified={
+              Boolean(
+                approvedTalentListCandidatesList?.find(
+                  (candidate) =>
+                    candidate?.user?._id?.toString() ==
+                    selectedUserId?.toString()
                 )
-              }
-            />
-            {/* ) : (
+              ) ||
+              Boolean(
+                rejectedTalentListCandidatesList?.find(
+                  (candidate) =>
+                    candidate?.user?._id?.toString() ==
+                    selectedUserId?.toString()
+                )
+              )
+            }
+            handleCreateNewList={handleCreateNewList}
+            talentListsAvailables={talentListsAvailables}
+            handleAddCandidatesToList={function (): Promise<void> {
+              throw new Error("Function not implemented.");
+            }}
+          />
+          {/* ) : (
             <div className="w-full pt-20 text-center">
               <p className="text-gray-400">Select a candidate</p>
             </div>
           )} */}
-          </div>
         </div>
         <div
           className={classNames(
@@ -1407,7 +1749,7 @@ const PositionCRM: NextPageWithLayout = () => {
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1415,6 +1757,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   percentage={selectedUserScore}
                   summaryQuestions={selectedUserSummaryQuestions}
                   mostRelevantMemberNode={mostRelevantMemberNode}
+                  handleAddCandidatesToList={handleAddCandidatesToList}
                   candidate={candidatesOriginalList?.find(
                     (candidate) =>
                       candidate?.user?._id?.toString() ==
@@ -1429,6 +1772,8 @@ const PositionCRM: NextPageWithLayout = () => {
                       { shallow: true }
                     );
                   }}
+                  handleCreateNewList={handleCreateNewList}
+                  talentListsAvailables={talentListsAvailables}
                 />
                 {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1436,12 +1781,13 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}
                   memberID={(router.query.candidate2 as string) || ""}
                   percentage={selectedUserScore}
+                  handleCreateNewList={handleCreateNewList}
                   summaryQuestions={selectedUserSummaryQuestions}
                   mostRelevantMemberNode={mostRelevantMemberNode}
                   candidate={candidatesOriginalList?.find(
@@ -1457,6 +1803,10 @@ const PositionCRM: NextPageWithLayout = () => {
                       undefined,
                       { shallow: true }
                     );
+                  }}
+                  talentListsAvailables={talentListsAvailables}
+                  handleAddCandidatesToList={function (): Promise<void> {
+                    throw new Error("Function not implemented.");
                   }}
                 />
                 {/* ) : (
@@ -1477,9 +1827,12 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default PositionCRM;
 
+import { CompanyContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import { getSession, signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
+import { FaArrowRight } from "react-icons/fa";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -1487,19 +1840,50 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  // const url = ctx.req.url
+  const url = ctx.req.url;
 
   if (!session) {
-    // return {
-    //   redirect: {
-    //     destination: `/?redirect=${url}`,
-    //     permanent: false,
-    //   },
-    // };
-    signIn("google");
+    return {
+      redirect: {
+        destination: `/?redirect=${url}`,
+        permanent: false,
+      },
+    };
+    // signIn("google");
   }
 
   return {
-    props: {},
+    props: { key: url },
   };
 }
+interface ICandidateCardProps {
+  candidate: CandidateTypeSkillMatch;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
+}
+
+const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
+  return (
+    <div
+      className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0"
+      onClick={onClick}
+    >
+      <div className="flex px-4 py-6" onClick={onClick}>
+        <div className="mr-4">
+          <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
+        </div>
+        <p className="font-bold">{candidate.user?.discordName}</p>
+        {candidate.user?.oneLiner && (
+          <p className="text-edenGray-600 text-sm">
+            {candidate.user?.oneLiner}
+          </p>
+        )}
+        <Button
+          className="bg-edenGreen-100 group-hover:bg-edenGreen-200 absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center !rounded-full !p-0"
+          variant="tertiary"
+        >
+          <FaArrowRight size={"0.75rem"} />
+        </Button>
+      </div>
+    </div>
+  );
+};

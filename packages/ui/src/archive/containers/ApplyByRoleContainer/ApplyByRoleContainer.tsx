@@ -163,7 +163,7 @@ export const ApplyByRoleContainer = ({
             className={`my-2 flex w-full flex-col content-center items-center justify-center`}
           >
             <div
-              className={`font-Inter my-2 text-lg font-semibold uppercase text-zinc-500`}
+              className={`font-Unica my-2 text-lg font-semibold uppercase text-zinc-500`}
             >
               Core Team
             </div>

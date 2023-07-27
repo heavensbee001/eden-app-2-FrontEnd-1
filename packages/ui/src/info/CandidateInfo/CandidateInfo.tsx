@@ -1,6 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { FIND_MEMBER } from "@eden/package-graphql";
-import { SummaryQuestionType } from "@eden/package-graphql/generated";
+import {
+  SummaryQuestionType,
+  TalentListType,
+} from "@eden/package-graphql/generated";
 import {
   AskEdenTab,
   Avatar,
@@ -19,8 +22,8 @@ import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsCalendarPlus } from "react-icons/bs";
-import { FaChevronLeft } from "react-icons/fa";
-import { IoMdAdd, IoMdAddCircle } from "react-icons/io";
+import { HiOutlineDocumentPlus } from "react-icons/hi2";
+import { IoClose } from "react-icons/io5";
 import ReactTooltip from "react-tooltip";
 
 import { EdenAiLetter } from "../../components/EdenAiLetter";
@@ -50,6 +53,10 @@ export interface ICandidateInfoProps {
   // eslint-disable-next-line no-unused-vars
   approveCandidateFn?: (memberID: string) => void;
   qualified?: boolean;
+  handleCreateNewList?: () => void;
+  talentListsAvailables?: TalentListType[];
+  handleAddCandidatesToList?: (listID: string) => Promise<void>;
+  handleChkSelection?: (candidate: any) => void;
 }
 
 function classNames(...classes: any[]) {
@@ -64,11 +71,18 @@ export const CandidateInfo = ({
   onClose,
   rejectCandidateFn,
   approveCandidateFn,
+  handleChkSelection,
+
+  talentListsAvailables,
+  handleCreateNewList,
+  handleAddCandidatesToList,
   // eslint-disable-next-line no-unused-vars
   qualified = false,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
+
   const [letterType, setLetterType] =
     useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
 
@@ -80,6 +94,13 @@ export const CandidateInfo = ({
   const handleSecondInterviewLetter = () => {
     setLetterType("nextInterviewInvite");
     setIsOpen(!isOpen);
+  };
+
+  const handleGreenButtonPress = () => {
+    setAddToListOpen(true);
+    if (handleChkSelection) {
+      handleChkSelection(candidate);
+    }
   };
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
@@ -168,6 +189,7 @@ export const CandidateInfo = ({
       tab: "Transcript",
       Content: () => (
         <EdenChatTab
+          member={dataMember?.findMember}
           memberImg={dataMember?.findMember.discordAvatar}
           conversationID={candidate?.conversationID || undefined}
         />
@@ -198,47 +220,56 @@ export const CandidateInfo = ({
   //     "On a mission to empower anyone anywhere to do meaningful work";
   // }
 
-  console.log("dataMember LLLLLLLLLLLL", dataMember);
-
   return (
-    <>
-      <div className="font-Inter absolute z-20 h-56 w-full flex-col bg-white text-center">
-        <FaChevronLeft
-          className="absolute left-2 top-4 cursor-pointer text-gray-500 hover:text-gray-400"
+    <div className="bg-white">
+      <div className="h-full w-full flex-col overflow-y-scroll">
+        <div
           onClick={onClose}
-        />
+          className="bg-edenGreen-100 hover:bg-edenGreen-200 absolute right-10 top-9 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md"
+        >
+          <IoClose color="#19563F" size={"1rem"} />
+        </div>
 
-        <div className="px-8 py-4">
-          <div className="items-end text-left">
-            <Avatar src={dataMember?.findMember.discordAvatar!} size={`md`} />
-            <div className="">
-              <h1 className=" text-lg font-semibold">
+        {/* ---- Header ---- */}
+        <div>
+          <div className="mb-6 flex p-8 pb-4">
+            <div className="mr-3">
+              <Avatar src={dataMember?.findMember.discordAvatar!} size={`md`} />
+            </div>
+            <div className="w-full">
+              <h3 className="font-Unica text-edenGreen-600">
                 {dataMember?.findMember?.discordName}
-              </h1>
-              <div className="flex items-center  space-x-1 text-sm text-gray-400">
-                <p>{dataMember?.findMember?.location} </p>
-                {dataMember?.findMember?.timeZone && (
-                  <p> ({dataMember?.findMember?.timeZone})</p>
-                )}
+              </h3>
+              <div>
+                <p className="text-edenGray-700 text-xs">
+                  <span>{dataMember?.findMember?.location}</span>
+                  {dataMember?.findMember?.timeZone && " | "}
+                  <span>{dataMember?.findMember?.timeZone}</span>
+                </p>
               </div>
-
-              <div className="max-h-20 overflow-y-scroll">
-                <LongText
-                  cutText={100}
-                  text={(dataMember?.findMember?.bio as string) || ""}
-                  className={`whitespace-pre-wrap text-sm`}
-                />
+              <div>
+                {dataMember?.findMember?.oneLiner ? (
+                  <p className="text-edenGray-900 w-full whitespace-pre-wrap text-sm">
+                    {dataMember?.findMember?.oneLiner}
+                  </p>
+                ) : (
+                  <LongText
+                    cutText={80}
+                    text={(dataMember?.findMember?.bio as string) || ""}
+                    className={`text-edenGray-900 w-full whitespace-pre-wrap text-sm`}
+                  />
+                )}
               </div>
             </div>
           </div>
 
-          <div className="absolute right-8 top-4 flex gap-4">
-            {/* ------- add to talent pool button ------- */}
-            <div className="">
+          {/* <div className="absolute right-8 top-4 flex gap-4">
+            ------- add to talent pool button -------
+            <div>
               <span
-                onClick={() => {
-                  // setAddToListOpen(true);
-                }}
+                // onClick={() => {
+                //   setAddToListOpen(true);
+                // }}
                 className="cursor-pointer text-xs"
                 data-tip={"Add to talent pool"}
                 data-for={`badgeTip-add-to-talent-pool`}
@@ -246,7 +277,8 @@ export const CandidateInfo = ({
                 <IoMdAddCircle
                   size={28}
                   className="text-accentColor hover:text-black"
-                  onClick={handleApproveCandidate}
+                  // onClick={handleApproveCandidate}
+                  onClick={handleGreenButtonPress}
                 />
                 <ReactTooltip
                   id={`badgeTip-add-to-talent-pool`}
@@ -255,7 +287,10 @@ export const CandidateInfo = ({
                   padding="0.25rem"
                 ></ReactTooltip>
               </span>
-              {/* {addToListOpen && (
+
+              ------- Add candidate to list -------
+
+              {addToListOpen && (
                 <div
                   className="fixed left-0 top-0 z-30 h-full w-full"
                   onClick={() => {
@@ -282,20 +317,23 @@ export const CandidateInfo = ({
                       New list
                     </p>
                   </div>
-                  {talentListsAvailables.map((list, index) => (
-                    <div
-                      key={index}
-                      className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                      onClick={() => handleAddCandidatesToList(list._id!)}
-                    >
-                      <p className="">{list.name}</p>
-                    </div>
-                  ))}
+                  {talentListsAvailables &&
+                    talentListsAvailables.map((list, index) => (
+                      <div
+                        key={index}
+                        className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                        onClick={() =>
+                          handleAddCandidatesToList &&
+                          handleAddCandidatesToList(list._id!)
+                        }
+                      >
+                        <p className="">{list.name}</p>
+                      </div>
+                    ))}
                 </div>
-              )} */}
+              )}
             </div>
 
-            {/* ------- reject button ------- */}
             <span
               className="cursor-pointer text-xs"
               data-tip={"Reject gracefully"}
@@ -315,7 +353,7 @@ export const CandidateInfo = ({
               ></ReactTooltip>
             </span>
 
-            {/* ------- schedule 2nd interview button ------- */}
+           ------- schedule 2nd interview button -------
             <span
               className="cursor-pointer text-xs"
               data-tip={"Schedule 2nd interview"}
@@ -338,90 +376,47 @@ export const CandidateInfo = ({
                 padding="0.25rem"
               ></ReactTooltip>
             </span>
-          </div>
+          </div> */}
         </div>
-
-        {/* <div className="grid w-full grid-cols-3 bg-white">
-          <div className="col-1 mt-5 w-full py-2 text-center">
-            {!router.pathname.includes("/talentlist") && !qualified ? (
-              <div className="flex w-full justify-end">
-                <Button
-                  className="border-none bg-red-400 text-sm font-bold text-white hover:bg-red-500"
-                  radius="pill"
-                  onClick={handleRejectCandidate}
-                >
-                  REJECT
-                </Button>
-              </div>
-            ) : null}
-          </div>
-          <div className="col-2 p-2 pb-1">
-            <div className="flex w-full justify-center">
-              <Avatar src={dataMember?.findMember.discordAvatar!} size={`lg`} />
-            </div>
-          </div>
-          <div className="col-3 mt-5 w-full py-2 text-center text-sm">
-            {!router.pathname.includes("/talentlist") && !qualified ? (
-              <div className="flex w-full justify-start">
-                <Button
-                  variant="primary"
-                  radius="pill"
-                  className="border-none font-bold text-white"
-                  onClick={handleApproveCandidate}
-                >
-                  APPROVE
-                </Button>
-              </div>
-            ) : null}
-          </div>
-        </div> */}
-
-        {/* <div className="flex w-full justify-center px-4"></div>
-        <TextHeading3 className="w-full justify-center px-4 !text-sm font-bold text-gray-400">
-          {dataMember?.findMember?.memberRole?.title}
-        </TextHeading3> */}
       </div>
-      <div className="bg-background h-full w-full">
+      <div className="">
         <Tab.Group
           defaultIndex={index}
           onChange={(index: number) => {
-            console.log("Changed selected tab to:", index);
+            // console.log("Changed selected tab to:", index);
             setIndex(index);
           }}
         >
-          <Tab.List className="absolute top-56 z-20 flex h-8  w-full justify-between bg-white text-lg">
+          <Tab.List className="border-edenGreen-300 flex h-8 w-full justify-between border-b">
             {tabs.map(({ tab }, index) => (
               <Tab
                 key={index}
                 className={({ selected }) =>
                   classNames(
-                    "pt-px text-[14px]",
+                    "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
                     selected
-                      ? "border-b-soilGreen-700 w-full border-b-2 bg-lime-50 text-gray-600 outline-none"
-                      : "font-avenir-roman w-full border-b-2 text-gray-400 hover:bg-gray-50 hover:text-gray-500"
+                      ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                      : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
                   )
                 }
               >
-                {tab}
+                {tab.toUpperCase()}
               </Tab>
             ))}
           </Tab.List>
           <Tab.Panels>
-            <div className="bg-background relative top-64">
+            <div className="">
               {tabs.map(({ Content }, index) => (
                 <Tab.Panel key={index}>
-                  {/* <div className="h-[calc(100vh-17rem)]"> */}
-                  {/* <div className="relative"> */}
-                  <div className="abolute px-6">
+                  <div className="px-8 py-4">
                     <Content />
                   </div>
-                  {/* </div> */}
                 </Tab.Panel>
               ))}
             </div>
           </Tab.Panels>
         </Tab.Group>
       </div>
-    </>
+    </div>
   );
 };

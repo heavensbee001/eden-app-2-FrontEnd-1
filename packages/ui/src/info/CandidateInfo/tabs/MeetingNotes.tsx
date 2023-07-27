@@ -28,7 +28,7 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
     []
   );
 
-  console.log("member = ", member);
+  // console.log("member = ", member);
 
   // const {} = useQuery(CANDIDATE_NOTES_EDENAI, {
   //   variables: {
@@ -46,7 +46,7 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
 
   useEffect(() => {
     // if (dataProject?.findProject) setProject(dataProject?.findProject);
-    console.log("candidate = 2", candidate);
+    // console.log("candidate = 2", candidate);
 
     if (candidate?.notesInterview)
       setMeetingNotesData(candidate.notesInterview);
@@ -54,19 +54,30 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
 
   return (
     <>
-      <div className="container mx-auto px-4">
-        <div className="-mx-4 flex flex-wrap">
+      <div className="">
+        <div className="">
           {meetingNotesData
             ? meetingNotesData?.map((d, i) => (
-                <div key={i} className="w-full p-4 md:w-1/2">
-                  <div className="rounded-lg border bg-white p-6 shadow">
-                    <h3 className="mb-4 text-lg font-bold">{d.categoryName}</h3>
-                    <ul className="list-disc pl-6">
-                      {d.reason.map((r, j) => (
-                        <li key={j}>{r.replace("- ", "")}</li>
-                      ))}
-                    </ul>
+                <div className="mb-10" key={i}>
+                  <div className="flex justify-between px-4 border-b border-edenGreen-300">
+                    <h3 className="mb-3 text-edenGreen-500">
+                      {d.categoryName}
+                    </h3>
                   </div>
+                  <ul className="list-none space-y-1">
+                    {d.reason.map((r, j) => (
+                      <li
+                        key={j}
+                        className="w-full px-4 rounded-md border-b border-edenGray-100"
+                      >
+                        <div className="flex w-full py-4 columns-2 items-center justify-between">
+                          <p className="text-sm pr-4 w-full">
+                            {r.replace("- ", "")}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))
             : null}

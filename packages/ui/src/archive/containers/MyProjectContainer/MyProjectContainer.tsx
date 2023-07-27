@@ -10,7 +10,7 @@ export const MyProjectContainer = ({}: IMyProjectContainerProps) => {
       <div className={`text-darkGreen font-poppins text-2xl font-medium`}>
         🎉 Congrats on being a part of the team!
       </div>
-      <div className={`font-Inter text-base text-zinc-500`}>
+      <div className={`font-Unica text-base text-zinc-500`}>
         Find more information below
       </div>
       <ProjectHeader />

@@ -62,7 +62,7 @@ export const UserDiscoverCardTest = ({
         key={index}
         text={trimParentheses(node?.nodeData?.name || "")}
         colorRGB={colorRGBArray[index]}
-        className={`font-Inter text-sm`}
+        className={`font-Unica text-sm`}
         cutText={16}
       />
     ));
@@ -71,7 +71,7 @@ export const UserDiscoverCardTest = ({
     <div className="max-h-[348px] rounded-2xl border p-2">
       <div className={`flex justify-between`}>
         <div className={`relative flex w-full flex-col items-center`}>
-          <div className={`desc font-Inter  flex  w-full content-center`}>
+          <div className={`desc font-Unica  flex  w-full content-center`}>
             <MatchAvatar
               src={member?.discordAvatar as string}
               percentage={
@@ -95,7 +95,7 @@ export const UserDiscoverCardTest = ({
         <LongText
           cutText={100}
           text={(member?.bio as string) || ""}
-          className={`text-darkGreen font-Inter my-2 text-sm`}
+          className={`text-darkGreen font-Unica my-2 text-sm`}
         />
       </div>
       <div className="pb-2">

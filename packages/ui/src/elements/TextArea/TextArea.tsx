@@ -43,10 +43,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
     }
   };
 
-  const inputCls = clsx(
-    className,
-    "py-1 px-2 font-Inter text-soilBody flex rounded-md"
-  );
+  const inputCls = clsx(className, "py-1 px-2 font-Unica flex rounded-md");
 
   return (
     <div className={`w-full`}>
@@ -70,7 +67,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
             handleInputChange(e);
           }}
           maxLength={maxLength}
-          className={`${inputCls} focus:border-accentColor focus:ring-soilGreen-500 block w-full resize-none border border-zinc-400/50 py-1 px-2 text-base focus:outline-transparent focus:ring focus:ring-opacity-50`}
+          className={`${inputCls} block w-full resize-none border border-edenGray-300 py-1 px-2 text-base`}
           style={{
             ...customStyle,
           }}

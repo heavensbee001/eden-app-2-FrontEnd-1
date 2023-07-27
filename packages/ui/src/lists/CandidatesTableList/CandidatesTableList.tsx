@@ -92,9 +92,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
   };
-  const [showMatchDetails, setShowMatchDetails] = useState(true);
+  // const [showMatchDetails, setShowMatchDetails] = useState(true);
 
-  console.log("candidatesList 00 0 = ", candidatesList);
+  // console.log("candidatesList 00 0 = ", candidatesList);
 
   //@TODO this is a mock
   const getSkillsNumber = (letter: string) => {
@@ -114,21 +114,15 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   };
 
   return (
-    <section className="scrollbar-hide max-h-[calc(100vh-12.5rem)] w-full overflow-scroll rounded-md border border-gray-300 bg-white drop-shadow-md">
-      <table className="text-md relative w-full">
-        <thead className="sticky left-0 top-0 bg-slate-200 text-gray-800 shadow-md">
-          <tr>
-            {listMode !== ListModeEnum.list ? (
-              <th className="border-b border-gray-300 py-2 font-medium">
-                {/* Select */}
-              </th>
-            ) : null}
-            <th className="min-w-min border-b border-gray-300 py-2 pl-2 text-start font-medium">
-              Name
-            </th>
-            <th className="border-b border-gray-300 py-2 font-medium">
+    <section className="w-full bg-bgColor rounded-tl-md rounded-tr-md overflow-hidden">
+      <table className="w-full">
+        <thead className="font-normal text-xs bg-edenGreen-100 text-edenGray-700 font-md">
+          <tr className="h-10">
+            {listMode !== ListModeEnum.list ? <th>{/* Select */}</th> : null}
+            <th className="font-normal min-w-min pl-2 text-start">Name</th>
+            <th className="font-normal">
               Fit Score
-              {showMatchDetails ? (
+              {/* {showMatchDetails ? (
                 <AiOutlineEyeInvisible
                   size={24}
                   className="ml-2 inline cursor-pointer text-gray-600 hover:text-gray-400"
@@ -140,45 +134,21 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   className="ml-2 inline cursor-pointer text-gray-600 hover:text-gray-400"
                   onClick={() => setShowMatchDetails(true)}
                 />
-              )}
+              )} */}
             </th>
             {/* {showMatchDetails && (
-              <th className={"border-b border-gray-300 py-2 font-medium"}>
+              <th className={"py-2 font-medium"}>
                 Requir.
               </th>
             )} */}
-            {showMatchDetails && (
-              <th
-                className={
-                  "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
-                }
-              >
-                Culture Fit
-              </th>
-            )}
-            {showMatchDetails && (
-              <th
-                className={
-                  "border-b border-gray-300 py-2 font-medium transition-all duration-500 ease-in-out"
-                }
-              >
-                Skills
-              </th>
-            )}
-            {/* <th className="border-b border-gray-300 py-2 pr-2 text-right font-medium">
+            <th className="font-normal">Culture Fit</th>
+            <th className="font-normal">Skills</th>
+            {/* <th className="py-2 pr-2 text-right font-medium">
               $/hour
             </th> */}
-            {/* <th className="border-b border-gray-300 py-2 font-medium">Level</th> */}
-            <th
-              className={classNames(
-                "border-b border-gray-300 py-2 font-medium",
-                !candidateIDRowSelected
-                  ? "w-auto"
-                  : "hidden w-0 overflow-hidden"
-              )}
-            >
-              Location
-            </th>
+            {/* <th className="py-2 font-medium">Level</th> */}
+            <th className="font-normal">Location</th>
+            <th className="font-normal">Timezone</th>
           </tr>
         </thead>
         <tbody>
@@ -195,9 +165,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 onClick={() => handleObjectDataSelection(candidate)}
                 className={`${
                   candidateIDRowSelected === candidate.user?._id
-                    ? "bg-lime-100"
-                    : "even:bg-slate-100"
-                } group cursor-pointer  hover:bg-lime-50 focus:outline-none focus:ring focus:ring-gray-300 active:bg-gray-300`}
+                    ? "!bg-edenGreen-300"
+                    : ""
+                } group cursor-pointer h-12 hover:bg-edenGray-100 border-b border-edenGray-100`}
               >
                 {listMode !== ListModeEnum.list ? (
                   <ColumnStyled className="-mr-1 w-8 px-0 py-0">
@@ -228,11 +198,13 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 <ColumnStyled textColor="text-fuchsia-600 text-center">
                   {candidate.totalMatchPerc &&
                   candidate.letterAndColor?.totalMatchPerc ? (
-                    <TextHeading2
-                      className={`${candidate.letterAndColor.totalMatchPerc.color} font-black`}
-                    >
-                      {`${candidate.letterAndColor.totalMatchPerc.letter}`}
-                    </TextHeading2>
+                    <div className="w-12 mx-auto -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                      <p
+                        className={`${candidate.letterAndColor.totalMatchPerc.color}`}
+                      >
+                        {`${candidate.letterAndColor.totalMatchPerc.letter}`}
+                      </p>
+                    </div>
                   ) : null}
                 </ColumnStyled>
 
@@ -258,48 +230,42 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     )}
                   </ColumnStyled>
                 )} */}
-                {showMatchDetails && (
-                  <ColumnStyled textColor="text-[#86C8BC] text-center">
-                    {candidate.overallScore ? (
-                      <TextHeading2
+                <ColumnStyled textColor="text-[#86C8BC] text-center">
+                  {candidate.overallScore ? (
+                    <div className="w-12 mx-auto mx-auto -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                      <p
                         className={classNames(
-                          candidate?.letterAndColor?.culture?.letter == "A" ||
-                            candidate?.letterAndColor?.culture?.letter == "B"
+                          candidate?.letterAndColor?.culture?.color
                             ? candidate?.letterAndColor?.culture?.color
-                            : "text-gray-400",
-                          "font-black"
+                            : "text-edenGray-600"
                         )}
                       >
                         {`${candidate?.letterAndColor?.culture?.letter}`}
-                      </TextHeading2>
-                    ) : (
-                      <div></div>
-                    )}
-                  </ColumnStyled>
-                )}
-
-                {showMatchDetails && (
-                  <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
-                    {candidate.skillMatch || candidate.skillScore ? (
-                      <p
-                        className={classNames(
-                          candidate?.letterAndColor?.skill?.letter == "A" ||
-                            candidate?.letterAndColor?.skill?.letter == "B"
-                            ? candidate?.letterAndColor?.skill?.color
-                            : "text-gray-400",
-                          "text-lg font-medium"
-                        )}
-                      >
-                        {candidate?.letterAndColor?.skill?.letter &&
-                          getSkillsNumber(
-                            candidate?.letterAndColor?.skill?.letter
-                          )}
                       </p>
-                    ) : (
-                      <div></div>
-                    )}
-                  </ColumnStyled>
-                )}
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </ColumnStyled>
+
+                <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
+                  {candidate.skillMatch || candidate.skillScore ? (
+                    <p
+                      className={classNames(
+                        candidate?.letterAndColor?.skill?.color
+                          ? candidate?.letterAndColor?.skill?.color
+                          : "text-edenGray-600"
+                      )}
+                    >
+                      {candidate?.letterAndColor?.skill?.letter &&
+                        getSkillsNumber(
+                          candidate?.letterAndColor?.skill?.letter
+                        )}
+                    </p>
+                  ) : (
+                    <div></div>
+                  )}
+                </ColumnStyled>
 
                 {/* <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
@@ -328,21 +294,15 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   ) : null}
                 </ColumnStyled> */}
 
-                <ColumnStyled
-                  textColor="text-center"
-                  extraCssClass={classNames(
-                    candidateIDRowSelected
-                      ? "hidden w-0 overflow-hidden"
-                      : "w-auto"
-                  )}
-                >
+                <ColumnStyled textColor="text-center" extraCssClass="w-auto">
                   {candidate.user?.location && (
-                    <p>{candidate.user?.location}</p>
+                    <p className="text-sm">{candidate.user?.location}</p>
                   )}
+                </ColumnStyled>
+
+                <ColumnStyled textColor="text-center" extraCssClass="w-auto">
                   {candidate.user?.timeZone && (
-                    <p className="!text-xs text-gray-500">
-                      {candidate.user?.timeZone}
-                    </p>
+                    <p className="text-sm">{candidate.user?.timeZone}</p>
                   )}
                 </ColumnStyled>
               </tr>

@@ -2,16 +2,16 @@ import {
   AppUserLayout,
   Button,
   Card,
-  LeftToggleMenu,
+  // LeftToggleMenu,
   ProgressCircle,
   SEO,
   TextLabel1,
 } from "@eden/package-ui";
-import Link from "next/link";
+// import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiOutlineLink } from "react-icons/hi";
 
-import type { NextPageWithLayout } from "../../_app";
+import type { NextPageWithLayout } from "../../../_app";
 
 const FIND_COMPANY = gql`
   query ($fields: findCompanyInput) {
@@ -65,7 +65,7 @@ const HomePage: NextPageWithLayout = () => {
       <SEO />
       {findCompanyData?.findCompany && (
         <div className="w-full p-8">
-          <LeftToggleMenu defaultVisible={true}>
+          {/* <LeftToggleMenu defaultVisible={true}>
             <div className="px-4 py-2">
               <h2>{findCompanyData?.findCompany?.name}</h2>
               <ul>
@@ -91,7 +91,7 @@ const HomePage: NextPageWithLayout = () => {
                 </li>
               </ul>
             </div>
-          </LeftToggleMenu>
+          </LeftToggleMenu> */}
           <div className="mx-auto max-w-3xl">
             <section className="w-full">
               <h3 className="mb-4">Positions</h3>

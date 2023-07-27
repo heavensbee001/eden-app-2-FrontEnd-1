@@ -54,12 +54,12 @@ export const LandingHeroSection = ({
                 </div>
               </div>
 
-              <p className="font-Inter mt-3 text-base text-white/60 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+              <p className="font-Unica mt-3 text-base text-white/60 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
                 together, let&apos;s build the perfect breeding ground for
                 everyone to do work they love.
               </p>
               {version && (
-                <p className="font-Inter text-italic mt-3 text-xs  text-white/60 sm:mt-5 sm:text-xl lg:text-xs xl:text-xs">
+                <p className="font-Unica text-italic mt-3 text-xs  text-white/60 sm:mt-5 sm:text-xl lg:text-xs xl:text-xs">
                   -{version}
                 </p>
               )}

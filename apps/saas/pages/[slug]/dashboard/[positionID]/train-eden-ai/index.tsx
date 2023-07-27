@@ -1,29 +1,36 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
-import { Members, Mutation } from "@eden/package-graphql/generated";
+import { CompanyContext, UserContext } from "@eden/package-context";
+import {
+  Members,
+  Mutation,
+  Position,
+  PrioritiesType,
+  TradeOffsType,
+} from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
   Button,
-  Card,
   ChatMessage,
   EdenAiProcessingModal,
   EdenTooltip,
   FillSocialLinks,
   // CountdownTimer,
   InterviewEdenAI,
-  ProgressBarGeneric,
+  Loading,
+  // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
-  TextArea,
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import { Tab } from "@headlessui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { HiBadgeCheck } from "react-icons/hi";
+import { useContext, useEffect, useRef, useState } from "react";
+import Confetti from "react-confetti";
+import { Controller, useForm } from "react-hook-form";
+import { SlLocationPin } from "react-icons/sl";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
@@ -41,6 +48,14 @@ export const WEBPAGE_TO_MEMORY = gql`
         originalContent
         personalizedContent
       }
+    }
+  }
+`;
+
+const UPDATE_POSITION = gql`
+  mutation ($fields: updatePositionInput!) {
+    updatePosition(fields: $fields) {
+      _id
     }
   }
 `;
@@ -75,20 +90,21 @@ type Question = {
   bestAnswer: string;
 };
 
-const HomePage: NextPageWithLayout = () => {
+const TrainAiPage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
+  const { company, getCompanyFunc } = useContext(CompanyContext);
   const router = useRouter();
   const { positionID } = router.query;
+
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
+  const [step, setStep] = useState<number>(0);
   // const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  // const [progress, setProgress] = useState<number>(0);
   // const [titleRole, setTitleRole] = useState(null);
   // const [topSkills, setTopSkills] = useState([]);
 
-  // console.log("cvEnded = ", cvEnded);
   const {
-    // data: findPositionData,
+    data: findPositionData,
     // error: findPositionError,
   } = useQuery(FIND_POSITION, {
     variables: {
@@ -97,39 +113,24 @@ const HomePage: NextPageWithLayout = () => {
       },
     },
     skip: !positionID,
+    onCompleted(data) {
+      setValue("position", data.findPosition);
+    },
+  });
+
+  // eslint-disable-next-line no-unused-vars
+  const { register, watch, control, setValue, getValues } = useForm<any>({
+    defaultValues: { position: "", pastedText: "" },
   });
 
   const handleInterviewEnd = () => {
-    console.log("interview end");
-
+    // console.log("interview end");
     setInterviewEnded(true);
   };
 
-  // const handleProgress = (_step: any) => {
-  //   switch (_step) {
-  //     case 1:
-  //       setProgress(25);
-  //       break;
-  //     case 2:
-  //       setProgress(50);
-  //       break;
-  //     case 3:
-  //       setProgress(75);
-  //       break;
-  //     case 4:
-  //       setProgress(100);
-  //       break;
-  //     default:
-  //   }
-  // };
-
   // const [webpageLink, setWebpageLink] = useState("");
-  const [pastedText, setPastedText] = useState("");
-
   // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
-  // eslint-disable-next-line no-unused-vars
-  const [error, setError] = useState<string | null>(null);
   // eslint-disable-next-line no-unused-vars
   const [report, setReport] = useState<string | null>(null);
 
@@ -172,14 +173,11 @@ const HomePage: NextPageWithLayout = () => {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
-  // const handleWebpageLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setWebpageLink(e.target.value);
-  // };
-
-  const handlePastedTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setPastedText(e.target.value);
-  };
+  const [updatePosition] = useMutation(UPDATE_POSITION, {
+    onCompleted() {
+      getCompanyFunc();
+    },
+  });
 
   // const handleLinkSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
@@ -237,36 +235,66 @@ const HomePage: NextPageWithLayout = () => {
   //   }
   // };
 
-  const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (pastedText !== "") {
-      try {
-        console.log("pastedText", pastedText);
+  const handleDescriptionStepSubmit = async () => {
+    const _pastedText = getValues("pastedText");
 
-        websiteToMemoryCompany({
-          variables: {
-            fields: { message: pastedText, positionID: positionID },
-          },
-        });
-        setPastedText("");
-        setScraping(true);
-      } catch (error) {
-        setScraping(false);
-        setError(
-          ` Error:  ${(error as Error).message}
-  
-          Please try again`
-        );
+    setScraping(true);
+
+    if (_pastedText !== "") {
+      try {
+        await Promise.all([
+          websiteToMemoryCompany({
+            variables: {
+              fields: { message: _pastedText, positionID: positionID },
+            },
+          }),
+          updatePosition({
+            variables: {
+              fields: {
+                _id: positionID,
+                name: getValues("position.name"),
+                companyID: company?._id,
+              },
+            },
+          }),
+        ]);
+
+        setStep(step + 1);
+      } catch {
+        toast.error("Couldn't save data");
       }
     }
+
+    setScraping(false);
   };
 
-  // console.log(
-  //   "interviewQuestionsForPosition  =  223 0",
-  //   interviewQuestionsForPosition
-  // );
+  // eslint-disable-next-line no-unused-vars
+  const handlePrioritiesStepSubmit = async () => {
+    const _positionsRequirements = getValues("positionsRequirements");
 
-  // console.log("progress = ", progress);
+    setScraping(true);
+    try {
+      const _fields = {
+        _id: positionID,
+        companyID: company?._id,
+        positionsRequirements: {
+          priorities: _positionsRequirements.priorities,
+          tradeOffs: _positionsRequirements.tradeOffs,
+        },
+      };
+
+      updatePosition({
+        variables: {
+          fields: _fields,
+        },
+      }),
+        setStep(step + 1);
+    } catch {
+      toast.error("Couldn't save data");
+    }
+
+    setScraping(false);
+  };
 
   const [notificationOpen, setNotificationOpen] = useState(false);
 
@@ -280,6 +308,25 @@ const HomePage: NextPageWithLayout = () => {
       setNotificationOpen(false);
     }, 3000);
   };
+
+  // ---- confetti setup ----
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [confettiRun, setConfettiRun] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (step === 6) {
+      setConfettiRun(true);
+      // @ts-ignore
+      setWidth(ref.current?.clientWidth || 0);
+      // @ts-ignore
+      setHeight(ref.current?.clientHeight || 0);
+      setTimeout(() => {
+        setConfettiRun(false);
+      }, 2500);
+    }
+  }, [step]);
 
   return (
     <>
@@ -300,62 +347,79 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <Card
-        className="mx-auto mt-2 h-[90vh] w-full max-w-5xl overflow-y-scroll bg-white"
-        shadow
-      >
+      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8">
         {currentUser && (
-          <div className="h-full w-full px-8">
+          <div className="h-full w-full">
             {/* <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
             </div> */}
             <Wizard
               showStepsHeader
               canPrev={false}
-              // onStepChange={handleProgress}
+              forceStep={step}
+              onStepChange={(_stepNum: number) => {
+                if (_stepNum !== step) {
+                  setStep(_stepNum);
+                }
+              }}
+              animate
             >
-              <WizardStep label={"Upload Description"}>
+              <WizardStep
+                label={"Description"}
+                navigationDisabled
+                nextDisabled
+                nextButton={
+                  <Button
+                    loading={scraping}
+                    variant="secondary"
+                    // type="submit"
+                    className="ml-auto"
+                    onClick={() => {
+                      handleDescriptionStepSubmit();
+                    }}
+                    disabled={!watch("position.name") || !watch("pastedText")}
+                  >
+                    Save & Continue
+                  </Button>
+                }
+              >
                 <div className="flex h-full items-center justify-center">
-                  <form className="w-4/12" onSubmit={handleTextSubmit}>
-                    <p className="mb-4 text-center">
-                      Hi - {currentUser.discordName}.<br />
-                      Tell me about your opportunity. 👀
-                    </p>
+                  <form className="w-full max-w-[33rem]">
+                    <div className="mb-6">
+                      <label
+                        htmlFor="name"
+                        className="text-edenGray-500 mb-2 block text-xs"
+                      >
+                        Opportunity name
+                      </label>
+                      <input
+                        id="name"
+                        {...register("position.name")}
+                        placeholder="Type name here..."
+                        className="border-edenGray-100 block w-full rounded-md border px-4 py-2 text-sm"
+                        onFocus={(event) => {
+                          event.target.select();
+                        }}
+                      />
+                    </div>
 
-                    <TextArea
-                      value={pastedText}
-                      onChange={handlePastedTextChange}
-                      placeholder="Copy/paste your job description here."
-                      className="mb-4 pb-20 pl-4 pt-32 text-sm"
-                    />
+                    <div className="mb-6">
+                      <label className="text-edenGray-500 mb-2 block text-xs">
+                        Copy/paste your job description from LinkedIn,
+                        Greenhouse...
+                      </label>
 
-                    <Button
-                      loading={scraping}
-                      variant="secondary"
-                      type="submit"
-                      className="mx-auto"
-                    >
-                      Submit Your Description
-                    </Button>
+                      <textarea
+                        {...register("pastedText")}
+                        // onChange={handlePastedTextChange}
+                        placeholder="This is a sample text..."
+                        className="border-edenGray-100 mb-4 block w-full resize-none rounded-md border px-4 pb-20 pt-32 text-sm outline-0"
+                        onFocus={(event) => {
+                          event.target.select();
+                        }}
+                      />
+                    </div>
                   </form>
-                  {/* {report && (
-                      <div className="whitespace-pre-wrap">{report}</div>
-                    )} */}
-                  <div>
-                    {report && (
-                      <p className="text-gray-500">
-                        Job description was processed successfully.{" "}
-                        <HiBadgeCheck
-                          className="inline-block"
-                          size={24}
-                          color="#40f837"
-                        />
-                        <br />
-                        Click Next to continue.
-                      </p>
-                    )}
-                    {error && <div className="text-red-500">{error}</div>}
-                  </div>
                   <EdenAiProcessingModal
                     open={scraping}
                     title="Give me 30 seconds!"
@@ -372,8 +436,8 @@ const HomePage: NextPageWithLayout = () => {
               </WizardStep>
 
               {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-              <WizardStep label={"Eden Convo"}>
-                <div className="mx-auto h-[70vh] max-w-lg">
+              <WizardStep label={"Eden Convo"} navigationDisabled={true}>
+                <div className="mx-auto h-[70vh] max-w-2xl">
                   <InterviewEdenAIContainer
                     handleEnd={handleInterviewEnd}
                     interviewQuestionsForPosition={
@@ -383,23 +447,28 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Priorities & TradeOffs"}>
-                <div className="mx-auto h-full max-w-lg">
-                  <h2 className="mb-4 text-xl font-medium">Key Priorities</h2>
-                  <p className="mb-8 text-sm leading-tight text-gray-500">
-                    Here’s what I got your priorities are - please re-arrange as
-                    you see fit.
-                  </p>
-                  <PrioritiesAndTradeOffsContainer />
+              <WizardStep
+                label={"Priorities & TradeOffs"}
+                navigationDisabled={step === 0}
+              >
+                <div className="mx-auto h-full max-w-5xl">
+                  <Controller
+                    name={"positionsRequirements"}
+                    control={control}
+                    render={({ field: { onChange } }) => (
+                      <PrioritiesAndTradeOffsContainer
+                        position={findPositionData.findPosition}
+                        onChange={onChange}
+                      />
+                    )}
+                  />
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Eden Alignment"}>
-                <div className="mx-auto h-full max-w-lg">
-                  <h2 className="mb-4 text-xl font-medium">
-                    Complete Checks & Balances List
-                  </h2>
-                  <p className="mb-8 text-sm leading-tight text-gray-500">
+              <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
+                <div className="mx-auto h-full max-w-2xl">
+                  <h2 className="mb-4">Complete Checks & Balances List</h2>
+                  <p className="text-edenGray-500 mb-8 text-sm">
                     Here&apos;s a list of all the must & nice to haves that I
                     will look for in the candidate based in the info you&apos;ve
                     provided to me. Feel free to edit any line by changing,
@@ -409,8 +478,11 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
 
-              <WizardStep label={"Edit Eden’s Suggestions"}>
-                <div className="mx-auto h-full max-w-lg">
+              <WizardStep
+                label={"Eden Suggestions"}
+                navigationDisabled={step === 0}
+              >
+                <div className="mx-auto h-full max-w-2xl">
                   <h2 className="mb-4 text-xl font-medium">
                     Eden Seed Interview Questions
                   </h2>
@@ -424,46 +496,53 @@ const HomePage: NextPageWithLayout = () => {
                   <CreateQuestions />
                 </div>
               </WizardStep>
-              <WizardStep label={"Final Details"}>
-                <div className="mx-auto max-w-3xl">
-                  <h2 className="mb-4 text-xl font-medium">
+              <WizardStep
+                label={"Final Details"}
+                // navigationDisabled={step === 0}
+              >
+                <div className="mx-auto max-w-3xl text-center">
+                  <h2 className="text-xl font-medium">
                     Final Important Details
                   </h2>
+                  <p className="text-sm text-zinc-400">
+                    All done, this is the final step. Fill in some quick
+                    information and we’re off!
+                  </p>
                   <FinalFormContainer />
                 </div>
               </WizardStep>
-              <WizardStep label={"Share Interview Link"}>
+              <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
                 <div className="flex h-full flex-col items-center justify-center pb-28">
-                  <div className="max-w-lg">
-                    <h2 className="mb-4 text-center text-xl font-medium">
-                      Let&apos;s get the interviews rolling! 🎉
-                    </h2>
+                  <div className="max-w-3xl">
+                    <h1 className="text-edenGreen-600 mb-4 text-center">
+                      Let&apos;s get the interviews rolling!
+                    </h1>
                     <p className="mb-8 text-center">
-                      Copy & share this link wherever you want candidates to
-                      kickoff their first interview.
+                      Sit back and relax, we&apos;re all set! Share the link to
+                      to whoever you want to kickoff the interview with!
                     </p>
                   </div>
                   <div className="flex w-2/3 justify-center">
-                    <div className="mr-2 flex w-full items-center overflow-x-scroll rounded-md border border-gray-400 bg-gray-200 px-2 text-sm text-gray-500">
+                    <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll rounded-md border bg-white px-2 text-sm">
+                      <MdLink size={18} className="mr-2" />
                       {window.location.origin + "/interview/" + positionID}
                     </div>
                     <Button
-                      size="md"
-                      className="bg-soilBlue border-soilBlue scrollbar-hide relative flex h-10 items-center whitespace-nowrap !text-sm text-white"
-                      variant="default"
+                      className="border-edenGray-500 whitespace-nowrap border font-normal"
+                      variant="tertiary"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCopyLink(positionID as string);
                       }}
                     >
-                      <div className="flex w-full items-center justify-center">
+                      <div className="flex w-full items-center justify-center whitespace-nowrap text-sm">
                         {!notificationOpen ? (
                           <>
-                            <HiOutlineLink className="mr-1" />
-                            <span>interview link</span>
+                            <MdContentCopy className="mr-2" />
+                            interview link
                           </>
                         ) : (
-                          <span className="text-sm">Link copied!</span>
+                          "Link copied!"
                         )}
                       </div>
                     </Button>
@@ -486,21 +565,35 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
             </Wizard>
+            {step === 6 && (
+              <div
+                className={`pointer-events-none fixed left-0 top-0 z-20 h-screen w-screen	`}
+                ref={ref}
+              >
+                <Confetti
+                  width={width}
+                  height={height}
+                  numberOfPieces={confettiRun ? 250 : 0}
+                  colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
+                />
+              </div>
+            )}
           </div>
         )}
-      </Card>
+      </div>
     </>
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+TrainAiPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
-export default HomePage;
+export default TrainAiPage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { HiOutlineLink } from "react-icons/hi2";
+import { MdContentCopy, MdLink } from "react-icons/md";
+import { toast } from "react-toastify";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -531,6 +624,18 @@ const FIND_POSITION = gql`
     findPosition(fields: $fields) {
       _id
       name
+      positionsRequirements {
+        priorities {
+          priority
+          reason
+        }
+        tradeOffs {
+          reason
+          selected
+          tradeOff1
+          tradeOff2
+        }
+      }
       interviewQuestionsForPosition {
         originalQuestionID
         originalContent
@@ -576,6 +681,7 @@ const InterviewEdenAIContainer = ({
 
   // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
+  const { company } = useContext(CompanyContext);
 
   // console.log("currentUser = ", currentUser?._id);
 
@@ -621,7 +727,7 @@ const InterviewEdenAIContainer = ({
 
   const [conversationID, setConversationID] = useState<String>("");
 
-  // console.log("positionID = ", positionID);
+  console.log("findPositionData = ", findPositionData);
 
   const [experienceTypeID] = useState<string>("");
 
@@ -652,7 +758,7 @@ const InterviewEdenAIContainer = ({
   return (
     <div className="w-full">
       <div className="relative h-[68vh]">
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <ProgressBarGeneric
             color="accentColor"
             progress={
@@ -662,11 +768,11 @@ const InterviewEdenAIContainer = ({
               findPositionData?.findPosition?.questionsToAsk.length
             }
           />
-        </div>
+        </div> */}
         {
           <InterviewEdenAI
             key={experienceTypeID}
-            aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
+            aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY}
             experienceTypeID={experienceTypeID}
             handleChangeChat={(_chat: any) => {
               setChatN(_chat);
@@ -674,10 +780,9 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-cottonPink text-forestGreen rounded-sm p-1 text-center font-medium">
-                Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
-                interview
-              </p>
+              <div className="pt-4">
+                <Loading title="Loading Eden AI" />
+              </div>
             }
             questions={questions}
             setQuestions={setQuestions}
@@ -689,6 +794,7 @@ const InterviewEdenAIContainer = ({
             handleEnd={() => {
               if (handleEnd) handleEnd();
             }}
+            headerText={`${findPositionData?.findPosition?.name} @ ${company?.name}`}
           />
         }
         {/* <CountdownTimer /> */}
@@ -718,81 +824,91 @@ export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
         tradeOff1
         tradeOff2
         reason
+        selected
       }
     }
   }
 `;
 
-interface PriorityObj {
-  priority: string;
-  reason: string;
+interface IPrioritiesAndTradeOffsContainerProps {
+  position: Position;
+  // eslint-disable-next-line no-unused-vars
+  onChange: (val: any) => void;
 }
 
-interface TradeOffsObj {
-  tradeOff1: string;
-  tradeOff2: string;
-  reason: string;
-}
+const PrioritiesAndTradeOffsContainer = ({
+  position,
+  onChange,
+}: IPrioritiesAndTradeOffsContainerProps) => {
+  const router = useRouter();
+  const { positionID } = router.query;
+  // const { currentUser } = useContext(UserContext);
 
-interface IPrioritiesAndTradeOffsContainerProps {}
+  // eslint-disable-next-line no-unused-vars
+  const [submitting, setSubmitting] = useState(false);
 
-const PrioritiesAndTradeOffsContainer =
-  ({}: IPrioritiesAndTradeOffsContainerProps) => {
-    const { currentUser } = useContext(UserContext);
-    // eslint-disable-next-line no-unused-vars
-    const [submitting, setSubmitting] = useState(false);
-    const router = useRouter();
+  const [scraping, setScraping] = useState<boolean>(false);
 
-    const [scraping, setScraping] = useState<boolean>(false);
+  const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
 
-    const [priorities, setPriorities] = useState<PriorityObj[]>([]);
+  const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
 
-    const [tradeOffs, setTradeOffs] = useState<TradeOffsObj[]>([]);
+  // const { register, watch, control, setValue, getValues } = useForm<Members>({
+  //   defaultValues: {},
+  // });
 
-    // eslint-disable-next-line no-unused-vars
-    const { register, watch, control, setValue, getValues } = useForm<Members>({
-      defaultValues: { ...currentUser },
-    });
+  const [FindPrioritiesTrainEdenAI] = useMutation(
+    FIND_PRIORITIES_TRAIN_EDEN_AI,
+    {
+      onCompleted({ findPrioritiesTrainEdenAI }) {
+        // console.log("findPrioritiesTrainEdenAI = ", findPrioritiesTrainEdenAI);
 
-    const { positionID } = router.query;
+        setScraping(false);
 
-    const [FindPrioritiesTrainEdenAI] = useMutation(
-      FIND_PRIORITIES_TRAIN_EDEN_AI,
-      {
-        onCompleted({ findPrioritiesTrainEdenAI }) {
-          console.log(
-            "findPrioritiesTrainEdenAI = ",
-            findPrioritiesTrainEdenAI
-          );
+        setPriorities(findPrioritiesTrainEdenAI.priorities);
+        setTradeOffs(
+          (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
+            (tradeOff: TradeOffsType) => {
+              const _selected =
+                tradeOff.selected == tradeOff.tradeOff1
+                  ? tradeOff.tradeOff1!
+                  : tradeOff.tradeOff2!;
 
-          setScraping(false);
+              return { ...tradeOff, selected: _selected };
+            }
+          )! as TradeOffsType[]
+        );
+      },
+      onError() {
+        setScraping(false);
+      },
+    }
+  );
 
-          // let jobDescription =
-          //   FindPrioritiesTrainEdenAI.report.replace(/<|>/g, "");
+  useEffect(() => {
+    if (
+      position.positionsRequirements?.priorities &&
+      position.positionsRequirements?.tradeOffs &&
+      position.positionsRequirements?.priorities.length > 0 &&
+      position.positionsRequirements?.tradeOffs.length > 0
+    ) {
+      setPriorities(
+        position.positionsRequirements?.priorities! as PrioritiesType[]
+      );
+      setTradeOffs(
+        (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
+          (tradeOff: TradeOffsType) => {
+            const _selected =
+              tradeOff.selected == tradeOff.tradeOff1
+                ? tradeOff.tradeOff1!
+                : tradeOff.tradeOff2!;
 
-          // //Change - to •
-          // jobDescription = jobDescription.replace(/-\s/g, "• ");
-
-          setPriorities(findPrioritiesTrainEdenAI.priorities);
-
-          setTradeOffs(findPrioritiesTrainEdenAI.tradeOffs);
-
-          setSelected(
-            findPrioritiesTrainEdenAI.tradeOffs.map(
-              (tradeOff: TradeOffsObj) => tradeOff.tradeOff2
-            )
-          );
-        },
-      }
-    );
-
-    // console.log("tradeOffs = ", tradeOffs);
-
-    useEffect(() => {
+            return { ...tradeOff, selected: _selected };
+          }
+        )! as TradeOffsType[]
+      );
+    } else {
       setScraping(true);
-
-      console.log("positionID 2= ", positionID);
-
       FindPrioritiesTrainEdenAI({
         variables: {
           // fields: { message: textResponse, userID: currentUser?._id },
@@ -801,99 +917,63 @@ const PrioritiesAndTradeOffsContainer =
           },
         },
       });
-      return () => {
-        setScraping(false);
-      };
-    }, []);
+    }
+  }, [position.positionsRequirements]);
 
-    const [selected, setSelected] = useState<string[]>(
-      tradeOffs.map((tradeOff) => tradeOff.tradeOff2)
-    );
+  const handleSelect = (index: number, option: string) => {
+    const newTradeoffs = [...tradeOffs];
 
-    const handleSelect = (index: number, option: string) => {
-      const newSelected = [...selected];
+    newTradeoffs[index] = { ...newTradeoffs[index], selected: option };
+    setTradeOffs(newTradeoffs);
+  };
 
-      newSelected[index] = option;
-      setSelected(newSelected);
-    };
+  const permutePriorities = (index1: number, index2: number) => {
+    if (
+      index1 < 0 ||
+      index1 >= priorities.length ||
+      index2 < 0 ||
+      index2 >= priorities.length
+    ) {
+      throw new Error("Invalid index");
+    }
 
-    const permutePriorities = (index1: number, index2: number) => {
-      if (
-        index1 < 0 ||
-        index1 >= priorities.length ||
-        index2 < 0 ||
-        index2 >= priorities.length
-      ) {
-        throw new Error("Invalid index");
-      }
+    const newArray = [...priorities];
 
-      const newArray = [...priorities];
+    [newArray[index1], newArray[index2]] = [newArray[index2], newArray[index1]];
 
-      [newArray[index1], newArray[index2]] = [
-        newArray[index2],
-        newArray[index1],
-      ];
+    setPriorities(newArray);
+  };
 
-      setPriorities(newArray);
-    };
+  useEffect(() => {
+    onChange({ priorities: priorities, tradeOffs: tradeOffs });
+  }, [priorities, tradeOffs]);
 
-    return (
-      // <ul className="space-y-2">
-      //   {priorities.map((priority, index) => (
-      //     <li
-      //       key={index}
-      //       className="relative cursor-pointer"
-      //       onMouseEnter={() => setHoveredIndex(index)}
-      //       onMouseLeave={() => setHoveredIndex(null)}
-      //     >
-      //       <div className="font-bold">{priority.priority}</div>
-      //       {hoveredIndex === index && (
-      //         <div className="absolute left-0 top-full rounded-md bg-white p-2 shadow-lg">
-      //           {priority.reason}
-      //         </div>
-      //       )}
-      //     </li>
-      //   ))}
-      // </ul>
-      // <ul className="space-y-4">
-      //   {priorities.map((priority, index) => (
-      //     <li
-      //       key={index}
-      //       className="relative cursor-pointer text-xl"
-      //       onMouseEnter={() => setHoveredIndex(index)}
-      //       onMouseLeave={() => setHoveredIndex(null)}
-      //     >
-      //       <div className="font-bold">
-      //         {index + 1}. {priority.priority}
-      //       </div>
-      //       {hoveredIndex === index && (
-      //         <div className="absolute left-0 top-full z-50 rounded-md bg-white p-2 shadow-lg">
-      //           {priority.reason}
-      //         </div>
-      //       )}
-      //     </li>
-      //   ))}
-      // </ul>
-      <>
-        {scraping && (
-          <EdenAiProcessingModal
-            open={scraping}
-            title="Calculating criteria"
-          ></EdenAiProcessingModal>
-        )}
-        <ul className="mb-8">
+  return (
+    <div className="grid h-full w-full grid-cols-12 gap-4">
+      {scraping && (
+        <EdenAiProcessingModal
+          open={scraping}
+          title="Calculating criteria"
+        ></EdenAiProcessingModal>
+      )}
+      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+        <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
+        <p className="mb-6 text-center">
+          Here&apos;s what I got your priorities are - please re-arrange as you
+          see fit.
+        </p>
+        <ul className="">
           {priorities &&
             priorities.length > 0 &&
             priorities.map((priority, index) => (
               <li
                 key={index}
-                className="group relative cursor-pointer py-1 pl-10 text-xl"
+                className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-4"
               >
                 <EdenTooltip
-                  id={priority.reason.split(" ").join("")}
+                  id={priority.reason!.split(" ").join("")}
                   innerTsx={
                     <div className="w-60">
-                      <h3>Reason for Priority: </h3>
                       <p>{priority.reason}</p>
                     </div>
                   }
@@ -905,81 +985,53 @@ const PrioritiesAndTradeOffsContainer =
                   padding="0.5rem"
                   offset={{ left: 100 }}
                 >
-                  <div className="w-full">
-                    <div className="text-lg font-bold">
-                      {index + 1}. {priority.priority}
+                  <div className="flex w-full items-center">
+                    <div className="-my-2 mr-4">
+                      <div
+                        className={classNames(
+                          "text-edenGreen-500 hover:text-edenGreen-300",
+                          index === 0 ? "hidden" : "",
+                          index === priorities.length - 1 ? "" : "-mb-2"
+                        )}
+                      >
+                        <BiChevronUp
+                          size={"1.5rem"}
+                          onClick={() => {
+                            permutePriorities(index, index - 1);
+                          }}
+                        />
+                      </div>
+                      <div
+                        className={classNames(
+                          "text-edenGreen-500 hover:text-edenGreen-300",
+                          index === priorities.length - 1 ? "hidden" : "",
+                          index === 0 ? "" : "-mt-2"
+                        )}
+                      >
+                        <BiChevronDown
+                          size={"1.5rem"}
+                          onClick={() => {
+                            permutePriorities(index, index + 1);
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className="absolute left-2 top-0 hidden text-gray-400 group-hover:block">
-                      <div className="hover:text-gray-600">
-                        <div
-                          className={classNames(
-                            "hover:text-gray-600",
-                            index === 0 ? "hidden" : ""
-                          )}
-                        >
-                          <BiChevronUp
-                            onClick={() => {
-                              permutePriorities(index, index - 1);
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="hover:text-gray-600">
-                        <div
-                          className={classNames(
-                            "hover:text-gray-600",
-                            index === priorities.length - 1 ? "hidden" : "",
-                            index === 0 ? "mt-4" : ""
-                          )}
-                        >
-                          <BiChevronDown
-                            onClick={() => {
-                              permutePriorities(index, index + 1);
-                            }}
-                          />
-                        </div>
-                      </div>
+                    <div className="">
+                      {index + 1}. {priority.priority}
                     </div>
                   </div>
                 </EdenTooltip>
               </li>
             ))}
         </ul>
-
-        <h2 className="mb-4 text-xl font-medium">Tradeoffs</h2>
-        <p className="mb-8 text-sm leading-tight text-gray-500">
+      </section>
+      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+        <h2 className="text-edenGreen-600 mb-2 text-center">Tradeoffs</h2>
+        <p className="mb-6 text-center">
           From what I gathered, these are your tradeoff preferences - feel free
           to adjust
         </p>
 
-        {/* <div className="flex flex-col items-center justify-center">
-          {tradeOffs.map((tradeOff, index) => (
-            <div key={index} className="flex flex-col gap-2">
-              <div className="flex flex-row items-center gap-4">
-                <label className="flex items-center gap-2 text-lg">
-                  <input
-                    type="radio"
-                    name={`tradeoff-${index}`}
-                    value={tradeOff.tradeOff1}
-                    checked={selected[index] === tradeOff.tradeOff1}
-                    onChange={() => handleSelect(index, tradeOff.tradeOff1)}
-                  />
-                  <span className="text-xl">{tradeOff.tradeOff1}</span>
-                </label>
-                <label className="flex items-center gap-2 text-lg">
-                  <input
-                    type="radio"
-                    name={`tradeoff-${index}`}
-                    value={tradeOff.tradeOff2}
-                    checked={selected[index] === tradeOff.tradeOff2}
-                    onChange={() => handleSelect(index, tradeOff.tradeOff2)}
-                  />
-                  <span className="text-xl">{tradeOff.tradeOff2}</span>
-                </label>
-              </div>
-            </div>
-          ))}
-        </div> */}
         <div className="flex flex-col items-center justify-center">
           {tradeOffs &&
             tradeOffs.length > 0 &&
@@ -998,74 +1050,69 @@ const PrioritiesAndTradeOffsContainer =
                 border
                 borderColor="#e5e7eb"
                 padding="0.5rem"
+                containerClassName="w-full"
               >
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="col-span-1">
-                    <label className="flex cursor-pointer items-center justify-end text-lg">
-                      <span className="text-xl">{tradeOff.tradeOff1}</span>
+                <div className="grid grid-cols-2">
+                  <label
+                    className={classNames(
+                      "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                      tradeOffs[index].selected === tradeOff.tradeOff1
+                        ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                        : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
+                    )}
+                    htmlFor={`tradeoff-${index}-1`}
+                  >
+                    <div className="flex items-center justify-end">
+                      <span className="">{tradeOff.tradeOff1}</span>
                       <input
                         type="radio"
-                        name={`tradeoff-${index}`}
-                        value={tradeOff.tradeOff1}
-                        checked={selected[index] === tradeOff.tradeOff1}
-                        onChange={() => handleSelect(index, tradeOff.tradeOff1)}
-                        className="ml-2"
+                        className="ml-2 hidden"
+                        id={`tradeoff-${index}-1`}
+                        name={`tradeoff-${index}-1`}
+                        value={tradeOff.tradeOff1!}
+                        checked={
+                          tradeOffs[index].selected === tradeOff.tradeOff1
+                        }
+                        onChange={() =>
+                          handleSelect(index, tradeOff.tradeOff1!)
+                        }
                       />
-                    </label>
-                  </div>
-                  <div className="col-span-1">
-                    <label className="flex cursor-pointer items-center text-lg">
+                    </div>
+                  </label>
+                  <label
+                    className={classNames(
+                      "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
+                      tradeOffs[index].selected === tradeOff.tradeOff2
+                        ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
+                        : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
+                    )}
+                    htmlFor={`tradeoff-${index}-2`}
+                  >
+                    <div className="flex items-center">
                       <input
                         type="radio"
-                        className="mr-2"
-                        name={`tradeoff-${index}`}
-                        value={tradeOff.tradeOff2}
-                        checked={selected[index] === tradeOff.tradeOff2}
-                        onChange={() => handleSelect(index, tradeOff.tradeOff2)}
+                        className="mr-2 hidden"
+                        id={`tradeoff-${index}-2`}
+                        name={`tradeoff-${index}-2`}
+                        value={tradeOff.tradeOff2!}
+                        checked={
+                          tradeOffs[index].selected === tradeOff.tradeOff2
+                        }
+                        onChange={() =>
+                          handleSelect(index, tradeOff.tradeOff2!)
+                        }
                       />
-                      <span className="text-xl">{tradeOff.tradeOff2}</span>
-                    </label>
-                  </div>
+                      <span className="">{tradeOff.tradeOff2}</span>
+                    </div>
+                  </label>
                 </div>
               </EdenTooltip>
             ))}
         </div>
-      </>
-
-      // <div className="w-full">
-      //   {scraping && (
-      //     <p className="text-center text-gray-400">
-      //       Clculating criteria{" "}
-      //       <svg
-      //         className="inline-block animate-spin"
-      //         xmlns="http://www.w3.org/2000/svg"
-      //         width="21px"
-      //         height="21px"
-      //         viewBox="0 0 24 24"
-      //         fill="none"
-      //       >
-      //         <path
-      //           opacity="0.2"
-      //           fillRule="evenodd"
-      //           clipRule="evenodd"
-      //           d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-      //           fill="#000000"
-      //         />
-      //         <path
-      //           d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
-      //           fill="#000000"
-      //         />
-      //       </svg>
-      //     </p>
-      //   )}
-      //   {report && (
-      //     <div className="whitespace-pre-wrap">
-      //       {convertTextCategoriesToHTML(report)}
-      //     </div>
-      //   )}
-      // </div>
-    );
-  };
+      </section>
+    </div>
+  );
+};
 
 export const POSITION_TEXT_CONVO_TO_REPORT = gql`
   mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
@@ -1099,10 +1146,10 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     POSITION_TEXT_CONVO_TO_REPORT,
     {
       onCompleted({ positionTextAndConvoToReportCriteria }) {
-        console.log(
-          "positionTextAndConvoToReportCriteria = ",
-          positionTextAndConvoToReportCriteria
-        );
+        // console.log(
+        //   "positionTextAndConvoToReportCriteria = ",
+        //   positionTextAndConvoToReportCriteria
+        // );
 
         setScraping(false);
 
@@ -1133,19 +1180,21 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   // };
 
   useEffect(() => {
-    setScraping(true);
+    if (scraping == false) {
+      setScraping(true);
 
-    positionTextAndConvoToReportCriteria({
-      variables: {
-        // fields: { message: textResponse, userID: currentUser?._id },
-        fields: {
-          positionID: positionID,
+      positionTextAndConvoToReportCriteria({
+        variables: {
+          // fields: { message: textResponse, userID: currentUser?._id },
+          fields: {
+            positionID: positionID,
+          },
         },
-      },
-    });
-    return () => {
-      setScraping(false);
-    };
+      });
+      return () => {
+        setScraping(false);
+      };
+    }
   }, []);
 
   return (
@@ -1174,6 +1223,71 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     </div>
   );
 };
+
+function convertTextCategoriesToHTML(text: string): JSX.Element {
+  interface Category {
+    name: string;
+    bullets: string[];
+  }
+  const categories: Category[] = [];
+
+  // Split the text into lines
+  const lines = text.split("\n");
+
+  let currentCategory: Category | null = null;
+
+  // Process each line
+  lines.forEach((line) => {
+    // Remove leading/trailing white spaces and colons
+    const trimmedLine = line.trim();
+
+    // Check if it's a category line
+    if (trimmedLine.startsWith("Category")) {
+      const categoryName = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+
+      currentCategory = { name: categoryName, bullets: [] };
+      categories.push(currentCategory);
+    }
+
+    // Check if it's a bullet point line
+    if (trimmedLine.startsWith("•")) {
+      if (currentCategory) {
+        const bulletText = trimmedLine
+          .replace("•", "")
+          .substring(trimmedLine.indexOf(":") + 1)
+          .trim();
+
+        currentCategory.bullets.push(bulletText);
+      }
+    }
+  });
+
+  // Render the elements
+  const elements = categories.map((category, index) => (
+    <div key={index} className="mb-6">
+      <div className="border-edenGreen-300 flex justify-between border-b px-4">
+        <h3 className="text-edenGreen-500 mb-3">{category.name}</h3>
+      </div>
+      <ul>
+        {category.bullets.map((bullet: string, bulletIndex: number) => (
+          <li
+            className="border-edenGray-100 w-full rounded-md border-b px-4"
+            key={bulletIndex}
+          >
+            <div className="flex w-full columns-2 items-center justify-between py-4">
+              <p className="w-full pr-4 text-sm">{bullet}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ));
+
+  // Render the elements inside a div
+  return <div>{elements}</div>;
+}
 
 export const POSITION_SUGGEST_QUESTIONS = gql`
   mutation ($fields: positionSuggestQuestionsAskCandidateInput!) {
@@ -1336,8 +1450,9 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   // console.log("questionsSuggest = ", questionsSuggest);
 
   const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
+    // eslint-disable-next-line no-unused-vars
     onCompleted({ updateNodesToMember }: Mutation) {
-      console.log("updateNodesToMember = ", updateNodesToMember);
+      // console.log("updateNodesToMember = ", updateNodesToMember);
       setScrapingSave(false);
     },
     // skip: positionID == "" || positionID == null,
@@ -1454,141 +1569,226 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   );
 };
 
-function convertTextCategoriesToHTML(text: string): JSX.Element {
-  interface Category {
-    name: string;
-    bullets: string[];
-  }
-  const categories: Category[] = [];
-
-  // Split the text into lines
-  const lines = text.split("\n");
-
-  let currentCategory: Category | null = null;
-
-  // Process each line
-  lines.forEach((line) => {
-    // Remove leading/trailing white spaces and colons
-    const trimmedLine = line.trim();
-
-    // Check if it's a category line
-    if (trimmedLine.startsWith("Category")) {
-      const categoryName = trimmedLine
-        .substring(trimmedLine.indexOf(":") + 1)
-        .trim();
-
-      currentCategory = { name: categoryName, bullets: [] };
-      categories.push(currentCategory);
-    }
-
-    // Check if it's a bullet point line
-    if (trimmedLine.startsWith("•")) {
-      if (currentCategory) {
-        const bulletText = trimmedLine
-          .replace("•", "")
-          .substring(trimmedLine.indexOf(":") + 1)
-          .trim();
-
-        currentCategory.bullets.push(bulletText);
-      }
-    }
-  });
-
-  // Render the elements
-  const elements = categories.map((category, index) => (
-    <div key={index} className="mb-4">
-      <h3 className="text-xl font-medium">{category.name}</h3>
-      <ul>
-        {category.bullets.map((bullet: string, bulletIndex: number) => (
-          <li className="list-disc" key={bulletIndex}>
-            {bullet}
-          </li>
-        ))}
-      </ul>
-    </div>
-  ));
-
-  // Render the elements inside a div
-  return <div>{elements}</div>;
-}
-
 interface IFinalFormContainerProps {}
 
 const FinalFormContainer = ({}: IFinalFormContainerProps) => {
   return (
-    <form className="grid grid-cols-2 gap-16">
-      <div className="col-span-1">
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Targetted Start Date</label>
-          <input
-            type="date"
-            name="targettedStartDate"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
+    <>
+      {/* <form className="grid grid-cols-2 gap-16">
+        <div className="col-span-1">
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Targetted Start Date</label>
+            <input
+              type="date"
+              name="targettedStartDate"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Visa Requirements</label>
+            <input
+              type="text"
+              name="visaRequirements"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Office Locations</label>
+            <input
+              type="text"
+              name="officeLocations"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Office Policy</label>
+            <select
+              name="officePolicy"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+              defaultValue={""}
+            >
+              <option value={""} disabled hidden>
+                Select an option...
+              </option>
+              <option value="on-site">On site</option>
+              <option value="remote">Remote</option>
+              <option value="hybrid-1-day-office">Hybrid - 1 day office</option>
+              <option value="hybrid-2-day-office">Hybrid - 2 day office</option>
+              <option value="hybrid-3-day-office">Hybrid - 3 day office</option>
+              <option value="hybrid-4-day-office">Hybrid - 4 day office</option>
+            </select>
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Contract Type</label>
+            <select
+              name="contractType"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+              defaultValue={""}
+            >
+              <option value={""} disabled hidden>
+                Select an option...
+              </option>
+              <option value="fulltime">Full time</option>
+              <option value="parttime">Part time</option>
+              <option value="freelance">Freelance</option>
+              <option value="intern">Intern</option>
+            </select>
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Contract Duration</label>
+            <input
+              type="text"
+              name="contractDuration"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
         </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Visa Requirements</label>
-          <input
-            type="text"
-            name="visaRequirements"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
+        <div className="col-span-1">
+          <label>Key Company Links</label>
+          <FillSocialLinks />
         </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Office Locations</label>
-          <input
-            type="text"
-            name="officeLocations"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
+      </form> */}
+      <form className="flex items-center justify-center">
+        <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
+          <Tab.Group>
+            <Tab.List className="  border-edenGreen-300 flex  w-full justify-between border-b ">
+              <div className="flex items-start gap-x-6">
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                      selected
+                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                    )
+                  }
+                >
+                  GENERAL
+                </Tab>
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                      selected
+                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                    )
+                  }
+                >
+                  SOCIALS
+                </Tab>
+              </div>
+            </Tab.List>
+            <Tab.Panels>
+              <Tab.Panel className="pt-8">
+                <div className="flex  gap-x-6">
+                  <div className="flex  flex-col items-start text-xs">
+                    <label>Targeted Start Date</label>
+                    <input
+                      type="date"
+                      name="targetedStartDate"
+                      className=" input-primary border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                    />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <label className="text-xs">Visa Required</label>
+                    <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
+                      <select
+                        name="visaRequirements"
+                        className="w-full outline-none"
+                      >
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex   w-full flex-col items-start pr-2">
+                    <label className="text-xs ">Office Policy</label>
+                    <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
+                      <select
+                        name="officeLocations"
+                        className="w-full outline-none"
+                        defaultValue={""}
+                      >
+                        <option value={""} disabled hidden>
+                          Select an option...
+                        </option>
+                        <option value="on-site">On site</option>
+                        <option value="remote">Remote</option>
+                        <option value="hybrid-1-day-office">
+                          Hybrid - 1 day office
+                        </option>
+                        <option value="hybrid-2-day-office">
+                          Hybrid - 2 day office
+                        </option>
+                        <option value="hybrid-3-day-office">
+                          Hybrid - 3 day office
+                        </option>
+                        <option value="hybrid-4-day-office">
+                          Hybrid - 4 day office
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="relative mb-12 mt-6 flex flex-col items-start">
+                    <label className="text-xs">Office Locations</label>
+                    <div className="mt-2 w-full rounded-lg bg-white text-xs">
+                      <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
+                      <input
+                        type="text"
+                        className=" border-edenGray-100  w-full rounded-lg border p-2 pl-9  outline-none"
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-x-8 ">
+                  <div className="flex flex-col items-start">
+                    <label className="text-xs">Contact Type</label>
+                    <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
+                      <select
+                        className=" w-full outline-none"
+                        name="contractType"
+                        defaultValue={""}
+                      >
+                        <option value={""} disabled hidden>
+                          Select an option...
+                        </option>
+                        <option value="fulltime">Full time</option>
+                        <option value="parttime">Part time</option>
+                        <option value="freelance">Freelance</option>
+                        <option value="intern">Intern</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex w-full flex-col items-start">
+                    <label className="text-xs">Contract Duration</label>
+                    <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
+                      <select
+                        className="w-full outline-none "
+                        name="contractDuration"
+                        defaultValue={""}
+                      >
+                        <option value={""} disabled hidden>
+                          Select duration of contract
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </Tab.Panel>
+              <Tab.Panel>
+                <div className=" gird grid-cols-2">
+                  <FillSocialLinks />
+                </div>
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
+          {/* <div className="text-red-600">Uncomment 476!!!</div> */}
         </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Office Policy</label>
-          <select
-            name="officePolicy"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            defaultValue={""}
-          >
-            <option value={""} disabled hidden>
-              Select an option...
-            </option>
-            <option value="on-site">On site</option>
-            <option value="remote">Remote</option>
-            <option value="hybrid-1-day-office">Hybrid - 1 day office</option>
-            <option value="hybrid-2-day-office">Hybrid - 2 day office</option>
-            <option value="hybrid-3-day-office">Hybrid - 3 day office</option>
-            <option value="hybrid-4-day-office">Hybrid - 4 day office</option>
-          </select>
-        </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Contract Type</label>
-          <select
-            name="contractType"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            defaultValue={""}
-          >
-            <option value={""} disabled hidden>
-              Select an option...
-            </option>
-            <option value="fulltime">Full time</option>
-            <option value="parttime">Part time</option>
-            <option value="freelance">Freelance</option>
-            <option value="intern">Intern</option>
-          </select>
-        </div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="w-2/5 pr-2">Contract Duration</label>
-          <input
-            type="text"
-            name="contractDuration"
-            className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-          />
-        </div>
-      </div>
-      <div className="col-span-1">
-        <label>Key Company Links</label>
-        <FillSocialLinks />
-      </div>
-    </form>
+      </form>
+    </>
   );
 };

@@ -43,13 +43,13 @@ export const Typography = () => {
       </div>
       <div className={``}>
         <div>
-          {`<TextLabel1 />  - {fontFamily: Inter, fontSize: 15px, fontWeight: 600, letterSpacing: 0.04em, color: #AAAAAA}`}
+          {`<TextLabel1 />  - {fontFamily: Unica, fontSize: 15px, fontWeight: 600, letterSpacing: 0.04em, color: #AAAAAA}`}
         </div>
         <TextLabel1>The brown fox jumped over the lazy dog.</TextLabel1>
       </div>
       <div className={``}>
         <div>
-          {`<TextLabel2 />  - {fontFamily: Inter, fontSize: 12px, fontWeight: 600, letterSpacing: 0.04em, color: #AAAAAA}`}
+          {`<TextLabel2 />  - {fontFamily: Unica, fontSize: 12px, fontWeight: 600, letterSpacing: 0.04em, color: #AAAAAA}`}
         </div>
         <TextLabel2>The brown fox jumped over the lazy dog.</TextLabel2>
       </div>

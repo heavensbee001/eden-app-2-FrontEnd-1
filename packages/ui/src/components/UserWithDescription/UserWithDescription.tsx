@@ -13,7 +13,7 @@ export const UserWithDescription = ({
   if (!member) return null;
   return (
     <div
-      className={`desc font-Inter flex-col content-center text-center`}
+      className={`desc font-Unica flex-col content-center text-center`}
       id="user-with-description"
     >
       <div className={`flex w-full justify-center`}>

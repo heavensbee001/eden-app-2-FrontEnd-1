@@ -25,28 +25,30 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
           </div>
         </div>
       )} */}
-      {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="  mt-4 flex  items-center  ">
-          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
-            <p
-              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
+      {member?.letterAndColor?.skill?.letter && (
+        <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
+          <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
+            <span
+              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
             >
-              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
-            </p>
-            {candidate?.analysisCandidateEdenAI?.skills?.content && (
-              <>
-                <hr className="mx-2 my-0 h-8 border-gray-400" />
-                <div className="">
-                  <p className="text-lg font-bold">Eden First Impression 👀</p>
-
-                  {candidate?.analysisCandidateEdenAI?.skills?.content}
-                </div>
-              </>
-            )}
+              {`${member?.letterAndColor?.skill?.letter}`}
+            </span>
           </div>
+          {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+            <div className="">
+              <h2 className="text-edenGreen-600 mb-3">
+                Eden&apos;s{"  "}
+                <span className="font-Unica text-edenGray-900 text-md font-normal">
+                  thoughts on skills
+                </span>
+              </h2>
+
+              {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
+            </div>
+          )}
         </div>
       )}
-      <div className="mt-2 h-[900px] w-full rounded-lg border-[1px] bg-white py-36">
+      <div className="mt-2 h-[450px] w-full rounded-lg border-[1px] bg-white py-2">
         <DynamicSearchMemberGraph
           memberID={member?.user?._id!}
           nodesID={

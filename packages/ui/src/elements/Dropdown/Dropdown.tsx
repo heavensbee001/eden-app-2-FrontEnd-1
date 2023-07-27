@@ -1,6 +1,6 @@
 import { Maybe } from "@eden/package-graphql/generated";
 import { Combobox } from "@headlessui/react";
-import { SelectorIcon } from "@heroicons/react/solid";
+import { ChevronDownIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
 import { useState } from "react";
 
@@ -66,7 +66,7 @@ export const Dropdown = ({
       <Combobox.Label className="block text-sm font-medium text-gray-700">
         {label}
       </Combobox.Label>
-      <div className="relative mt-1 mb-4">
+      <div className="relative mb-4 mt-1">
         <Combobox.Button className="w-full bg-white sm:text-sm">
           <Combobox.Input
             className={cls}
@@ -78,7 +78,7 @@ export const Dropdown = ({
             }}
           />
           <div className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
-            <SelectorIcon
+            <ChevronDownIcon
               className="h-5 w-5 text-gray-400"
               aria-hidden="true"
             />
@@ -87,7 +87,7 @@ export const Dropdown = ({
 
         <Combobox.Options className="absolute z-40 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
           {filteredItems && filteredItems.length === 0 && query !== "" ? (
-            <span className="relative cursor-default select-none py-2 px-4 text-gray-700">
+            <span className="relative cursor-default select-none px-4 py-2 text-gray-700">
               Nothing found.
             </span>
           ) : (

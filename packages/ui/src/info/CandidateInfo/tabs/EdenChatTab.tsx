@@ -1,18 +1,18 @@
 import { useQuery } from "@apollo/client";
 import { FIND_CONVERSATIONS } from "@eden/package-graphql";
+import { Members } from "@eden/package-graphql/generated";
 import { Card } from "@eden/package-ui";
-import React from "react";
-
 type Props = {
   memberImg?: string;
   conversationID?: string;
+  member?: Members;
 };
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
+export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
   const { data: findConversationsData } = useQuery(FIND_CONVERSATIONS, {
     variables: {
       fields: {
@@ -22,18 +22,16 @@ export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
     skip: conversationID == undefined,
     ssr: false,
   });
-
   // console.log("conversationID = ", conversationID);
 
   return (
     <>
       <Card
         border
-        shadow
         className="mx-auto mt-3 h-[calc(100vh-17rem)] max-w-lg overflow-scroll !border-gray-200 bg-white"
       >
         <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3">
-          <div className="">
+          <div>
             {findConversationsData &&
             findConversationsData.findConversations.length
               ? findConversationsData.findConversations[
@@ -54,34 +52,49 @@ export const EdenChatTab: React.FC<Props> = ({ memberImg, conversationID }) => {
                             "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                           )}
                         >
-                          <span
-                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                            className={classNames(
-                              chat.role == "assistant"
-                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                          <div className="relative">
+                            {chat.role !== "assistant" ? (
+                              <>
+                                <span className="text-edenGray-700 float-right  pl-64 text-right text-xs font-semibold">
+                                  {member?.discordName}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="font-Moret text-edenGreen-600 text-sm font-semibold">
+                                  Eden
+                                </span>
+                              </>
                             )}
-                          >
-                            {chat.content}
-                          </span>
+                            <div
+                              className={classNames(
+                                "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
+                                chat.role == "assistant"
+                                  ? "bg-edenPink-300 -left-[0.3rem]"
+                                  : "bg-edenGray-100 -right-[0.3rem]"
+                              )}
+                            ></div>
+
+                            <span
+                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
+                              className={classNames(
+                                chat.role == "assistant"
+                                  ? "bg-edenPink-300"
+                                  : "bg-edenGray-100 ",
+                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                              )}
+                            >
+                              {chat.content}
+                            </span>
+                          </div>
                         </div>
-                        <img
-                          src={
-                            chat.role == "assistant"
-                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                              : memberImg
-                          }
-                          className="order-1 h-6 w-6 rounded-full"
-                        />
                       </div>
                     </div>
                   ))
               : null}
             {/* <hr
               style={{
-                // border: "1",
-                borderTop: "1px solid #CCC",
+                // border: "1", borderTop: "1px solid #CCC",
                 height: "1px",
                 overflow: "visible",
                 padding: "0",

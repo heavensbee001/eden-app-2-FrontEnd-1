@@ -15,7 +15,7 @@ export const SignUpViewConfirm = () => {
       <div className={`mt-2 flex justify-center`}>
         <div>
           <Avatar src={`${currentUser?.discordAvatar}`} size={`lg`} />
-          <div className={`font-Inter text-darkGreen text-center`}>
+          <div className={`font-Unica text-darkGreen text-center`}>
             @{currentUser?.discordName}
           </div>
         </div>

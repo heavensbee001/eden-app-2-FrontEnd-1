@@ -337,6 +337,7 @@ export type Members = {
   network?: Maybe<Array<Maybe<Members>>>;
   nodes?: Maybe<Array<Maybe<NodesType>>>;
   onbording?: Maybe<OnboardingType>;
+  oneLiner?: Maybe<Scalars["String"]>;
   positionsApplied?: Maybe<Array<Maybe<PositionsAppliedType>>>;
   preferences?: Maybe<PreferencesType>;
   previousProjects?: Maybe<Array<Maybe<PreviousProjectsType>>>;
@@ -3763,7 +3764,9 @@ export type PositionsRequirementsType = {
   content?: Maybe<Scalars["String"]>;
   originalContent?: Maybe<Scalars["String"]>;
   positionPreparationMemory?: Maybe<Scalars["Boolean"]>;
+  priorities?: Maybe<Array<Maybe<PrioritiesType>>>;
   roleDescription?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  tradeOffs?: Maybe<Array<Maybe<TradeOffsType>>>;
 };
 
 export type PrefPastSearch = {
@@ -4219,6 +4222,7 @@ export type TotalNodeTrustType = {
 export type TradeOffsType = {
   __typename?: "tradeOffsType";
   reason?: Maybe<Scalars["String"]>;
+  selected?: Maybe<Scalars["String"]>;
   tradeOff1?: Maybe<Scalars["String"]>;
   tradeOff2?: Maybe<Scalars["String"]>;
 };

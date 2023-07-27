@@ -1,6 +1,8 @@
 import { CandidateTypeSkillMatch, EdenTooltip } from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
+import { classNames } from "../../../../utils";
+
 type Grade = {
   letter: string;
   color: string;
@@ -64,75 +66,87 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
     let grade: Grade = { letter: "", color: "" };
 
     if (percentage >= 8.5) {
-      grade = { letter: "A", color: "text-green-500" };
+      grade = { letter: "A", color: "text-utilityGreen" };
     } else if (percentage >= 7) {
-      grade = { letter: "B", color: "text-green-200" };
+      grade = { letter: "B", color: "text-utilityYellow" };
     } else if (percentage >= 5) {
-      grade = { letter: "C", color: "text-orange-300" };
+      grade = { letter: "C", color: "text-utilityOrange" };
     } else {
-      grade = { letter: "D", color: "text-red-300" };
+      grade = { letter: "D", color: "text-utilityRed" };
     }
 
     return grade;
   };
 
-  console.log(
-    "candidate?.analysisCandidateEdenAI",
-    candidate?.analysisCandidateEdenAI
-  );
+  const getGradeFromLetter = (letter: string): Grade => {
+    let grade: Grade = { letter: "", color: "" };
+
+    if (letter === "A") {
+      grade = { letter: "A", color: "text-utilityGreen" };
+    } else if (letter === "B") {
+      grade = { letter: "B", color: "text-utilityYellow" };
+    } else if (letter === "C") {
+      grade = { letter: "C", color: "text-utilityOrange" };
+    } else {
+      grade = { letter: "D", color: "text-utilityRed" };
+    }
+
+    return grade;
+  };
 
   return (
     <>
-      {/* {member?.letterAndColor?.requirements?.letter && (
-        <div className="relative">
-          <div className="absolute left-0 top-0 rounded-lg bg-white px-4 py-6 shadow-lg">
-            <p className="text-lg font-bold">Requirements Score:</p>
-            <p
-              className={` ${member?.letterAndColor?.requirements?.color} text-4xl font-black`}
-            >
-              {`${member?.letterAndColor?.requirements?.letter}`}
-            </p>
-          </div>
-        </div>
-      )} */}
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className=" mb-2 mt-4   flex items-center ">
-          <div className=" flex items-center rounded-lg border-[1px] border-gray-300 bg-white px-4 py-4 ">
-            <p
-              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-4xl font-black`}
+        <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
+          <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
+            <span
+              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
-            </p>
-            {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
-              <>
-                <hr className="mx-2 my-0 h-8 border-gray-400" />
-                <div className="">
-                  <p className="text-lg font-bold">Eden First Impression 👀</p>
-
-                  {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
-                </div>
-              </>
-            )}
+            </span>
           </div>
+          {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+            <div className="">
+              <h2 className="text-edenGreen-600 mb-3">
+                Eden&apos;s{"  "}
+                <span className="font-Unica text-edenGray-900 text-md font-normal">
+                  thoughts on fit
+                </span>
+              </h2>
+
+              {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
+            </div>
+          )}
         </div>
       )}
-      <div className="space-y-4 rounded-lg border-[1px] bg-white p-4 py-4">
+      <div className="">
         {/* Render each category */}
 
         {reportNotesData &&
           Object.entries(reportNotesData).map(([categoryName, items]) => (
-            <div
-              className="rounded-lg border-[3px] border-gray-300  px-4 py-4"
-              key={categoryName}
-            >
-              <div className="flex justify-between pr-10">
-                <h2 className="mb-3 text-lg font-medium">{categoryName}</h2>
-                <span className="font-medium">
-                  Average: {reportNotesData[categoryName].average}
-                </span>
+            <div className="mb-10" key={categoryName}>
+              <div className="border-edenGreen-300 flex justify-between border-b px-4">
+                <h3 className="text-edenGreen-500 mb-3">
+                  {categoryName.substring(categoryName.indexOf(":") + 1).trim()}
+                </h3>
+                <div className="text-edenGray-700 flex items-center text-sm">
+                  Average:
+                  <div className="bg-edenPink-300 ml-2 flex h-6 w-6 items-center justify-center rounded-full pb-px">
+                    <span
+                      className={classNames(
+                        getGradeFromLetter(
+                          reportNotesData[categoryName].average
+                        ).color,
+                        "text-md"
+                      )}
+                    >
+                      {reportNotesData[categoryName].average}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <ul className="list-none space-y-1  [&>*:nth-child(even)]:bg-white [&>*:nth-child(odd)]:bg-gray-200">
+              <ul className="list-none space-y-1">
                 {/* Render each item in the category */}
 
                 {typeof items.notes !== "string"
@@ -144,7 +158,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                       return (
                         <li
                           key={item.IDb}
-                          className="w-full cursor-pointer rounded-md"
+                          className="border-edenGray-100 w-full cursor-pointer rounded-md border-b px-4"
                         >
                           <EdenTooltip
                             id={item.title.split(" ").join("")}
@@ -162,8 +176,8 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                             borderColor="#e5e7eb"
                             padding="0.5rem"
                           >
-                            <div className="flex w-full columns-2 items-center justify-between px-4 py-2">
-                              <span className="ml-2">
+                            <div className="flex w-full columns-2 items-center justify-between py-4">
+                              <p className="w-full pr-4 text-sm">
                                 {item.title
                                   .trim()
                                   .split(" ")
@@ -172,16 +186,10 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                                   (item.title.split(" ").length > 25
                                     ? "..."
                                     : "")}
-                              </span>
-                              <span
-                                className={color}
-                                style={{
-                                  marginRight: "1.2rem",
-                                  fontSize: "1.4rem",
-                                }}
-                              >
-                                {letter}
-                              </span>
+                              </p>
+                              <div className="border-edenGray-100 -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
+                                <span className={color}>{letter}</span>
+                              </div>
                             </div>
                           </EdenTooltip>
                         </li>

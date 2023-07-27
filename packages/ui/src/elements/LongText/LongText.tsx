@@ -1,29 +1,59 @@
+import { classNames } from "@eden/package-ui/utils";
 import { useState } from "react";
-
-import { Button } from "../Button";
 
 export interface LongTextProps {
   text: string;
   cutText?: number;
   className?: string;
+  maxHeight?: string;
 }
-export const LongText = ({ text, className, cutText = 50 }: LongTextProps) => {
+export const LongText = ({
+  text,
+  className = "",
+  cutText = 50,
+  maxHeight = "2.3rem",
+}: LongTextProps) => {
   const [showAll, setShowAll] = useState(false);
 
   if (!text) return null;
   return (
-    <p className={className}>
-      {text.slice(0, cutText)}
-      {showAll && text.slice(cutText)}
-      {text.length >= cutText && (
-        <Button
-          className="ml-1 border-none text-blue-400"
-          style={{ display: "inline-block", padding: 0 }}
-          onClick={() => setShowAll((show) => !show)}
-        >
-          {showAll ? "less" : "more"}...
-        </Button>
-      )}
-    </p>
+    <>
+      <div
+        className={classNames(
+          "relative transition-max-height ease-in-out duration-500 overflow-hidden",
+          showAll || text.length <= cutText ? "!max-h-screen" : "",
+          className
+        )}
+        style={{ maxHeight: maxHeight }}
+      >
+        {/* {showAll
+          ? text
+          : [...text.slice(0, cutText).split(" ").slice(0, -1), "..."].join(
+              " "
+            )}
+        {text.length >= cutText && (
+          <span
+            className="ml-2 cursor-pointer text-xs text-edenGray-500"
+            onClick={() => setShowAll((show) => !show)}
+          >
+            {showAll ? "less" : "more"}
+          </span>
+        )} */}
+        <p>{text}</p>
+        {!showAll && text.length >= cutText && (
+          <div className="absolute bottom-0 bg-gradient-to-b from-transparent to-white h-3 w-full"></div>
+        )}
+      </div>
+      <p className="text-center">
+        {text.length >= cutText && (
+          <span
+            className="ml-2 cursor-pointer text-xs text-edenGray-500"
+            onClick={() => setShowAll((show) => !show)}
+          >
+            {showAll ? "...less" : "more..."}
+          </span>
+        )}
+      </p>
+    </>
   );
 };

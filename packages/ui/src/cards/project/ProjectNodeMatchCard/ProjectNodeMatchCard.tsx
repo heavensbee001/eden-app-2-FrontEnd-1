@@ -83,7 +83,7 @@ export const ProjectNodeMatchCard = ({
         <LongText
           cutText={100}
           text={project?.description as string}
-          className={`text-darkGreen font-Inter my-2 text-sm`}
+          className={`text-darkGreen font-Unica my-2 text-sm`}
         />
       </div>
       {project?.serverID && (
@@ -124,7 +124,7 @@ export const ProjectNodeMatchCard = ({
         </>
       )}
 
-      {/* <div className={`font-Inter mt-2 text-sm text-zinc-500`}>
+      {/* <div className={`font-Unica mt-2 text-sm text-zinc-500`}>
         Eden adoptiopn in Bankless is {item?.edenMembersDAO}%
       </div> */}
       <ProjectNodeMatchModal

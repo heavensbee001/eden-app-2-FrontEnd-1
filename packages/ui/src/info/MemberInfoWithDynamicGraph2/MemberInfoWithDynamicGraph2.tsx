@@ -180,7 +180,7 @@ export const MemberInfoWithDynamicGraph2 = ({
             </p>
             {!loadingGPTsummary ? (
               <>
-                <p className="text-soilBody font-Inter mb-4 font-normal">
+                <p className="font-Unica mb-4 font-normal">
                   {/* {edenGPTsummary} */}
                   <HighlightText text={edenGPTsummary || ""} />
                 </p>
@@ -212,7 +212,7 @@ export const MemberInfoWithDynamicGraph2 = ({
         <div className="sm:col-span-8 sm:my-0">
           {!!member?.bio && <TextLabel1>🪪 Short bio</TextLabel1>}
           {!loading ? (
-            <p className="text-soilBody font-Inter mb-8 whitespace-pre-wrap font-normal">
+            <p className="font-Unica mb-8 whitespace-pre-wrap font-normal">
               {_bio}
             </p>
           ) : (
@@ -223,40 +223,39 @@ export const MemberInfoWithDynamicGraph2 = ({
               </div>
             </div>
           )}
-          {relatedNodesMemberToMatch &&
-            relatedNodesMemberToMatch.length > 0 && (
-              <div className="">
-                <p className="mb-2 text-left">
-                  <TextLabel1>🧙‍♂️ Relevant Skills</TextLabel1>
-                </p>
-                {relatedNodesMemberToMatch &&
-                  relatedNodesMemberToMatch
-                    .slice(0, 6)
-                    .map((info: any, index: number) => (
-                      <Badge
-                        text={info?.MemberRelevantnode?.name || ""}
-                        key={index}
-                        // className={`bg-soilPurple/20 py-px text-xs`}
-                        // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(info.score)}`}
-                        // className={`px-2 py-1 text-white rounded bg-purple-400`}
-                        className={`rounded px-1 py-1 text-xs text-white ${info.color}`}
-                        cutText={14}
-                      />
-                    ))}
-                {/* {member.endorseSummary?.mainNodes!.map(
+          {relatedNodesMemberToMatch && relatedNodesMemberToMatch.length > 0 && (
+            <div className="">
+              <p className="mb-2 text-left">
+                <TextLabel1>🧙‍♂️ Relevant Skills</TextLabel1>
+              </p>
+              {relatedNodesMemberToMatch &&
+                relatedNodesMemberToMatch
+                  .slice(0, 6)
+                  .map((info: any, index: number) => (
+                    <Badge
+                      text={info?.MemberRelevantnode?.name || ""}
+                      key={index}
+                      // className={`bg-soilPurple/20 py-px text-xs`}
+                      // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(info.score)}`}
+                      // className={`px-2 py-1 text-white rounded bg-purple-400`}
+                      className={`rounded px-1 py-1 text-xs text-white ${info.color}`}
+                      cutText={14}
+                    />
+                  ))}
+              {/* {member.endorseSummary?.mainNodes!.map(
               (node: EndorseNode | null, index: number) => (
                 <Badge
                   key={index}
                   text={trimParentheses(node?.node?.name || "")}
                   colorRGB={"255,119,193"}
-                  className={`font-Inter text-xl text-white`}
+                  className={`font-Unica text-xl text-white`}
                   closeButton={false}
                   cutText={99}
                 />
               )
             )} */}
-              </div>
-            )}
+            </div>
+          )}
           <div className="sm:col-span-4 sm:my-0">
             {member?.previousProjects &&
               member?.previousProjects.length > 0 && (

@@ -25,7 +25,7 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
   className = "py-1 px-3",
   onChange,
 }) => {
-  const inputCls = clsx("font-Inter text-soilBody flex", className, {
+  const inputCls = clsx("font-Unica flex", className, {
     "rounded-md": radius === "default",
     "rounded-lg": radius === "rounded",
     "rounded-full": radius === "pill",

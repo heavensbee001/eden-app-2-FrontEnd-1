@@ -7,10 +7,41 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        edenGreen: {
+          100: "#F6F8F5",
+          200: "#F0F4F2",
+          300: "#B2C7BF",
+          400: "#7FA294",
+          500: "#19563F",
+          600: "#00462C",
+        },
+        edenPink: {
+          100: "#FEF9FB",
+          200: "#FAE7F1",
+          300: "#FCEEF5",
+          400: "#F9E1ED",
+          500: "#F5C7DE",
+        },
+        edenGray: {
+          100: "#F2F2F2",
+          500: "#9D9D9D",
+          700: "#626262",
+          900: "#393939",
+        },
+        baseBlack: "#051421",
+        baseWhite: "#FFFFFF",
+        bgColor: "#FEFEFC",
+        // --- utility colors ---
+        utilityGreen: "#68A78F",
+        utilityYellow: "#F1BA2D",
+        utilityOrange: "#FF9843",
+        utilityRed: "#FF5E6A",
+        utilityDarkBlue: "#3B4756",
+
+        // ---- deprecated colors ----
         forestGreen: "#00462C",
         cottonPink: "#F9E1ED",
         digitalGreen: "#74FA6D",
-        deepBlack: "#000000",
         background: "#F5F5F5",
         accentColor: "#74FA6D",
         darkGreen: "#071B08",
@@ -38,86 +69,28 @@ module.exports = {
           900: "#0FB806",
         },
       },
-      fontSize: {
-        landingTitle: [
-          "192px",
-          {
-            letterSpacing: "0.02em",
-          },
-        ],
-        landingTitleSM: [
-          "128px",
-          {
-            letterSpacing: "0.02em",
-          },
-        ],
-        landingSubtitle: [
-          "72px",
-          {
-            letterSpacing: "0.02em",
-          },
-        ],
-        soilHeading1: [
-          "32px",
-          {
-            letterSpacing: "0.02em",
-          },
-        ],
-        soilHeading2: [
-          "26px",
-          {
-            letterSpacing: "0.02em",
-          },
-        ],
-        soilHeading3: [
-          "20px",
-          {
-            letterSpacing: "0.02em",
-          },
-        ],
-        soilBody: [
-          "16px",
-          {
-            letterSpacing: "0em",
-          },
-        ],
-        soilLabel1: [
-          "15px",
-          {
-            letterSpacing: "0.04em",
-          },
-        ],
-        soilLabel2: [
-          "12px",
-          {
-            letterSpacing: "0.04em",
-          },
-        ],
-      },
       fontFamily: {
-        poppins: ["Poppins", "sans-serif"],
-        Inter: ["Inter", "sans-serif"],
-        Gloria: ["Gloria Hallelujah", "cursive"],
-        Moret: ["Moret", "Inter"],
+        Unica: ["neue-haas-unica", "sans-serif"],
+        Moret: ["Moret", "Unica", "sans-serif"],
       },
       boxShadow: {
         headerShadow: "0px 1px 15px 0px rgba(0, 0, 0, 0.15)",
         cardShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.15)",
         focusShadow: "0px 0px 0px 2px #74FA6D",
       },
-      height: {
-        "1/10": "10vh",
-        "2/10": "20vh",
-        "3/10": "30vh",
-        "4/10": "40vh",
-        "5/10": "50vh",
-        "6/10": "60vh",
-        "7/10": "70vh",
-        "8/10": "80vh",
-        "9/10": "90vh",
-        65: "65vh",
-        75: "75vh",
-        85: "85vh",
+      fontSize: {
+        "2xl": "1.5rem",
+        xl: "1.25rem",
+        lg: "1.125rem",
+        md: "1rem",
+        sm: "0.875rem",
+        xs: "0.75rem",
+        "2xs": "0.625rem",
+      },
+      transitionProperty: {
+        width: "width",
+        height: "height",
+        "max-height": "max-height",
       },
     },
   },
