@@ -48,7 +48,7 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
           )}
         </div>
       )}
-      <div className="mt-2 h-[900px] w-full rounded-lg border-[1px] bg-white py-36">
+      <div className="mt-2 h-[450px] w-full rounded-lg border-[1px] bg-white py-2">
         <DynamicSearchMemberGraph
           memberID={member?.user?._id!}
           nodesID={
