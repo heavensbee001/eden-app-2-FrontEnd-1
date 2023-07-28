@@ -498,7 +498,7 @@ const TrainAiPage: NextPageWithLayout = () => {
               </WizardStep>
               <WizardStep
                 label={"Final Details"}
-                // navigationDisabled={step === 0}
+                navigationDisabled={step === 0}
               >
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="text-xl font-medium">
@@ -867,7 +867,7 @@ const PrioritiesAndTradeOffsContainer = ({
 
         setPriorities(findPrioritiesTrainEdenAI.priorities);
         setTradeOffs(
-          (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
+          (findPrioritiesTrainEdenAI?.tradeOffs! as TradeOffsType[]).map(
             (tradeOff: TradeOffsType) => {
               const _selected =
                 tradeOff.selected == tradeOff.tradeOff1
@@ -1687,7 +1687,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                     <input
                       type="date"
                       name="targetedStartDate"
-                      className=" input-primary border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                      className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
                     />
                   </div>
                   <div className="flex flex-col items-start">
@@ -1786,7 +1786,6 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
-          {/* <div className="text-red-600">Uncomment 476!!!</div> */}
         </div>
       </form>
     </>

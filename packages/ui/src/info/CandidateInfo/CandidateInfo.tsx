@@ -1,30 +1,37 @@
 import { useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { UserContext } from "@eden/package-context";
 import { FIND_MEMBER } from "@eden/package-graphql";
 import {
+  Members,
   SummaryQuestionType,
   TalentListType,
 } from "@eden/package-graphql/generated";
 import {
+  AI_INTERVIEW_SERVICES,
   AskEdenTab,
   Avatar,
   // Button,
   CandidateTypeSkillMatch,
+  ChatMessage,
   // Dropdown,
   EdenChatTab,
+  EdenIconExclamationAndQuestion,
+  EdenIconQuestion,
   GraphTab,
   InfoTab,
+  InterviewEdenAI,
   LongText,
   MatchTab,
   MeetingNotes,
   ReportNotes,
 } from "@eden/package-ui";
-import { Tab } from "@headlessui/react";
+import { Tab, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { BsCalendarPlus } from "react-icons/bs";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
-import ReactTooltip from "react-tooltip";
 
 import { EdenAiLetter } from "../../components/EdenAiLetter";
 
@@ -179,12 +186,12 @@ export const CandidateInfo = ({
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
       ),
     },
-    {
-      tab: "Ask Eden",
-      Content: () => (
-        <AskEdenTab member={dataMember?.findMember} candidate={candidate} />
-      ),
-    },
+    // {
+    //   tab: "Ask Eden",
+    //   Content: () => (
+    //     <AskEdenTab member={dataMember?.findMember} candidate={candidate} />
+    //   ),
+    // },
     {
       tab: "Transcript",
       Content: () => (
@@ -222,7 +229,7 @@ export const CandidateInfo = ({
 
   return (
     <div className="bg-white">
-      <div className="h-full w-full flex-col overflow-y-scroll">
+      <section className="h-full w-full flex-col overflow-y-scroll">
         <div
           onClick={onClose}
           className="bg-edenGreen-100 hover:bg-edenGreen-200 absolute right-10 top-9 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md"
@@ -378,8 +385,8 @@ export const CandidateInfo = ({
             </span>
           </div> */}
         </div>
-      </div>
-      <div className="">
+      </section>
+      <section className="">
         <Tab.Group
           defaultIndex={index}
           onChange={(index: number) => {
@@ -416,7 +423,182 @@ export const CandidateInfo = ({
             </div>
           </Tab.Panels>
         </Tab.Group>
-      </div>
+      </section>
+      <section>
+        {dataMember?.findMember && (
+          <AskEdenPopUp member={dataMember?.findMember} />
+        )}
+      </section>
     </div>
+  );
+};
+
+// ----- Ask Eden component -----
+
+const FIND_POSITION = gql`
+  query ($fields: findPositionInput) {
+    findPosition(fields: $fields) {
+      _id
+      name
+      questionsToAsk {
+        bestAnswer
+        question {
+          _id
+          content
+        }
+      }
+    }
+  }
+`;
+
+// interface cardsDataType {
+//   title: string;
+//   trust: number;
+//   time: number;
+//   completed: boolean;
+//   firstMessage: string;
+//   experienceTypeID: string;
+// }
+
+type Question = {
+  _id: string;
+  content: string;
+  bestAnswer: string;
+};
+
+interface MessageObject {
+  message: string;
+  sentMessage: boolean;
+  user?: string;
+}
+
+// interface InterviewEdenAIContainerProps {
+//   handleEnd?: () => void;
+// }
+interface Props {
+  member?: Members;
+}
+
+const AskEdenPopUp = ({ member }: Props) => {
+  const [open, setOpen] = useState(false);
+
+  const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
+    useState<MessageObject>({ message: "", sentMessage: false, user: "" });
+
+  // --------- Position and User ------------
+  const { currentUser } = useContext(UserContext);
+
+  console.log("currentUser = ", currentUser?._id);
+
+  const router = useRouter();
+  const { positionID } = router.query;
+  // --------- Position and User ------------
+
+  const [questions, setQuestions] = useState<Question[]>([]);
+
+  // eslint-disable-next-line no-unused-vars
+  const { data: findPositionData } = useQuery(FIND_POSITION, {
+    variables: {
+      fields: {
+        _id: positionID,
+      },
+    },
+    skip: positionID == "" || positionID == null,
+    onCompleted: (data) => {
+      let questionsChange = data.findPosition.questionsToAsk.map(
+        (question: any) => {
+          return {
+            _id: question?.question?._id,
+            content: question?.question?.content,
+            bestAnswer: question?.bestAnswer,
+          };
+        }
+      );
+
+      questionsChange = questionsChange.filter((question: any) => {
+        return question._id != null;
+      });
+
+      setQuestions(questionsChange);
+    },
+  });
+
+  const [conversationID, setConversationID] = useState<String>("");
+
+  // console.log("positionID = ", positionID);
+
+  const [experienceTypeID] = useState<string>("");
+
+  // eslint-disable-next-line no-unused-vars
+  const [chatN, setChatN] = useState<ChatMessage>([]);
+
+  // console.log("chatN = ", chatN);
+
+  console.log("conversationID = ", conversationID);
+
+  return (
+    <>
+      <div className="fixed bottom-4 right-4 z-40">
+        <div
+          className={classNames(
+            "w-12 h-12 bg-edenPink-400 drop-shadow-sm rounded-full flex items-center justify-center cursor-pointer transition-all transform ease-in-out",
+            open ? "-rotate-45" : "rotate-0"
+          )}
+          onClick={() => setOpen(!open)}
+        >
+          {open ? (
+            <EdenIconQuestion className="w-8 h-8" />
+          ) : (
+            <EdenIconExclamationAndQuestion className="w-8 h-8" />
+          )}
+        </div>
+        <Transition
+          show={open}
+          as={Fragment}
+          enter="transition-w transition-h ease-in-out duration-300"
+          enterFrom="w-0 h-0"
+          enterTo="w-[30rem] h-[70vh]"
+          leave="transition-w transition-h ease-in-out duration-300"
+          leaveFrom="w-[30rem] h-[70vh]"
+          leaveTo="w-0 h-0"
+        >
+          <div className="max-w-lg absolute right-0 bottom-14 overflow-hidden">
+            <InterviewEdenAI
+              key={experienceTypeID}
+              aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
+              experienceTypeID={experienceTypeID}
+              handleChangeChat={(_chat: any) => {
+                setChatN(_chat);
+              }}
+              sentMessageToEdenAIobj={sentMessageToEdenAIobj}
+              setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
+              placeholder={
+                <p className="bg-cottonPink text-edenGreen-600 rounded-lg p-1 text-center font-medium">
+                  Ask me any question about the Candidate
+                </p>
+              }
+              questions={questions}
+              setQuestions={setQuestions}
+              userID={member?._id}
+              positionID={positionID}
+              conversationID={conversationID}
+              setConversationID={setConversationID}
+              // handleEnd={() => {
+              //   if (handleEnd) handleEnd();
+              // }}
+            />
+          </div>
+        </Transition>
+      </div>
+      {open && (
+        <div
+          className="z-30 fixed w-screen h-screen top-0 left-0"
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(false);
+          }}
+        ></div>
+      )}
+    </>
   );
 };
