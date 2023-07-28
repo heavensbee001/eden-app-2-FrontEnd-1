@@ -328,6 +328,10 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
+  const onFinalFormSubmit = (data) => {
+    console.log("data", data);
+  };
+
   return (
     <>
       <Head>
@@ -508,7 +512,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     All done, this is the final step. Fill in some quick
                     information and we’re off!
                   </p>
-                  <FinalFormContainer />
+                  <FinalFormContainer onFinalFormSubmit={onFinalFormSubmit} />
                 </div>
               </WizardStep>
               <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
@@ -1569,9 +1573,17 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   );
 };
 
-interface IFinalFormContainerProps {}
+interface IFinalFormContainerProps {
+  onFinalFormSubmit: () => void;
+}
 
-const FinalFormContainer = ({}: IFinalFormContainerProps) => {
+const FinalFormContainer = ({
+  onFinalFormSubmit,
+}: IFinalFormContainerProps) => {
+  const { handleSubmit, control } = useForm<any>({
+    defaultValues: { position: "", pastedText: "" },
+  });
+
   return (
     <>
       {/* <form className="grid grid-cols-2 gap-16">
@@ -1648,7 +1660,10 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
           <FillSocialLinks />
         </div>
       </form> */}
-      <form className="flex items-center justify-center">
+      <form
+        className="flex items-center justify-center"
+        onSubmit={handleSubmit(onFinalFormSubmit)}
+      >
         <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
           <Tab.Group>
             <Tab.List className="  border-edenGreen-300 flex  w-full justify-between border-b ">
@@ -1684,50 +1699,62 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                 <div className="flex  gap-x-6">
                   <div className="flex  flex-col items-start text-xs">
                     <label>Targeted Start Date</label>
-                    <input
-                      type="date"
+                    <Controller
+                      control={control}
                       name="targetedStartDate"
-                      className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="date"
+                          className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                        />
+                      )}
                     />
                   </div>
                   <div className="flex flex-col items-start">
                     <label className="text-xs">Visa Required</label>
                     <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
-                      <select
+                      <Controller
+                        control={control}
                         name="visaRequirements"
-                        className="w-full outline-none"
-                      >
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </select>
+                        defaultValue="no"
+                        render={({ field }) => (
+                          <select {...field} className="w-full outline-none">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                          </select>
+                        )}
+                      />
                     </div>
                   </div>
                   <div className="flex   w-full flex-col items-start pr-2">
                     <label className="text-xs ">Office Policy</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
-                      <select
+                      <Controller
+                        defaultValue=""
                         name="officeLocations"
-                        className="w-full outline-none"
-                        defaultValue={""}
-                      >
-                        <option value={""} disabled hidden>
-                          Select an option...
-                        </option>
-                        <option value="on-site">On site</option>
-                        <option value="remote">Remote</option>
-                        <option value="hybrid-1-day-office">
-                          Hybrid - 1 day office
-                        </option>
-                        <option value="hybrid-2-day-office">
-                          Hybrid - 2 day office
-                        </option>
-                        <option value="hybrid-3-day-office">
-                          Hybrid - 3 day office
-                        </option>
-                        <option value="hybrid-4-day-office">
-                          Hybrid - 4 day office
-                        </option>
-                      </select>
+                        render={({ field }) => (
+                          <select className="w-full outline-none" {...field}>
+                            <option value={""} disabled hidden>
+                              Select an option...
+                            </option>
+                            <option value="on-site">On site</option>
+                            <option value="remote">Remote</option>
+                            <option value="hybrid-1-day-office">
+                              Hybrid - 1 day office
+                            </option>
+                            <option value="hybrid-2-day-office">
+                              Hybrid - 2 day office
+                            </option>
+                            <option value="hybrid-3-day-office">
+                              Hybrid - 3 day office
+                            </option>
+                            <option value="hybrid-4-day-office">
+                              Hybrid - 4 day office
+                            </option>
+                          </select>
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1737,10 +1764,17 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                     <label className="text-xs">Office Locations</label>
                     <div className="mt-2 w-full rounded-lg bg-white text-xs">
                       <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
-                      <input
-                        type="text"
-                        className=" border-edenGray-100  w-full rounded-lg border p-2 pl-9  outline-none"
-                      ></input>
+                      <Controller
+                        control={control}
+                        name="targetedStartDate"
+                        render={({ field }) => (
+                          <input
+                            {...field}
+                            type="date"
+                            className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                          />
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1748,33 +1782,43 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                   <div className="flex flex-col items-start">
                     <label className="text-xs">Contact Type</label>
                     <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
-                      <select
-                        className=" w-full outline-none"
+                      <Controller
+                        control={control}
                         name="contractType"
-                        defaultValue={""}
-                      >
-                        <option value={""} disabled hidden>
-                          Select an option...
-                        </option>
-                        <option value="fulltime">Full time</option>
-                        <option value="parttime">Part time</option>
-                        <option value="freelance">Freelance</option>
-                        <option value="intern">Intern</option>
-                      </select>
+                        defaultValue=""
+                        render={({ field }) => (
+                          <select
+                            {...field}
+                            className=" w-full outline-none"
+                            defaultValue={""}
+                          >
+                            <option value={""} disabled hidden>
+                              Select an option...
+                            </option>
+                            <option value="fulltime">Full time</option>
+                            <option value="parttime">Part time</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="intern">Intern</option>
+                          </select>
+                        )}
+                      />
                     </div>
                   </div>
                   <div className="flex w-full flex-col items-start">
                     <label className="text-xs">Contract Duration</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
-                      <select
-                        className="w-full outline-none "
+                      <Controller
+                        control={control}
                         name="contractDuration"
                         defaultValue={""}
-                      >
-                        <option value={""} disabled hidden>
-                          Select duration of contract
-                        </option>
-                      </select>
+                        render={({ field }) => (
+                          <select {...field} className="w-full outline-none ">
+                            <option value={""} disabled hidden>
+                              Select duration of contract
+                            </option>
+                          </select>
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
