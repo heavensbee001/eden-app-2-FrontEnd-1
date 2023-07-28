@@ -97,16 +97,21 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
   return (
     <>
       {member?.letterAndColor?.totalMatchPerc?.letter && (
-        <div className="p-4 bg-edenPink-100 rounded-md mb-8 min-h-[3rem]">
-          <p
-            className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl font-bold float-right -mt-2`}
-          >
-            {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
-          </p>
+        <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
+          <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
+            <span
+              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
+            >
+              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
+            </span>
+          </div>
           {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
             <div className="">
               <h2 className="text-edenGreen-600 mb-3">
-                Eden&apos;s thoughts on fit
+                Eden&apos;s{"  "}
+                <span className="font-Unica text-edenGray-900 text-md font-normal">
+                  thoughts on fit
+                </span>
               </h2>
 
               {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
@@ -120,22 +125,25 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
         {reportNotesData &&
           Object.entries(reportNotesData).map(([categoryName, items]) => (
             <div className="mb-10" key={categoryName}>
-              <div className="flex justify-between px-4 border-b border-edenGreen-300">
-                <h3 className="mb-3 text-edenGreen-500">
+              <div className="border-edenGreen-300 flex justify-between border-b px-4">
+                <h3 className="text-edenGreen-500 mb-3">
                   {categoryName.substring(categoryName.indexOf(":") + 1).trim()}
                 </h3>
-                <span className="font-medium text-sm text-edenGray-700 mr-4">
+                <div className="text-edenGray-700 flex items-center text-sm">
                   Average:
-                  <span
-                    className={classNames(
-                      getGradeFromLetter(reportNotesData[categoryName].average)
-                        .color,
-                      "font-bold ml-2 text-md"
-                    )}
-                  >
-                    {reportNotesData[categoryName].average}
-                  </span>
-                </span>
+                  <div className="bg-edenPink-300 ml-2 flex h-6 w-6 items-center justify-center rounded-full pb-px">
+                    <span
+                      className={classNames(
+                        getGradeFromLetter(
+                          reportNotesData[categoryName].average
+                        ).color,
+                        "text-md"
+                      )}
+                    >
+                      {reportNotesData[categoryName].average}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <ul className="list-none space-y-1">
@@ -150,7 +158,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                       return (
                         <li
                           key={item.IDb}
-                          className="w-full cursor-pointer px-4 rounded-md border-b border-edenGray-100"
+                          className="border-edenGray-100 w-full cursor-pointer rounded-md border-b px-4"
                         >
                           <EdenTooltip
                             id={item.title.split(" ").join("")}
@@ -168,8 +176,8 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                             borderColor="#e5e7eb"
                             padding="0.5rem"
                           >
-                            <div className="flex w-full py-4 columns-2 items-center justify-between">
-                              <p className="text-sm pr-4 w-full">
+                            <div className="flex w-full columns-2 items-center justify-between py-4">
+                              <p className="w-full pr-4 text-sm">
                                 {item.title
                                   .trim()
                                   .split(" ")
@@ -179,7 +187,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                                     ? "..."
                                     : "")}
                               </p>
-                              <div className="w-12 -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                              <div className="border-edenGray-100 -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                                 <span className={color}>{letter}</span>
                               </div>
                             </div>

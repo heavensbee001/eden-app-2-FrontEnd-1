@@ -312,7 +312,7 @@ export const CVUploadGPT = ({
         {/* {uploading && <Loading title="uploading" />} */}
         <EdenAiProcessingModal
           open={uploading}
-          title="Eden AI is processing your CV"
+          title="Eden is processing your CV"
         >
           <p className="text-center">
             Please wait.

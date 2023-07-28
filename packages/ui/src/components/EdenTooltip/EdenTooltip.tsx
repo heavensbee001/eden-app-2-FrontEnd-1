@@ -48,7 +48,7 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
                     <p className="mt-[2px] text-[14px]">insights</p>
                   </div>
 
-                  <div className="mt-[1px] text-[14px]"> {innerTsx}</div>
+                  <div className="mt-[1px] text-[14px]">{innerTsx}</div>
                 </span>
               </div>
             </div>

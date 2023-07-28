@@ -871,7 +871,7 @@ const PrioritiesAndTradeOffsContainer = ({
 
         setPriorities(findPrioritiesTrainEdenAI.priorities);
         setTradeOffs(
-          (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
+          (findPrioritiesTrainEdenAI?.tradeOffs! as TradeOffsType[]).map(
             (tradeOff: TradeOffsType) => {
               const _selected =
                 tradeOff.selected == tradeOff.tradeOff1

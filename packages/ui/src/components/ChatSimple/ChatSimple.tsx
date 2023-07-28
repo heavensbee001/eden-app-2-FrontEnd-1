@@ -123,24 +123,24 @@ export const ChatSimple = ({
     <>
       <div className="flex h-full flex-col justify-between">
         <div className="h-full">
-          <div className="border h-full border-edenGray-100 bg-white overflow-hidden rounded-md">
+          <div className="border-edenGray-100 h-full overflow-hidden rounded-md border bg-white">
             {headerText && (
-              <section className="h-[2.75rem] flex items-center border-b border-edenGray-100">
-                <h3 className="text-center w-full text-edenGreen-600">
+              <section className="border-edenGray-100 flex h-[2.75rem] items-center border-b">
+                <h3 className="text-edenGreen-600 w-full text-center">
                   {headerText}
                 </h3>
               </section>
             )}
             <section
               className={classNames(
-                "scrollbar-hide overflow-y-scroll border-b border-edenGray-100",
+                "scrollbar-hide border-edenGray-100 overflow-y-scroll border-b",
                 headerText ? "h-[calc(100%-7.75rem)]" : "h-[calc(100%-5rem)]"
               )}
             >
               <div
                 ref={componentRef}
                 // className="h-full overflow-y-auto bg-white p-4"
-                className="scrollbar-thumb-blue h-full scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col px-6 py-4"
+                className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex h-full flex-col px-6 py-4"
               >
                 {/* <div className="p:2 flex h-screen flex-1 flex-col justify-between sm:p-6"> */}
                 {/* <p className="text-lg font-bold">Message Title</p> */}
@@ -165,7 +165,7 @@ export const ChatSimple = ({
                                 <div>
                                   {chat.user !== "01" && (
                                     <>
-                                      <span className="text-xs text-edenGray-700 font-semibold float-right">
+                                      <span className="text-edenGray-700 float-right text-xs font-semibold">
                                         {currentUser?.discordName}
                                       </span>
                                     </>
@@ -192,7 +192,7 @@ export const ChatSimple = ({
                                 </span>
                                 <div
                                   className={classNames(
-                                    "h-4 w-4 absolute bottom-2 -rotate-45 rounded-sm",
+                                    "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
                                     chat.user === "01"
                                       ? "bg-edenPink-300 -left-[0.3rem]"
                                       : "bg-edenGray-100 -right-[0.3rem]"
@@ -232,9 +232,9 @@ export const ChatSimple = ({
                 </div>
               </div>
             </section>
-            <section className="flex w-full h-20 items-center justify-between px-3">
+            <section className="flex h-20 w-full items-center justify-between gap-3 px-3">
               <textarea
-                className="rounded-md border border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none bg-transparent py-4 px-4 focus:outline-none"
+                className="border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 focus:outline-none"
                 placeholder="Type your message here..."
                 value={inputMessage}
                 rows={inputMessage.length < 50 ? 1 : 4}
@@ -249,7 +249,7 @@ export const ChatSimple = ({
               />
               <button
                 className={classNames(
-                  "flex h-[38px] w-[38px] items-center justify-center border border-edenGray-100 rounded-full overflow-hidden",
+                  "border-edenGray-100 flex h-[38px] w-[38px] items-center justify-center overflow-hidden rounded-full border",
                   inputMessage ? "cursor-pointer" : "bg-edenGray-100"
                 )}
                 disabled={!inputMessage}
