@@ -328,8 +328,9 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
-  const onFinalFormSubmit = (data) => {
+  const handleFormSubmit = (data: any) => {
     console.log("data", data);
+    setStep(step + 1);
   };
 
   return (
@@ -501,6 +502,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
               <WizardStep
+                // nextDisabled
                 label={"Final Details"}
                 // navigationDisabled={step === 0}
               >
@@ -512,9 +514,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     All done, this is the final step. Fill in some quick
                     information and we’re off!
                   </p>
-                  <FinalFormContainer
-                  //  onFinalFormSubmit={onFinalFormSubmit()}
-                  />
+                  <FinalFormContainer onFinalFormSubmit={handleFormSubmit} />
                 </div>
               </WizardStep>
               <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
@@ -1576,22 +1576,28 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 };
 
 interface IFinalFormContainerProps {
-  onFinalFormSubmit?: () => void;
+  onFinalFormSubmit: (data: any) => void;
 }
 
 const FinalFormContainer = ({
   onFinalFormSubmit,
 }: IFinalFormContainerProps) => {
-  const formMethods = useForm<any>({
-    defaultValues: { position: "", pastedText: "" },
+  const { handleSubmit, control } = useForm({
+    defaultValues: {
+      targetedStartDate: "",
+      visaRequirements: "no",
+      officeLocations: "",
+      officeLocation: "",
+      contractType: "",
+      contractDuration: "",
+    },
   });
-  const { handleSubmit, control } = formMethods;
 
   return (
     <>
       <form
         className="flex items-center justify-center"
-        // onSubmit={handleSubmit(onFinalFormSubmit)}
+        onSubmit={handleSubmit(onFinalFormSubmit)}
       >
         <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
           <Tab.Group>
@@ -1635,7 +1641,7 @@ const FinalFormContainer = ({
                         <input
                           {...field}
                           type="date"
-                          className="  border-edenGray-100 mt-2  w-56 rounded-lg border py-[.45rem] pl-2 outline-none "
+                          className="  border-edenGray-100 mt-2 w-56  rounded-lg border py-[.45rem] pl-2 pr-2 outline-none "
                         />
                       )}
                     />
@@ -1757,6 +1763,9 @@ const FinalFormContainer = ({
             </Tab.Panels>
           </Tab.Group>
         </div>
+        <Button variant="secondary" type="submit" className="ml-auto">
+          Save & Continue
+        </Button>
       </form>
     </>
   );
