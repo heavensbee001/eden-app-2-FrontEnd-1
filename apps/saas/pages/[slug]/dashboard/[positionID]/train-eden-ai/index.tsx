@@ -1635,7 +1635,7 @@ const FinalFormContainer = ({
                         <input
                           {...field}
                           type="date"
-                          className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                          className="  border-edenGray-100 mt-2  w-56 rounded-lg border py-[.45rem] pl-2 outline-none "
                         />
                       )}
                     />
@@ -1701,7 +1701,7 @@ const FinalFormContainer = ({
                           <input
                             {...field}
                             type="text"
-                            className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                            className="  border-edenGray-100 w-full rounded-lg border py-[.45rem] pl-8   outline-none "
                           />
                         )}
                       />
