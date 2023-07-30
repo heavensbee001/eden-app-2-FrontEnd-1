@@ -666,7 +666,8 @@ const InterviewEdenAIContainer = ({
         {
           <InterviewEdenAI
             key={experienceTypeID}
-            aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
+            // aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
+            aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY}
             experienceTypeID={experienceTypeID}
             handleChangeChat={(_chat: any) => {
               setChatN(_chat);
@@ -683,11 +684,13 @@ const InterviewEdenAIContainer = ({
             setQuestions={setQuestions}
             userID={currentUser?._id}
             positionID={positionID}
+            positionTrainEdenAI={false}
             conversationID={conversationID}
             setConversationID={setConversationID}
             handleEnd={() => {
               if (handleEnd) handleEnd();
             }}
+            headerText={`Interview with Eden AI`}
           />
         }
       </div>
