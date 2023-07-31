@@ -368,13 +368,7 @@ const ApplicationStepContainer = ({
           <div>
             {topSkills !== null &&
               topSkills.map((skill: any, index: number) => (
-                <Badge
-                  className="text-white"
-                  key={index}
-                  text={skill}
-                  colorRGB="168, 85, 247"
-                  cutText={20}
-                />
+                <Badge key={index} text={skill} cutText={20} />
               ))}
           </div>
         </div>
