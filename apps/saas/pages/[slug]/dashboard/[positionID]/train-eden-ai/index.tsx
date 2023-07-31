@@ -347,7 +347,10 @@ const TrainAiPage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8">
+      <div
+        key={typeof positionID === "string" ? positionID : ""}
+        className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8"
+      >
         {currentUser && (
           <div className="h-full w-full">
             {/* <div className="absolute left-0 top-0 w-full">
@@ -457,7 +460,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     control={control}
                     render={({ field: { onChange } }) => (
                       <PrioritiesAndTradeOffsContainer
-                        position={findPositionData.findPosition}
+                        position={findPositionData?.findPosition}
                         onChange={onChange}
                       />
                     )}
@@ -813,7 +816,7 @@ const InterviewEdenAIContainer = ({
 };
 
 export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
-  mutation FindPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
+  query findPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
     findPrioritiesTrainEdenAI(fields: $fields) {
       success
       priorities {
@@ -847,8 +850,6 @@ const PrioritiesAndTradeOffsContainer = ({
   // eslint-disable-next-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
 
-  const [scraping, setScraping] = useState<boolean>(false);
-
   const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
 
   const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
@@ -857,13 +858,21 @@ const PrioritiesAndTradeOffsContainer = ({
   //   defaultValues: {},
   // });
 
-  const [FindPrioritiesTrainEdenAI] = useMutation(
-    FIND_PRIORITIES_TRAIN_EDEN_AI,
-    {
+  // eslint-disable-next-line no-unused-vars
+  const { data: findPrioritiesAndTradeOffsData, loading: loadingPriorities } =
+    useQuery(FIND_PRIORITIES_TRAIN_EDEN_AI, {
+      variables: {
+        fields: {
+          positionID: positionID,
+        },
+      },
+      skip:
+        !!position.positionsRequirements?.tradeOffs &&
+        !!position.positionsRequirements?.tradeOffs.length &&
+        !!position.positionsRequirements?.priorities &&
+        !!position.positionsRequirements?.priorities.length,
       onCompleted({ findPrioritiesTrainEdenAI }) {
         // console.log("findPrioritiesTrainEdenAI = ", findPrioritiesTrainEdenAI);
-
-        setScraping(false);
 
         setPriorities(findPrioritiesTrainEdenAI.priorities);
         setTradeOffs(
@@ -879,11 +888,7 @@ const PrioritiesAndTradeOffsContainer = ({
           )! as TradeOffsType[]
         );
       },
-      onError() {
-        setScraping(false);
-      },
-    }
-  );
+    });
 
   useEffect(() => {
     if (
@@ -907,16 +912,6 @@ const PrioritiesAndTradeOffsContainer = ({
           }
         )! as TradeOffsType[]
       );
-    } else {
-      setScraping(true);
-      FindPrioritiesTrainEdenAI({
-        variables: {
-          // fields: { message: textResponse, userID: currentUser?._id },
-          fields: {
-            positionID: positionID,
-          },
-        },
-      });
     }
   }, [position.positionsRequirements]);
 
@@ -950,10 +945,10 @@ const PrioritiesAndTradeOffsContainer = ({
 
   return (
     <div className="grid h-full w-full grid-cols-12 gap-4">
-      {scraping && (
+      {loadingPriorities && (
         <EdenAiProcessingModal
-          open={scraping}
-          title="Calculating criteria"
+          open={loadingPriorities}
+          title="Loading Priorities & Trade Offs"
         ></EdenAiProcessingModal>
       )}
       <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">

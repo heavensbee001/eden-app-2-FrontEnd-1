@@ -133,6 +133,7 @@ export type Conversation = {
   questionsAnswered?: Maybe<Array<Maybe<QuestionAnsweredType>>>;
   summary?: Maybe<Array<Maybe<SummaryType>>>;
   summaryReady?: Maybe<Scalars["Boolean"]>;
+  typeConvo?: Maybe<TypeConvoEnum>;
   updatedAt?: Maybe<Scalars["Date"]>;
   userID?: Maybe<Scalars["String"]>;
 };
@@ -438,7 +439,6 @@ export type Mutation = {
   enterRoom?: Maybe<Rooms>;
   exitRoom?: Maybe<Rooms>;
   findEndorsements?: Maybe<Array<Maybe<Endorsement>>>;
-  findPrioritiesTrainEdenAI?: Maybe<FindPrioritiesTrainEdenAiOutput>;
   findReviews?: Maybe<Array<Maybe<Review>>>;
   inputToGPT?: Maybe<InputToGptOutput>;
   interviewQuestionCreationUser?: Maybe<Position>;
@@ -478,6 +478,7 @@ export type Mutation = {
   updatePositionConvRecruiter?: Maybe<Array<Maybe<Position>>>;
   updatePositionUserAnswers?: Maybe<Array<Maybe<Position>>>;
   updateProject?: Maybe<Project>;
+  updateQueryResponse?: Maybe<QueryResponse>;
   updateRoleTemplate?: Maybe<RoleTemplate>;
   updateServer?: Maybe<ServerTemplate>;
   updateUrl?: Maybe<Position>;
@@ -732,10 +733,6 @@ export type MutationFindEndorsementsArgs = {
   fields?: InputMaybe<FindEndorsementsInput>;
 };
 
-export type MutationFindPrioritiesTrainEdenAiArgs = {
-  fields?: InputMaybe<FindPrioritiesTrainEdenAiInput>;
-};
-
 export type MutationFindReviewsArgs = {
   fields?: InputMaybe<FindReviewsInput>;
 };
@@ -892,6 +889,10 @@ export type MutationUpdateProjectArgs = {
   fields: UpdateProjectInput;
 };
 
+export type MutationUpdateQueryResponseArgs = {
+  fields?: InputMaybe<UpdateQueryResponseInput>;
+};
+
 export type MutationUpdateRoleTemplateArgs = {
   fields?: InputMaybe<CreateRoleInput>;
 };
@@ -1009,6 +1010,7 @@ export type Position = {
   interviewQuestionsForPosition?: Maybe<
     Array<Maybe<InterviewQuestionsForCandidateType>>
   >;
+  mainUser?: Maybe<Members>;
   name?: Maybe<Scalars["String"]>;
   nodes?: Maybe<Array<Maybe<NodeDataType>>>;
   positionsRequirements?: Maybe<PositionsRequirementsType>;
@@ -1119,12 +1121,14 @@ export type Query = {
   findOneMemberToMembersGraph?: Maybe<Graph>;
   findPosition?: Maybe<Position>;
   findPositions?: Maybe<Array<Maybe<Position>>>;
+  findPrioritiesTrainEdenAI?: Maybe<FindPrioritiesTrainEdenAiOutput>;
   findProject?: Maybe<Project>;
   findProjectGraph?: Maybe<Graph>;
   findProjectUpdates?: Maybe<Array<Maybe<ProjectUpdate>>>;
   findProjects?: Maybe<Array<Maybe<Project>>>;
   findProjects_RecommendedToUser?: Maybe<Array<Maybe<ProjectMatchType>>>;
   findProjects_RequireSkill?: Maybe<Array<Maybe<Project>>>;
+  findQueryResponses?: Maybe<Array<Maybe<QueryResponse>>>;
   findQuestionEdenAI?: Maybe<QuestionsEdenAi>;
   findRoleTemplate?: Maybe<RoleTemplate>;
   findRoleTemplates?: Maybe<Array<Maybe<RoleTemplate>>>;
@@ -1390,6 +1394,10 @@ export type QueryFindPositionsArgs = {
   fields?: InputMaybe<FindPositionsInput>;
 };
 
+export type QueryFindPrioritiesTrainEdenAiArgs = {
+  fields?: InputMaybe<FindPrioritiesTrainEdenAiInput>;
+};
+
 export type QueryFindProjectArgs = {
   fields?: InputMaybe<FindProjectInput>;
 };
@@ -1412,6 +1420,10 @@ export type QueryFindProjects_RecommendedToUserArgs = {
 
 export type QueryFindProjects_RequireSkillArgs = {
   fields?: InputMaybe<FindProjects_RequireSkillInput>;
+};
+
+export type QueryFindQueryResponsesArgs = {
+  fields?: InputMaybe<FindQueryResponsesInput>;
 };
 
 export type QueryFindQuestionEdenAiArgs = {
@@ -1613,6 +1625,17 @@ export type QueryTreeOfRelatedNodesArgs = {
 
 export type QueryWaitingToAproveSkillsArgs = {
   fields?: InputMaybe<FindSkillsInput>;
+};
+
+export type QueryResponse = {
+  __typename?: "QueryResponse";
+  _id?: Maybe<Scalars["ID"]>;
+  answer?: Maybe<AnswerType>;
+  conversationID?: Maybe<Scalars["ID"]>;
+  phase?: Maybe<PhaseQueryResponseEnum>;
+  question?: Maybe<QuestionQueryType>;
+  responder?: Maybe<ResponderType>;
+  sender?: Maybe<SenderType>;
 };
 
 export type QuestionContentType = {
@@ -2038,6 +2061,11 @@ export type AnalysisCandidateEdenAiType = {
   fitRequirements?: Maybe<FitRequirementsAnalysisType>;
   flagAnalysisCreated?: Maybe<Scalars["Boolean"]>;
   skills?: Maybe<SkillsAnalysisType>;
+};
+
+export type AnswerType = {
+  __typename?: "answerType";
+  content?: Maybe<Scalars["String"]>;
 };
 
 export type ApplyGrantInput = {
@@ -2513,6 +2541,7 @@ export type CvInfoType = {
   __typename?: "cvInfoType";
   cvContent?: Maybe<Scalars["String"]>;
   cvMemory?: Maybe<Array<Maybe<CvMemoryType>>>;
+  cvNotes?: Maybe<Scalars["String"]>;
   cvPreparationBio?: Maybe<Scalars["Boolean"]>;
   cvPreparationDone?: Maybe<Scalars["Boolean"]>;
   cvPreparationMemory?: Maybe<Scalars["Boolean"]>;
@@ -2965,6 +2994,8 @@ export type FindConversationInput = {
 export type FindConversationsInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   convKey?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  positionID?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  positionTrainEdenAI?: InputMaybe<Scalars["Boolean"]>;
   summaryReady?: InputMaybe<Scalars["Boolean"]>;
   userID?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
 };
@@ -3151,6 +3182,14 @@ export type FindProjects_RecommendedToUserInput = {
 export type FindProjects_RequireSkillInput = {
   serverID?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   skillID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+};
+
+export type FindQueryResponsesInput = {
+  _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  responderID?: InputMaybe<Scalars["ID"]>;
+  responderType?: InputMaybe<SendRespTypeEnum>;
+  senderID?: InputMaybe<Scalars["ID"]>;
+  senderType?: InputMaybe<SendRespTypeEnum>;
 };
 
 export type FindQuestionEdenAiInput = {
@@ -3714,6 +3753,13 @@ export enum PhaseEpicType {
   Open = "open",
 }
 
+export enum PhaseQueryResponseEnum {
+  Archived = "ARCHIVED",
+  Query = "QUERY",
+  Responed = "RESPONED",
+  Viewed = "VIEWED",
+}
+
 export enum PhaseType {
   Committed = "committed",
   Engaged = "engaged",
@@ -3762,6 +3808,7 @@ export type PositionsRequirementsType = {
   __typename?: "positionsRequirementsType";
   benefits?: Maybe<Array<Maybe<Scalars["String"]>>>;
   content?: Maybe<Scalars["String"]>;
+  notesRequirConv?: Maybe<Scalars["String"]>;
   originalContent?: Maybe<Scalars["String"]>;
   positionPreparationMemory?: Maybe<Scalars["Boolean"]>;
   priorities?: Maybe<Array<Maybe<PrioritiesType>>>;
@@ -3869,6 +3916,11 @@ export type QuestionAnsweredType = {
   summaryOfAnswerSmall?: Maybe<Scalars["String"]>;
 };
 
+export type QuestionQueryType = {
+  __typename?: "questionQueryType";
+  content?: Maybe<Scalars["String"]>;
+};
+
 export type QuestionSuggestType = {
   __typename?: "questionSuggestType";
   IDCriteria?: Maybe<Scalars["ID"]>;
@@ -3964,6 +4016,12 @@ export type ResourcesType = {
   __typename?: "resourcesType";
   name?: Maybe<Scalars["String"]>;
   url?: Maybe<Scalars["String"]>;
+};
+
+export type ResponderType = {
+  __typename?: "responderType";
+  positionID?: Maybe<Scalars["String"]>;
+  userID?: Maybe<Scalars["String"]>;
 };
 
 export enum ResultEnum {
@@ -4065,6 +4123,17 @@ export type SecondInterviewLetterInput = {
 export type SecondInterviewLetterOutput = {
   __typename?: "secondInterviewLetterOutput";
   generatedLetter?: Maybe<Scalars["String"]>;
+};
+
+export enum SendRespTypeEnum {
+  Position = "POSITION",
+  User = "USER",
+}
+
+export type SenderType = {
+  __typename?: "senderType";
+  positionID?: Maybe<Scalars["String"]>;
+  userID?: Maybe<Scalars["String"]>;
 };
 
 export enum ServerTypeEnum {
@@ -4254,6 +4323,15 @@ export type TweetsType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export enum TypeConvoEnum {
+  Align = "ALIGN",
+  AskCandidate = "ASK_CANDIDATE",
+  AskOpportunity = "ASK_OPPORTUNITY",
+  AskTalentList = "ASK_TALENT_LIST",
+  Interview = "INTERVIEW",
+  QueryResponse = "QUERY_RESPONSE",
+}
+
 export enum TypeEnumMp {
   Member = "Member",
   ProjectRole = "ProjectRole",
@@ -4415,7 +4493,9 @@ export type UpdatePositionConvRecruiterInput = {
 export type UpdatePositionInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   companyID?: InputMaybe<Scalars["ID"]>;
+  mainUserID?: InputMaybe<Scalars["ID"]>;
   name?: InputMaybe<Scalars["String"]>;
+  updatePosition?: InputMaybe<Scalars["ID"]>;
 };
 
 export type UpdatePositionUserAnswersInput = {
@@ -4437,6 +4517,16 @@ export type UpdateProjectInput = {
   stepsJoinProject?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   team?: InputMaybe<Array<InputMaybe<TeamInput>>>;
   title?: InputMaybe<Scalars["String"]>;
+};
+
+export type UpdateQueryResponseInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+  phase?: InputMaybe<PhaseQueryResponseEnum>;
+  question?: InputMaybe<Scalars["String"]>;
+  responderID?: InputMaybe<Scalars["ID"]>;
+  responderType?: InputMaybe<SendRespTypeEnum>;
+  senderID?: InputMaybe<Scalars["ID"]>;
+  senderType?: InputMaybe<SendRespTypeEnum>;
 };
 
 export type UpdateServerInput = {
