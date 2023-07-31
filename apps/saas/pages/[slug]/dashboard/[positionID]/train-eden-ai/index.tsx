@@ -555,7 +555,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   className="absolute bottom-8 right-8 z-30 mx-auto"
                   variant={"primary"}
                   onClick={() => {
-                    router.push(`/dashboard/${positionID}`);
+                    router.push(`/${company?.slug}/dashboard/${positionID}`);
                   }}
                 >
                   Continue to Dashboard
