@@ -505,6 +505,15 @@ const TrainAiPage: NextPageWithLayout = () => {
                 // nextDisabled
                 label={"Final Details"}
                 // navigationDisabled={step === 0}
+                nextButton={
+                  <Button
+                    loading={scraping}
+                    variant="secondary"
+                    // type="submit"
+                    className="ml-auto"
+                    hideNext={false}
+                  ></Button>
+                }
               >
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="text-xl font-medium">
@@ -514,7 +523,13 @@ const TrainAiPage: NextPageWithLayout = () => {
                     All done, this is the final step. Fill in some quick
                     information and we’re off!
                   </p>
-                  <FinalFormContainer onFinalFormSubmit={handleFormSubmit} />
+                  <FinalFormContainer />;
+                  {/* <Controller
+                    control={control}
+                    render={() => {
+                      <FinalFormContainer onChange={} />;
+                    }}
+                  /> */}
                 </div>
               </WizardStep>
               <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
@@ -597,9 +612,11 @@ export default TrainAiPage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
+import { type } from "os";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { MdContentCopy, MdLink } from "react-icons/md";
 import { toast } from "react-toastify";
+import { register } from "ts-node";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -1576,20 +1593,39 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 };
 
 interface IFinalFormContainerProps {
-  onFinalFormSubmit: (data: any) => void;
+  // onChange: (data: FormData) => void;
 }
+
+type FormData = {
+  targetedStartDate: Date;
+  visaRequirements: "yes" | "no";
+  officePolicy:
+    | "on-site"
+    | "remote"
+    | "hybrid-1-day-office"
+    | "hybrid-2-day-office"
+    | "hybrid-3-day-office"
+    | "hybrid-4-day-office";
+  officeLocation: string;
+  contractType: "fulltime" | "parttime" | "freelance" | "intern";
+  contractDuration: string; // You can specify more options if you have them
+};
+
+const defaultFormValues: FormData = {
+  targetedStartDate: new Date(),
+  visaRequirements: "yes",
+  officePolicy: "on-site",
+  officeLocation: "",
+  contractType: "fulltime",
+  contractDuration: "",
+};
 
 const FinalFormContainer = ({
   onFinalFormSubmit,
 }: IFinalFormContainerProps) => {
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, register } = useForm<FormData>({
     defaultValues: {
-      targetedStartDate: "",
-      visaRequirements: "no",
-      officeLocations: "",
-      officeLocation: "",
-      contractType: "",
-      contractDuration: "",
+      ...defaultFormValues,
     },
   });
 
@@ -1633,64 +1669,54 @@ const FinalFormContainer = ({
               <Tab.Panel className="pt-8">
                 <div className="flex  gap-x-6">
                   <div className="flex  flex-col items-start text-xs">
-                    <label>Targeted Start Date</label>
-                    <Controller
-                      control={control}
-                      name="targetedStartDate"
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          type="date"
-                          className="  border-edenGray-100 mt-2 w-56  rounded-lg border py-[.45rem] pl-2 pr-2 outline-none "
-                        />
-                      )}
+                    <label className="text-xs ">Start Date </label>
+                    <input
+                      type="date"
+                      id="targetedStartDate"
+                      className="  border-edenGray-100 mt-2 w-56  rounded-lg border py-[.45rem] pl-2 pr-2 outline-none "
+                      required
+                      {...register("targetedStartDate")}
                     />
                   </div>
                   <div className="flex flex-col items-start">
                     <label className="text-xs">Visa Required</label>
                     <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
-                      <Controller
-                        control={control}
-                        name="visaRequirements"
-                        defaultValue="no"
-                        render={({ field }) => (
-                          <select {...field} className="w-full outline-none">
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                          </select>
-                        )}
-                      />
+                      <select
+                        id="visaRequirements"
+                        className="w-full outline-none"
+                        {...register("visaRequirements")}
+                      >
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
                     </div>
                   </div>
                   <div className="flex   w-full flex-col items-start pr-2">
                     <label className="text-xs ">Office Policy</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
-                      <Controller
-                        control={control}
-                        defaultValue=""
-                        name="officeLocations"
-                        render={({ field }) => (
-                          <select className="w-full outline-none" {...field}>
-                            <option value={""} disabled hidden>
-                              Select an option...
-                            </option>
-                            <option value="on-site">On site</option>
-                            <option value="remote">Remote</option>
-                            <option value="hybrid-1-day-office">
-                              Hybrid - 1 day office
-                            </option>
-                            <option value="hybrid-2-day-office">
-                              Hybrid - 2 day office
-                            </option>
-                            <option value="hybrid-3-day-office">
-                              Hybrid - 3 day office
-                            </option>
-                            <option value="hybrid-4-day-office">
-                              Hybrid - 4 day office
-                            </option>
-                          </select>
-                        )}
-                      />
+                      <select
+                        id="officePolicy"
+                        className="w-full outline-none"
+                        {...register("officePolicy")}
+                      >
+                        <option value={""} disabled hidden>
+                          Select an option...
+                        </option>
+                        <option value="on-site">On site</option>
+                        <option value="remote">Remote</option>
+                        <option value="hybrid-1-day-office">
+                          Hybrid - 1 day office
+                        </option>
+                        <option value="hybrid-2-day-office">
+                          Hybrid - 2 day office
+                        </option>
+                        <option value="hybrid-3-day-office">
+                          Hybrid - 3 day office
+                        </option>
+                        <option value="hybrid-4-day-office">
+                          Hybrid - 4 day office
+                        </option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1699,17 +1725,11 @@ const FinalFormContainer = ({
                   <div className="relative mb-12 mt-6 flex flex-col items-start">
                     <label className="text-xs">Office Locations</label>
                     <div className="mt-2 w-full rounded-lg bg-white text-xs">
-                      <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
-                      <Controller
-                        control={control}
-                        name="officeLocation"
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            type="text"
-                            className="  border-edenGray-100 w-full rounded-lg border py-[.45rem] pl-8   outline-none "
-                          />
-                        )}
+                      <input
+                        id="officeLocation"
+                        {...register("officeLocation")}
+                        type="text"
+                        className="  border-edenGray-100 w-full rounded-lg border py-[.45rem] pl-8   outline-none "
                       />
                     </div>
                   </div>
@@ -1718,39 +1738,33 @@ const FinalFormContainer = ({
                   <div className="flex flex-col items-start">
                     <label className="text-xs">Contact Type</label>
                     <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
-                      <Controller
-                        control={control}
-                        name="contractType"
-                        defaultValue=""
-                        render={({ field }) => (
-                          <select {...field} className=" w-full outline-none">
-                            <option value={""} disabled hidden>
-                              Select an option...
-                            </option>
-                            <option value="fulltime">Full time</option>
-                            <option value="parttime">Part time</option>
-                            <option value="freelance">Freelance</option>
-                            <option value="intern">Intern</option>
-                          </select>
-                        )}
-                      />
+                      <select
+                        id="contractType"
+                        {...register("contractType")}
+                        className=" w-full outline-none"
+                      >
+                        <option value={""} disabled hidden>
+                          Select an option...
+                        </option>
+                        <option value="fulltime">Full time</option>
+                        <option value="parttime">Part time</option>
+                        <option value="freelance">Freelance</option>
+                        <option value="intern">Intern</option>
+                      </select>
                     </div>
                   </div>
                   <div className="flex w-full flex-col items-start">
                     <label className="text-xs">Contract Duration</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
-                      <Controller
-                        control={control}
-                        name="contractDuration"
-                        defaultValue={""}
-                        render={({ field }) => (
-                          <select {...field} className="w-full outline-none ">
-                            <option value={""} disabled hidden>
-                              Select duration of contract
-                            </option>
-                          </select>
-                        )}
-                      />
+                      <select
+                        id="contractDuration"
+                        {...register("contractDuration")}
+                        className="w-full outline-none "
+                      >
+                        <option value={""} disabled hidden>
+                          Select duration of contract
+                        </option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1763,9 +1777,6 @@ const FinalFormContainer = ({
             </Tab.Panels>
           </Tab.Group>
         </div>
-        <Button variant="secondary" type="submit" className="ml-auto">
-          Save & Continue
-        </Button>
       </form>
     </>
   );
