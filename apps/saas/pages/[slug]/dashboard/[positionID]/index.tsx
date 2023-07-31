@@ -168,7 +168,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
   const [opportunityDetailsOpen, setOpportunityDetailsOpen] =
     useState<boolean>(false);
-  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(false);
+  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(true);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
     string[]
