@@ -33,6 +33,7 @@ const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { positionID } = router.query;
+  // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
