@@ -157,7 +157,8 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
 
-              <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
+              {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
+              <WizardStep label={"chat"}>
                 <div className="mx-auto h-[70vh] max-w-lg">
                   <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                 </div>
