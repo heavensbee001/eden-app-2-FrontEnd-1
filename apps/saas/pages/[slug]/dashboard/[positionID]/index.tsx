@@ -168,7 +168,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
   const [opportunityDetailsOpen, setOpportunityDetailsOpen] =
     useState<boolean>(false);
-  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(false);
+  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(true);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
     string[]
@@ -805,6 +805,8 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleSelectedTalentList = (list: TalentListType) => {
+    if (!company) return;
+
     const candidatesOnTalentListSelected: CandidateTypeSkillMatch[] = [];
 
     // if (talentListToShow) {
@@ -1619,7 +1621,6 @@ const PositionCRM: NextPageWithLayout = () => {
                     )}
                     onClick={() => {
                       if (newTalentListCandidatesIds.length !== 2) return;
-
                       router.push(
                         {
                           pathname: `/${company?.slug}/dashboard/${positionID}`,

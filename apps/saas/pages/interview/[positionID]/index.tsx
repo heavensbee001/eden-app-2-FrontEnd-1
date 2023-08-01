@@ -9,6 +9,7 @@ import {
   CountdownTimer,
   CVUploadGPT,
   InterviewEdenAI,
+  Loading,
   ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -32,6 +33,7 @@ const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
   const { positionID } = router.query;
+  // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
@@ -156,7 +158,8 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
 
-              <WizardStep nextDisabled={!interviewEnded} label={"chat"}>
+              {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
+              <WizardStep label={"chat"}>
                 <div className="mx-auto h-[70vh] max-w-lg">
                   <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                 </div>
@@ -368,13 +371,7 @@ const ApplicationStepContainer = ({
           <div>
             {topSkills !== null &&
               topSkills.map((skill: any, index: number) => (
-                <Badge
-                  className="text-white"
-                  key={index}
-                  text={skill}
-                  colorRGB="168, 85, 247"
-                  cutText={20}
-                />
+                <Badge key={index} text={skill} cutText={20} />
               ))}
           </div>
         </div>
@@ -666,7 +663,8 @@ const InterviewEdenAIContainer = ({
         {
           <InterviewEdenAI
             key={experienceTypeID}
-            aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
+            // aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
+            aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY}
             experienceTypeID={experienceTypeID}
             handleChangeChat={(_chat: any) => {
               setChatN(_chat);
@@ -674,20 +672,21 @@ const InterviewEdenAIContainer = ({
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
-              <p className="bg-cottonPink text-edenGreen-600 rounded-sm p-1 text-center font-medium">
-                Hi! I&apos;m Eden AI. Say &quot;Hello&quot; to start the
-                interview
-              </p>
+              <div className="pt-4">
+                <Loading title="Loading Eden AI" />
+              </div>
             }
             questions={questions}
             setQuestions={setQuestions}
             userID={currentUser?._id}
             positionID={positionID}
+            positionTrainEdenAI={false}
             conversationID={conversationID}
             setConversationID={setConversationID}
             handleEnd={() => {
               if (handleEnd) handleEnd();
             }}
+            headerText={`Interview with Eden AI`}
           />
         }
       </div>
