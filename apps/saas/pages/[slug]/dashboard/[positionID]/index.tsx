@@ -1108,7 +1108,7 @@ const PositionCRM: NextPageWithLayout = () => {
           </Button>
         </div>
       </Modal>
-      <div className="mx-auto max-w-screen-2xl flex-grow p-8">
+      <div className="mx-auto max-w-screen-xl flex-grow p-8">
         <div className="z-20 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
@@ -1123,7 +1123,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
             <Button
               size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
               onClick={handleCopyLink}
             >
@@ -1132,10 +1132,9 @@ const PositionCRM: NextPageWithLayout = () => {
             </Button>
             <Button
               size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
               onClick={handleCalculateSkillScore}
-              style={{ opacity: 0.2 }}
             >
               Calculate Skill Score
             </Button>
@@ -1143,7 +1142,7 @@ const PositionCRM: NextPageWithLayout = () => {
               <span className="text-sm text-gray-400">Link copied!</span>
             )}
             <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleTrainButtonClick}
@@ -1161,7 +1160,7 @@ const PositionCRM: NextPageWithLayout = () => {
               </div>
             </Button>
             <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleFindBestTalentClick}
@@ -1190,7 +1189,7 @@ const PositionCRM: NextPageWithLayout = () => {
               className={classNames(
                 "border-edenGreen-200 bg-edenGreen-200 w-full overflow-hidden rounded-md border-t px-4 transition-all ease-in-out",
                 opportunityDetailsOpen
-                  ? "max-h-[50vh] overflow-y-scroll rounded-tr-none py-4"
+                  ? "max-h-[50vh] overflow-y-scroll scrollbar-hide rounded-tr-none py-4"
                   : "max-h-[0px] py-0"
               )}
             >
@@ -1367,7 +1366,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 ? "Close opportunity details"
                 : "See opportunity details"}
               <div className={classNames("ml-auto")}>
-                {bestPicksOpen ? (
+                {opportunityDetailsOpen ? (
                   <BiChevronUp color="#626262" size={"1.2rem"} />
                 ) : (
                   <BiChevronDown color="#626262" size={"1.2rem"} />
@@ -1385,7 +1384,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
               <div
                 className={classNames(
-                  "scrollbar-hide overflow-x-scroll transition-all ease-in-out",
+                  "scrollbar-hide overflow-x-scroll scrollbar-hide transition-all ease-in-out",
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
@@ -1556,7 +1555,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       {addToListOpen && (
                         <div
                           className={classNames(
-                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll scrollbar-hide rounded-md border border-gray-200 bg-white hover:text-gray-600",
                             addToListOpen ? "" : "h-0"
                           )}
                         >
@@ -1709,7 +1708,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
+            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll scrollbar-hide bg-white shadow-md duration-200 ease-in-out",
             selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
@@ -1758,7 +1757,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out",
             router.query.candidate1 && router.query.candidate2
               ? "w-[100vw]"
               : "w-0"
@@ -1766,7 +1765,7 @@ const PositionCRM: NextPageWithLayout = () => {
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1798,7 +1797,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}

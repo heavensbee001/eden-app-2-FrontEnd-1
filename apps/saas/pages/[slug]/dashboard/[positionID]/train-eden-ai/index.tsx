@@ -349,7 +349,7 @@ const TrainAiPage: NextPageWithLayout = () => {
       <SEO />
       <div
         key={typeof positionID === "string" ? positionID : ""}
-        className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8"
+        className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll scrollbar-hide p-8"
       >
         {currentUser && (
           <div className="h-full w-full">
@@ -526,7 +526,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     </p>
                   </div>
                   <div className="flex w-2/3 justify-center">
-                    <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll rounded-md border bg-white px-2 text-sm">
+                    <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll scrollbar-hide rounded-md border bg-white px-2 text-sm">
                       <MdLink size={18} className="mr-2" />
                       {window.location.origin + "/interview/" + positionID}
                     </div>
@@ -948,8 +948,12 @@ const PrioritiesAndTradeOffsContainer = ({
       {loadingPriorities && (
         <EdenAiProcessingModal
           open={loadingPriorities}
-          title="Loading Priorities & Trade Offs"
-        ></EdenAiProcessingModal>
+          title="Understanding your Priorities & Tradeoffs"
+        >
+          <div className="text-center">
+            <p>{`As any great recruiter would tell you, I understand the perfect match doesn't exist. It's all about your priorities & tradeoffs - so in a couple of seconds please work with me so we can be super aligned on this!`}</p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
@@ -1207,8 +1211,12 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
-          title="Calculating criteria"
-        ></EdenAiProcessingModal>
+          title="Compiling candidate checklist"
+        >
+          <div className="text-center">
+            <p>{`These are the criteria you & I will use to benchmark all of the candidates. I'm generating this list based on everything you've just told me prior - of course you'll be able to add, delete & edit!`}</p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       {report && (
         <div className="whitespace-pre-wrap">
@@ -1516,8 +1524,14 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
-          title="Loading questions"
-        ></EdenAiProcessingModal>
+          title="Generating optimal interview"
+        >
+          <div className="text-center">
+            <p>
+              {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
+            </p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       <Button
         className="absolute bottom-8 right-8 z-30 mx-auto"

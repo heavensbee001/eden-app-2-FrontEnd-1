@@ -130,7 +130,7 @@ const ErrorLogPage: NextPageWithLayout = () => {
             {pageInfo?.totalResults} Total
           </div>
         </div>
-        <Card className={`scrollbar-hide h-75 overflow-scroll`}>
+        <Card className={`scrollbar-hide h-75 overflow-scroll scrollbar-hide`}>
           {errorsData &&
             errorsData.map((error: ErrorLog) => (
               <Card
