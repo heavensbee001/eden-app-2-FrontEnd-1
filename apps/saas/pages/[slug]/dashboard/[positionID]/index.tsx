@@ -1187,6 +1187,24 @@ const PositionCRM: NextPageWithLayout = () => {
           >
             <div
               className={classNames(
+                "bg-edenGreen-200 text-edenGray-700 absolute right-0 top-0 flex h-6 w-44 cursor-pointer items-center rounded-md px-2 text-xs",
+                opportunityDetailsOpen ? "rounded-bl-none rounded-br-none" : ""
+              )}
+              onClick={() => setOpportunityDetailsOpen(!opportunityDetailsOpen)}
+            >
+              {opportunityDetailsOpen
+                ? "Close opportunity details"
+                : "See opportunity details"}
+              <div className={classNames("ml-auto")}>
+                {opportunityDetailsOpen ? (
+                  <BiChevronUp color="#626262" size={"1.2rem"} />
+                ) : (
+                  <BiChevronDown color="#626262" size={"1.2rem"} />
+                )}
+              </div>
+            </div>
+            <div
+              className={classNames(
                 "border-edenGreen-200 bg-edenGreen-200 w-full overflow-hidden rounded-md border-t px-4 transition-all ease-in-out",
                 opportunityDetailsOpen
                   ? "max-h-[50vh] overflow-y-scroll scrollbar-hide rounded-tr-none py-4"
@@ -1234,7 +1252,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel>
-                    <ul className="">
+                    <ul className="w-80 mx-auto">
                       {priorities &&
                         priorities.length > 0 &&
                         priorities.map((priority, index) => (
@@ -1271,14 +1289,14 @@ const PositionCRM: NextPageWithLayout = () => {
                     </ul>
                   </Tab.Panel>
                   <Tab.Panel>
-                    <div className="">
+                    <div className="text-center">
                       {findPositionData?.findPosition?.nodes && (
                         <NodeList nodes={findPositionData.findPosition.nodes} />
                       )}
                     </div>
                   </Tab.Panel>
                   <Tab.Panel>
-                    <div className="flex max-w-lg flex-col items-center justify-center">
+                    <div className="flex max-w-lg mx-auto flex-col items-center justify-center">
                       {tradeOffs &&
                         tradeOffs.length > 0 &&
                         tradeOffs.map((tradeOff, index) => (
@@ -1354,24 +1372,6 @@ const PositionCRM: NextPageWithLayout = () => {
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
-            </div>
-            <div
-              className={classNames(
-                "bg-edenGreen-200 text-edenGray-700 absolute right-0 top-0 flex h-6 w-44 cursor-pointer items-center rounded-md px-2 text-xs",
-                opportunityDetailsOpen ? "rounded-bl-none rounded-br-none" : ""
-              )}
-              onClick={() => setOpportunityDetailsOpen(!opportunityDetailsOpen)}
-            >
-              {opportunityDetailsOpen
-                ? "Close opportunity details"
-                : "See opportunity details"}
-              <div className={classNames("ml-auto")}>
-                {opportunityDetailsOpen ? (
-                  <BiChevronUp color="#626262" size={"1.2rem"} />
-                ) : (
-                  <BiChevronDown color="#626262" size={"1.2rem"} />
-                )}
-              </div>
             </div>
           </section>
 
