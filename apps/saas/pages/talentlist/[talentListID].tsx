@@ -49,9 +49,8 @@ const TalentListPublicPage: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -312,11 +311,11 @@ const TalentListPublicPage: NextPageWithLayout = () => {
       </div>
       <div
         className={classNames(
-          "absolute right-0 top-0 z-20 transform overflow-y-scroll border-2 transition-all duration-200 ease-in-out",
+          "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide border-2 transition-all duration-200 ease-in-out",
           selectedUserId ? "w-[50vw]" : "w-0"
         )}
       >
-        <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll bg-white shadow-md">
+        <div className="scrollbar-hide h-[calc(100vh-4rem)] overflow-y-scroll scrollbar-hide bg-white shadow-md">
           {/* {selectedUserId ? ( */}
           <CandidateInfo
             key={selectedUserId || ""}
@@ -341,7 +340,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
       </div>
       <div
         className={classNames(
-          "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+          "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out",
           router.query.candidate1 && router.query.candidate2
             ? "w-[100vw]"
             : "w-0"
@@ -349,7 +348,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
       >
         {router.query.candidate1 && router.query.candidate2 && (
           <>
-            <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+            <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll scrollbar-hide border-r border-gray-300 bg-white">
               {/* {router.query.candidate1 ? ( */}
               <CandidateInfo
                 key={(router.query.candidate1 as string) || ""}
