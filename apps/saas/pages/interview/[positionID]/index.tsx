@@ -113,7 +113,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8">
+      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll scrollbar-hide p-8">
         {/* <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4"> */}
         {currentUser && (
           <div className="h-full w-full">
@@ -363,7 +363,7 @@ const ApplicationStepContainer = ({
 
   return (
     <div className="grid h-full grid-cols-12 gap-6">
-      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
+      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide">
         <div className="mb-8">
           <h3 className="text-lg font-semibold text-gray-400">
             Your top skills:
@@ -410,7 +410,7 @@ const ApplicationStepContainer = ({
           </div>
         </div>
       </section>
-      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll rounded-md bg-white">
+      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide rounded-md bg-white">
         <div className="scrollbar-hide h-full overflow-y-scroll p-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -469,7 +469,7 @@ const ApplicationStepContainer = ({
           </p>
         </div>
       </section>
-      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll">
+      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide">
         <div className="mb-8">
           <h3 className="mb-2 text-lg font-semibold text-gray-400">
             What you will get:

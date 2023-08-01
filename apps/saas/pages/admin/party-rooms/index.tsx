@@ -90,7 +90,7 @@ const DiscoverPage: NextPageWithLayout = () => {
     <>
       <SEO />
       <div
-        className={`h-9/10 scrollbar-hide m-3 w-full space-y-4 overflow-y-scroll p-1`}
+        className={`h-9/10 scrollbar-hide m-3 w-full space-y-4 overflow-y-scroll p-1 scrollbar-hide`}
       >
         <Card shadow className="scrollbar-hide w-full bg-white p-4">
           <div className={`grid grid-cols-2`}>

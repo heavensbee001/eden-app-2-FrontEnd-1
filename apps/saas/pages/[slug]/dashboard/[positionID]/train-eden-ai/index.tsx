@@ -349,7 +349,7 @@ const TrainAiPage: NextPageWithLayout = () => {
       <SEO />
       <div
         key={typeof positionID === "string" ? positionID : ""}
-        className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8"
+        className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll scrollbar-hide p-8"
       >
         {currentUser && (
           <div className="h-full w-full">
@@ -526,7 +526,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     </p>
                   </div>
                   <div className="flex w-2/3 justify-center">
-                    <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll rounded-md border bg-white px-2 text-sm">
+                    <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll scrollbar-hide rounded-md border bg-white px-2 text-sm">
                       <MdLink size={18} className="mr-2" />
                       {window.location.origin + "/interview/" + positionID}
                     </div>

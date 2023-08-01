@@ -1189,7 +1189,7 @@ const PositionCRM: NextPageWithLayout = () => {
               className={classNames(
                 "border-edenGreen-200 bg-edenGreen-200 w-full overflow-hidden rounded-md border-t px-4 transition-all ease-in-out",
                 opportunityDetailsOpen
-                  ? "max-h-[50vh] overflow-y-scroll rounded-tr-none py-4"
+                  ? "max-h-[50vh] overflow-y-scroll scrollbar-hide rounded-tr-none py-4"
                   : "max-h-[0px] py-0"
               )}
             >
@@ -1384,7 +1384,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
               <div
                 className={classNames(
-                  "scrollbar-hide overflow-x-scroll transition-all ease-in-out",
+                  "scrollbar-hide overflow-x-scroll scrollbar-hide transition-all ease-in-out",
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
@@ -1555,7 +1555,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       {addToListOpen && (
                         <div
                           className={classNames(
-                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll scrollbar-hide rounded-md border border-gray-200 bg-white hover:text-gray-600",
                             addToListOpen ? "" : "h-0"
                           )}
                         >
@@ -1708,7 +1708,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
+            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll scrollbar-hide bg-white shadow-md duration-200 ease-in-out",
             selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
@@ -1757,7 +1757,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out",
             router.query.candidate1 && router.query.candidate2
               ? "w-[100vw]"
               : "w-0"
@@ -1765,7 +1765,7 @@ const PositionCRM: NextPageWithLayout = () => {
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1797,7 +1797,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}
