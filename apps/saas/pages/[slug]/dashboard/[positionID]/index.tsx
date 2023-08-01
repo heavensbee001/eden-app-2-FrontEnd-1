@@ -1108,7 +1108,7 @@ const PositionCRM: NextPageWithLayout = () => {
           </Button>
         </div>
       </Modal>
-      <div className="mx-auto max-w-screen-2xl flex-grow p-8">
+      <div className="mx-auto max-w-screen-xl flex-grow p-8">
         <div className="z-20 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
@@ -1123,7 +1123,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
             <Button
               size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
               onClick={handleCopyLink}
             >
@@ -1132,10 +1132,9 @@ const PositionCRM: NextPageWithLayout = () => {
             </Button>
             <Button
               size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
               onClick={handleCalculateSkillScore}
-              style={{ opacity: 0.2 }}
             >
               Calculate Skill Score
             </Button>
@@ -1143,7 +1142,7 @@ const PositionCRM: NextPageWithLayout = () => {
               <span className="text-sm text-gray-400">Link copied!</span>
             )}
             <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleTrainButtonClick}
@@ -1161,7 +1160,7 @@ const PositionCRM: NextPageWithLayout = () => {
               </div>
             </Button>
             <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleFindBestTalentClick}
