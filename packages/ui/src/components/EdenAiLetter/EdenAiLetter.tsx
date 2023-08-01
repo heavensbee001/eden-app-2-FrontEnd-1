@@ -11,6 +11,7 @@ export interface IEdenAiLetter {
   isModalOpen: boolean;
   member: Maybe<Members>;
   letterType: "rejection" | "nextInterviewInvite" | undefined;
+  onClose: () => void;
 }
 
 export const REJECTION_LETTER = gql`
@@ -33,6 +34,7 @@ export const EdenAiLetter = ({
   isModalOpen,
   member,
   letterType,
+  onClose,
 }: IEdenAiLetter) => {
   const router = useRouter();
   const { positionID } = router.query;
@@ -100,7 +102,7 @@ export const EdenAiLetter = ({
   }, [isModalOpen, letterType, member, positionID]);
   return (
     <>
-      <Modal open={isModalOpen}>
+      <Modal open={isModalOpen} onClose={onClose}>
         <div className="flex flex-col items-center justify-end gap-10 space-y-6 ">
           <div className="w-full  font-medium">
             {letterType === "rejection" ? (
@@ -151,7 +153,7 @@ export const EdenAiLetter = ({
           <div>
             {letterContent &&
               (copied ? (
-                <div className="flex  items-center gap-2">
+                <div className="flex items-center gap-2">
                   <Button disabled onClick={handleCopyToClipboard}>
                     Copied Message To Clipboard
                   </Button>
@@ -160,10 +162,7 @@ export const EdenAiLetter = ({
                   </span>
                 </div>
               ) : (
-                <Button
-                  className="bg-cottonPink hover:bg-forestGreen hover:text-white"
-                  onClick={handleCopyToClipboard}
-                >
+                <Button onClick={handleCopyToClipboard}>
                   Copy Message To Clipboard
                 </Button>
               ))}
