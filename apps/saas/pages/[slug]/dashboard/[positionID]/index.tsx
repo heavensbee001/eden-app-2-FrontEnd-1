@@ -1366,7 +1366,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 ? "Close opportunity details"
                 : "See opportunity details"}
               <div className={classNames("ml-auto")}>
-                {bestPicksOpen ? (
+                {opportunityDetailsOpen ? (
                   <BiChevronUp color="#626262" size={"1.2rem"} />
                 ) : (
                   <BiChevronDown color="#626262" size={"1.2rem"} />
