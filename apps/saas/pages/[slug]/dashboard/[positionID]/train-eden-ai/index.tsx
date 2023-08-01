@@ -948,8 +948,12 @@ const PrioritiesAndTradeOffsContainer = ({
       {loadingPriorities && (
         <EdenAiProcessingModal
           open={loadingPriorities}
-          title="Loading Priorities & Trade Offs"
-        ></EdenAiProcessingModal>
+          title="Understanding your Priorities & Tradeoffs"
+        >
+          <div className="text-center">
+            <p>{`As any great recruiter would tell you, I understand the perfect match doesn't exist. It's all about your priorities & tradeoffs - so in a couple of seconds please work with me so we can be super aligned on this!`}</p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
