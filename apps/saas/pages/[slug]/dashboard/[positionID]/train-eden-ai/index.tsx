@@ -1207,8 +1207,12 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
-          title="Calculating criteria"
-        ></EdenAiProcessingModal>
+          title="Compiling candidate checklist"
+        >
+          <div className="text-center">
+            <p>{`These are the criteria you & I will use to benchmark all of the candidates. I'm generating this list based on everything you've just told me prior - of course you'll be able to add, delete & edit!`}</p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       {report && (
         <div className="whitespace-pre-wrap">
@@ -1516,8 +1520,14 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
-          title="Loading questions"
-        ></EdenAiProcessingModal>
+          title="Generating optimal interview"
+        >
+          <div className="text-center">
+            <p>
+              {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
+            </p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       <Button
         className="absolute bottom-8 right-8 z-30 mx-auto"
