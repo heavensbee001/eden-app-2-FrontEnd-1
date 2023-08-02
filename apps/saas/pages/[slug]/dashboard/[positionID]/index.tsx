@@ -13,7 +13,9 @@ import {
   TradeOffsType,
 } from "@eden/package-graphql/generated";
 import {
+  AI_INTERVIEW_SERVICES,
   AppUserLayout,
+  AskEdenPopUp,
   Avatar,
   Button,
   // CandidateInfo,
@@ -105,6 +107,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID, slug, listID } = router.query;
   const { company } = useContext(CompanyContext);
+  const { currentUser } = useContext(UserContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
   const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
@@ -1834,6 +1837,16 @@ const PositionCRM: NextPageWithLayout = () => {
             </>
           )}
         </div>
+
+        {!selectedUserId &&
+          !router.query.candidate1 &&
+          !router.query.candidate2 &&
+          currentUser?._id && (
+            <AskEdenPopUp
+              memberID={currentUser?._id!}
+              service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
+            />
+          )}
       </div>
     </>
   );
@@ -1843,7 +1856,7 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default PositionCRM;
 
-import { CompanyContext } from "@eden/package-context";
+import { CompanyContext, UserContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
