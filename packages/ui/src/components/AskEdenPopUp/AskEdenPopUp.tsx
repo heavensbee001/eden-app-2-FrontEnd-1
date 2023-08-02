@@ -43,9 +43,14 @@ interface MessageObject {
 export interface IAskEdenPopUpProps {
   memberID: string;
   service: AI_INTERVIEW_SERVICES;
+  placeholder?: string;
 }
 
-export const AskEdenPopUp = ({ memberID, service }: IAskEdenPopUpProps) => {
+export const AskEdenPopUp = ({
+  memberID,
+  service,
+  placeholder = "Ask me any question",
+}: IAskEdenPopUpProps) => {
   const [open, setOpen] = useState(false);
 
   const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
@@ -133,7 +138,7 @@ export const AskEdenPopUp = ({ memberID, service }: IAskEdenPopUpProps) => {
               setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
               placeholder={
                 <p className="bg-cottonPink text-edenGreen-600 rounded-lg p-1 text-center font-medium">
-                  Ask me any question about the Candidate
+                  {placeholder}
                 </p>
               }
               questions={questions}

@@ -295,6 +295,7 @@ export const CandidateInfo = ({
             <AskEdenPopUp
               memberID={dataMember?.findMember._id}
               service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
+              placeholder="Ask me any question about the Candidate"
             />
           )}
         </section>
