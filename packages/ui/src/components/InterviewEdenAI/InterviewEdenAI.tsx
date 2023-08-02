@@ -365,7 +365,7 @@ export const InterviewEdenAI = ({
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "",
     onCompleted: (data) => {
-      console.log("WOOOW data = ", data);
+      console.log(data);
       // toraFunc();
       // setElapsedTime(0);
       // setStartTime(Date.now());
@@ -404,7 +404,7 @@ export const InterviewEdenAI = ({
         chatN[chatN.length - 1]?.user == "01" ||
         userID == "",
       onCompleted: (data) => {
-        console.log("WOOOW data = ", data);
+        console.log(data);
         // toraFunc();
         // setElapsedTime(0);
         // setStartTime(Date.now());
@@ -442,7 +442,7 @@ export const InterviewEdenAI = ({
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "",
     onCompleted: (data) => {
-      console.log("WOOOW data = ", data);
+      console.log(data);
       // toraFunc();
       // setElapsedTime(0);
       // setStartTime(Date.now());
