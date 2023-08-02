@@ -15,6 +15,6 @@ const Template: ComponentStory<typeof AskEdenPopUp> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  member: {},
+  memberID: "123123",
   service: AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION,
 };
