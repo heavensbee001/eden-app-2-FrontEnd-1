@@ -944,7 +944,7 @@ const PrioritiesAndTradeOffsContainer = ({
   }, [priorities, tradeOffs]);
 
   return (
-    <div className="grid h-full w-full grid-cols-12 gap-4">
+    <div className="grid w-full grid-cols-12 gap-4">
       {loadingPriorities && (
         <EdenAiProcessingModal
           open={loadingPriorities}
