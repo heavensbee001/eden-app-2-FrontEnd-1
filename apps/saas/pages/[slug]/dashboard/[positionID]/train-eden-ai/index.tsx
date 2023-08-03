@@ -375,7 +375,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 }}
                 animate
               >
-                {/* <WizardStep
+                <WizardStep
                   label={"Description"}
                   navigationDisabled
                   nextDisabled
@@ -444,7 +444,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                       </div>
                     </EdenAiProcessingModal>
                   </div>
-                </WizardStep> */}
+                </WizardStep>
 
                 {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
                 <WizardStep label={"Eden Convo"} navigationDisabled={true}>
@@ -460,7 +460,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Priorities & TradeOffs"}
-                  navigationDisabled={step === 0}
+                  navigationDisabled={step === 1}
                 >
                   <div className="mx-auto h-full max-w-5xl">
                     <Controller
