@@ -274,6 +274,13 @@ const PositionCRM: NextPageWithLayout = () => {
               };
             }
 
+            console.log(
+              "candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore = ",
+              candidate?.compareCandidatePosition
+                ?.CV_ConvoToPositionAverageScore
+            );
+            console.log("letterAndColor = ", letterAndColor);
+
             totalMatchPerc = totalMatchPerc / totalMatchPercCount;
 
             totalMatchPerc = parseInt(totalMatchPerc.toFixed(1));
@@ -290,6 +297,11 @@ const PositionCRM: NextPageWithLayout = () => {
               letterAndColor,
             };
           }
+        );
+
+        console.log(
+          "candidatesListWithSkillMatch = ",
+          candidatesListWithSkillMatch
         );
 
         // sort the candidatesList by the totalMatchPerc
@@ -413,11 +425,11 @@ const PositionCRM: NextPageWithLayout = () => {
   const getGrade = (percentage: number, mainColumn: boolean): Grade => {
     let grade: Grade = { letter: "", color: "" };
 
-    if (percentage >= 85) {
+    if (percentage >= 70) {
       grade = { letter: "A", color: "text-utilityGreen" };
-    } else if (percentage >= 70) {
-      grade = { letter: "B", color: "text-utilityYellow" };
     } else if (percentage >= 50) {
+      grade = { letter: "B", color: "text-utilityYellow" };
+    } else if (percentage >= 30) {
       grade = { letter: "C", color: "text-utilityOrange" };
       // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
       // else grade = { letter: "C", color: "text-black" };
