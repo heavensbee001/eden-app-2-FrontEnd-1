@@ -1,6 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
-import Image from "next/image";
 import { Fragment } from "react";
+
+import { EdenIconExclamation } from "../EdenIcons";
 
 export type EdenAiProcessingModalProps = {
   title?: string;
@@ -65,16 +66,17 @@ export const EdenAiProcessingModal = ({
                   "flex min-h-[280px] w-full flex-col justify-center !pt-8 sm:my-8 sm:mt-0 sm:p-6"
                 }
               >
-                <Image
-                  width={40}
-                  height={40}
-                  className="mx-auto mb-4 animate-pulse"
-                  src="/eden-logo.png"
-                  alt=""
-                />
+                <div className="mx-auto mb-4">
+                  <div
+                    className="w-14 h-14"
+                    style={{ animation: "spin 2s ease-in-out infinite" }}
+                  >
+                    <EdenIconExclamation className="w-full h-full" />
+                  </div>
+                </div>
                 <Dialog.Title
-                  as="h3"
-                  className={`mb-4 text-center text-lg font-medium text-gray-900`}
+                  as="h1"
+                  className={`mb-2 text-center text-edenGreen-600`}
                 >
                   {title}
                 </Dialog.Title>
