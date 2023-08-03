@@ -505,15 +505,6 @@ const TrainAiPage: NextPageWithLayout = () => {
                 // nextDisabled
                 label={"Final Details"}
                 // navigationDisabled={step === 0}
-                nextButton={
-                  <Button
-                    loading={scraping}
-                    variant="secondary"
-                    // type="submit"
-                    className="ml-auto"
-                    hideNext={false}
-                  ></Button>
-                }
               >
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="text-xl font-medium">
@@ -523,13 +514,13 @@ const TrainAiPage: NextPageWithLayout = () => {
                     All done, this is the final step. Fill in some quick
                     information and we’re off!
                   </p>
-                  <FinalFormContainer />;
-                  {/* <Controller
+                  <Controller
+                    name={"finalDetails"}
                     control={control}
-                    render={() => {
-                      <FinalFormContainer onChange={} />;
-                    }}
-                  /> */}
+                    render={({ field: { onChange } }) => (
+                      <FinalFormContainer onChange={onChange} />
+                    )}
+                  />
                 </div>
               </WizardStep>
               <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
@@ -1593,7 +1584,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 };
 
 interface IFinalFormContainerProps {
-  // onChange: (data: FormData) => void;
+  onChange: (data: any) => void;
 }
 
 type FormData = {
@@ -1620,21 +1611,38 @@ const defaultFormValues: FormData = {
   contractDuration: "",
 };
 
-const FinalFormContainer = ({
-  onFinalFormSubmit,
-}: IFinalFormContainerProps) => {
-  const { handleSubmit, register } = useForm<FormData>({
+const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
+  const { getValues, handleSubmit, register, watch } = useForm<FormData>({
     defaultValues: {
       ...defaultFormValues,
     },
   });
 
+  useEffect(() => {
+    onChange(
+      getValues([
+        "targetedStartDate",
+        "visaRequirements",
+        "officePolicy",
+        "officeLocation",
+        "contractType",
+        "contractDuration",
+      ])
+    );
+  }, [
+    watch([
+      "targetedStartDate",
+      "visaRequirements",
+      "officePolicy",
+      "officeLocation",
+      "contractType",
+      "contractDuration",
+    ]),
+  ]);
+
   return (
     <>
-      <form
-        className="flex items-center justify-center"
-        onSubmit={handleSubmit(onFinalFormSubmit)}
-      >
+      <form className="flex items-center justify-center">
         <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
           <Tab.Group>
             <Tab.List className="  border-edenGreen-300 flex  w-full justify-between border-b ">
