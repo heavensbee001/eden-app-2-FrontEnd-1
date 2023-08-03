@@ -1,7 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-import { EdenIconExclamation } from "../EdenIcons";
+import { EdenIconExclamationAndQuestion } from "../EdenIcons";
 
 export type EdenAiProcessingModalProps = {
   title?: string;
@@ -71,7 +71,7 @@ export const EdenAiProcessingModal = ({
                     className="w-14 h-14"
                     style={{ animation: "spin 2s ease-in-out infinite" }}
                   >
-                    <EdenIconExclamation className="w-full h-full" />
+                    <EdenIconExclamationAndQuestion className="w-full h-full" />
                   </div>
                 </div>
                 <Dialog.Title

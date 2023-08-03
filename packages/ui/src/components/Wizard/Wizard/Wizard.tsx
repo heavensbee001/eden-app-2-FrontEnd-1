@@ -96,7 +96,7 @@ export const Wizard = ({
           setStep={setStep}
         />
       )}
-      {showStepsHeader && <div className="pt-20"></div>}
+      {showStepsHeader && <div className="pt-14"></div>}
       <div
         className={classNames(
           showStepsHeader ? "h-[calc(100%-10rem)]" : "h-[calc(100%-4rem)]",
