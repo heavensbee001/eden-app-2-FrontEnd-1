@@ -581,7 +581,7 @@ const TrainAiPage: NextPageWithLayout = () => {
             </WizardStep> */}
               </Wizard>
             </div>
-            {step === 0 && (
+            {step === 1 && (
               <div className="absolute bottom-12 w-full">
                 <div className="w-12 h-12 p-2 rounded-full bg-edenPink-400 mx-auto">
                   <EdenIconQuestion className="w-8 h-8" />
