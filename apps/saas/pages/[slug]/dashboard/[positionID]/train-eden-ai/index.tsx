@@ -328,11 +328,6 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
-  const handleFormSubmit = (data: any) => {
-    console.log("data", data);
-    setStep(step + 1);
-  };
-
   return (
     <>
       <Head>
@@ -502,9 +497,8 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </div>
               </WizardStep>
               <WizardStep
-                // nextDisabled
                 label={"Final Details"}
-                // navigationDisabled={step === 0}
+                navigationDisabled={step === 0}
               >
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="text-xl font-medium">
@@ -514,13 +508,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     All done, this is the final step. Fill in some quick
                     information and we’re off!
                   </p>
-                  <Controller
-                    name={"finalDetails"}
-                    control={control}
-                    render={({ field: { onChange } }) => (
-                      <FinalFormContainer onChange={onChange} />
-                    )}
-                  />
+                  <FinalFormContainer />
                 </div>
               </WizardStep>
               <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
@@ -603,11 +591,9 @@ export default TrainAiPage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
-import { type } from "os";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { MdContentCopy, MdLink } from "react-icons/md";
 import { toast } from "react-toastify";
-import { register } from "ts-node";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -1583,65 +1569,85 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   );
 };
 
-interface IFinalFormContainerProps {
-  onChange: (data: any) => void;
-}
+interface IFinalFormContainerProps {}
 
-type FormData = {
-  targetedStartDate: Date;
-  visaRequirements: "yes" | "no";
-  officePolicy:
-    | "on-site"
-    | "remote"
-    | "hybrid-1-day-office"
-    | "hybrid-2-day-office"
-    | "hybrid-3-day-office"
-    | "hybrid-4-day-office";
-  officeLocation: string;
-  contractType: "fulltime" | "parttime" | "freelance" | "intern";
-  contractDuration: string; // You can specify more options if you have them
-};
-
-const defaultFormValues: FormData = {
-  targetedStartDate: new Date(),
-  visaRequirements: "yes",
-  officePolicy: "on-site",
-  officeLocation: "",
-  contractType: "fulltime",
-  contractDuration: "",
-};
-
-const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
-  const { getValues, handleSubmit, register, watch } = useForm<FormData>({
-    defaultValues: {
-      ...defaultFormValues,
-    },
-  });
-
-  useEffect(() => {
-    onChange(
-      getValues([
-        "targetedStartDate",
-        "visaRequirements",
-        "officePolicy",
-        "officeLocation",
-        "contractType",
-        "contractDuration",
-      ])
-    );
-  }, [
-    watch([
-      "targetedStartDate",
-      "visaRequirements",
-      "officePolicy",
-      "officeLocation",
-      "contractType",
-      "contractDuration",
-    ]),
-  ]);
-
+const FinalFormContainer = ({}: IFinalFormContainerProps) => {
   return (
     <>
+      {/* <form className="grid grid-cols-2 gap-16">
+        <div className="col-span-1">
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Targetted Start Date</label>
+            <input
+              type="date"
+              name="targettedStartDate"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Visa Requirements</label>
+            <input
+              type="text"
+              name="visaRequirements"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Office Locations</label>
+            <input
+              type="text"
+              name="officeLocations"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Office Policy</label>
+            <select
+              name="officePolicy"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+              defaultValue={""}
+            >
+              <option value={""} disabled hidden>
+                Select an option...
+              </option>
+              <option value="on-site">On site</option>
+              <option value="remote">Remote</option>
+              <option value="hybrid-1-day-office">Hybrid - 1 day office</option>
+              <option value="hybrid-2-day-office">Hybrid - 2 day office</option>
+              <option value="hybrid-3-day-office">Hybrid - 3 day office</option>
+              <option value="hybrid-4-day-office">Hybrid - 4 day office</option>
+            </select>
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Contract Type</label>
+            <select
+              name="contractType"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+              defaultValue={""}
+            >
+              <option value={""} disabled hidden>
+                Select an option...
+              </option>
+              <option value="fulltime">Full time</option>
+              <option value="parttime">Part time</option>
+              <option value="freelance">Freelance</option>
+              <option value="intern">Intern</option>
+            </select>
+          </div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="w-2/5 pr-2">Contract Duration</label>
+            <input
+              type="text"
+              name="contractDuration"
+              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
+            />
+          </div>
+        </div>
+        <div className="col-span-1">
+          <label>Key Company Links</label>
+          <FillSocialLinks />
+        </div>
+      </form> */}
       <form className="flex items-center justify-center">
         <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
           <Tab.Group>
@@ -1677,22 +1683,19 @@ const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
               <Tab.Panel className="pt-8">
                 <div className="flex  gap-x-6">
                   <div className="flex  flex-col items-start text-xs">
-                    <label className="text-xs ">Start Date </label>
+                    <label>Targeted Start Date</label>
                     <input
                       type="date"
-                      id="targetedStartDate"
-                      className="  border-edenGray-100 mt-2 w-56  rounded-lg border py-[.45rem] pl-2 pr-2 outline-none "
-                      required
-                      {...register("targetedStartDate")}
+                      name="targetedStartDate"
+                      className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
                     />
                   </div>
                   <div className="flex flex-col items-start">
                     <label className="text-xs">Visa Required</label>
                     <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
                       <select
-                        id="visaRequirements"
+                        name="visaRequirements"
                         className="w-full outline-none"
-                        {...register("visaRequirements")}
                       >
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
@@ -1703,9 +1706,9 @@ const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                     <label className="text-xs ">Office Policy</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
                       <select
-                        id="officePolicy"
+                        name="officeLocations"
                         className="w-full outline-none"
-                        {...register("officePolicy")}
+                        defaultValue={""}
                       >
                         <option value={""} disabled hidden>
                           Select an option...
@@ -1733,12 +1736,11 @@ const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                   <div className="relative mb-12 mt-6 flex flex-col items-start">
                     <label className="text-xs">Office Locations</label>
                     <div className="mt-2 w-full rounded-lg bg-white text-xs">
+                      <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
                       <input
-                        id="officeLocation"
-                        {...register("officeLocation")}
                         type="text"
-                        className="  border-edenGray-100 w-full rounded-lg border py-[.45rem] pl-8   outline-none "
-                      />
+                        className=" border-edenGray-100  w-full rounded-lg border p-2 pl-9  outline-none"
+                      ></input>
                     </div>
                   </div>
                 </div>
@@ -1747,9 +1749,9 @@ const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                     <label className="text-xs">Contact Type</label>
                     <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
                       <select
-                        id="contractType"
-                        {...register("contractType")}
                         className=" w-full outline-none"
+                        name="contractType"
+                        defaultValue={""}
                       >
                         <option value={""} disabled hidden>
                           Select an option...
@@ -1765,9 +1767,9 @@ const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                     <label className="text-xs">Contract Duration</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
                       <select
-                        id="contractDuration"
-                        {...register("contractDuration")}
                         className="w-full outline-none "
+                        name="contractDuration"
+                        defaultValue={""}
                       >
                         <option value={""} disabled hidden>
                           Select duration of contract
