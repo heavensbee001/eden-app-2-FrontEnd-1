@@ -135,7 +135,7 @@ export const Wizard = ({
         )}
 
         {/* JUST FOR TESTING REMOVE BEFORE PROD */}
-        <Button
+        {/* <Button
           className="!border-white !bg-white text-gray-50 hover:!text-gray-200"
           variant="secondary"
           onClick={() => {
@@ -143,7 +143,7 @@ export const Wizard = ({
           }}
         >
           Next
-        </Button>
+        </Button> */}
         {/* ------ */}
 
         {!isHideNext() &&
@@ -151,7 +151,7 @@ export const Wizard = ({
             children[step].props.nextButton
           ) : (
             <Button
-              className="ml-auto"
+              className={classNames(canPrev ? "ml-auto" : "mx-auto")}
               variant="secondary"
               onClick={handleNextClick}
               disabled={isNextDisabled()}

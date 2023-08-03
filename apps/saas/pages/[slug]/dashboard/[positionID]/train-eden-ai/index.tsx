@@ -376,7 +376,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     loading={scraping}
                     variant="secondary"
                     // type="submit"
-                    className="ml-auto"
+                    className="mx-auto"
                     onClick={() => {
                       handleDescriptionStepSubmit();
                     }}
