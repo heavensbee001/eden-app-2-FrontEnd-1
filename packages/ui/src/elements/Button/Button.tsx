@@ -71,7 +71,7 @@ export const Button = ({
     >
       {loading ? (
         <div className="flex items-center space-x-1">
-          <div>{children}</div>
+          <div className="font-Moret text-lg font-bold">{children}</div>
           {loader}
         </div>
       ) : (

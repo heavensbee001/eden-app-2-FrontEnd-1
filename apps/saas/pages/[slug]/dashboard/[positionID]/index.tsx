@@ -13,7 +13,9 @@ import {
   TradeOffsType,
 } from "@eden/package-graphql/generated";
 import {
+  AI_INTERVIEW_SERVICES,
   AppUserLayout,
+  AskEdenPopUp,
   Avatar,
   Button,
   // CandidateInfo,
@@ -105,6 +107,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID, slug, listID } = router.query;
   const { company } = useContext(CompanyContext);
+  const { currentUser } = useContext(UserContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
   const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
@@ -169,7 +172,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const [addToListOpen, setAddToListOpen] = useState<boolean>(false);
   const [opportunityDetailsOpen, setOpportunityDetailsOpen] =
     useState<boolean>(false);
-  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(false);
+  const [bestPicksOpen, setBestPicksOpen] = useState<boolean>(true);
 
   const [newTalentListCandidatesIds, setNewTalentListCandidatesIds] = useState<
     string[]
@@ -1109,7 +1112,7 @@ const PositionCRM: NextPageWithLayout = () => {
           </Button>
         </div>
       </Modal>
-      <div className="mx-auto max-w-screen-2xl flex-grow p-8">
+      <div className="mx-auto max-w-screen-xl flex-grow p-8">
         <div className="z-20 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
@@ -1124,7 +1127,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
             <Button
               size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
               onClick={handleCopyLink}
             >
@@ -1133,10 +1136,9 @@ const PositionCRM: NextPageWithLayout = () => {
             </Button>
             <Button
               size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
               onClick={handleCalculateSkillScore}
-              style={{ opacity: 0.2 }}
             >
               Calculate Skill Score
             </Button>
@@ -1144,7 +1146,7 @@ const PositionCRM: NextPageWithLayout = () => {
               <span className="text-sm text-gray-400">Link copied!</span>
             )}
             <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleTrainButtonClick}
@@ -1162,7 +1164,7 @@ const PositionCRM: NextPageWithLayout = () => {
               </div>
             </Button>
             <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleFindBestTalentClick}
@@ -1189,9 +1191,27 @@ const PositionCRM: NextPageWithLayout = () => {
           >
             <div
               className={classNames(
+                "bg-edenGreen-200 text-edenGray-700 absolute right-0 top-0 flex h-6 w-44 cursor-pointer items-center rounded-md px-2 text-xs",
+                opportunityDetailsOpen ? "rounded-bl-none rounded-br-none" : ""
+              )}
+              onClick={() => setOpportunityDetailsOpen(!opportunityDetailsOpen)}
+            >
+              {opportunityDetailsOpen
+                ? "Close opportunity details"
+                : "See opportunity details"}
+              <div className={classNames("ml-auto")}>
+                {opportunityDetailsOpen ? (
+                  <BiChevronUp color="#626262" size={"1.2rem"} />
+                ) : (
+                  <BiChevronDown color="#626262" size={"1.2rem"} />
+                )}
+              </div>
+            </div>
+            <div
+              className={classNames(
                 "border-edenGreen-200 bg-edenGreen-200 w-full overflow-hidden rounded-md border-t px-4 transition-all ease-in-out",
                 opportunityDetailsOpen
-                  ? "max-h-[50vh] overflow-y-scroll rounded-tr-none py-4"
+                  ? "max-h-[50vh] overflow-y-scroll scrollbar-hide rounded-tr-none py-4"
                   : "max-h-[0px] py-0"
               )}
             >
@@ -1236,7 +1256,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel>
-                    <ul className="">
+                    <ul className="w-80 mx-auto">
                       {priorities &&
                         priorities.length > 0 &&
                         priorities.map((priority, index) => (
@@ -1273,14 +1293,14 @@ const PositionCRM: NextPageWithLayout = () => {
                     </ul>
                   </Tab.Panel>
                   <Tab.Panel>
-                    <div className="">
+                    <div className="text-center">
                       {findPositionData?.findPosition?.nodes && (
                         <NodeList nodes={findPositionData.findPosition.nodes} />
                       )}
                     </div>
                   </Tab.Panel>
                   <Tab.Panel>
-                    <div className="flex max-w-lg flex-col items-center justify-center">
+                    <div className="flex max-w-lg mx-auto flex-col items-center justify-center">
                       {tradeOffs &&
                         tradeOffs.length > 0 &&
                         tradeOffs.map((tradeOff, index) => (
@@ -1357,24 +1377,6 @@ const PositionCRM: NextPageWithLayout = () => {
                 </Tab.Panels>
               </Tab.Group>
             </div>
-            <div
-              className={classNames(
-                "bg-edenGreen-200 text-edenGray-700 absolute right-0 top-0 flex h-6 w-44 cursor-pointer items-center rounded-md px-2 text-xs",
-                opportunityDetailsOpen ? "rounded-bl-none rounded-br-none" : ""
-              )}
-              onClick={() => setOpportunityDetailsOpen(!opportunityDetailsOpen)}
-            >
-              {opportunityDetailsOpen
-                ? "Close opportunity details"
-                : "See opportunity details"}
-              <div className={classNames("ml-auto")}>
-                {bestPicksOpen ? (
-                  <BiChevronUp color="#626262" size={"1.2rem"} />
-                ) : (
-                  <BiChevronDown color="#626262" size={"1.2rem"} />
-                )}
-              </div>
-            </div>
           </section>
 
           <section className="relative mb-4">
@@ -1386,7 +1388,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
               <div
                 className={classNames(
-                  "scrollbar-hide overflow-x-scroll transition-all ease-in-out",
+                  "scrollbar-hide overflow-x-scroll scrollbar-hide transition-all ease-in-out",
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
@@ -1557,7 +1559,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       {addToListOpen && (
                         <div
                           className={classNames(
-                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll scrollbar-hide rounded-md border border-gray-200 bg-white hover:text-gray-600",
                             addToListOpen ? "" : "h-0"
                           )}
                         >
@@ -1710,7 +1712,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
+            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll scrollbar-hide bg-white shadow-md duration-200 ease-in-out",
             selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
@@ -1759,7 +1761,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out",
             router.query.candidate1 && router.query.candidate2
               ? "w-[100vw]"
               : "w-0"
@@ -1767,7 +1769,7 @@ const PositionCRM: NextPageWithLayout = () => {
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1799,7 +1801,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll bg-white">
+              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}
@@ -1836,6 +1838,16 @@ const PositionCRM: NextPageWithLayout = () => {
             </>
           )}
         </div>
+
+        {!selectedUserId &&
+          !router.query.candidate1 &&
+          !router.query.candidate2 &&
+          currentUser?._id && (
+            <AskEdenPopUp
+              memberID={currentUser?._id!}
+              service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
+            />
+          )}
       </div>
     </>
   );
@@ -1845,7 +1857,7 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default PositionCRM;
 
-import { CompanyContext } from "@eden/package-context";
+import { CompanyContext, UserContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";

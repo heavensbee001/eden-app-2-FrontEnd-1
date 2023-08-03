@@ -1,4 +1,8 @@
-import { CandidateTypeSkillMatch, EdenTooltip } from "@eden/package-ui";
+import {
+  CandidateTypeSkillMatch,
+  EdenIconExclamation,
+  EdenTooltip,
+} from "@eden/package-ui";
 import { FC, useEffect, useState } from "react";
 
 import { classNames } from "../../../../utils";
@@ -158,40 +162,45 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                       return (
                         <li
                           key={item.IDb}
-                          className="border-edenGray-100 w-full cursor-pointer rounded-md border-b px-4"
+                          className="border-edenGray-100 w-full rounded-md border-b px-4"
                         >
-                          <EdenTooltip
-                            id={item.title.split(" ").join("")}
-                            innerTsx={
-                              <div className="w-60">
-                                <span className="text-gray-600">
-                                  {item.reason}
-                                </span>
-                              </div>
-                            }
-                            place="top"
-                            effect="solid"
-                            backgroundColor="white"
-                            border
-                            borderColor="#e5e7eb"
-                            padding="0.5rem"
-                          >
-                            <div className="flex w-full columns-2 items-center justify-between py-4">
-                              <p className="w-full pr-4 text-sm">
-                                {item.title
-                                  .trim()
-                                  .split(" ")
-                                  .slice(0, 25)
-                                  .join(" ") +
-                                  (item.title.split(" ").length > 25
-                                    ? "..."
-                                    : "")}
-                              </p>
-                              <div className="border-edenGray-100 -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
-                                <span className={color}>{letter}</span>
-                              </div>
+                          <div className="flex w-full columns-2 items-center justify-between py-4">
+                            <p className="w-full pr-4 text-sm">
+                              {item.title
+                                .trim()
+                                .split(" ")
+                                .slice(0, 25)
+                                .join(" ") +
+                                (item.title.split(" ").length > 25
+                                  ? "..."
+                                  : "")}
+                            </p>
+                            <div className="relative border-edenGray-100 -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
+                              <span className={color}>{letter}</span>
+                              {item.reason && (
+                                <EdenTooltip
+                                  id={item.title.split(" ").join("")}
+                                  innerTsx={
+                                    <div className="w-60">
+                                      <span className="text-gray-600">
+                                        {item.reason}
+                                      </span>
+                                    </div>
+                                  }
+                                  place="top"
+                                  effect="solid"
+                                  backgroundColor="white"
+                                  border
+                                  borderColor="#e5e7eb"
+                                  padding="0.5rem"
+                                >
+                                  <div className="bg-edenPink-200 cursor-pointer rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
+                                    <EdenIconExclamation className="w-full h-full" />
+                                  </div>
+                                </EdenTooltip>
+                              )}
                             </div>
-                          </EdenTooltip>
+                          </div>
                         </li>
                       );
                     })

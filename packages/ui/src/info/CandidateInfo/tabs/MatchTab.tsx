@@ -1,20 +1,18 @@
 import { gql, useQuery } from "@apollo/client";
 import { SummaryQuestionType } from "@eden/package-graphql/generated";
-import { EdenTooltip } from "@eden/package-ui";
 import {
-  BackgroundMatchChart,
   CandidateTypeSkillMatch,
   Card,
+  EdenIconExclamation,
+  EdenTooltip,
   Modal,
   // PopoverScoreReason,
   // TeamAttributeChart,
   // TextHeading2,
   // TextInputLabel,
-  TextLabel1,
 } from "@eden/package-ui";
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 import { FC, useEffect, useState } from "react";
-import { Pie } from "react-chartjs-2";
 import { GoGraph } from "react-icons/go";
 import { TbViewfinderOff } from "react-icons/tb";
 
@@ -74,6 +72,7 @@ function classNames(...classes: string[]) {
 }
 
 export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
+  // eslint-disable-next-line no-unused-vars
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
@@ -89,6 +88,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     }[];
   }
 
+  // eslint-disable-next-line no-unused-vars
   const [pieChartData, setPieChartData] = useState<ChartData>({
     labels: [],
     datasets: [
@@ -99,6 +99,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     ],
   });
 
+  // eslint-disable-next-line no-unused-vars
   const { loading: loadingPieNodeCategory } = useQuery(
     MEMBER_PIE_CHART_NODE_CATEGORY,
     {
@@ -323,125 +324,124 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                     }
                   }}
                 >
-                  <EdenTooltip
-                    id={index.toString()}
-                    innerTsx={
-                      <div className="w-60">
-                        <span className="text-gray-600">
-                          {item?.answerContent}
-                        </span>
-                      </div>
-                    }
-                    place="top"
-                    effect="solid"
-                    backgroundColor="white"
-                    border
-                    borderColor="#e5e7eb"
-                    padding="0.5rem"
-                  >
-                    <div className="">
-                      <div className="flex w-full py-4">
-                        <p className="w-3/4 text-gray-900 text-sm">
-                          {item.questionContentSmall?.replace(".", "") ||
-                            item.questionContent?.replace(".", "")}
-                        </p>
-                        <div className="ml-auto flex items-center p-2">
-                          {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
-                          <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
-                          {item.score ? (
-                            <div className="px-4 -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
-                              <p
-                                className={classNames(
-                                  "text-2xs font-bold leading-tight",
-                                  `text-${getPercentageColor(item.score * 10)}`
-                                )}
+                  <div className="">
+                    <div className="flex w-full py-4">
+                      <p className="w-3/4 text-gray-900 text-sm">
+                        {item.questionContentSmall?.replace(".", "") ||
+                          item.questionContent?.replace(".", "")}
+                      </p>
+                      <div className="ml-auto flex items-center p-2">
+                        {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
+                        <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
+                        {item.score ? (
+                          <div className="relative px-4 -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                            <p
+                              className={classNames(
+                                "text-2xs font-bold leading-tight",
+                                `text-${getPercentageColor(item.score * 10)}`
+                              )}
+                            >
+                              {getPercentageText(item.score * 10)}
+                            </p>
+                            {item.reason && (
+                              <EdenTooltip
+                                id={index.toString()}
+                                innerTsx={
+                                  <div className="w-60">
+                                    <span className="text-gray-600">
+                                      {item?.answerContent}
+                                    </span>
+                                  </div>
+                                }
+                                place="top"
+                                effect="solid"
+                                backgroundColor="white"
+                                border
+                                borderColor="#e5e7eb"
+                                padding="0.5rem"
                               >
-                                {getPercentageText(item.score * 10)}
-                              </p>
-                            </div>
-                          ) : null}
-                        </div>
+                                <div className="bg-edenPink-200 rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
+                                  <EdenIconExclamation className="w-full h-full" />
+                                </div>
+                              </EdenTooltip>
+                            )}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
-                    <Modal
-                      open={
-                        summaryQuestionSelected?.questionID === item.questionID
-                      }
-                      onClose={() => {
-                        setSummaryQuestionSelected(undefined);
-                      }}
-                      closeOnEsc
-                    >
-                      <h3 className="mb-4 text-xl font-medium">
-                        Candidate chat
-                      </h3>
-                      {summaryQuestionSelected &&
-                      summaryQuestionSelected.subConversationAnswer ? (
-                        <Card
-                          border
-                          shadow
-                          className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white pb-4"
+                  </div>
+                  <Modal
+                    open={
+                      summaryQuestionSelected?.questionID === item.questionID
+                    }
+                    onClose={() => {
+                      setSummaryQuestionSelected(undefined);
+                    }}
+                    closeOnEsc
+                  >
+                    <h3 className="mb-4 text-xl font-medium">Candidate chat</h3>
+                    {summaryQuestionSelected &&
+                    summaryQuestionSelected.subConversationAnswer ? (
+                      <Card
+                        border
+                        shadow
+                        className="mx-auto my-4 max-h-fit max-w-lg overflow-scroll !border-gray-200 bg-white pb-4"
+                      >
+                        <div
+                          id="summary-question-chat"
+                          className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
                         >
-                          <div
-                            id="summary-question-chat"
-                            className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrolling-touch flex flex-col space-y-4 p-3"
-                          >
-                            <div className="">
-                              {summaryQuestionSelected.subConversationAnswer.map(
-                                (conversation: any, index: number) => (
-                                  <>
+                          <div className="">
+                            {summaryQuestionSelected.subConversationAnswer.map(
+                              (conversation: any, index: number) => (
+                                <>
+                                  <div className="chat-message p-2" key={index}>
                                     <div
-                                      className="chat-message p-2"
-                                      key={index}
+                                      className={classNames(
+                                        conversation.role == "assistant"
+                                          ? ""
+                                          : "justify-end",
+                                        "flex items-start"
+                                      )}
                                     >
                                       <div
                                         className={classNames(
                                           conversation.role == "assistant"
-                                            ? ""
-                                            : "justify-end",
-                                          "flex items-start"
+                                            ? "order-2"
+                                            : "order-1",
+                                          "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                                         )}
                                       >
-                                        <div
+                                        <span
+                                          // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
                                           className={classNames(
                                             conversation.role == "assistant"
-                                              ? "order-2"
-                                              : "order-1",
-                                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                                              ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
+                                              : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
+                                            "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
                                           )}
                                         >
-                                          <span
-                                            // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
-                                            className={classNames(
-                                              conversation.role == "assistant"
-                                                ? "rounded-tl-none border border-[#D1E4EE] bg-[#EDF2F7]"
-                                                : "rounded-tr-none border border-[#BDECF6] bg-[#D9F5FD]",
-                                              "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
-                                            )}
-                                          >
-                                            {conversation.content}
-                                          </span>
-                                        </div>
-                                        <img
-                                          src={
-                                            conversation.role == "assistant"
-                                              ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                                              : member?.user?.discordAvatar ||
-                                                ""
-                                          }
-                                          className="order-1 h-6 w-6 rounded-full"
-                                        />
+                                          {conversation.content}
+                                        </span>
                                       </div>
+                                      <img
+                                        src={
+                                          conversation.role == "assistant"
+                                            ? "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
+                                            : member?.user?.discordAvatar || ""
+                                        }
+                                        className="order-1 h-6 w-6 rounded-full"
+                                      />
                                     </div>
-                                  </>
-                                )
-                              )}
-                            </div>
+                                  </div>
+                                </>
+                              )
+                            )}
                           </div>
-                        </Card>
-                      ) : null}
-                    </Modal>
-                  </EdenTooltip>
+                        </div>
+                      </Card>
+                    ) : null}
+                  </Modal>
                 </li>
               ))
             : null}

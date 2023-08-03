@@ -1,3 +1,4 @@
+export * from "./AskEdenPopUp";
 export * from "./AvailabilityComp";
 export * from "./CalendarComp";
 export * from "./CalendarComp";
@@ -9,6 +10,7 @@ export * from "./DescriptionGPT";
 export * from "./DiscoverTalent";
 export * from "./DragDrop";
 export * from "./EdenAiChat";
+export * from "./EdenAiLetter";
 export * from "./EdenTooltip";
 export * from "./ExperienceCreateProfileChatTalentSearch";
 export * from "./FillSocialLinks";

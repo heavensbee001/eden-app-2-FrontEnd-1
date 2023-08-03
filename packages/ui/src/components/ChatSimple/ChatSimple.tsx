@@ -133,8 +133,15 @@ export const ChatSimple = ({
             )}
             <section
               className={classNames(
-                "scrollbar-hide border-edenGray-100 overflow-y-scroll border-b",
-                headerText ? "h-[calc(100%-7.75rem)]" : "h-[calc(100%-5rem)]"
+
+                "scrollbar-hide overflow-y-scroll border-b border-edenGray-100 transition-height ease-in-out",
+                headerText
+                  ? inputMessage.length < 50
+                    ? "h-[calc(100%-7.75rem)]"
+                    : "h-[calc(100%-12.75rem)]"
+                  : inputMessage.length < 50
+                  ? "h-[calc(100%-5rem)]"
+                  : "h-[calc(100%-10rem)]"
               )}
             >
               <div
@@ -232,12 +239,20 @@ export const ChatSimple = ({
                 </div>
               </div>
             </section>
-            <section className="flex h-20 w-full items-center justify-between gap-3 px-3">
+
+            <section
+              className={classNames(
+                "flex w-full items-center justify-between px-3 gap-3 transition-height ease-in-out",
+                inputMessage.length < 50 ? "h-20" : "h-40"
+              )}
+            >
               <textarea
-                className="border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 focus:outline-none"
+                className={classNames(
+                  "rounded-md border transition-height ease-in-out border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none bg-transparent py-4 px-4 focus:outline-none",
+                  inputMessage.length < 50 ? "h-[3.6rem]" : "h-[8.6rem]"
+                )}
                 placeholder="Type your message here..."
                 value={inputMessage}
-                rows={inputMessage.length < 50 ? 1 : 4}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (inputMessage.length > 0 && e.code == "Enter") {

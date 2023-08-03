@@ -13,6 +13,7 @@ import {
   Button,
   ChatMessage,
   EdenAiProcessingModal,
+  EdenIconQuestion,
   EdenTooltip,
   FillSocialLinks,
   // CountdownTimer,
@@ -30,6 +31,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import { Controller, useForm } from "react-hook-form";
+import { HiPencil } from "react-icons/hi2";
+import { RiDeleteBin2Line } from "react-icons/ri";
 import { SlLocationPin } from "react-icons/sl";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
@@ -347,224 +350,244 @@ const TrainAiPage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8">
+      <div
+        key={typeof positionID === "string" ? positionID : ""}
+        className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll scrollbar-hide p-8"
+      >
         {currentUser && (
-          <div className="h-full w-full">
+          <div className="relative h-full w-full pt-[5%]">
             {/* <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
             </div> */}
-            <Wizard
-              showStepsHeader
-              canPrev={false}
-              forceStep={step}
-              onStepChange={(_stepNum: number) => {
-                if (_stepNum !== step) {
-                  setStep(_stepNum);
-                }
-              }}
-              animate
-            >
-              <WizardStep
-                label={"Description"}
-                navigationDisabled
-                nextDisabled
-                nextButton={
-                  <Button
-                    loading={scraping}
-                    variant="secondary"
-                    // type="submit"
-                    className="ml-auto"
-                    onClick={() => {
-                      handleDescriptionStepSubmit();
-                    }}
-                    disabled={!watch("position.name") || !watch("pastedText")}
-                  >
-                    Save & Continue
-                  </Button>
-                }
+            <h1 className="text-edenGreen-600 text-center">
+              Launch Opportunity
+            </h1>
+            <div className="h-[95%] w-full">
+              <p className="text-edenGray-900 text-center">
+                {"You're launching a new opportunity with Eden."}
+              </p>
+              <Wizard
+                showStepsHeader
+                canPrev={false}
+                forceStep={step}
+                onStepChange={(_stepNum: number) => {
+                  if (_stepNum !== step) {
+                    setStep(_stepNum);
+                  }
+                }}
+                animate
               >
-                <div className="flex h-full items-center justify-center">
-                  <form className="w-full max-w-[33rem]">
-                    <div className="mb-6">
-                      <label
-                        htmlFor="name"
-                        className="text-edenGray-500 mb-2 block text-xs"
-                      >
-                        Opportunity name
-                      </label>
-                      <input
-                        id="name"
-                        {...register("position.name")}
-                        placeholder="Type name here..."
-                        className="border-edenGray-100 block w-full rounded-md border px-4 py-2 text-sm"
-                        onFocus={(event) => {
-                          event.target.select();
-                        }}
-                      />
-                    </div>
+                <WizardStep
+                  label={"Description"}
+                  navigationDisabled
+                  nextDisabled
+                  nextButton={
+                    <Button
+                      loading={scraping}
+                      variant="secondary"
+                      // type="submit"
+                      className="mx-auto"
+                      onClick={() => {
+                        handleDescriptionStepSubmit();
+                      }}
+                      disabled={!watch("position.name") || !watch("pastedText")}
+                    >
+                      Save & Continue
+                    </Button>
+                  }
+                >
+                  <div className="flex h-full items-center justify-center">
+                    <form className="w-full max-w-[33rem]">
+                      <div className="mb-6">
+                        <label
+                          htmlFor="name"
+                          className="text-edenGray-500 mb-2 block text-xs"
+                        >
+                          Opportunity name
+                        </label>
+                        <input
+                          id="name"
+                          {...register("position.name")}
+                          placeholder="Type name here..."
+                          className="border-edenGray-100 block w-full rounded-md border px-4 py-2 text-sm"
+                          onFocus={(event) => {
+                            event.target.select();
+                          }}
+                        />
+                      </div>
 
-                    <div className="mb-6">
-                      <label className="text-edenGray-500 mb-2 block text-xs">
-                        Copy/paste your job description from LinkedIn,
-                        Greenhouse...
-                      </label>
+                      <div className="mb-6">
+                        <label className="text-edenGray-500 mb-2 block text-xs">
+                          Copy/paste your job description from LinkedIn,
+                          Greenhouse...
+                        </label>
 
-                      <textarea
-                        {...register("pastedText")}
-                        // onChange={handlePastedTextChange}
-                        placeholder="This is a sample text..."
-                        className="border-edenGray-100 mb-4 block w-full resize-none rounded-md border px-4 pb-20 pt-32 text-sm outline-0"
-                        onFocus={(event) => {
-                          event.target.select();
-                        }}
-                      />
-                    </div>
-                  </form>
-                  <EdenAiProcessingModal
-                    open={scraping}
-                    title="Give me 30 seconds!"
-                  >
-                    <div className="text-center">
-                      <p>
-                        I&apos;m reading your job description, writing down
-                        additional questions I have for you so I can draft the
-                        ideal interview for your candidates!
+                        <textarea
+                          {...register("pastedText")}
+                          // onChange={handlePastedTextChange}
+                          placeholder="This is a sample text..."
+                          className="border-edenGray-100 mb-4 block w-full resize-none rounded-md border px-4 pb-20 pt-32 text-sm outline-0"
+                          onFocus={(event) => {
+                            event.target.select();
+                          }}
+                        />
+                      </div>
+                    </form>
+                    <EdenAiProcessingModal
+                      open={scraping}
+                      title="Give me 30 seconds!"
+                    >
+                      <div className="text-center">
+                        <p>
+                          I&apos;m reading your job description, writing down
+                          additional questions I have for you so I can draft the
+                          ideal interview for your candidates!
+                        </p>
+                      </div>
+                    </EdenAiProcessingModal>
+                  </div>
+                </WizardStep>
+
+                {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
+                <WizardStep label={"Eden Convo"} navigationDisabled={true}>
+                  <div className="relative mx-auto h-[60vh] max-w-2xl">
+                    <InterviewEdenAIContainer
+                      handleEnd={handleInterviewEnd}
+                      interviewQuestionsForPosition={
+                        interviewQuestionsForPosition
+                      }
+                    />
+                  </div>
+                </WizardStep>
+
+                <WizardStep
+                  label={"Priorities & TradeOffs"}
+                  navigationDisabled={step === 1}
+                >
+                  <div className="mx-auto h-full max-w-5xl flex items-center">
+                    <Controller
+                      name={"positionsRequirements"}
+                      control={control}
+                      render={({ field: { onChange } }) => (
+                        <PrioritiesAndTradeOffsContainer
+                          position={findPositionData?.findPosition}
+                          onChange={onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                </WizardStep>
+
+                <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
+                  <div className="mx-auto h-full max-w-2xl">
+                    <h2 className="mb-4">Complete Checks & Balances List</h2>
+                    <p className="text-edenGray-500 mb-8 text-sm">
+                      Here&apos;s a list of all the must & nice to haves that I
+                      will look for in the candidate based in the info
+                      you&apos;ve provided to me. Feel free to edit any line by
+                      changing, deleting or adding elements that might be
+                      missing.
+                    </p>
+                    <ProfileQuestionsContainer />
+                  </div>
+                </WizardStep>
+
+                <WizardStep
+                  label={"Eden Suggestions"}
+                  // navigationDisabled={step === 0}
+                >
+                  <div className="mx-auto h-full max-w-2xl">
+                    <h2 className="mb-4 text-xl font-medium">
+                      {"Eden's Seed Interview Questions"}
+                    </h2>
+                    <p className="mb-8 text-sm leading-tight text-gray-500">
+                      {
+                        "Here’s a list of all the must & nice to have. Feel free to edit any line"
+                      }
+                    </p>
+                    <CreateQuestions />
+                  </div>
+                </WizardStep>
+                <WizardStep
+                  label={"Final Details"}
+                  navigationDisabled={step === 0}
+                >
+                  <div className="mx-auto max-w-3xl text-center">
+                    <h2 className="text-xl font-medium">
+                      Final Important Details
+                    </h2>
+                    <p className="text-sm text-zinc-400">
+                      All done, this is the final step. Fill in some quick
+                      information and we’re off!
+                    </p>
+                    <FinalFormContainer />
+                  </div>
+                </WizardStep>
+                <WizardStep
+                  label={"Share Link"}
+                  navigationDisabled={step === 0}
+                >
+                  <div className="flex h-full flex-col items-center justify-center pb-28">
+                    <div className="max-w-3xl">
+                      <h1 className="text-edenGreen-600 mb-4 text-center">
+                        Let&apos;s get the interviews rolling!
+                      </h1>
+                      <p className="mb-8 text-center">
+                        Sit back and relax, we&apos;re all set! Share the link
+                        to to whoever you want to kickoff the interview with!
                       </p>
                     </div>
-                  </EdenAiProcessingModal>
-                </div>
-              </WizardStep>
-
-              {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-              <WizardStep label={"Eden Convo"} navigationDisabled={true}>
-                <div className="mx-auto h-[70vh] max-w-2xl">
-                  <InterviewEdenAIContainer
-                    handleEnd={handleInterviewEnd}
-                    interviewQuestionsForPosition={
-                      interviewQuestionsForPosition
-                    }
-                  />
-                </div>
-              </WizardStep>
-
-              <WizardStep
-                label={"Priorities & TradeOffs"}
-                navigationDisabled={step === 0}
-              >
-                <div className="mx-auto h-full max-w-5xl">
-                  <Controller
-                    name={"positionsRequirements"}
-                    control={control}
-                    render={({ field: { onChange } }) => (
-                      <PrioritiesAndTradeOffsContainer
-                        position={findPositionData.findPosition}
-                        onChange={onChange}
-                      />
-                    )}
-                  />
-                </div>
-              </WizardStep>
-
-              <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
-                <div className="mx-auto h-full max-w-2xl">
-                  <h2 className="mb-4">Complete Checks & Balances List</h2>
-                  <p className="text-edenGray-500 mb-8 text-sm">
-                    Here&apos;s a list of all the must & nice to haves that I
-                    will look for in the candidate based in the info you&apos;ve
-                    provided to me. Feel free to edit any line by changing,
-                    deleting or adding elements that might be missing.
-                  </p>
-                  <ProfileQuestionsContainer />
-                </div>
-              </WizardStep>
-
-              <WizardStep
-                label={"Eden Suggestions"}
-                navigationDisabled={step === 0}
-              >
-                <div className="mx-auto h-full max-w-2xl">
-                  <h2 className="mb-4 text-xl font-medium">
-                    Eden Seed Interview Questions
-                  </h2>
-                  <p className="mb-8 text-sm leading-tight text-gray-500">
-                    Here&apos;s a list of all the questions Eden will ask to
-                    understand the candidate. These questions might get adapted
-                    in real time based on the information that the candidate
-                    already gives to ensure getting the most out of the
-                    conversation.
-                  </p>
-                  <CreateQuestions />
-                </div>
-              </WizardStep>
-              <WizardStep
-                label={"Final Details"}
-                navigationDisabled={step === 0}
-              >
-                <div className="mx-auto max-w-3xl text-center">
-                  <h2 className="text-xl font-medium">
-                    Final Important Details
-                  </h2>
-                  <p className="text-sm text-zinc-400">
-                    All done, this is the final step. Fill in some quick
-                    information and we’re off!
-                  </p>
-                  <FinalFormContainer />
-                </div>
-              </WizardStep>
-              <WizardStep label={"Share Link"} navigationDisabled={step === 0}>
-                <div className="flex h-full flex-col items-center justify-center pb-28">
-                  <div className="max-w-3xl">
-                    <h1 className="text-edenGreen-600 mb-4 text-center">
-                      Let&apos;s get the interviews rolling!
-                    </h1>
-                    <p className="mb-8 text-center">
-                      Sit back and relax, we&apos;re all set! Share the link to
-                      to whoever you want to kickoff the interview with!
-                    </p>
-                  </div>
-                  <div className="flex w-2/3 justify-center">
-                    <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll rounded-md border bg-white px-2 text-sm">
-                      <MdLink size={18} className="mr-2" />
-                      {window.location.origin + "/interview/" + positionID}
-                    </div>
-                    <Button
-                      className="border-edenGray-500 whitespace-nowrap border font-normal"
-                      variant="tertiary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCopyLink(positionID as string);
-                      }}
-                    >
-                      <div className="flex w-full items-center justify-center whitespace-nowrap text-sm">
-                        {!notificationOpen ? (
-                          <>
-                            <MdContentCopy className="mr-2" />
-                            interview link
-                          </>
-                        ) : (
-                          "Link copied!"
-                        )}
+                    <div className="flex w-2/3 justify-center">
+                      <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll scrollbar-hide rounded-md border bg-white px-2 text-sm">
+                        <MdLink size={18} className="mr-2" />
+                        {window.location.origin + "/interview/" + positionID}
                       </div>
-                    </Button>
+                      <Button
+                        className="border-edenGray-500 whitespace-nowrap border font-normal"
+                        variant="tertiary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCopyLink(positionID as string);
+                        }}
+                      >
+                        <div className="flex w-full items-center justify-center whitespace-nowrap text-sm">
+                          {!notificationOpen ? (
+                            <>
+                              <MdContentCopy className="mr-2" />
+                              interview link
+                            </>
+                          ) : (
+                            "Link copied!"
+                          )}
+                        </div>
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                <Button
-                  className="absolute bottom-8 right-8 z-30 mx-auto"
-                  variant={"primary"}
-                  onClick={() => {
-                    router.push(`/dashboard/${positionID}`);
-                  }}
-                >
-                  Continue to Dashboard
-                </Button>
-              </WizardStep>
+                  <Button
+                    className="absolute bottom-8 right-8 z-30 mx-auto"
+                    variant={"primary"}
+                    onClick={() => {
+                      router.push(`/${company?.slug}/dashboard/${positionID}`);
+                    }}
+                  >
+                    Continue to Dashboard
+                  </Button>
+                </WizardStep>
 
-              {/* <WizardStep label={"end"}>
+                {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
               </section>
             </WizardStep> */}
-            </Wizard>
+              </Wizard>
+            </div>
+            {step === 1 && (
+              <div className="absolute bottom-12 w-full">
+                <div className="w-12 h-12 p-2 rounded-full bg-edenPink-400 mx-auto">
+                  <EdenIconQuestion className="w-8 h-8" />
+                </div>
+              </div>
+            )}
             {step === 6 && (
               <div
                 className={`pointer-events-none fixed left-0 top-0 z-20 h-screen w-screen	`}
@@ -756,8 +779,8 @@ const InterviewEdenAIContainer = ({
   // );
 
   return (
-    <div className="w-full">
-      <div className="relative h-[68vh]">
+    <div className="w-full h-full">
+      <div className="relative h-full">
         {/* <div className="flex justify-center">
           <ProgressBarGeneric
             color="accentColor"
@@ -813,7 +836,7 @@ const InterviewEdenAIContainer = ({
 };
 
 export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
-  mutation FindPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
+  query findPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
     findPrioritiesTrainEdenAI(fields: $fields) {
       success
       priorities {
@@ -847,8 +870,6 @@ const PrioritiesAndTradeOffsContainer = ({
   // eslint-disable-next-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
 
-  const [scraping, setScraping] = useState<boolean>(false);
-
   const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
 
   const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
@@ -857,13 +878,21 @@ const PrioritiesAndTradeOffsContainer = ({
   //   defaultValues: {},
   // });
 
-  const [FindPrioritiesTrainEdenAI] = useMutation(
-    FIND_PRIORITIES_TRAIN_EDEN_AI,
-    {
+  // eslint-disable-next-line no-unused-vars
+  const { data: findPrioritiesAndTradeOffsData, loading: loadingPriorities } =
+    useQuery(FIND_PRIORITIES_TRAIN_EDEN_AI, {
+      variables: {
+        fields: {
+          positionID: positionID,
+        },
+      },
+      skip:
+        !!position.positionsRequirements?.tradeOffs &&
+        !!position.positionsRequirements?.tradeOffs.length &&
+        !!position.positionsRequirements?.priorities &&
+        !!position.positionsRequirements?.priorities.length,
       onCompleted({ findPrioritiesTrainEdenAI }) {
         // console.log("findPrioritiesTrainEdenAI = ", findPrioritiesTrainEdenAI);
-
-        setScraping(false);
 
         setPriorities(findPrioritiesTrainEdenAI.priorities);
         setTradeOffs(
@@ -879,11 +908,7 @@ const PrioritiesAndTradeOffsContainer = ({
           )! as TradeOffsType[]
         );
       },
-      onError() {
-        setScraping(false);
-      },
-    }
-  );
+    });
 
   useEffect(() => {
     if (
@@ -907,16 +932,6 @@ const PrioritiesAndTradeOffsContainer = ({
           }
         )! as TradeOffsType[]
       );
-    } else {
-      setScraping(true);
-      FindPrioritiesTrainEdenAI({
-        variables: {
-          // fields: { message: textResponse, userID: currentUser?._id },
-          fields: {
-            positionID: positionID,
-          },
-        },
-      });
     }
   }, [position.positionsRequirements]);
 
@@ -949,12 +964,16 @@ const PrioritiesAndTradeOffsContainer = ({
   }, [priorities, tradeOffs]);
 
   return (
-    <div className="grid h-full w-full grid-cols-12 gap-4">
-      {scraping && (
+    <div className="grid w-full grid-cols-12 gap-4">
+      {loadingPriorities && (
         <EdenAiProcessingModal
-          open={scraping}
-          title="Calculating criteria"
-        ></EdenAiProcessingModal>
+          open={loadingPriorities}
+          title="Understanding your Priorities & Tradeoffs"
+        >
+          <div className="text-center">
+            <p>{`As any great recruiter would tell you, I understand the perfect match doesn't exist. It's all about your priorities & tradeoffs - so in a couple of seconds please work with me so we can be super aligned on this!`}</p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
@@ -1212,8 +1231,12 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
-          title="Calculating criteria"
-        ></EdenAiProcessingModal>
+          title="Compiling candidate checklist"
+        >
+          <div className="text-center">
+            <p>{`These are the criteria you & I will use to benchmark all of the candidates. I'm generating this list based on everything you've just told me prior - of course you'll be able to add, delete & edit!`}</p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       {report && (
         <div className="whitespace-pre-wrap">
@@ -1325,9 +1348,16 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   const router = useRouter();
 
   const [scraping, setScraping] = useState<boolean>(false);
+  const [index, setIndex] = useState<number>(0);
+  const [editQuestionIndex, setEditQuestionIndex] =
+    useState<number | null>(null);
   const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
+
+  useEffect(() => {
+    setEditQuestionIndex(null);
+  }, [index]);
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -1372,6 +1402,10 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       ...prevQuestions,
       [category]: _newArr,
     }));
+  };
+
+  const handleEditQuestion = (position: number) => {
+    setEditQuestionIndex(position);
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -1499,71 +1533,105 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     }
   };
 
-  // console.log("questions 1001= ", questions);
-
   return (
     <div className="w-full">
-      {/* <button
-        className="rounded bg-blue-500 px-4 py-2 text-white"
-        onClick={handleClick}
-      >
-        Click me
-      </button> */}
-      {/* <Button
-        variant="primary"
-        className="w-fit"
-        type="submit"
-        onClick={handleClick}
-        loading={scraping}
-      >
-        Suggest Questions
-      </Button> */}
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
-          title="Loading questions"
-        ></EdenAiProcessingModal>
+          title="Generating optimal interview"
+        >
+          <div className="text-center">
+            <p>
+              {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
+            </p>
+          </div>
+        </EdenAiProcessingModal>
       )}
       <Button
         className="absolute bottom-8 right-8 z-30 mx-auto"
         variant={"primary"}
         loading={scrapingSave}
-        onClick={handleSaveChanges}
+        onClick={() => handleSaveChanges()}
       >
         Save Changes
       </Button>
       <div className="">
-        {Object.keys(questions).map((category) => (
-          <div key={category + questions[category].length}>
-            <h2 className="mb-2 text-xl font-medium">{category}</h2>
-            {questions[category].map((question, index) => (
-              <div key={`${category}_${index}`} className="relative mb-2">
-                <textarea
-                  name="question"
-                  defaultValue={question.question.toString()}
-                  onChange={(event) =>
-                    handleQuestionChange(event, index, category)
-                  }
-                  className="w-full resize-none hover:resize focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleDeleteQuestion(category, index)}
-                  className="absolute -left-10 top-1 flex h-4 w-4 rotate-45 cursor-pointer items-center justify-center rounded-full border-[2px] border-gray-400 bg-white pb-[2px] font-bold text-gray-400 hover:bg-gray-400 hover:text-white hover:opacity-80"
-                >
-                  +
-                </button>
-              </div>
+        <Tab.Group
+          defaultIndex={index}
+          onChange={(index: number) => {
+            setIndex(index);
+          }}
+        >
+          <Tab.List className="border-edenGreen-300 flex h-8 w-full border-b">
+            {Object.keys(questions).map((category, _index) => (
+              <Tab
+                key={_index}
+                className={({ selected }) =>
+                  classNames(
+                    "text-edenGreen-400 -mb-px pb-2 text-xs whitespace-nowrap px-3 overflow-x-scroll scrollbar-hide",
+                    selected
+                      ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                      : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                  )
+                }
+              >
+                {category.toUpperCase()}
+              </Tab>
             ))}
-            <button
-              type="button"
-              onClick={() => handleAddQuestion(category)}
-              className="bg-accentColor mx-auto mb-2 block h-8 w-8 rounded-full font-bold text-white hover:opacity-80"
-            >
-              +
-            </button>
-          </div>
-        ))}
+          </Tab.List>
+          <Tab.Panels>
+            {Object.keys(questions).map((category, _index) => (
+              <Tab.Panel key={_index}>
+                <div className="px-4 py-4">
+                  {questions[category].map((question, __index) => (
+                    <div
+                      key={`${category}_${__index}`}
+                      className="relative mb-2 flex"
+                    >
+                      <textarea
+                        name="question"
+                        disabled={editQuestionIndex !== __index}
+                        defaultValue={question.question.toString()}
+                        onChange={(event) =>
+                          handleQuestionChange(event, __index, category)
+                        }
+                        className={classNames(
+                          "w-10/12 resize-none bg-transparent px-2",
+                          editQuestionIndex === __index
+                            ? "border rounded-md border-edenGray-200 border-box"
+                            : ""
+                        )}
+                      />
+                      <Button
+                        variant="tertiary"
+                        onClick={() => {
+                          handleEditQuestion(__index);
+                        }}
+                        className="ml-auto rounded-md bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 w-6 h-6 !p-0 flex items-center justify-center"
+                      >
+                        <HiPencil size={16} />
+                      </Button>
+                      <Button
+                        variant="tertiary"
+                        onClick={() => handleDeleteQuestion(category, __index)}
+                        className="ml-2 rounded-md !bg-edenPink-300 text-utilityRed hover:opacity-60 w-6 h-6 !p-0 flex items-center justify-center"
+                      >
+                        <RiDeleteBin2Line size={16} />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  variant="tertiary"
+                  onClick={() => handleAddQuestion(category)}
+                  className="float-right text-sm"
+                >
+                  + Add a Question
+                </Button>
+              </Tab.Panel>
+            ))}
+          </Tab.Panels>
+        </Tab.Group>
       </div>
     </div>
   );
