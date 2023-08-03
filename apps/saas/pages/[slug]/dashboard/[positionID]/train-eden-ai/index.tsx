@@ -31,6 +31,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import { Controller, useForm } from "react-hook-form";
+import { HiPencil } from "react-icons/hi2";
+import { RiDeleteBin2Line } from "react-icons/ri";
 import { SlLocationPin } from "react-icons/sl";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
@@ -462,7 +464,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   label={"Priorities & TradeOffs"}
                   navigationDisabled={step === 1}
                 >
-                  <div className="mx-auto h-full max-w-5xl">
+                  <div className="mx-auto h-full max-w-5xl flex items-center">
                     <Controller
                       name={"positionsRequirements"}
                       control={control}
@@ -492,18 +494,16 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Eden Suggestions"}
-                  navigationDisabled={step === 0}
+                  // navigationDisabled={step === 0}
                 >
                   <div className="mx-auto h-full max-w-2xl">
                     <h2 className="mb-4 text-xl font-medium">
-                      Eden Seed Interview Questions
+                      {"Eden's Seed Interview Questions"}
                     </h2>
                     <p className="mb-8 text-sm leading-tight text-gray-500">
-                      Here&apos;s a list of all the questions Eden will ask to
-                      understand the candidate. These questions might get
-                      adapted in real time based on the information that the
-                      candidate already gives to ensure getting the most out of
-                      the conversation.
+                      {
+                        "Here’s a list of all the must & nice to have. Feel free to edit any line"
+                      }
                     </p>
                     <CreateQuestions />
                   </div>
@@ -1348,9 +1348,16 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   const router = useRouter();
 
   const [scraping, setScraping] = useState<boolean>(false);
+  const [index, setIndex] = useState<number>(0);
+  const [editQuestionIndex, setEditQuestionIndex] =
+    useState<number | null>(null);
   const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
+
+  useEffect(() => {
+    setEditQuestionIndex(null);
+  }, [index]);
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -1395,6 +1402,10 @@ const CreateQuestions = ({}: ICreateQuestions) => {
       ...prevQuestions,
       [category]: _newArr,
     }));
+  };
+
+  const handleEditQuestion = (position: number) => {
+    setEditQuestionIndex(position);
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -1522,25 +1533,8 @@ const CreateQuestions = ({}: ICreateQuestions) => {
     }
   };
 
-  // console.log("questions 1001= ", questions);
-
   return (
     <div className="w-full">
-      {/* <button
-        className="rounded bg-blue-500 px-4 py-2 text-white"
-        onClick={handleClick}
-      >
-        Click me
-      </button> */}
-      {/* <Button
-        variant="primary"
-        className="w-fit"
-        type="submit"
-        onClick={handleClick}
-        loading={scraping}
-      >
-        Suggest Questions
-      </Button> */}
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
@@ -1557,42 +1551,87 @@ const CreateQuestions = ({}: ICreateQuestions) => {
         className="absolute bottom-8 right-8 z-30 mx-auto"
         variant={"primary"}
         loading={scrapingSave}
-        onClick={handleSaveChanges}
+        onClick={() => handleSaveChanges()}
       >
         Save Changes
       </Button>
       <div className="">
-        {Object.keys(questions).map((category) => (
-          <div key={category + questions[category].length}>
-            <h2 className="mb-2 text-xl font-medium">{category}</h2>
-            {questions[category].map((question, index) => (
-              <div key={`${category}_${index}`} className="relative mb-2">
-                <textarea
-                  name="question"
-                  defaultValue={question.question.toString()}
-                  onChange={(event) =>
-                    handleQuestionChange(event, index, category)
-                  }
-                  className="w-full resize-none hover:resize focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleDeleteQuestion(category, index)}
-                  className="absolute -left-10 top-1 flex h-4 w-4 rotate-45 cursor-pointer items-center justify-center rounded-full border-[2px] border-gray-400 bg-white pb-[2px] font-bold text-gray-400 hover:bg-gray-400 hover:text-white hover:opacity-80"
-                >
-                  +
-                </button>
-              </div>
+        <Tab.Group
+          defaultIndex={index}
+          onChange={(index: number) => {
+            setIndex(index);
+          }}
+        >
+          <Tab.List className="border-edenGreen-300 flex h-8 w-full border-b">
+            {Object.keys(questions).map((category, _index) => (
+              <Tab
+                key={_index}
+                className={({ selected }) =>
+                  classNames(
+                    "text-edenGreen-400 -mb-px pb-2 text-xs whitespace-nowrap px-3 overflow-x-scroll scrollbar-hide",
+                    selected
+                      ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                      : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                  )
+                }
+              >
+                {category.toUpperCase()}
+              </Tab>
             ))}
-            <button
-              type="button"
-              onClick={() => handleAddQuestion(category)}
-              className="bg-accentColor mx-auto mb-2 block h-8 w-8 rounded-full font-bold text-white hover:opacity-80"
-            >
-              +
-            </button>
-          </div>
-        ))}
+          </Tab.List>
+          <Tab.Panels>
+            {Object.keys(questions).map((category, _index) => (
+              <Tab.Panel key={_index}>
+                <div className="px-4 py-4">
+                  {questions[category].map((question, __index) => (
+                    <div
+                      key={`${category}_${__index}`}
+                      className="relative mb-2 flex"
+                    >
+                      <textarea
+                        name="question"
+                        disabled={editQuestionIndex !== __index}
+                        defaultValue={question.question.toString()}
+                        onChange={(event) =>
+                          handleQuestionChange(event, __index, category)
+                        }
+                        className={classNames(
+                          "w-10/12 resize-none bg-transparent px-2",
+                          editQuestionIndex === __index
+                            ? "border rounded-md border-edenGray-200 border-box"
+                            : ""
+                        )}
+                      />
+                      <Button
+                        variant="tertiary"
+                        onClick={() => {
+                          handleEditQuestion(__index);
+                        }}
+                        className="ml-auto rounded-md bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 w-6 h-6 !p-0 flex items-center justify-center"
+                      >
+                        <HiPencil size={16} />
+                      </Button>
+                      <Button
+                        variant="tertiary"
+                        onClick={() => handleDeleteQuestion(category, __index)}
+                        className="ml-2 rounded-md !bg-edenPink-300 text-utilityRed hover:opacity-60 w-6 h-6 !p-0 flex items-center justify-center"
+                      >
+                        <RiDeleteBin2Line size={16} />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  variant="tertiary"
+                  onClick={() => handleAddQuestion(category)}
+                  className="float-right text-sm"
+                >
+                  + Add a Question
+                </Button>
+              </Tab.Panel>
+            ))}
+          </Tab.Panels>
+        </Tab.Group>
       </div>
     </div>
   );
