@@ -352,7 +352,7 @@ const TrainAiPage: NextPageWithLayout = () => {
       <SEO />
       <div
         key={typeof positionID === "string" ? positionID : ""}
-        className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll scrollbar-hide p-8"
+        className="scrollbar-hide relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8"
       >
         {currentUser && (
           <div className="relative h-full w-full pt-[5%]">
@@ -464,7 +464,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   label={"Priorities & TradeOffs"}
                   navigationDisabled={step === 1}
                 >
-                  <div className="mx-auto h-full max-w-5xl flex items-center">
+                  <div className="mx-auto flex h-full max-w-5xl items-center">
                     <Controller
                       name={"positionsRequirements"}
                       control={control}
@@ -518,7 +518,14 @@ const TrainAiPage: NextPageWithLayout = () => {
                       All done, this is the final step. Fill in some quick
                       information and we’re off!
                     </p>
-                    <FinalFormContainer />
+                    xxx{JSON.stringify(watch("finalDetails"))}ddddd
+                    <Controller
+                      name={"finalDetails"}
+                      control={control}
+                      render={({ field: { onChange } }) => (
+                        <FinalFormContainer onChange={onChange} />
+                      )}
+                    />
                   </div>
                 </WizardStep>
                 <WizardStep
@@ -536,7 +543,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                       </p>
                     </div>
                     <div className="flex w-2/3 justify-center">
-                      <div className="border-edenGray-500 mr-2 flex h-12 w-full items-center overflow-x-scroll scrollbar-hide rounded-md border bg-white px-2 text-sm">
+                      <div className="border-edenGray-500 scrollbar-hide mr-2 flex h-12 w-full items-center overflow-x-scroll rounded-md border bg-white px-2 text-sm">
                         <MdLink size={18} className="mr-2" />
                         {window.location.origin + "/interview/" + positionID}
                       </div>
@@ -581,8 +588,8 @@ const TrainAiPage: NextPageWithLayout = () => {
             </div>
             {step === 1 && (
               <div className="absolute bottom-12 w-full">
-                <div className="w-12 h-12 p-2 rounded-full bg-edenPink-400 mx-auto">
-                  <EdenIconQuestion className="w-8 h-8" />
+                <div className="bg-edenPink-400 mx-auto h-12 w-12 rounded-full p-2">
+                  <EdenIconQuestion className="h-8 w-8" />
                 </div>
               </div>
             )}
@@ -777,7 +784,7 @@ const InterviewEdenAIContainer = ({
   // );
 
   return (
-    <div className="w-full h-full">
+    <div className="h-full w-full">
       <div className="relative h-full">
         {/* <div className="flex justify-center">
           <ProgressBarGeneric
@@ -1150,8 +1157,9 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
 
   const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] =
-    useState<number | null>(null);
+  const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
+    null
+  );
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
   // const { register, watch, control, setValue, getValues } = useForm<Members>({
@@ -1295,7 +1303,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                   key={_index}
                   className={({ selected }) =>
                     classNames(
-                      "text-edenGreen-400 -mb-px pb-2 text-xs whitespace-nowrap px-3 overflow-x-scroll scrollbar-hide",
+                      "text-edenGreen-400 scrollbar-hide -mb-px overflow-x-scroll whitespace-nowrap px-3 pb-2 text-xs",
                       selected
                         ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                         : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
@@ -1325,7 +1333,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                           className={classNames(
                             "w-10/12 resize-none bg-transparent px-2",
                             editQuestionIndex === __index
-                              ? "border rounded-md border-edenGray-200 border-box"
+                              ? "border-edenGray-200 border-box rounded-md border"
                               : ""
                           )}
                         />
@@ -1334,7 +1342,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                           onClick={() => {
                             handleEditQuestion(__index);
                           }}
-                          className="ml-auto rounded-md bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 w-6 h-6 !p-0 flex items-center justify-center"
+                          className="bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 ml-auto flex h-6 w-6 items-center justify-center rounded-md !p-0"
                         >
                           <HiPencil size={16} />
                         </Button>
@@ -1343,7 +1351,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                           onClick={() =>
                             handleDeleteQuestion(category, __index)
                           }
-                          className="ml-2 rounded-md !bg-edenPink-300 text-utilityRed hover:opacity-60 w-6 h-6 !p-0 flex items-center justify-center"
+                          className="!bg-edenPink-300 text-utilityRed ml-2 flex h-6 w-6 items-center justify-center rounded-md !p-0 hover:opacity-60"
                         >
                           <RiDeleteBin2Line size={16} />
                         </Button>
@@ -1480,8 +1488,9 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 
   const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] =
-    useState<number | null>(null);
+  const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
+    null
+  );
   const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
@@ -1700,7 +1709,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
                 key={_index}
                 className={({ selected }) =>
                   classNames(
-                    "text-edenGreen-400 -mb-px pb-2 text-xs whitespace-nowrap px-3 overflow-x-scroll scrollbar-hide",
+                    "text-edenGreen-400 scrollbar-hide -mb-px overflow-x-scroll whitespace-nowrap px-3 pb-2 text-xs",
                     selected
                       ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                       : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
@@ -1730,7 +1739,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
                         className={classNames(
                           "w-10/12 resize-none bg-transparent px-2",
                           editQuestionIndex === __index
-                            ? "border rounded-md border-edenGray-200 border-box"
+                            ? "border-edenGray-200 border-box rounded-md border"
                             : ""
                         )}
                       />
@@ -1739,14 +1748,14 @@ const CreateQuestions = ({}: ICreateQuestions) => {
                         onClick={() => {
                           handleEditQuestion(__index);
                         }}
-                        className="ml-auto rounded-md bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 w-6 h-6 !p-0 flex items-center justify-center"
+                        className="bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 ml-auto flex h-6 w-6 items-center justify-center rounded-md !p-0"
                       >
                         <HiPencil size={16} />
                       </Button>
                       <Button
                         variant="tertiary"
                         onClick={() => handleDeleteQuestion(category, __index)}
-                        className="ml-2 rounded-md !bg-edenPink-300 text-utilityRed hover:opacity-60 w-6 h-6 !p-0 flex items-center justify-center"
+                        className="!bg-edenPink-300 text-utilityRed ml-2 flex h-6 w-6 items-center justify-center rounded-md !p-0 hover:opacity-60"
                       >
                         <RiDeleteBin2Line size={16} />
                       </Button>
@@ -1769,85 +1778,64 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   );
 };
 
-interface IFinalFormContainerProps {}
+interface IFinalFormContainerProps {
+  onChange: (data: any) => void;
+}
 
-const FinalFormContainer = ({}: IFinalFormContainerProps) => {
+type FormData = {
+  targetedStartDate: Date;
+  visaRequirements: "yes" | "no";
+  officePolicy:
+    | "on-site"
+    | "remote"
+    | "hybrid-1-day-office"
+    | "hybrid-2-day-office"
+    | "hybrid-3-day-office"
+    | "hybrid-4-day-office";
+  officeLocation: string;
+  contractType: "fulltime" | "parttime" | "freelance" | "intern";
+  contractDuration: string; // You can specify more options if you have them
+};
+
+const defaultFormValues: FormData = {
+  targetedStartDate: new Date(),
+  visaRequirements: "yes",
+  officePolicy: "on-site",
+  officeLocation: "",
+  contractType: "fulltime",
+  contractDuration: "",
+};
+
+const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
+  const { getValues, register, watch } = useForm<FormData>({
+    defaultValues: {
+      ...defaultFormValues,
+    },
+  });
+
+  useEffect(() => {
+    onChange(
+      getValues([
+        "targetedStartDate",
+        "visaRequirements",
+        "officePolicy",
+        "officeLocation",
+        "contractType",
+        "contractDuration",
+      ])
+    );
+  }, [
+    watch([
+      "targetedStartDate",
+      "visaRequirements",
+      "officePolicy",
+      "officeLocation",
+      "contractType",
+      "contractDuration",
+    ]),
+  ]);
   return (
     <>
-      {/* <form className="grid grid-cols-2 gap-16">
-        <div className="col-span-1">
-          <div className="mb-2 flex items-center justify-between">
-            <label className="w-2/5 pr-2">Targetted Start Date</label>
-            <input
-              type="date"
-              name="targettedStartDate"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
-          </div>
-          <div className="mb-2 flex items-center justify-between">
-            <label className="w-2/5 pr-2">Visa Requirements</label>
-            <input
-              type="text"
-              name="visaRequirements"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
-          </div>
-          <div className="mb-2 flex items-center justify-between">
-            <label className="w-2/5 pr-2">Office Locations</label>
-            <input
-              type="text"
-              name="officeLocations"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
-          </div>
-          <div className="mb-2 flex items-center justify-between">
-            <label className="w-2/5 pr-2">Office Policy</label>
-            <select
-              name="officePolicy"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-              defaultValue={""}
-            >
-              <option value={""} disabled hidden>
-                Select an option...
-              </option>
-              <option value="on-site">On site</option>
-              <option value="remote">Remote</option>
-              <option value="hybrid-1-day-office">Hybrid - 1 day office</option>
-              <option value="hybrid-2-day-office">Hybrid - 2 day office</option>
-              <option value="hybrid-3-day-office">Hybrid - 3 day office</option>
-              <option value="hybrid-4-day-office">Hybrid - 4 day office</option>
-            </select>
-          </div>
-          <div className="mb-2 flex items-center justify-between">
-            <label className="w-2/5 pr-2">Contract Type</label>
-            <select
-              name="contractType"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-              defaultValue={""}
-            >
-              <option value={""} disabled hidden>
-                Select an option...
-              </option>
-              <option value="fulltime">Full time</option>
-              <option value="parttime">Part time</option>
-              <option value="freelance">Freelance</option>
-              <option value="intern">Intern</option>
-            </select>
-          </div>
-          <div className="mb-2 flex items-center justify-between">
-            <label className="w-2/5 pr-2">Contract Duration</label>
-            <input
-              type="text"
-              name="contractDuration"
-              className="input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 w-3/5 rounded-full pl-4"
-            />
-          </div>
-        </div>
-        <div className="col-span-1">
-          <label>Key Company Links</label>
-          <FillSocialLinks />
-        </div>
-      </form> */}
       <form className="flex items-center justify-center">
         <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
           <Tab.Group>
@@ -1883,19 +1871,22 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
               <Tab.Panel className="pt-8">
                 <div className="flex  gap-x-6">
                   <div className="flex  flex-col items-start text-xs">
-                    <label>Targeted Start Date</label>
+                    <label className="text-xs ">Start Date </label>
                     <input
                       type="date"
-                      name="targetedStartDate"
-                      className="  border-edenGray-100 w-56  rounded-lg border  py-[.45rem] outline-none "
+                      id="targetedStartDate"
+                      className="  border-edenGray-100 mt-2 w-56  rounded-lg border py-[.45rem] pl-2 pr-2 outline-none "
+                      required
+                      {...register("targetedStartDate")}
                     />
                   </div>
                   <div className="flex flex-col items-start">
                     <label className="text-xs">Visa Required</label>
                     <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
                       <select
-                        name="visaRequirements"
+                        id="visaRequirements"
                         className="w-full outline-none"
+                        {...register("visaRequirements")}
                       >
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
@@ -1906,9 +1897,9 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                     <label className="text-xs ">Office Policy</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
                       <select
-                        name="officeLocations"
+                        id="officePolicy"
                         className="w-full outline-none"
-                        defaultValue={""}
+                        {...register("officePolicy")}
                       >
                         <option value={""} disabled hidden>
                           Select an option...
@@ -1938,9 +1929,11 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                     <div className="mt-2 w-full rounded-lg bg-white text-xs">
                       <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
                       <input
+                        id="officeLocation"
+                        {...register("officeLocation")}
                         type="text"
-                        className=" border-edenGray-100  w-full rounded-lg border p-2 pl-9  outline-none"
-                      ></input>
+                        className="  border-edenGray-100 w-full rounded-lg border py-[.45rem] pl-8   outline-none "
+                      />
                     </div>
                   </div>
                 </div>
@@ -1949,9 +1942,9 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                     <label className="text-xs">Contact Type</label>
                     <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
                       <select
+                        id="contractType"
+                        {...register("contractType")}
                         className=" w-full outline-none"
-                        name="contractType"
-                        defaultValue={""}
                       >
                         <option value={""} disabled hidden>
                           Select an option...
@@ -1967,9 +1960,9 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
                     <label className="text-xs">Contract Duration</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
                       <select
+                        id="contractDuration"
+                        {...register("contractDuration")}
                         className="w-full outline-none "
-                        name="contractDuration"
-                        defaultValue={""}
                       >
                         <option value={""} disabled hidden>
                           Select duration of contract
@@ -1987,7 +1980,7 @@ const FinalFormContainer = ({}: IFinalFormContainerProps) => {
             </Tab.Panels>
           </Tab.Group>
         </div>
-      </form>
+      </form>{" "}
     </>
   );
 };
