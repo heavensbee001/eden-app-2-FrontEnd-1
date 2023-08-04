@@ -518,7 +518,6 @@ const TrainAiPage: NextPageWithLayout = () => {
                       All done, this is the final step. Fill in some quick
                       information and we’re off!
                     </p>
-                    xxx{JSON.stringify(watch("finalDetails"))}ddddd
                     <Controller
                       name={"finalDetails"}
                       control={control}
