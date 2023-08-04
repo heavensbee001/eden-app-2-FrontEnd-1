@@ -50,33 +50,44 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
 
       Object.entries(categories).forEach(([categoryName, items]) => {
         let total = 0;
+        let totalN = 0;
 
         items.notes.map((it: any) => {
-          total += parseInt(it.score);
+          if (it.score > 0) {
+            total += parseInt(it.score);
+            totalN += 1;
+          }
         });
 
-        const average = total / items.notes.length;
-
-        const { letter } = getGrade(average);
+        let average = 0;
+        let letter = "-";
+        if (totalN > 0) {
+          average = total / totalN;
+          let LT = getGrade(average);
+          letter = LT.letter;
+        }
 
         categories[categoryName].average = letter;
       });
 
+      // console.log("categories = " , categories)
+
       setReportNotesData(categories);
     }
+    console.log("member?.letterAndColor = ", member?.letterAndColor);
   }, [candidate]);
 
   const getGrade = (percentage: number): Grade => {
     let grade: Grade = { letter: "", color: "" };
 
-    if (percentage >= 8.5) {
+    if (percentage >= 7) {
       grade = { letter: "A", color: "text-utilityGreen" };
-    } else if (percentage >= 7) {
-      grade = { letter: "B", color: "text-utilityYellow" };
     } else if (percentage >= 5) {
+      grade = { letter: "B", color: "text-utilityYellow" };
+    } else if (percentage >= 3.5) {
       grade = { letter: "C", color: "text-utilityOrange" };
     } else {
-      grade = { letter: "D", color: "text-utilityRed" };
+      grade = { letter: "?", color: "text-utilityGray" };
     }
 
     return grade;
@@ -92,7 +103,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
     } else if (letter === "C") {
       grade = { letter: "C", color: "text-utilityOrange" };
     } else {
-      grade = { letter: "D", color: "text-utilityRed" };
+      grade = { letter: "?", color: "text-utilityGray" };
     }
 
     return grade;
@@ -100,13 +111,13 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
 
   return (
     <>
-      {member?.letterAndColor?.totalMatchPerc?.letter && (
+      {member?.letterAndColor?.requirements?.letter && (
         <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
           <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
             <span
-              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
+              className={`${member?.letterAndColor?.requirements?.color} text-3xl`}
             >
-              {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
+              {`${member?.letterAndColor?.requirements?.letter}`}
             </span>
           </div>
           {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (

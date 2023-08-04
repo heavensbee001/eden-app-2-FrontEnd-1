@@ -78,8 +78,9 @@ export const CandidateInfo = ({
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [letterType, setLetterType] =
-    useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
+  const [letterType, setLetterType] = useState<
+    "rejection" | "nextInterviewInvite" | undefined
+  >(undefined);
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -258,6 +259,7 @@ export const CandidateInfo = ({
                   {tab.toUpperCase()}
                 </Tab>
               ))}
+
             </Tab.List>
             <Tab.Panels>
               <div className="">

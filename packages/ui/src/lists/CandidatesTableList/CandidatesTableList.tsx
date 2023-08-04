@@ -235,12 +235,12 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     <div className="border-edenGray-100 -my-4 mx-auto mx-auto flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                       <p
                         className={classNames(
-                          candidate?.letterAndColor?.culture?.color
-                            ? candidate?.letterAndColor?.culture?.color
+                          candidate?.letterAndColor?.requirements?.color
+                            ? candidate?.letterAndColor?.requirements?.color
                             : "text-edenGray-600"
                         )}
                       >
-                        {`${candidate?.letterAndColor?.culture?.letter}`}
+                        {`${candidate?.letterAndColor?.requirements?.letter}`}
                       </p>
                     </div>
                   ) : (
