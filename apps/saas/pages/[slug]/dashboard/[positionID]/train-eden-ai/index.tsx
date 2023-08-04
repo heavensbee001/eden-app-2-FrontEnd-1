@@ -482,11 +482,9 @@ const TrainAiPage: NextPageWithLayout = () => {
                   <div className="mx-auto h-full max-w-2xl">
                     <h2 className="mb-4">Complete Checks & Balances List</h2>
                     <p className="text-edenGray-500 mb-8 text-sm">
-                      Here&apos;s a list of all the must & nice to haves that I
-                      will look for in the candidate based in the info
-                      you&apos;ve provided to me. Feel free to edit any line by
-                      changing, deleting or adding elements that might be
-                      missing.
+                      {
+                        "Here’s a list of all the must & nice to have. Feel free to edit any line "
+                      }
                     </p>
                     <ProfileQuestionsContainer />
                   </div>
@@ -1145,19 +1143,20 @@ export const POSITION_TEXT_CONVO_TO_REPORT = gql`
 interface IProfileQuestionsContainerProps {}
 
 const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
-  const { currentUser } = useContext(UserContext);
+  // const { currentUser } = useContext(UserContext);
   // eslint-disable-next-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
   const [scraping, setScraping] = useState<boolean>(false);
+  const [index, setIndex] = useState<number>(0);
+  const [editQuestionIndex, setEditQuestionIndex] =
+    useState<number | null>(null);
+  const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
-  const [report, setReport] = useState<string | null>(null);
-
-  // eslint-disable-next-line no-unused-vars
-  const { register, watch, control, setValue, getValues } = useForm<Members>({
-    defaultValues: { ...currentUser },
-  });
+  // const { register, watch, control, setValue, getValues } = useForm<Members>({
+  //   defaultValues: { ...currentUser },
+  // });
 
   const { positionID } = router.query;
 
@@ -1178,7 +1177,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         //Change - to •
         jobDescription = jobDescription.replace(/-\s/g, "• ");
 
-        setReport(jobDescription);
+        setQuestions(convertTextCategoriesToObj(jobDescription));
       },
     }
   );
@@ -1199,6 +1198,10 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   // };
 
   useEffect(() => {
+    setEditQuestionIndex(null);
+  }, [index]);
+
+  useEffect(() => {
     if (scraping == false) {
       setScraping(true);
 
@@ -1216,18 +1219,58 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     }
   }, []);
 
+  const handleQuestionChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+    index: number,
+    category: string
+  ): void => {
+    const { name, value } = event.target;
+
+    setQuestions((prevQuestions) => {
+      const newQuestions: QuestionGroupedByCategory = { ...prevQuestions };
+
+      newQuestions[category] = newQuestions[category].map((question, i) => {
+        if (i === index) {
+          return {
+            ...question,
+            [name]: value,
+          };
+        }
+        return question;
+      });
+
+      return newQuestions;
+    });
+  };
+
+  const handleAddQuestion = (category: string) => {
+    setEditQuestionIndex(questions[category].length);
+    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
+      ...prevQuestions,
+      [category]: [
+        ...prevQuestions[category],
+        { question: "", IDCriteria: `b${prevQuestions[category].length + 1}` },
+      ],
+    }));
+  };
+
+  const handleDeleteQuestion = (category: string, position: number) => {
+    const _newArr = [...questions[category]];
+
+    _newArr.splice(position, 1);
+
+    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
+      ...prevQuestions,
+      [category]: _newArr,
+    }));
+  };
+
+  const handleEditQuestion = (position: number) => {
+    setEditQuestionIndex(position);
+  };
+
   return (
     <div className="w-full">
-      {/* <Button
-        variant="primary"
-        className="w-fit"
-        type="submit"
-        onClick={handleClick}
-        loading={scraping}
-      >
-        Recalculate Criteria
-      </Button> */}
-
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
@@ -1238,20 +1281,97 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           </div>
         </EdenAiProcessingModal>
       )}
-      {report && (
+      {!scraping && questions && (
         <div className="whitespace-pre-wrap">
-          {convertTextCategoriesToHTML(report)}
+          <Tab.Group
+            defaultIndex={index}
+            onChange={(index: number) => {
+              setIndex(index);
+            }}
+          >
+            <Tab.List className="border-edenGreen-300 flex h-8 w-full border-b">
+              {Object.keys(questions).map((category, _index) => (
+                <Tab
+                  key={_index}
+                  className={({ selected }) =>
+                    classNames(
+                      "text-edenGreen-400 -mb-px pb-2 text-xs whitespace-nowrap px-3 overflow-x-scroll scrollbar-hide",
+                      selected
+                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
+                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
+                    )
+                  }
+                >
+                  {category.toUpperCase()}
+                </Tab>
+              ))}
+            </Tab.List>
+            <Tab.Panels>
+              {Object.keys(questions).map((category, _index) => (
+                <Tab.Panel key={_index}>
+                  <div className="px-4 py-4">
+                    {questions[category].map((question, __index) => (
+                      <div
+                        key={`${category}_${__index}`}
+                        className="relative mb-3 flex"
+                      >
+                        <textarea
+                          name="question"
+                          disabled={editQuestionIndex !== __index}
+                          defaultValue={question.question.toString()}
+                          onChange={(event) =>
+                            handleQuestionChange(event, __index, category)
+                          }
+                          className={classNames(
+                            "w-10/12 resize-none bg-transparent px-2",
+                            editQuestionIndex === __index
+                              ? "border rounded-md border-edenGray-200 border-box"
+                              : ""
+                          )}
+                        />
+                        <Button
+                          variant="tertiary"
+                          onClick={() => {
+                            handleEditQuestion(__index);
+                          }}
+                          className="ml-auto rounded-md bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 w-6 h-6 !p-0 flex items-center justify-center"
+                        >
+                          <HiPencil size={16} />
+                        </Button>
+                        <Button
+                          variant="tertiary"
+                          onClick={() =>
+                            handleDeleteQuestion(category, __index)
+                          }
+                          className="ml-2 rounded-md !bg-edenPink-300 text-utilityRed hover:opacity-60 w-6 h-6 !p-0 flex items-center justify-center"
+                        >
+                          <RiDeleteBin2Line size={16} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    variant="tertiary"
+                    onClick={() => handleAddQuestion(category)}
+                    className="float-right text-sm"
+                  >
+                    + Add a Question
+                  </Button>
+                </Tab.Panel>
+              ))}
+            </Tab.Panels>
+          </Tab.Group>
         </div>
       )}
     </div>
   );
 };
 
-function convertTextCategoriesToHTML(text: string): JSX.Element {
-  interface Category {
-    name: string;
-    bullets: string[];
-  }
+interface Category {
+  name: string;
+  bullets: string[];
+}
+function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
   const categories: Category[] = [];
 
   // Split the text into lines
@@ -1287,29 +1407,40 @@ function convertTextCategoriesToHTML(text: string): JSX.Element {
     }
   });
 
+  const categoriesObj: QuestionGroupedByCategory = categories.reduce(
+    (acc, category) => {
+      acc[category.name] = category.bullets.map((bullet) => ({
+        question: bullet,
+      }));
+
+      return acc;
+    },
+    {} as QuestionGroupedByCategory
+  );
+
   // Render the elements
-  const elements = categories.map((category, index) => (
-    <div key={index} className="mb-6">
-      <div className="border-edenGreen-300 flex justify-between border-b px-4">
-        <h3 className="text-edenGreen-500 mb-3">{category.name}</h3>
-      </div>
-      <ul>
-        {category.bullets.map((bullet: string, bulletIndex: number) => (
-          <li
-            className="border-edenGray-100 w-full rounded-md border-b px-4"
-            key={bulletIndex}
-          >
-            <div className="flex w-full columns-2 items-center justify-between py-4">
-              <p className="w-full pr-4 text-sm">{bullet}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  ));
+  // const elements = categories.map((category, index) => (
+  //   <div key={index} className="mb-6">
+  //     <div className="border-edenGreen-300 flex justify-between border-b px-4">
+  //       <h3 className="text-edenGreen-500 mb-3">{category.name}</h3>
+  //     </div>
+  //     <ul>
+  //       {category.bullets.map((bullet: string, bulletIndex: number) => (
+  //         <li
+  //           className="border-edenGray-100 w-full rounded-md border-b px-4"
+  //           key={bulletIndex}
+  //         >
+  //           <div className="flex w-full columns-2 items-center justify-between py-4">
+  //             <p className="w-full pr-4 text-sm">{bullet}</p>
+  //           </div>
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   </div>
+  // ));
 
   // Render the elements inside a div
-  return <div>{elements}</div>;
+  return categoriesObj;
 }
 
 export const POSITION_SUGGEST_QUESTIONS = gql`
@@ -1327,7 +1458,7 @@ export const POSITION_SUGGEST_QUESTIONS = gql`
 
 type QuestionSuggest = {
   question: String;
-  IDCriteria: String;
+  IDCriteria?: String;
 };
 type QuestionGroupedByCategory = {
   [category: string]: QuestionSuggest[];
@@ -1384,6 +1515,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   };
 
   const handleAddQuestion = (category: string) => {
+    setEditQuestionIndex(questions[category].length);
     setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
       ...prevQuestions,
       [category]: [
@@ -1586,7 +1718,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
                   {questions[category].map((question, __index) => (
                     <div
                       key={`${category}_${__index}`}
-                      className="relative mb-2 flex"
+                      className="relative mb-3 flex"
                     >
                       <textarea
                         name="question"
