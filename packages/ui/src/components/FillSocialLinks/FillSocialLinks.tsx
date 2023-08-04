@@ -13,8 +13,6 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 
-import { TextInputLabel } from "../../atoms";
-
 type LinkValues = {
   links: { name: string; url: string }[];
 };
