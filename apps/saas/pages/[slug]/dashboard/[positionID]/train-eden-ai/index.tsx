@@ -1778,6 +1778,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 };
 
 interface IFinalFormContainerProps {
+  // eslint-disable-next-line no-unused-vars
   onChange: (data: any) => void;
 }
 
