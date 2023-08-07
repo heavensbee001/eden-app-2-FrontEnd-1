@@ -1662,17 +1662,19 @@ const PositionCRM: NextPageWithLayout = () => {
                 </div>
               )}
 
-              <div
-                className="border-edenGray-100 group ml-auto flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border"
-                onClick={handleShareTalentListButton}
-                data-tip="Share talent list"
-                data-for={`share-button`}
-              >
-                <FaShare
-                  size={18}
-                  className="text-edenGray-700 group-hover:text-edenGray-500"
-                />
-              </div>
+              {talentListSelected?._id && (
+                <div
+                  className="border-edenGray-100 group ml-auto flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border"
+                  onClick={handleShareTalentListButton}
+                  data-tip="Share talent list"
+                  data-for={`share-button`}
+                >
+                  <FaShare
+                    size={18}
+                    className="text-edenGray-700 group-hover:text-edenGray-500"
+                  />
+                </div>
+              )}
               <ReactTooltip
                 id="share-button"
                 place="left"
