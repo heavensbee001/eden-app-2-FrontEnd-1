@@ -12,7 +12,7 @@ import {
   AppUserLayout,
   Button,
   ChatMessage,
-  EdenAiProcessingModal,
+  EdenAiProcessingModalContained,
   EdenIconQuestion,
   EdenTooltip,
   FillSocialLinks,
@@ -396,7 +396,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     </Button>
                   }
                 >
-                  <div className="flex h-full items-center justify-center">
+                  <div className="relative flex h-full items-center justify-center">
                     <form className="w-full max-w-[33rem]">
                       <div className="mb-6">
                         <label
@@ -433,7 +433,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                         />
                       </div>
                     </form>
-                    <EdenAiProcessingModal
+                    <EdenAiProcessingModalContained
                       open={scraping}
                       title="Give me 30 seconds!"
                     >
@@ -444,7 +444,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                           ideal interview for your candidates!
                         </p>
                       </div>
-                    </EdenAiProcessingModal>
+                    </EdenAiProcessingModalContained>
                   </div>
                 </WizardStep>
 
@@ -970,14 +970,14 @@ const PrioritiesAndTradeOffsContainer = ({
   return (
     <div className="grid w-full grid-cols-12 gap-4">
       {loadingPriorities && (
-        <EdenAiProcessingModal
+        <EdenAiProcessingModalContained
           open={loadingPriorities}
           title="Understanding your Priorities & Tradeoffs"
         >
           <div className="text-center">
             <p>{`As any great recruiter would tell you, I understand the perfect match doesn't exist. It's all about your priorities & tradeoffs - so in a couple of seconds please work with me so we can be super aligned on this!`}</p>
           </div>
-        </EdenAiProcessingModal>
+        </EdenAiProcessingModalContained>
       )}
       <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
@@ -1156,9 +1156,8 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
 
   const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
-    null
-  );
+  const [editQuestionIndex, setEditQuestionIndex] =
+    useState<number | null>(null);
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
   // const { register, watch, control, setValue, getValues } = useForm<Members>({
@@ -1279,14 +1278,14 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   return (
     <div className="w-full">
       {scraping && (
-        <EdenAiProcessingModal
+        <EdenAiProcessingModalContained
           open={scraping}
           title="Compiling candidate checklist"
         >
           <div className="text-center">
             <p>{`These are the criteria you & I will use to benchmark all of the candidates. I'm generating this list based on everything you've just told me prior - of course you'll be able to add, delete & edit!`}</p>
           </div>
-        </EdenAiProcessingModal>
+        </EdenAiProcessingModalContained>
       )}
       {!scraping && questions && (
         <div className="whitespace-pre-wrap">
@@ -1487,9 +1486,8 @@ const CreateQuestions = ({}: ICreateQuestions) => {
 
   const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
-    null
-  );
+  const [editQuestionIndex, setEditQuestionIndex] =
+    useState<number | null>(null);
   const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
@@ -1676,7 +1674,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
   return (
     <div className="w-full">
       {scraping && (
-        <EdenAiProcessingModal
+        <EdenAiProcessingModalContained
           open={scraping}
           title="Generating optimal interview"
         >
@@ -1685,7 +1683,7 @@ const CreateQuestions = ({}: ICreateQuestions) => {
               {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
             </p>
           </div>
-        </EdenAiProcessingModal>
+        </EdenAiProcessingModalContained>
       )}
       <Button
         className="absolute bottom-8 right-8 z-30 mx-auto"

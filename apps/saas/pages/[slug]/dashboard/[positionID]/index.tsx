@@ -136,9 +136,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -325,32 +324,32 @@ const PositionCRM: NextPageWithLayout = () => {
 
         setCandidatesFromTalentList(sortedCandidatesList);
 
-        const rejectedCandidatesIDs = data.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Rejected"
-        )?.talent.length
-          ? data.findPosition.talentList
-              .find((list: TalentListType) => list.name === "Rejected")
-              ?.talent.map((candidate: any) => candidate?.user?._id)
-          : [];
+        // const rejectedCandidatesIDs = data.findPosition.talentList.find(
+        //   (list: TalentListType) => list.name === "Rejected"
+        // )?.talent.length
+        //   ? data.findPosition.talentList
+        //       .find((list: TalentListType) => list.name === "Rejected")
+        //       ?.talent.map((candidate: any) => candidate?.user?._id)
+        //   : [];
 
-        const approvedCandidatesIDs = data.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Accepted"
-        )?.talent.length
-          ? data.findPosition.talentList
-              .find((list: TalentListType) => list.name === "Accepted")
-              ?.talent.map((candidate: any) => candidate?.user?._id)
-          : [];
+        // const approvedCandidatesIDs = data.findPosition.talentList.find(
+        //   (list: TalentListType) => list.name === "Accepted"
+        // )?.talent.length
+        //   ? data.findPosition.talentList
+        //       .find((list: TalentListType) => list.name === "Accepted")
+        //       ?.talent.map((candidate: any) => candidate?.user?._id)
+        //   : [];
 
         setCandidatesUnqualifiedList(
           sortedCandidatesList
-            .filter(
-              (candidate: any) =>
-                !rejectedCandidatesIDs.includes(candidate.user._id)
-            )
-            .filter(
-              (candidate: any) =>
-                !approvedCandidatesIDs.includes(candidate.user._id)
-            )
+          // .filter(
+          //   (candidate: any) =>
+          //     !rejectedCandidatesIDs.includes(candidate.user._id)
+          // )
+          // .filter(
+          //   (candidate: any) =>
+          //     !approvedCandidatesIDs.includes(candidate.user._id)
+          // )
         );
 
         if (findPositionData?.findPosition?.talentList) {
@@ -1663,17 +1662,19 @@ const PositionCRM: NextPageWithLayout = () => {
                 </div>
               )}
 
-              <div
-                className="border-edenGray-100 group ml-auto flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border"
-                onClick={handleShareTalentListButton}
-                data-tip="Share talent list"
-                data-for={`share-button`}
-              >
-                <FaShare
-                  size={18}
-                  className="text-edenGray-700 group-hover:text-edenGray-500"
-                />
-              </div>
+              {talentListSelected?._id && (
+                <div
+                  className="border-edenGray-100 group ml-auto flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border"
+                  onClick={handleShareTalentListButton}
+                  data-tip="Share talent list"
+                  data-for={`share-button`}
+                >
+                  <FaShare
+                    size={18}
+                    className="text-edenGray-700 group-hover:text-edenGray-500"
+                  />
+                </div>
+              )}
               <ReactTooltip
                 id="share-button"
                 place="left"

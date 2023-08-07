@@ -4617,6 +4617,7 @@ export type Wh_K_ArrType = {
 };
 
 export enum WhatToAskEnum {
+  AllCandidatesOfCompany = "ALL_CANDIDATES_OF_COMPANY",
   CandidateOfCompany = "CANDIDATE_OF_COMPANY",
   Company = "COMPANY",
 }
