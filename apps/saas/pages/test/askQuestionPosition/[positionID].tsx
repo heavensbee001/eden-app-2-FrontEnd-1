@@ -1,29 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
-// import {
-//   // FIND_MEMBER_INFO,
-//   MATCH_NODES_MEMBERS_AI4,
-// } from "@eden/package-graphql";
-import {
-  MatchMembersToSkillOutput,
-  Project,
-  RoleType,
-} from "@eden/package-graphql/generated";
-import {
-  // CardGrid,
-  // CommonServerAvatarList,
-  AI_INTERVIEW_SERVICES,
-  Card,
-  ChatMessage,
-  DynamicSearchGraph,
-  InterviewEdenAI,
-} from "@eden/package-ui";
 import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { FIND_RELATED_NODE } from "../../../utils/data/GQLfuncitons";
 import type { NextPageWithLayout } from "../../_app";
 
 export const QUERY_RESPONSE_UPDATED = gql`
@@ -133,6 +113,7 @@ const askQuestionPosition: NextPageWithLayout = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -197,7 +178,8 @@ const askQuestionPosition: NextPageWithLayout = () => {
 
       if (questionIndex !== -1) {
         // update the answer
-        let updatedQuestions = [...questions];
+        const updatedQuestions = [...questions];
+
         updatedQuestions[questionIndex] = {
           ...updatedQuestions[questionIndex],
           question: {
@@ -230,7 +212,8 @@ const askQuestionPosition: NextPageWithLayout = () => {
 
       if (questionIndex !== -1) {
         // update the answer
-        let updatedQuestions = [...questionsAns];
+        const updatedQuestions = [...questionsAns];
+
         updatedQuestions[questionIndex] = {
           ...updatedQuestions[questionIndex],
           question: {
@@ -252,7 +235,8 @@ const askQuestionPosition: NextPageWithLayout = () => {
 
       if (questionIndex2 !== -1) {
         // update the answer
-        let updatedQuestions = [...questions];
+        const updatedQuestions = [...questions];
+
         updatedQuestions.splice(questionIndex2, 1);
         setQuestions(updatedQuestions);
       }

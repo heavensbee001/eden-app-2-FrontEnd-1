@@ -1,30 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
-
-import { UserContext } from "@eden/package-context";
-// import {
-//   // FIND_MEMBER_INFO,
-//   MATCH_NODES_MEMBERS_AI4,
-// } from "@eden/package-graphql";
-import {
-  MatchMembersToSkillOutput,
-  Project,
-  RoleType,
-} from "@eden/package-graphql/generated";
-import {
-  // CardGrid,
-  // CommonServerAvatarList,
-  AI_INTERVIEW_SERVICES,
-  Card,
-  ChatMessage,
-  DynamicSearchGraph,
-  InterviewEdenAI,
-} from "@eden/package-ui";
 import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { FIND_RELATED_NODE } from "../../../utils/data/GQLfuncitons";
 import type { NextPageWithLayout } from "../../_app";
 
 export const QUERY_RESPONSE_UPDATED = gql`
@@ -135,6 +114,7 @@ const askQuestionPosition: NextPageWithLayout = () => {
     setShowPopup(true);
 
     const question = questions.find((question) => question._id === questionId);
+
     if (question) {
       setPopupObject(question);
     }
@@ -147,6 +127,7 @@ const askQuestionPosition: NextPageWithLayout = () => {
     const updatedQuestions = questions.filter(
       (question) => question._id !== selectedQuestionId
     );
+
     setAnswerContent("");
     setSelectedQuestionId(null);
 
@@ -216,10 +197,12 @@ const askQuestionPosition: NextPageWithLayout = () => {
           question._id.toString() ==
           data.data.queryResponseUpdated._id.toString()
       );
+
       if (questionIndex !== -1) {
         // update the answer
-        let updatedQuestions = [...questions];
+        const updatedQuestions = [...questions];
         // updatedQuestions[questionIndex].question.content = data.data.queryResponseUpdated.content;
+
         updatedQuestions[questionIndex] = {
           ...updatedQuestions[questionIndex],
           question: {
