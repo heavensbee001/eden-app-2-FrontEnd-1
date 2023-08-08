@@ -84,6 +84,10 @@ export const LeftToggleNav = ({
     });
   };
 
+  const hideCreatePosition =
+    router.pathname === "/interview/[positionID]" ||
+    router.pathname.includes("/train-eden-ai");
+
   return (
     <nav
       className={classNames(
@@ -216,22 +220,24 @@ export const LeftToggleNav = ({
           ))}
       </section>
 
-      {/* ---- User Button Section ---- */}
-      <section className="h-20 pt-4">
-        <Button
-          className={classNames(
-            "mx-auto flex items-center whitespace-nowrap",
-            unwrapped ? "" : "!px-2"
-          )}
-          onClick={handleCreatePosition}
-        >
-          <BiPlus size={"1.3rem"} className="" />
-          {unwrapped && (
-            <span className="font-Moret ml-1">Add Opportunity</span>
-          )}
-        </Button>
-        {creatingPositionModal}
-      </section>
+      {/* ---- Create Position Button Section ---- */}
+      {!hideCreatePosition && (
+        <section className="h-20 pt-4">
+          <Button
+            className={classNames(
+              "mx-auto flex items-center whitespace-nowrap",
+              unwrapped ? "" : "!px-2"
+            )}
+            onClick={handleCreatePosition}
+          >
+            <BiPlus size={"1.3rem"} className="" />
+            {unwrapped && (
+              <span className="font-Moret ml-1">Add Opportunity</span>
+            )}
+          </Button>
+          {creatingPositionModal}
+        </section>
+      )}
 
       {/* ---- User Button Section ---- */}
       <section className="">

@@ -62,77 +62,80 @@ const HomePage: NextPage = ({
               />
             </div>
           </section>
-          <section>
-            <div className="grid grid-cols-12 gap-12">
-              <div className="col-span-4">
-                <div>
-                  <h3 className="text-edenGreen-600 mb-4 text-center text-4xl">
-                    Align
-                  </h3>
+          {!redirect.includes("/interview/") && (
+            <section>
+              <div className="grid grid-cols-12 gap-12">
+                <div className="col-span-4">
+                  <div>
+                    <h3 className="text-edenGreen-600 mb-4 text-center text-4xl">
+                      Align
+                    </h3>
+                  </div>
+                </div>
+                <div className="col-span-4">
+                  <div>
+                    <h3 className="text-edenGreen-600 mb-4 text-center text-4xl">
+                      Evaluate
+                    </h3>
+                  </div>
+                </div>
+                <div className="col-span-4">
+                  <div>
+                    <h3 className="text-edenGreen-600 mb-4 text-center text-4xl">
+                      Select
+                    </h3>
+                  </div>
                 </div>
               </div>
-              <div className="col-span-4">
-                <div>
-                  <h3 className="text-edenGreen-600 mb-4 text-center text-4xl">
-                    Evaluate
-                  </h3>
+              <div className="grid grid-cols-12 gap-12">
+                <div className="col-span-4 h-full">
+                  <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
+                    <p className="mb-4">
+                      Eden makes sure she’s got all the info she needs to
+                      properly <b>vet candidates up to your standards</b>.
+                    </p>
+                    <p className="text-sm">
+                      Based on the alignment conversation you have with her, she
+                      generates an interview link that you can share with
+                      candidates that will do the first interview with
+                      applicants as if done by a recruiter.
+                    </p>
+                  </div>
+                </div>
+                <div className="col-span-4 h-full">
+                  <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
+                    <p className="mb-4">
+                      After the first scan Eden does, she generates an{" "}
+                      <b>
+                        overview with recommendations for every candidate in a
+                        dashboard
+                      </b>
+                      .
+                    </p>
+                    <p className="text-sm">
+                      Eden makes it very easy to compare and understand the
+                      potential tradeoffs between all candidates giving you all
+                      the info you need to make a decision at your fingertips.
+                    </p>
+                  </div>
+                </div>
+                <div className="col-span-4 h-full">
+                  <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
+                    <p className="mb-4">
+                      Decide what candidates you want to{" "}
+                      <b>invite for a second interview</b>.
+                    </p>
+                    <p className="text-sm">
+                      Eden automatically generates congratulation e-mails that
+                      re designed to get the candidate excited as well as
+                      thoughtful rejection messages for those you do not wish to
+                      see again.
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="col-span-4">
-                <div>
-                  <h3 className="text-edenGreen-600 mb-4 text-center text-4xl">
-                    Select
-                  </h3>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-12 gap-12">
-              <div className="col-span-4 h-full">
-                <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
-                  <p className="mb-4">
-                    Eden makes sure she’s got all the info she needs to properly{" "}
-                    <b>vet candidates up to your standards</b>.
-                  </p>
-                  <p className="text-sm">
-                    Based on the alignment conversation you have with her, she
-                    generates an interview link that you can share with
-                    candidates that will do the first interview with applicants
-                    as if done by a recruiter.
-                  </p>
-                </div>
-              </div>
-              <div className="col-span-4 h-full">
-                <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
-                  <p className="mb-4">
-                    After the first scan Eden does, she generates an{" "}
-                    <b>
-                      overview with recommendations for every candidate in a
-                      dashboard
-                    </b>
-                    .
-                  </p>
-                  <p className="text-sm">
-                    Eden makes it very easy to compare and understand the
-                    potential tradeoffs between all candidates giving you all
-                    the info you need to make a decision at your fingertips.
-                  </p>
-                </div>
-              </div>
-              <div className="col-span-4 h-full">
-                <div className="h-full bg-[#F9E1ED] px-2 py-2 pb-8 text-center">
-                  <p className="mb-4">
-                    Decide what candidates you want to{" "}
-                    <b>invite for a second interview</b>.
-                  </p>
-                  <p className="text-sm">
-                    Eden automatically generates congratulation e-mails that re
-                    designed to get the candidate excited as well as thoughtful
-                    rejection messages for those you do not wish to see again.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
+            </section>
+          )}
         </div>
       </div>
     </>
