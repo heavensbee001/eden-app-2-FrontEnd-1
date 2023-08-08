@@ -161,7 +161,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Culture Fit",
+      tab: "Key Info",
       Content: () => (
         <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
       ),
@@ -188,7 +188,7 @@ export const CandidateInfo = ({
 
   return (
     <div className="relative h-full">
-      <div className="h-full overflow-y-scroll overscroll-y-contain	scrollbar-hide bg-white">
+      <div className="scrollbar-hide h-full overflow-y-scroll	overscroll-y-contain bg-white">
         <section className="w-full flex-col">
           <div
             onClick={onClose}
@@ -259,7 +259,6 @@ export const CandidateInfo = ({
                   {tab.toUpperCase()}
                 </Tab>
               ))}
-
             </Tab.List>
             <Tab.Panels>
               <div className="">
@@ -276,7 +275,7 @@ export const CandidateInfo = ({
         </section>
       </div>
       {dataMember?.findMember && (
-        <section className="absolute bottom-0 right-0 h-20 w-full bg-white border-t-2 border-edenGray-100 flex items-center px-4 gap-4">
+        <section className="border-edenGray-100 absolute bottom-0 right-0 flex h-20 w-full items-center gap-4 border-t-2 bg-white px-4">
           {/* ------- schedule 2nd interview button ------- */}
           <Button variant="secondary" onClick={handleSecondInterviewLetter}>
             Schedule 2nd interview
@@ -285,7 +284,7 @@ export const CandidateInfo = ({
           {/* ------- schedule 2nd interview button ------- */}
           <Button
             variant="tertiary"
-            className="bg-utilityRed text-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:bg-utilityRed hover:text-white"
+            className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
             onClick={handleRejectionLetter}
             // onClick={handleRejectCandidate}
           >
