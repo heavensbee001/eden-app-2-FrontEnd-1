@@ -9,7 +9,7 @@ import {
 import { EdenAiProcessingModalContained, EdenTooltip } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
 export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
@@ -42,22 +42,14 @@ export const PrioritiesAndTradeOffsContainer = ({
 }: IPrioritiesAndTradeOffsContainerProps) => {
   const router = useRouter();
   const { positionID } = router.query;
-  // const { currentUser } = useContext(UserContext);
-
-  // eslint-disable-next-line no-unused-vars
-  const [submitting, setSubmitting] = useState(false);
 
   const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
 
   const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
 
-  // const { register, watch, control, setValue, getValues } = useForm<Members>({
-  //   defaultValues: {},
-  // });
-
-  // eslint-disable-next-line no-unused-vars
-  const { data: findPrioritiesAndTradeOffsData, loading: loadingPriorities } =
-    useQuery(FIND_PRIORITIES_TRAIN_EDEN_AI, {
+  const { loading: loadingPriorities } = useQuery(
+    FIND_PRIORITIES_TRAIN_EDEN_AI,
+    {
       variables: {
         fields: {
           positionID: positionID,
@@ -69,8 +61,6 @@ export const PrioritiesAndTradeOffsContainer = ({
         !!position.positionsRequirements?.priorities &&
         !!position.positionsRequirements?.priorities.length,
       onCompleted({ findPrioritiesTrainEdenAI }) {
-        // console.log("findPrioritiesTrainEdenAI = ", findPrioritiesTrainEdenAI);
-
         setPriorities(findPrioritiesTrainEdenAI.priorities);
         setTradeOffs(
           (findPrioritiesTrainEdenAI?.tradeOffs! as TradeOffsType[]).map(
@@ -85,9 +75,10 @@ export const PrioritiesAndTradeOffsContainer = ({
           )! as TradeOffsType[]
         );
       },
-    });
+    }
+  );
 
-  useEffect(() => {
+  useMemo(() => {
     if (
       position.positionsRequirements?.priorities &&
       position.positionsRequirements?.tradeOffs &&
@@ -110,7 +101,7 @@ export const PrioritiesAndTradeOffsContainer = ({
         )! as TradeOffsType[]
       );
     }
-  }, [position.positionsRequirements]);
+  }, []);
 
   const handleSelect = (index: number, option: string) => {
     const newTradeoffs = [...tradeOffs];
@@ -137,6 +128,8 @@ export const PrioritiesAndTradeOffsContainer = ({
   };
 
   useEffect(() => {
+    console.log(priorities, tradeOffs);
+
     onChange({ priorities: priorities, tradeOffs: tradeOffs });
   }, [priorities, tradeOffs]);
 

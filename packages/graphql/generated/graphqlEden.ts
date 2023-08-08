@@ -434,6 +434,7 @@ export type Mutation = {
   deleteNodesToProjectRole?: Maybe<Project>;
   deletePositionCandidate?: Maybe<Position>;
   deleteProject?: Maybe<Project>;
+  deleteQueryResponse?: Maybe<QueryResponse>;
   deleteQuestionsToAskPosition?: Maybe<Position>;
   endorseAttribute?: Maybe<Members>;
   enterRoom?: Maybe<Rooms>;
@@ -451,6 +452,7 @@ export type Mutation = {
   rejectionLetter?: Maybe<RejectionLetterOutput>;
   relatedNode?: Maybe<Node>;
   relatedNode_name?: Maybe<Node>;
+  respondToQuery?: Maybe<QueryResponse>;
   saveActionsPerformed?: Maybe<Scalars["Boolean"]>;
   saveCVtoUser?: Maybe<SaveCVtoUserOutput>;
   saveCoreProductFeatureInteration?: Maybe<Scalars["Boolean"]>;
@@ -477,6 +479,7 @@ export type Mutation = {
   updatePosition?: Maybe<Position>;
   updatePositionConvRecruiter?: Maybe<Array<Maybe<Position>>>;
   updatePositionUserAnswers?: Maybe<Array<Maybe<Position>>>;
+  updatePrioritiesTradeOffs?: Maybe<UpdatePrioritiesTradeOffsOutput>;
   updateProject?: Maybe<Project>;
   updateQueryResponse?: Maybe<QueryResponse>;
   updateRoleTemplate?: Maybe<RoleTemplate>;
@@ -713,6 +716,10 @@ export type MutationDeleteProjectArgs = {
   fields?: InputMaybe<DeleteProjectInput>;
 };
 
+export type MutationDeleteQueryResponseArgs = {
+  fields?: InputMaybe<DeleteQueryResponseInput>;
+};
+
 export type MutationDeleteQuestionsToAskPositionArgs = {
   fields?: InputMaybe<DeleteQuestionsToAskPositionInput>;
 };
@@ -779,6 +786,10 @@ export type MutationRelatedNodeArgs = {
 
 export type MutationRelatedNode_NameArgs = {
   fields?: InputMaybe<RelatedNode_NameInput>;
+};
+
+export type MutationRespondToQueryArgs = {
+  fields?: InputMaybe<RespondToQueryInput>;
 };
 
 export type MutationSaveActionsPerformedArgs = {
@@ -883,6 +894,10 @@ export type MutationUpdatePositionConvRecruiterArgs = {
 
 export type MutationUpdatePositionUserAnswersArgs = {
   fields?: InputMaybe<UpdatePositionUserAnswersInput>;
+};
+
+export type MutationUpdatePrioritiesTradeOffsArgs = {
+  fields?: InputMaybe<UpdatePrioritiesTradeOffsInput>;
 };
 
 export type MutationUpdateProjectArgs = {
@@ -1007,6 +1022,7 @@ export type Position = {
   company?: Maybe<Company>;
   convRecruiter?: Maybe<Array<Maybe<ConvRecruiterType>>>;
   convRecruiterReadyToDisplay?: Maybe<Scalars["Boolean"]>;
+  icon?: Maybe<Scalars["String"]>;
   interviewQuestionsForPosition?: Maybe<
     Array<Maybe<InterviewQuestionsForCandidateType>>
   >;
@@ -1631,7 +1647,7 @@ export type QueryResponse = {
   __typename?: "QueryResponse";
   _id?: Maybe<Scalars["ID"]>;
   answer?: Maybe<AnswerType>;
-  conversationID?: Maybe<Scalars["ID"]>;
+  conversation?: Maybe<Conversation>;
   phase?: Maybe<PhaseQueryResponseEnum>;
   question?: Maybe<QuestionQueryType>;
   responder?: Maybe<ResponderType>;
@@ -1836,6 +1852,7 @@ export type Subscription = {
   __typename?: "Subscription";
   memberUpdated?: Maybe<Members>;
   memberUpdatedInRoom?: Maybe<Members>;
+  queryResponseUpdated?: Maybe<QueryResponse>;
   roomUpdated?: Maybe<Rooms>;
   userCVSavedToDB?: Maybe<AddCvToUserOutput>;
 };
@@ -1846,6 +1863,10 @@ export type SubscriptionMemberUpdatedArgs = {
 
 export type SubscriptionMemberUpdatedInRoomArgs = {
   fields?: InputMaybe<FindRoomsInput>;
+};
+
+export type SubscriptionQueryResponseUpdatedArgs = {
+  fields?: InputMaybe<QueryResponseUpdatedInput>;
 };
 
 export type SubscriptionRoomUpdatedArgs = {
@@ -2619,6 +2640,10 @@ export type DeleteProjectInput = {
   projectID?: InputMaybe<Scalars["ID"]>;
 };
 
+export type DeleteQueryResponseInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+};
+
 export type DeleteQuestionsToAskPositionInput = {
   positionID?: InputMaybe<Scalars["ID"]>;
   questionID?: InputMaybe<Scalars["ID"]>;
@@ -3186,6 +3211,7 @@ export type FindProjects_RequireSkillInput = {
 
 export type FindQueryResponsesInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  phase?: InputMaybe<PhaseQueryResponseEnum>;
   responderID?: InputMaybe<Scalars["ID"]>;
   responderType?: InputMaybe<SendRespTypeEnum>;
   senderID?: InputMaybe<Scalars["ID"]>;
@@ -3756,7 +3782,7 @@ export enum PhaseEpicType {
 export enum PhaseQueryResponseEnum {
   Archived = "ARCHIVED",
   Query = "QUERY",
-  Responed = "RESPONED",
+  Responded = "RESPONDED",
   Viewed = "VIEWED",
 }
 
@@ -3877,6 +3903,10 @@ export type PreviousProjectsType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export type PrioritiesInput = {
+  priority?: InputMaybe<Scalars["String"]>;
+};
+
 export type PrioritiesType = {
   __typename?: "prioritiesType";
   priority?: Maybe<Scalars["String"]>;
@@ -3905,6 +3935,15 @@ export type ProjectUserMatchType = {
   projectData?: Maybe<Project>;
   skillsDontMatch?: Maybe<Array<Maybe<Skills>>>;
   skillsMatch?: Maybe<Array<Maybe<Skills>>>;
+};
+
+export type QueryResponseUpdatedInput = {
+  _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  phase?: InputMaybe<PhaseQueryResponseEnum>;
+  responderID?: InputMaybe<Scalars["ID"]>;
+  responderType?: InputMaybe<SendRespTypeEnum>;
+  senderID?: InputMaybe<Scalars["ID"]>;
+  senderType?: InputMaybe<SendRespTypeEnum>;
 };
 
 export type QuestionAnsweredType = {
@@ -4016,6 +4055,11 @@ export type ResourcesType = {
   __typename?: "resourcesType";
   name?: Maybe<Scalars["String"]>;
   url?: Maybe<Scalars["String"]>;
+};
+
+export type RespondToQueryInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+  conversationID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type ResponderType = {
@@ -4288,6 +4332,12 @@ export type TotalNodeTrustType = {
   totalTrustNum?: Maybe<Scalars["Float"]>;
 };
 
+export type TradeOffsInput = {
+  selected?: InputMaybe<Scalars["String"]>;
+  tradeOff1?: InputMaybe<Scalars["String"]>;
+  tradeOff2?: InputMaybe<Scalars["String"]>;
+};
+
 export type TradeOffsType = {
   __typename?: "tradeOffsType";
   reason?: Maybe<Scalars["String"]>;
@@ -4493,6 +4543,7 @@ export type UpdatePositionConvRecruiterInput = {
 export type UpdatePositionInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   companyID?: InputMaybe<Scalars["ID"]>;
+  icon?: InputMaybe<Scalars["String"]>;
   mainUserID?: InputMaybe<Scalars["ID"]>;
   name?: InputMaybe<Scalars["String"]>;
   updatePosition?: InputMaybe<Scalars["ID"]>;
@@ -4500,6 +4551,19 @@ export type UpdatePositionInput = {
 
 export type UpdatePositionUserAnswersInput = {
   positionIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+};
+
+export type UpdatePrioritiesTradeOffsInput = {
+  positionID?: InputMaybe<Scalars["ID"]>;
+  priorities?: InputMaybe<Array<InputMaybe<PrioritiesInput>>>;
+  tradeOffs?: InputMaybe<Array<InputMaybe<TradeOffsInput>>>;
+};
+
+export type UpdatePrioritiesTradeOffsOutput = {
+  __typename?: "updatePrioritiesTradeOffsOutput";
+  priorities?: Maybe<Array<Maybe<PrioritiesType>>>;
+  success?: Maybe<Scalars["Boolean"]>;
+  tradeOffs?: Maybe<Array<Maybe<TradeOffsType>>>;
 };
 
 export type UpdateProjectInput = {
@@ -4521,6 +4585,8 @@ export type UpdateProjectInput = {
 
 export type UpdateQueryResponseInput = {
   _id?: InputMaybe<Scalars["ID"]>;
+  answer?: InputMaybe<Scalars["String"]>;
+  conversationID?: InputMaybe<Scalars["ID"]>;
   phase?: InputMaybe<PhaseQueryResponseEnum>;
   question?: InputMaybe<Scalars["String"]>;
   responderID?: InputMaybe<Scalars["ID"]>;

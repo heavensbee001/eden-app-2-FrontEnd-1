@@ -1,8 +1,13 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import {
+  PrioritiesInput,
+  PrioritiesType,
   QuestionType,
   QuestionTypeInput,
+  TradeOffsInput,
+  TradeOffsType,
+  UpdatePrioritiesTradeOffsInput,
 } from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
@@ -113,6 +118,14 @@ const ADD_QUESTIONS_TO_POSITION = gql`
   }
 `;
 
+const UPADTE_PRIORITIES_AND_TRADEOFFS = gql`
+  mutation UpdatePrioritiesTradeOffs($fields: updatePrioritiesTradeOffsInput) {
+    updatePrioritiesTradeOffs(fields: $fields) {
+      success
+    }
+  }
+`;
+
 type Question = {
   _id: string;
   content: string;
@@ -139,6 +152,9 @@ const TrainAiPage: NextPageWithLayout = () => {
       },
     },
     skip: !positionID,
+    onCompleted(data) {
+      setValue("position", data.findPosition);
+    },
   });
 
   // eslint-disable-next-line no-unused-vars
@@ -259,6 +275,49 @@ const TrainAiPage: NextPageWithLayout = () => {
   //   setScraping(false);
   // };
 
+  // ------ PRIORITIES STEP ------
+  const [updatePrioritiesTradeOffs] = useMutation(
+    UPADTE_PRIORITIES_AND_TRADEOFFS
+  );
+
+  // handle question suggestions submit
+  const handlePrioritiesStepSubmit = () => {
+    if (positionID) {
+      updatePrioritiesTradeOffs({
+        variables: {
+          fields: {
+            positionID:
+              typeof positionID === "string" ? positionID : positionID[0],
+            priorities: getValues(
+              "position.positionsRequirements.priorities"
+            ).map(
+              (priority: PrioritiesType) =>
+                ({
+                  priority: priority.priority,
+                } as PrioritiesInput)
+            ),
+            tradeOffs: getValues(
+              "position.positionsRequirements.tradeOffs"
+            ).map(
+              (tradeOff: TradeOffsType) =>
+                ({
+                  selected: tradeOff.selected,
+                  tradeOff1: tradeOff.tradeOff1,
+                  tradeOff2: tradeOff.tradeOff2,
+                } as TradeOffsInput)
+            ),
+          } as UpdatePrioritiesTradeOffsInput,
+        },
+        onCompleted() {
+          setStep(step + 1);
+        },
+        onError() {
+          toast.error("There was an error while submitting");
+        },
+      });
+    }
+  };
+
   // ------ QUESTIONS STEP ------
   const [
     updateQuestionsPosition,
@@ -324,11 +383,7 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
-  console.log(
-    "loadingUpdateQuestionsToPosition",
-    loadingUpdateQuestionsToPosition
-  );
-  console.log("position.questionsToAsk", watch("position.questionsToAsk"));
+  console.log("position", watch("position"));
 
   return (
     <>
@@ -435,14 +490,29 @@ const TrainAiPage: NextPageWithLayout = () => {
                 <WizardStep
                   label={"Priorities & TradeOffs"}
                   navigationDisabled={step === 1}
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      className="mx-auto"
+                      onClick={() => {
+                        handlePrioritiesStepSubmit();
+                      }}
+                      disabled={
+                        !watch("position.positionsRequirements.priorities") ||
+                        !watch("position.positionsRequirements.tradeOffs")
+                      }
+                    >
+                      Save & Continue
+                    </Button>
+                  }
                 >
                   <div className="mx-auto flex h-full max-w-5xl items-center">
                     <Controller
-                      name={"positionsRequirements"}
+                      name={"position.positionsRequirements"}
                       control={control}
                       render={({ field: { onChange } }) => (
                         <PrioritiesAndTradeOffsContainer
-                          position={findPositionData?.findPosition}
+                          position={getValues("position")}
                           onChange={onChange}
                         />
                       )}
