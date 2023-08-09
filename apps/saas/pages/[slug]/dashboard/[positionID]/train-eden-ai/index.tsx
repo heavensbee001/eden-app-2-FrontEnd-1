@@ -1,46 +1,44 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import {
-  Members,
-  Mutation,
-  Position,
+  PrioritiesInput,
   PrioritiesType,
+  QuestionType,
+  QuestionTypeInput,
+  TradeOffsInput,
   TradeOffsType,
+  UpdatePrioritiesTradeOffsInput,
 } from "@eden/package-graphql/generated";
 import {
-  AI_INTERVIEW_SERVICES,
   AppUserLayout,
   Button,
-  ChatMessage,
-  EdenAiProcessingModalContained,
+  EdenAiProcessingModal,
   EdenIconQuestion,
-  EdenTooltip,
-  FillSocialLinks,
-  // CountdownTimer,
-  InterviewEdenAI,
-  Loading,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
-import { Tab } from "@headlessui/react";
+import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import { Controller, useForm } from "react-hook-form";
-import { HiPencil } from "react-icons/hi2";
-import { RiDeleteBin2Line } from "react-icons/ri";
-import { SlLocationPin } from "react-icons/sl";
+import { MdContentCopy, MdLink } from "react-icons/md";
+import { toast } from "react-toastify";
+
+import { CreateQuestions } from "@/components/TrainEdenAiSteps/CreateQuestionsContainer";
+import { DescriptionContainer } from "@/components/TrainEdenAiSteps/DescriptionContainer";
+import { FinalFormContainer } from "@/components/TrainEdenAiSteps/FinalFormContainer";
+import { InterviewEdenAIContainer } from "@/components/TrainEdenAiSteps/InterviewEdenAIContainer";
+import { PrioritiesAndTradeOffsContainer } from "@/components/TrainEdenAiSteps/PrioritiesAndTradeOffsContainer";
+import { ProfileQuestionsContainer } from "@/components/TrainEdenAiSteps/ProfileQuestionsContainer";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export const WEBPAGE_TO_MEMORY = gql`
   mutation ($fields: websiteToMemoryCompanyInput!) {
@@ -59,6 +57,39 @@ const UPDATE_POSITION = gql`
   mutation ($fields: updatePositionInput!) {
     updatePosition(fields: $fields) {
       _id
+    }
+  }
+`;
+
+const FIND_POSITION = gql`
+  query ($fields: findPositionInput) {
+    findPosition(fields: $fields) {
+      _id
+      name
+      positionsRequirements {
+        priorities {
+          priority
+          reason
+        }
+        tradeOffs {
+          reason
+          selected
+          tradeOff1
+          tradeOff2
+        }
+      }
+      interviewQuestionsForPosition {
+        originalQuestionID
+        originalContent
+        personalizedContent
+      }
+      questionsToAsk {
+        bestAnswer
+        question {
+          _id
+          content
+        }
+      }
     }
   }
 `;
@@ -87,6 +118,14 @@ const ADD_QUESTIONS_TO_POSITION = gql`
   }
 `;
 
+const UPADTE_PRIORITIES_AND_TRADEOFFS = gql`
+  mutation UpdatePrioritiesTradeOffs($fields: updatePrioritiesTradeOffsInput) {
+    updatePrioritiesTradeOffs(fields: $fields) {
+      success
+    }
+  }
+`;
+
 type Question = {
   _id: string;
   content: string;
@@ -102,9 +141,6 @@ const TrainAiPage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
   const [step, setStep] = useState<number>(0);
-  // const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  // const [titleRole, setTitleRole] = useState(null);
-  // const [topSkills, setTopSkills] = useState([]);
 
   const {
     data: findPositionData,
@@ -127,12 +163,9 @@ const TrainAiPage: NextPageWithLayout = () => {
   });
 
   const handleInterviewEnd = () => {
-    // console.log("interview end");
     setInterviewEnded(true);
   };
 
-  // const [webpageLink, setWebpageLink] = useState("");
-  // const [webPageText, setWebPageText] = useState("");
   const [scraping, setScraping] = useState<boolean>(false);
   // eslint-disable-next-line no-unused-vars
   const [report, setReport] = useState<string | null>(null);
@@ -182,62 +215,6 @@ const TrainAiPage: NextPageWithLayout = () => {
     },
   });
 
-  // const handleLinkSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setScraping(true);
-
-  //   const queryParams = new URLSearchParams({ url: webpageLink }).toString();
-
-  //   try {
-  //     const response = await fetch(
-  //       `/api/webpage_scraper/webpage_scraper?${queryParams}`,
-  //       {
-  //         method: "GET",
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       let error;
-
-  //       try {
-  //         const { error: serverError } = await response.json();
-
-  //         error = serverError;
-  //       } catch (jsonError) {
-  //         error = "An error occurred while decoding the response JSON";
-  //       }
-  //       setError(`HTTP error! status: ${response.status}, error: ${error}`);
-  //       throw new Error(
-  //         `HTTP error! status: ${response.status}, error: ${error}`
-  //       );
-  //     }
-
-  //     console.log("API response:", response);
-
-  //     const { textResponse } = await response.json();
-
-  //     websiteToMemoryCompany({
-  //       variables: {
-  //         // fields: { message: textResponse, userID: currentUser?._id },
-  //         fields: {
-  //           message: textResponse,
-  //           positionID: positionID,
-  //         },
-  //       },
-  //     });
-
-  //     // setReport(textResponse);
-  //   } catch (error) {
-  //     setError(
-  //   `An error occurred while fetching the LinkedIn profile: ${
-  //     (error as Error).message
-  //   }
-
-  //   Please copy the text from the job post page manually and paste it in the textfield below`
-  // );
-  //   }
-  // };
-
   const handleDescriptionStepSubmit = async () => {
     const _pastedText = getValues("pastedText");
 
@@ -271,32 +248,107 @@ const TrainAiPage: NextPageWithLayout = () => {
     setScraping(false);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const handlePrioritiesStepSubmit = async () => {
-    const _positionsRequirements = getValues("positionsRequirements");
+  // const handlePrioritiesStepSubmit = async () => {
+  //   const _positionsRequirements = getValues("positionsRequirements");
 
-    setScraping(true);
-    try {
-      const _fields = {
-        _id: positionID,
-        companyID: company?._id,
-        positionsRequirements: {
-          priorities: _positionsRequirements.priorities,
-          tradeOffs: _positionsRequirements.tradeOffs,
-        },
-      };
+  //   setScraping(true);
+  //   try {
+  //     const _fields = {
+  //       _id: positionID,
+  //       companyID: company?._id,
+  //       positionsRequirements: {
+  //         priorities: _positionsRequirements.priorities,
+  //         tradeOffs: _positionsRequirements.tradeOffs,
+  //       },
+  //     };
 
-      updatePosition({
+  //     updatePosition({
+  //       variables: {
+  //         fields: _fields,
+  //       },
+  //     }),
+  //       setStep(step + 1);
+  //   } catch {
+  //     toast.error("Couldn't save data");
+  //   }
+
+  //   setScraping(false);
+  // };
+
+  // ------ PRIORITIES STEP ------
+  const [updatePrioritiesTradeOffs] = useMutation(
+    UPADTE_PRIORITIES_AND_TRADEOFFS
+  );
+
+  // handle question suggestions submit
+  const handlePrioritiesStepSubmit = () => {
+    if (positionID) {
+      updatePrioritiesTradeOffs({
         variables: {
-          fields: _fields,
+          fields: {
+            positionID:
+              typeof positionID === "string" ? positionID : positionID[0],
+            priorities: getValues(
+              "position.positionsRequirements.priorities"
+            ).map(
+              (priority: PrioritiesType) =>
+                ({
+                  priority: priority.priority,
+                } as PrioritiesInput)
+            ),
+            tradeOffs: getValues(
+              "position.positionsRequirements.tradeOffs"
+            ).map(
+              (tradeOff: TradeOffsType) =>
+                ({
+                  selected: tradeOff.selected,
+                  tradeOff1: tradeOff.tradeOff1,
+                  tradeOff2: tradeOff.tradeOff2,
+                } as TradeOffsInput)
+            ),
+          } as UpdatePrioritiesTradeOffsInput,
         },
-      }),
-        setStep(step + 1);
-    } catch {
-      toast.error("Couldn't save data");
+        onCompleted() {
+          setStep(step + 1);
+        },
+        onError() {
+          toast.error("There was an error while submitting");
+        },
+      });
     }
+  };
 
-    setScraping(false);
+  // ------ QUESTIONS STEP ------
+  const [
+    updateQuestionsPosition,
+    { loading: loadingUpdateQuestionsToPosition },
+  ] = useMutation(ADD_QUESTIONS_TO_POSITION);
+
+  // handle question suggestions submit
+  const handleSaveChangesInterviewQuestions = () => {
+    if (positionID) {
+      updateQuestionsPosition({
+        variables: {
+          fields: {
+            positionID:
+              typeof positionID === "string" ? positionID : positionID[0],
+            questionsToAsk: getValues("position.questionsToAsk").map(
+              (question: QuestionType) =>
+                ({
+                  questionID: question.question?._id,
+                  questionContent: question.question?.content,
+                } as QuestionTypeInput)
+            ),
+          },
+        },
+        onCompleted() {
+          setStep(step + 1);
+        },
+        onError() {
+          toast.error("There was an error while submitting");
+        },
+      });
+    }
   };
 
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -330,6 +382,8 @@ const TrainAiPage: NextPageWithLayout = () => {
       }, 2500);
     }
   }, [step]);
+
+  console.log("position", watch("position"));
 
   return (
     <>
@@ -397,43 +451,16 @@ const TrainAiPage: NextPageWithLayout = () => {
                   }
                 >
                   <div className="relative flex h-full items-center justify-center">
-                    <form className="w-full max-w-[33rem]">
-                      <div className="mb-6">
-                        <label
-                          htmlFor="name"
-                          className="text-edenGray-500 mb-2 block text-xs"
-                        >
-                          Opportunity name
-                        </label>
-                        <input
-                          id="name"
-                          {...register("position.name")}
-                          placeholder="Type name here..."
-                          className="border-edenGray-100 block w-full rounded-md border px-4 py-2 text-sm"
-                          onFocus={(event) => {
-                            event.target.select();
-                          }}
-                        />
-                      </div>
-
-                      <div className="mb-6">
-                        <label className="text-edenGray-500 mb-2 block text-xs">
-                          Copy/paste your job description from LinkedIn,
-                          Greenhouse...
-                        </label>
-
-                        <textarea
-                          {...register("pastedText")}
-                          // onChange={handlePastedTextChange}
-                          placeholder="This is a sample text..."
-                          className="border-edenGray-100 mb-4 block w-full resize-none rounded-md border px-4 pb-20 pt-32 text-sm outline-0"
-                          onFocus={(event) => {
-                            event.target.select();
-                          }}
-                        />
-                      </div>
-                    </form>
-                    <EdenAiProcessingModalContained
+                    <DescriptionContainer
+                      defaultValues={{
+                        "position.name": findPositionData?.findPosition?.name,
+                      }}
+                      onChange={(data) => {
+                        setValue("position.name", data["position.name"]);
+                        setValue("pastedText", data.pastedText);
+                      }}
+                    />
+                    <EdenAiProcessingModal
                       open={scraping}
                       title="Give me 30 seconds!"
                     >
@@ -444,7 +471,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                           ideal interview for your candidates!
                         </p>
                       </div>
-                    </EdenAiProcessingModalContained>
+                    </EdenAiProcessingModal>
                   </div>
                 </WizardStep>
 
@@ -463,14 +490,29 @@ const TrainAiPage: NextPageWithLayout = () => {
                 <WizardStep
                   label={"Priorities & TradeOffs"}
                   navigationDisabled={step === 1}
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      className="mx-auto"
+                      onClick={() => {
+                        handlePrioritiesStepSubmit();
+                      }}
+                      disabled={
+                        !watch("position.positionsRequirements.priorities") ||
+                        !watch("position.positionsRequirements.tradeOffs")
+                      }
+                    >
+                      Save & Continue
+                    </Button>
+                  }
                 >
                   <div className="mx-auto flex h-full max-w-5xl items-center">
                     <Controller
-                      name={"positionsRequirements"}
+                      name={"position.positionsRequirements"}
                       control={control}
                       render={({ field: { onChange } }) => (
                         <PrioritiesAndTradeOffsContainer
-                          position={findPositionData?.findPosition}
+                          position={getValues("position")}
                           onChange={onChange}
                         />
                       )}
@@ -492,9 +534,19 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Eden Suggestions"}
-                  // navigationDisabled={step === 0}
+                  navigationDisabled={step === 0}
+                  nextButton={
+                    <Button
+                      variant={"primary"}
+                      className="mx-auto"
+                      loading={loadingUpdateQuestionsToPosition}
+                      onClick={() => handleSaveChangesInterviewQuestions()}
+                    >
+                      Save & Continue
+                    </Button>
+                  }
                 >
-                  <div className="mx-auto h-full max-w-2xl">
+                  <div className="relative mx-auto h-full max-w-2xl">
                     <h2 className="mb-4 text-xl font-medium">
                       {"Eden's Seed Interview Questions"}
                     </h2>
@@ -503,7 +555,23 @@ const TrainAiPage: NextPageWithLayout = () => {
                         "Here’s a list of all the must & nice to have. Feel free to edit any line"
                       }
                     </p>
-                    <CreateQuestions />
+                    <CreateQuestions
+                      onChange={(data: QuestionType[]) => {
+                        setValue("position.questionsToAsk", data);
+                      }}
+                    />
+                    {loadingUpdateQuestionsToPosition && (
+                      <EdenAiProcessingModal
+                        open={loadingUpdateQuestionsToPosition}
+                        title="Generating optimal interview"
+                      >
+                        <div className="text-center">
+                          <p>
+                            {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
+                          </p>
+                        </div>
+                      </EdenAiProcessingModal>
+                    )}
                   </div>
                 </WizardStep>
                 <WizardStep
@@ -577,12 +645,6 @@ const TrainAiPage: NextPageWithLayout = () => {
                     Continue to Dashboard
                   </Button>
                 </WizardStep>
-
-                {/* <WizardStep label={"end"}>
-              <section className="flex h-full flex-col items-center justify-center">
-                <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
-              </section>
-            </WizardStep> */}
               </Wizard>
             </div>
             {step === 1 && (
@@ -616,12 +678,6 @@ TrainAiPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default TrainAiPage;
 
-import { IncomingMessage, ServerResponse } from "http";
-import { getSession } from "next-auth/react";
-import { BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { MdContentCopy, MdLink } from "react-icons/md";
-import { toast } from "react-toastify";
-
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
@@ -643,1342 +699,3 @@ export async function getServerSideProps(ctx: {
     props: {},
   };
 }
-
-// ------- Interview Chat --------
-
-const FIND_POSITION = gql`
-  query ($fields: findPositionInput) {
-    findPosition(fields: $fields) {
-      _id
-      name
-      positionsRequirements {
-        priorities {
-          priority
-          reason
-        }
-        tradeOffs {
-          reason
-          selected
-          tradeOff1
-          tradeOff2
-        }
-      }
-      interviewQuestionsForPosition {
-        originalQuestionID
-        originalContent
-        personalizedContent
-      }
-      questionsToAsk {
-        bestAnswer
-        question {
-          _id
-          content
-        }
-      }
-    }
-  }
-`;
-
-// interface cardsDataType {
-//   title: string;
-//   trust: number;
-//   time: number;
-//   completed: boolean;
-//   firstMessage: string;
-//   experienceTypeID: string;
-// }
-
-interface MessageObject {
-  message: string;
-  sentMessage: boolean;
-  user?: string;
-}
-
-interface InterviewEdenAIContainerProps {
-  handleEnd?: () => void;
-  interviewQuestionsForPosition?: Question[];
-}
-
-const InterviewEdenAIContainer = ({
-  handleEnd,
-  interviewQuestionsForPosition,
-}: InterviewEdenAIContainerProps) => {
-  const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
-    useState<MessageObject>({ message: "", sentMessage: false, user: "" });
-
-  // --------- Position and User ------------
-  const { currentUser } = useContext(UserContext);
-  const { company } = useContext(CompanyContext);
-
-  // console.log("currentUser = ", currentUser?._id);
-
-  const router = useRouter();
-  const { positionID } = router.query;
-  // --------- Position and User ------------
-
-  const [questions, setQuestions] = useState<Question[]>([]);
-
-  // console.log(
-  //   "interviewQuestionsForPosition = 223 ",
-  //   interviewQuestionsForPosition
-  // );
-
-  const { data: findPositionData } = useQuery(FIND_POSITION, {
-    variables: {
-      fields: {
-        _id: positionID,
-      },
-    },
-    skip: positionID == "" || positionID == null,
-    onCompleted: (data) => {
-      console.log("data = ", data);
-      let questionsChange = data.findPosition.interviewQuestionsForPosition.map(
-        (question: any) => {
-          return {
-            _id: question?.originalQuestionID,
-            content: question?.originalContent,
-            bestAnswer: "",
-          };
-        }
-      );
-
-      questionsChange = questionsChange.filter((question: any) => {
-        return question._id != null;
-      });
-
-      if (questionsChange.length > 0) {
-        setQuestions(questionsChange);
-      }
-    },
-  });
-
-  const [conversationID, setConversationID] = useState<String>("");
-
-  console.log("findPositionData = ", findPositionData);
-
-  const [experienceTypeID] = useState<string>("");
-
-  // eslint-disable-next-line no-unused-vars
-  const [chatN, setChatN] = useState<ChatMessage>([]);
-
-  // console.log("chatN = ", chatN);
-
-  // console.log("conversationID = ", conversationID);
-
-  useEffect(() => {
-    if (
-      interviewQuestionsForPosition &&
-      interviewQuestionsForPosition?.length > 0
-    ) {
-      console.log("Yea I am here = 223");
-      setQuestions(interviewQuestionsForPosition);
-    }
-  }, [interviewQuestionsForPosition]);
-
-  // console.log("questions = 223 -1", questions);
-  // console.log(
-  //   findPositionData?.findPosition?.questionsToAsk.length,
-  //   questions.length,
-  //   findPositionData?.findPosition?.questionsToAsk.length
-  // );
-
-  return (
-    <div className="h-full w-full">
-      <div className="relative h-full">
-        {/* <div className="flex justify-center">
-          <ProgressBarGeneric
-            color="accentColor"
-            progress={
-              (100 *
-                (findPositionData?.findPosition?.questionsToAsk.length -
-                  questions.length)) /
-              findPositionData?.findPosition?.questionsToAsk.length
-            }
-          />
-        </div> */}
-        {
-          <InterviewEdenAI
-            key={experienceTypeID}
-            aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY}
-            experienceTypeID={experienceTypeID}
-            handleChangeChat={(_chat: any) => {
-              setChatN(_chat);
-            }}
-            sentMessageToEdenAIobj={sentMessageToEdenAIobj}
-            setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
-            placeholder={
-              <div className="pt-4">
-                <Loading title="Loading Eden AI" />
-              </div>
-            }
-            questions={questions}
-            setQuestions={setQuestions}
-            userID={currentUser?._id}
-            positionID={positionID}
-            conversationID={conversationID}
-            setConversationID={setConversationID}
-            positionTrainEdenAI={true}
-            handleEnd={() => {
-              if (handleEnd) handleEnd();
-            }}
-            headerText={`${findPositionData?.findPosition?.name} @ ${company?.name}`}
-          />
-        }
-        {/* <CountdownTimer /> */}
-      </div>
-      {/* <div className="absolute right-0 top-32 pr-6">
-        <span>
-          progress{" "}
-          {(100 *
-            (findPositionData?.findPosition?.questionsToAsk.length -
-              questions.length)) /
-            findPositionData?.findPosition?.questionsToAsk.length}
-        </span>
-      </div> */}
-    </div>
-  );
-};
-
-export const FIND_PRIORITIES_TRAIN_EDEN_AI = gql`
-  query findPrioritiesTrainEdenAI($fields: findPrioritiesTrainEdenAIInput) {
-    findPrioritiesTrainEdenAI(fields: $fields) {
-      success
-      priorities {
-        priority
-        reason
-      }
-      tradeOffs {
-        tradeOff1
-        tradeOff2
-        reason
-        selected
-      }
-    }
-  }
-`;
-
-interface IPrioritiesAndTradeOffsContainerProps {
-  position: Position;
-  // eslint-disable-next-line no-unused-vars
-  onChange: (val: any) => void;
-}
-
-const PrioritiesAndTradeOffsContainer = ({
-  position,
-  onChange,
-}: IPrioritiesAndTradeOffsContainerProps) => {
-  const router = useRouter();
-  const { positionID } = router.query;
-  // const { currentUser } = useContext(UserContext);
-
-  // eslint-disable-next-line no-unused-vars
-  const [submitting, setSubmitting] = useState(false);
-
-  const [priorities, setPriorities] = useState<PrioritiesType[]>([]);
-
-  const [tradeOffs, setTradeOffs] = useState<TradeOffsType[]>([]);
-
-  // const { register, watch, control, setValue, getValues } = useForm<Members>({
-  //   defaultValues: {},
-  // });
-
-  // eslint-disable-next-line no-unused-vars
-  const { data: findPrioritiesAndTradeOffsData, loading: loadingPriorities } =
-    useQuery(FIND_PRIORITIES_TRAIN_EDEN_AI, {
-      variables: {
-        fields: {
-          positionID: positionID,
-        },
-      },
-      skip:
-        !!position.positionsRequirements?.tradeOffs &&
-        !!position.positionsRequirements?.tradeOffs.length &&
-        !!position.positionsRequirements?.priorities &&
-        !!position.positionsRequirements?.priorities.length,
-      onCompleted({ findPrioritiesTrainEdenAI }) {
-        // console.log("findPrioritiesTrainEdenAI = ", findPrioritiesTrainEdenAI);
-
-        setPriorities(findPrioritiesTrainEdenAI.priorities);
-        setTradeOffs(
-          (findPrioritiesTrainEdenAI?.tradeOffs! as TradeOffsType[]).map(
-            (tradeOff: TradeOffsType) => {
-              const _selected =
-                tradeOff.selected == tradeOff.tradeOff1
-                  ? tradeOff.tradeOff1!
-                  : tradeOff.tradeOff2!;
-
-              return { ...tradeOff, selected: _selected };
-            }
-          )! as TradeOffsType[]
-        );
-      },
-    });
-
-  useEffect(() => {
-    if (
-      position.positionsRequirements?.priorities &&
-      position.positionsRequirements?.tradeOffs &&
-      position.positionsRequirements?.priorities.length > 0 &&
-      position.positionsRequirements?.tradeOffs.length > 0
-    ) {
-      setPriorities(
-        position.positionsRequirements?.priorities! as PrioritiesType[]
-      );
-      setTradeOffs(
-        (position.positionsRequirements?.tradeOffs! as TradeOffsType[]).map(
-          (tradeOff: TradeOffsType) => {
-            const _selected =
-              tradeOff.selected == tradeOff.tradeOff1
-                ? tradeOff.tradeOff1!
-                : tradeOff.tradeOff2!;
-
-            return { ...tradeOff, selected: _selected };
-          }
-        )! as TradeOffsType[]
-      );
-    }
-  }, [position.positionsRequirements]);
-
-  const handleSelect = (index: number, option: string) => {
-    const newTradeoffs = [...tradeOffs];
-
-    newTradeoffs[index] = { ...newTradeoffs[index], selected: option };
-    setTradeOffs(newTradeoffs);
-  };
-
-  const permutePriorities = (index1: number, index2: number) => {
-    if (
-      index1 < 0 ||
-      index1 >= priorities.length ||
-      index2 < 0 ||
-      index2 >= priorities.length
-    ) {
-      throw new Error("Invalid index");
-    }
-
-    const newArray = [...priorities];
-
-    [newArray[index1], newArray[index2]] = [newArray[index2], newArray[index1]];
-
-    setPriorities(newArray);
-  };
-
-  useEffect(() => {
-    onChange({ priorities: priorities, tradeOffs: tradeOffs });
-  }, [priorities, tradeOffs]);
-
-  return (
-    <div className="grid w-full grid-cols-12 gap-4">
-      {loadingPriorities && (
-        <EdenAiProcessingModalContained
-          open={loadingPriorities}
-          title="Understanding your Priorities & Tradeoffs"
-        >
-          <div className="text-center">
-            <p>{`As any great recruiter would tell you, I understand the perfect match doesn't exist. It's all about your priorities & tradeoffs - so in a couple of seconds please work with me so we can be super aligned on this!`}</p>
-          </div>
-        </EdenAiProcessingModalContained>
-      )}
-      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
-        <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
-        <p className="mb-6 text-center">
-          Here&apos;s what I got your priorities are - please re-arrange as you
-          see fit.
-        </p>
-        <ul className="">
-          {priorities &&
-            priorities.length > 0 &&
-            priorities.map((priority, index) => (
-              <li
-                key={index}
-                className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-4"
-              >
-                <EdenTooltip
-                  id={priority.reason!.split(" ").join("")}
-                  innerTsx={
-                    <div className="w-60">
-                      <p>{priority.reason}</p>
-                    </div>
-                  }
-                  place="top"
-                  effect="solid"
-                  backgroundColor="white"
-                  border
-                  borderColor="#e5e7eb"
-                  padding="0.5rem"
-                  offset={{ left: 100 }}
-                >
-                  <div className="flex w-full items-center">
-                    <div className="-my-2 mr-4">
-                      <div
-                        className={classNames(
-                          "text-edenGreen-500 hover:text-edenGreen-300",
-                          index === 0 ? "hidden" : "",
-                          index === priorities.length - 1 ? "" : "-mb-2"
-                        )}
-                      >
-                        <BiChevronUp
-                          size={"1.5rem"}
-                          onClick={() => {
-                            permutePriorities(index, index - 1);
-                          }}
-                        />
-                      </div>
-                      <div
-                        className={classNames(
-                          "text-edenGreen-500 hover:text-edenGreen-300",
-                          index === priorities.length - 1 ? "hidden" : "",
-                          index === 0 ? "" : "-mt-2"
-                        )}
-                      >
-                        <BiChevronDown
-                          size={"1.5rem"}
-                          onClick={() => {
-                            permutePriorities(index, index + 1);
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="">
-                      {index + 1}. {priority.priority}
-                    </div>
-                  </div>
-                </EdenTooltip>
-              </li>
-            ))}
-        </ul>
-      </section>
-      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
-        <h2 className="text-edenGreen-600 mb-2 text-center">Tradeoffs</h2>
-        <p className="mb-6 text-center">
-          From what I gathered, these are your tradeoff preferences - feel free
-          to adjust
-        </p>
-
-        <div className="flex flex-col items-center justify-center">
-          {tradeOffs &&
-            tradeOffs.length > 0 &&
-            tradeOffs.map((tradeOff, index) => (
-              <EdenTooltip
-                key={index}
-                id={`tradeoff-${index}`}
-                innerTsx={
-                  <div className="w-60">
-                    <p>{tradeOff.reason}</p>
-                  </div>
-                }
-                place="top"
-                effect="solid"
-                backgroundColor="white"
-                border
-                borderColor="#e5e7eb"
-                padding="0.5rem"
-                containerClassName="w-full"
-              >
-                <div className="grid grid-cols-2">
-                  <label
-                    className={classNames(
-                      "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
-                      tradeOffs[index].selected === tradeOff.tradeOff1
-                        ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
-                        : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-bl-md rounded-tl-md border"
-                    )}
-                    htmlFor={`tradeoff-${index}-1`}
-                  >
-                    <div className="flex items-center justify-end">
-                      <span className="">{tradeOff.tradeOff1}</span>
-                      <input
-                        type="radio"
-                        className="ml-2 hidden"
-                        id={`tradeoff-${index}-1`}
-                        name={`tradeoff-${index}-1`}
-                        value={tradeOff.tradeOff1!}
-                        checked={
-                          tradeOffs[index].selected === tradeOff.tradeOff1
-                        }
-                        onChange={() =>
-                          handleSelect(index, tradeOff.tradeOff1!)
-                        }
-                      />
-                    </div>
-                  </label>
-                  <label
-                    className={classNames(
-                      "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",
-                      tradeOffs[index].selected === tradeOff.tradeOff2
-                        ? "text-edenGreen-500 border-edenGreen-300 scale-[1.05] rounded-md border bg-white"
-                        : "bg-edenGreen-100 border-edenGreen-100 text-edenGray-500 rounded-br-md rounded-tr-md border"
-                    )}
-                    htmlFor={`tradeoff-${index}-2`}
-                  >
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        className="mr-2 hidden"
-                        id={`tradeoff-${index}-2`}
-                        name={`tradeoff-${index}-2`}
-                        value={tradeOff.tradeOff2!}
-                        checked={
-                          tradeOffs[index].selected === tradeOff.tradeOff2
-                        }
-                        onChange={() =>
-                          handleSelect(index, tradeOff.tradeOff2!)
-                        }
-                      />
-                      <span className="">{tradeOff.tradeOff2}</span>
-                    </div>
-                  </label>
-                </div>
-              </EdenTooltip>
-            ))}
-        </div>
-      </section>
-    </div>
-  );
-};
-
-export const POSITION_TEXT_CONVO_TO_REPORT = gql`
-  mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
-    positionTextAndConvoToReportCriteria(fields: $fields) {
-      success
-      report
-    }
-  }
-`;
-
-interface IProfileQuestionsContainerProps {}
-
-const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
-  // const { currentUser } = useContext(UserContext);
-  // eslint-disable-next-line no-unused-vars
-  const [submitting, setSubmitting] = useState(false);
-  const router = useRouter();
-
-  const [scraping, setScraping] = useState<boolean>(false);
-  const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] =
-    useState<number | null>(null);
-  const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
-
-  // const { register, watch, control, setValue, getValues } = useForm<Members>({
-  //   defaultValues: { ...currentUser },
-  // });
-
-  const { positionID } = router.query;
-
-  const [positionTextAndConvoToReportCriteria] = useMutation(
-    POSITION_TEXT_CONVO_TO_REPORT,
-    {
-      onCompleted({ positionTextAndConvoToReportCriteria }) {
-        // console.log(
-        //   "positionTextAndConvoToReportCriteria = ",
-        //   positionTextAndConvoToReportCriteria
-        // );
-
-        setScraping(false);
-
-        let jobDescription =
-          positionTextAndConvoToReportCriteria.report.replace(/<|>/g, "");
-
-        //Change - to •
-        jobDescription = jobDescription.replace(/-\s/g, "• ");
-
-        setQuestions(convertTextCategoriesToObj(jobDescription));
-      },
-    }
-  );
-
-  // const handleClick = () => {
-  //   console.log("change =");
-
-  //   setScraping(true);
-
-  //   positionTextAndConvoToReportCriteria({
-  //     variables: {
-  //       // fields: { message: textResponse, userID: currentUser?._id },
-  //       fields: {
-  //         positionID: positionID,
-  //       },
-  //     },
-  //   });
-  // };
-
-  useEffect(() => {
-    setEditQuestionIndex(null);
-  }, [index]);
-
-  useEffect(() => {
-    if (scraping == false) {
-      setScraping(true);
-
-      positionTextAndConvoToReportCriteria({
-        variables: {
-          // fields: { message: textResponse, userID: currentUser?._id },
-          fields: {
-            positionID: positionID,
-          },
-        },
-      });
-      return () => {
-        setScraping(false);
-      };
-    }
-  }, []);
-
-  const handleQuestionChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-    index: number,
-    category: string
-  ): void => {
-    const { name, value } = event.target;
-
-    setQuestions((prevQuestions) => {
-      const newQuestions: QuestionGroupedByCategory = { ...prevQuestions };
-
-      newQuestions[category] = newQuestions[category].map((question, i) => {
-        if (i === index) {
-          return {
-            ...question,
-            [name]: value,
-          };
-        }
-        return question;
-      });
-
-      return newQuestions;
-    });
-  };
-
-  const handleAddQuestion = (category: string) => {
-    setEditQuestionIndex(questions[category].length);
-    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
-      ...prevQuestions,
-      [category]: [
-        ...prevQuestions[category],
-        { question: "", IDCriteria: `b${prevQuestions[category].length + 1}` },
-      ],
-    }));
-  };
-
-  const handleDeleteQuestion = (category: string, position: number) => {
-    const _newArr = [...questions[category]];
-
-    _newArr.splice(position, 1);
-
-    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
-      ...prevQuestions,
-      [category]: _newArr,
-    }));
-  };
-
-  const handleEditQuestion = (position: number) => {
-    setEditQuestionIndex(position);
-  };
-
-  return (
-    <div className="w-full">
-      {scraping && (
-        <EdenAiProcessingModalContained
-          open={scraping}
-          title="Compiling candidate checklist"
-        >
-          <div className="text-center">
-            <p>{`These are the criteria you & I will use to benchmark all of the candidates. I'm generating this list based on everything you've just told me prior - of course you'll be able to add, delete & edit!`}</p>
-          </div>
-        </EdenAiProcessingModalContained>
-      )}
-      {!scraping && questions && (
-        <div className="whitespace-pre-wrap">
-          <Tab.Group
-            defaultIndex={index}
-            onChange={(index: number) => {
-              setIndex(index);
-            }}
-          >
-            <Tab.List className="border-edenGreen-300 flex h-8 w-full border-b">
-              {Object.keys(questions).map((category, _index) => (
-                <Tab
-                  key={_index}
-                  className={({ selected }) =>
-                    classNames(
-                      "text-edenGreen-400 scrollbar-hide -mb-px overflow-x-scroll whitespace-nowrap px-3 pb-2 text-xs",
-                      selected
-                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
-                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
-                    )
-                  }
-                >
-                  {category.toUpperCase()}
-                </Tab>
-              ))}
-            </Tab.List>
-            <Tab.Panels>
-              {Object.keys(questions).map((category, _index) => (
-                <Tab.Panel key={_index}>
-                  <div className="px-4 py-4">
-                    {questions[category].map((question, __index) => (
-                      <div
-                        key={`${category}_${__index}`}
-                        className="relative mb-3 flex"
-                      >
-                        <textarea
-                          name="question"
-                          disabled={editQuestionIndex !== __index}
-                          defaultValue={question.question.toString()}
-                          onChange={(event) =>
-                            handleQuestionChange(event, __index, category)
-                          }
-                          className={classNames(
-                            "w-10/12 resize-none bg-transparent px-2",
-                            editQuestionIndex === __index
-                              ? "border-edenGray-200 border-box rounded-md border"
-                              : ""
-                          )}
-                        />
-                        <Button
-                          variant="tertiary"
-                          onClick={() => {
-                            handleEditQuestion(__index);
-                          }}
-                          className="bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 ml-auto flex h-6 w-6 items-center justify-center rounded-md !p-0"
-                        >
-                          <HiPencil size={16} />
-                        </Button>
-                        <Button
-                          variant="tertiary"
-                          onClick={() =>
-                            handleDeleteQuestion(category, __index)
-                          }
-                          className="!bg-edenPink-300 text-utilityRed ml-2 flex h-6 w-6 items-center justify-center rounded-md !p-0 hover:opacity-60"
-                        >
-                          <RiDeleteBin2Line size={16} />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                  <Button
-                    variant="tertiary"
-                    onClick={() => handleAddQuestion(category)}
-                    className="float-right text-sm"
-                  >
-                    + Add a Question
-                  </Button>
-                </Tab.Panel>
-              ))}
-            </Tab.Panels>
-          </Tab.Group>
-        </div>
-      )}
-    </div>
-  );
-};
-
-interface Category {
-  name: string;
-  bullets: string[];
-}
-function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
-  const categories: Category[] = [];
-
-  // Split the text into lines
-  const lines = text.split("\n");
-
-  let currentCategory: Category | null = null;
-
-  // Process each line
-  lines.forEach((line) => {
-    // Remove leading/trailing white spaces and colons
-    const trimmedLine = line.trim();
-
-    // Check if it's a category line
-    if (trimmedLine.startsWith("Category")) {
-      const categoryName = trimmedLine
-        .substring(trimmedLine.indexOf(":") + 1)
-        .trim();
-
-      currentCategory = { name: categoryName, bullets: [] };
-      categories.push(currentCategory);
-    }
-
-    // Check if it's a bullet point line
-    if (trimmedLine.startsWith("•")) {
-      if (currentCategory) {
-        const bulletText = trimmedLine
-          .replace("•", "")
-          .substring(trimmedLine.indexOf(":") + 1)
-          .trim();
-
-        currentCategory.bullets.push(bulletText);
-      }
-    }
-  });
-
-  const categoriesObj: QuestionGroupedByCategory = categories.reduce(
-    (acc, category) => {
-      acc[category.name] = category.bullets.map((bullet) => ({
-        question: bullet,
-      }));
-
-      return acc;
-    },
-    {} as QuestionGroupedByCategory
-  );
-
-  // Render the elements
-  // const elements = categories.map((category, index) => (
-  //   <div key={index} className="mb-6">
-  //     <div className="border-edenGreen-300 flex justify-between border-b px-4">
-  //       <h3 className="text-edenGreen-500 mb-3">{category.name}</h3>
-  //     </div>
-  //     <ul>
-  //       {category.bullets.map((bullet: string, bulletIndex: number) => (
-  //         <li
-  //           className="border-edenGray-100 w-full rounded-md border-b px-4"
-  //           key={bulletIndex}
-  //         >
-  //           <div className="flex w-full columns-2 items-center justify-between py-4">
-  //             <p className="w-full pr-4 text-sm">{bullet}</p>
-  //           </div>
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   </div>
-  // ));
-
-  // Render the elements inside a div
-  return categoriesObj;
-}
-
-export const POSITION_SUGGEST_QUESTIONS = gql`
-  mutation ($fields: positionSuggestQuestionsAskCandidateInput!) {
-    positionSuggestQuestionsAskCandidate(fields: $fields) {
-      success
-      questionSuggest {
-        question
-        IDCriteria
-        category
-      }
-    }
-  }
-`;
-
-type QuestionSuggest = {
-  question: String;
-  IDCriteria?: String;
-};
-type QuestionGroupedByCategory = {
-  [category: string]: QuestionSuggest[];
-};
-
-interface QuestionSuSQL {
-  category: string;
-  question: string;
-  IDCriteria: string;
-}
-
-interface ICreateQuestions {}
-
-const CreateQuestions = ({}: ICreateQuestions) => {
-  const { currentUser } = useContext(UserContext);
-  // eslint-disable-next-line no-unused-vars
-  const [submitting, setSubmitting] = useState(false);
-  const router = useRouter();
-
-  const [scraping, setScraping] = useState<boolean>(false);
-  const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] =
-    useState<number | null>(null);
-  const [scrapingSave, setScrapingSave] = useState<boolean>(false);
-
-  const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
-
-  useEffect(() => {
-    setEditQuestionIndex(null);
-  }, [index]);
-
-  const handleQuestionChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-    index: number,
-    category: string
-  ): void => {
-    const { name, value } = event.target;
-
-    setQuestions((prevQuestions) => {
-      const newQuestions: QuestionGroupedByCategory = { ...prevQuestions };
-
-      newQuestions[category] = newQuestions[category].map((question, i) => {
-        if (i === index) {
-          return {
-            ...question,
-            [name]: value,
-          };
-        }
-        return question;
-      });
-
-      return newQuestions;
-    });
-  };
-
-  const handleAddQuestion = (category: string) => {
-    setEditQuestionIndex(questions[category].length);
-    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
-      ...prevQuestions,
-      [category]: [
-        ...prevQuestions[category],
-        { question: "", IDCriteria: `b${prevQuestions[category].length + 1}` },
-      ],
-    }));
-  };
-
-  const handleDeleteQuestion = (category: string, position: number) => {
-    const _newArr = [...questions[category]];
-
-    _newArr.splice(position, 1);
-
-    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
-      ...prevQuestions,
-      [category]: _newArr,
-    }));
-  };
-
-  const handleEditQuestion = (position: number) => {
-    setEditQuestionIndex(position);
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const { register, watch, control, setValue, getValues } = useForm<Members>({
-    defaultValues: { ...currentUser },
-  });
-
-  const { positionID } = router.query;
-
-  const [positionSuggestQuestionsAskCandidate] = useMutation(
-    POSITION_SUGGEST_QUESTIONS,
-    {
-      onCompleted({ positionSuggestQuestionsAskCandidate }) {
-        // console.log(
-        //   "positionSuggestQuestionsAskCandidate = ",
-        //   positionSuggestQuestionsAskCandidate
-        // );
-
-        setScraping(false);
-
-        // setQuestions(positionSuggestQuestionsAskCandidate.questionSuggest);
-
-        const questionsWithCategory: QuestionGroupedByCategory = {};
-
-        positionSuggestQuestionsAskCandidate.questionSuggest.forEach(
-          (q: QuestionSuSQL) => {
-            if (questionsWithCategory[q.category] == undefined) {
-              questionsWithCategory[q.category] = [];
-            }
-
-            questionsWithCategory[q.category].push({
-              question: q.question,
-              IDCriteria: q.IDCriteria,
-            });
-          }
-        );
-
-        // console.log("questionsWithCategory = ", questionsWithCategory);
-        setQuestions(questionsWithCategory);
-      },
-    }
-  );
-
-  // eslint-disable-next-line no-unused-vars
-  const handleClick = () => {
-    console.log("change =");
-
-    setScraping(true);
-
-    positionSuggestQuestionsAskCandidate({
-      variables: {
-        // fields: { message: textResponse, userID: currentUser?._id },
-        fields: {
-          positionID: positionID,
-        },
-      },
-    });
-  };
-
-  useEffect(() => {
-    setScraping(true);
-
-    positionSuggestQuestionsAskCandidate({
-      variables: {
-        // fields: { message: textResponse, userID: currentUser?._id },
-        fields: {
-          positionID: positionID,
-        },
-      },
-    });
-    return () => {
-      setScraping(false);
-    };
-  }, []);
-
-  // console.log("questionsSuggest = ", questionsSuggest);
-
-  const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
-    // eslint-disable-next-line no-unused-vars
-    onCompleted({ updateNodesToMember }: Mutation) {
-      // console.log("updateNodesToMember = ", updateNodesToMember);
-      setScrapingSave(false);
-    },
-    // skip: positionID == "" || positionID == null,
-  });
-
-  const handleSaveChanges = () => {
-    let positionID_ = "";
-
-    if (Array.isArray(positionID)) {
-      if (positionID.length > 0) {
-        positionID_ = positionID[0];
-      }
-    } else {
-      if (positionID != undefined) {
-        positionID_ = positionID;
-      }
-    }
-    if (positionID_ != "") {
-      setScrapingSave(true);
-
-      const questionsToAsk: any[] = [];
-
-      // Object.keys(questions).forEach((category) => {
-      for (const category in questions) {
-        const categoryQuestions = questions[category];
-
-        for (let j = 0; j < categoryQuestions.length; j++) {
-          const question = categoryQuestions[j];
-
-          questionsToAsk.push({
-            questionContent: question.question,
-            bestAnswer: "",
-          });
-        }
-      }
-      updateQuestionsPosition({
-        variables: {
-          fields: {
-            positionID: positionID_,
-            questionsToAsk: questionsToAsk,
-          },
-        },
-      });
-    }
-  };
-
-  return (
-    <div className="w-full">
-      {scraping && (
-        <EdenAiProcessingModalContained
-          open={scraping}
-          title="Generating optimal interview"
-        >
-          <div className="text-center">
-            <p>
-              {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
-            </p>
-          </div>
-        </EdenAiProcessingModalContained>
-      )}
-      <Button
-        className="absolute bottom-8 right-8 z-30 mx-auto"
-        variant={"primary"}
-        loading={scrapingSave}
-        onClick={() => handleSaveChanges()}
-      >
-        Save Changes
-      </Button>
-      <div className="">
-        <Tab.Group
-          defaultIndex={index}
-          onChange={(index: number) => {
-            setIndex(index);
-          }}
-        >
-          <Tab.List className="border-edenGreen-300 flex h-8 w-full border-b">
-            {Object.keys(questions).map((category, _index) => (
-              <Tab
-                key={_index}
-                className={({ selected }) =>
-                  classNames(
-                    "text-edenGreen-400 scrollbar-hide -mb-px overflow-x-scroll whitespace-nowrap px-3 pb-2 text-xs",
-                    selected
-                      ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
-                      : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
-                  )
-                }
-              >
-                {category.toUpperCase()}
-              </Tab>
-            ))}
-          </Tab.List>
-          <Tab.Panels>
-            {Object.keys(questions).map((category, _index) => (
-              <Tab.Panel key={_index}>
-                <div className="px-4 py-4">
-                  {questions[category].map((question, __index) => (
-                    <div
-                      key={`${category}_${__index}`}
-                      className="relative mb-3 flex"
-                    >
-                      <textarea
-                        name="question"
-                        disabled={editQuestionIndex !== __index}
-                        defaultValue={question.question.toString()}
-                        onChange={(event) =>
-                          handleQuestionChange(event, __index, category)
-                        }
-                        className={classNames(
-                          "w-10/12 resize-none bg-transparent px-2",
-                          editQuestionIndex === __index
-                            ? "border-edenGray-200 border-box rounded-md border"
-                            : ""
-                        )}
-                      />
-                      <Button
-                        variant="tertiary"
-                        onClick={() => {
-                          handleEditQuestion(__index);
-                        }}
-                        className="bg-edenGreen-200 hover:bg-edenGreen-100 hover:text-edenGreen-400 text-edenGreen-500 ml-auto flex h-6 w-6 items-center justify-center rounded-md !p-0"
-                      >
-                        <HiPencil size={16} />
-                      </Button>
-                      <Button
-                        variant="tertiary"
-                        onClick={() => handleDeleteQuestion(category, __index)}
-                        className="!bg-edenPink-300 text-utilityRed ml-2 flex h-6 w-6 items-center justify-center rounded-md !p-0 hover:opacity-60"
-                      >
-                        <RiDeleteBin2Line size={16} />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <Button
-                  variant="tertiary"
-                  onClick={() => handleAddQuestion(category)}
-                  className="float-right text-sm"
-                >
-                  + Add a Question
-                </Button>
-              </Tab.Panel>
-            ))}
-          </Tab.Panels>
-        </Tab.Group>
-      </div>
-    </div>
-  );
-};
-
-interface IFinalFormContainerProps {
-  // eslint-disable-next-line no-unused-vars
-  onChange: (data: any) => void;
-}
-
-type FormData = {
-  targetedStartDate: Date;
-  visaRequirements: "yes" | "no";
-  officePolicy:
-    | "on-site"
-    | "remote"
-    | "hybrid-1-day-office"
-    | "hybrid-2-day-office"
-    | "hybrid-3-day-office"
-    | "hybrid-4-day-office";
-  officeLocation: string;
-  contractType: "fulltime" | "parttime" | "freelance" | "intern";
-  contractDuration: string; // You can specify more options if you have them
-};
-
-const defaultFormValues: FormData = {
-  targetedStartDate: new Date(),
-  visaRequirements: "yes",
-  officePolicy: "on-site",
-  officeLocation: "",
-  contractType: "fulltime",
-  contractDuration: "",
-};
-
-const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
-  const { getValues, register, watch } = useForm<FormData>({
-    defaultValues: {
-      ...defaultFormValues,
-    },
-  });
-
-  useEffect(() => {
-    onChange(
-      getValues([
-        "targetedStartDate",
-        "visaRequirements",
-        "officePolicy",
-        "officeLocation",
-        "contractType",
-        "contractDuration",
-      ])
-    );
-  }, [
-    watch([
-      "targetedStartDate",
-      "visaRequirements",
-      "officePolicy",
-      "officeLocation",
-      "contractType",
-      "contractDuration",
-    ]),
-  ]);
-  return (
-    <>
-      <form className="flex items-center justify-center">
-        <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
-          <Tab.Group>
-            <Tab.List className="  border-edenGreen-300 flex  w-full justify-between border-b ">
-              <div className="flex items-start gap-x-6">
-                <Tab
-                  className={({ selected }) =>
-                    classNames(
-                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
-                      selected
-                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
-                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
-                    )
-                  }
-                >
-                  GENERAL
-                </Tab>
-                <Tab
-                  className={({ selected }) =>
-                    classNames(
-                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
-                      selected
-                        ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
-                        : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
-                    )
-                  }
-                >
-                  SOCIALS
-                </Tab>
-              </div>
-            </Tab.List>
-            <Tab.Panels>
-              <Tab.Panel className="pt-8">
-                <div className="flex  gap-x-6">
-                  <div className="flex  flex-col items-start text-xs">
-                    <label className="text-xs ">Start Date </label>
-                    <input
-                      type="date"
-                      id="targetedStartDate"
-                      className="  border-edenGray-100 mt-2 w-56  rounded-lg border py-[.45rem] pl-2 pr-2 outline-none "
-                      required
-                      {...register("targetedStartDate")}
-                    />
-                  </div>
-                  <div className="flex flex-col items-start">
-                    <label className="text-xs">Visa Required</label>
-                    <div className="border-edenGray-100 mt-2 w-24 rounded-lg border bg-white p-2 text-xs ">
-                      <select
-                        id="visaRequirements"
-                        className="w-full outline-none"
-                        {...register("visaRequirements")}
-                      >
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="flex   w-full flex-col items-start pr-2">
-                    <label className="text-xs ">Office Policy</label>
-                    <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
-                      <select
-                        id="officePolicy"
-                        className="w-full outline-none"
-                        {...register("officePolicy")}
-                      >
-                        <option value={""} disabled hidden>
-                          Select an option...
-                        </option>
-                        <option value="on-site">On site</option>
-                        <option value="remote">Remote</option>
-                        <option value="hybrid-1-day-office">
-                          Hybrid - 1 day office
-                        </option>
-                        <option value="hybrid-2-day-office">
-                          Hybrid - 2 day office
-                        </option>
-                        <option value="hybrid-3-day-office">
-                          Hybrid - 3 day office
-                        </option>
-                        <option value="hybrid-4-day-office">
-                          Hybrid - 4 day office
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="relative mb-12 mt-6 flex flex-col items-start">
-                    <label className="text-xs">Office Locations</label>
-                    <div className="mt-2 w-full rounded-lg bg-white text-xs">
-                      <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
-                      <input
-                        id="officeLocation"
-                        {...register("officeLocation")}
-                        type="text"
-                        className="  border-edenGray-100 w-full rounded-lg border py-[.45rem] pl-8   outline-none "
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-x-8 ">
-                  <div className="flex flex-col items-start">
-                    <label className="text-xs">Contact Type</label>
-                    <div className="border-edenGray-100   mt-2 w-64  rounded-lg border bg-white p-2 text-xs">
-                      <select
-                        id="contractType"
-                        {...register("contractType")}
-                        className=" w-full outline-none"
-                      >
-                        <option value={""} disabled hidden>
-                          Select an option...
-                        </option>
-                        <option value="fulltime">Full time</option>
-                        <option value="parttime">Part time</option>
-                        <option value="freelance">Freelance</option>
-                        <option value="intern">Intern</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="flex w-full flex-col items-start">
-                    <label className="text-xs">Contract Duration</label>
-                    <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
-                      <select
-                        id="contractDuration"
-                        {...register("contractDuration")}
-                        className="w-full outline-none "
-                      >
-                        <option value={""} disabled hidden>
-                          Select duration of contract
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </Tab.Panel>
-              <Tab.Panel>
-                <div className=" gird grid-cols-2">
-                  <FillSocialLinks />
-                </div>
-              </Tab.Panel>
-            </Tab.Panels>
-          </Tab.Group>
-        </div>
-      </form>{" "}
-    </>
-  );
-};
