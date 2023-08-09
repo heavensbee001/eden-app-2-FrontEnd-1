@@ -6,7 +6,7 @@ import {
   PrioritiesType,
   TradeOffsType,
 } from "@eden/package-graphql/generated";
-import { EdenAiProcessingModalContained, EdenTooltip } from "@eden/package-ui";
+import { EdenAiProcessingModal, EdenTooltip } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -136,14 +136,14 @@ export const PrioritiesAndTradeOffsContainer = ({
   return (
     <div className="grid w-full grid-cols-12 gap-4">
       {loadingPriorities && (
-        <EdenAiProcessingModalContained
+        <EdenAiProcessingModal
           open={loadingPriorities}
           title="Understanding your Priorities & Tradeoffs"
         >
           <div className="text-center">
             <p>{`As any great recruiter would tell you, I understand the perfect match doesn't exist. It's all about your priorities & tradeoffs - so in a couple of seconds please work with me so we can be super aligned on this!`}</p>
           </div>
-        </EdenAiProcessingModalContained>
+        </EdenAiProcessingModal>
       )}
       <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>

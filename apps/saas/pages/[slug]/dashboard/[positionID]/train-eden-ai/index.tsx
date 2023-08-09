@@ -12,7 +12,7 @@ import {
 import {
   AppUserLayout,
   Button,
-  EdenAiProcessingModalContained,
+  EdenAiProcessingModal,
   EdenIconQuestion,
   // ProgressBarGeneric,
   // RawDataGraph,
@@ -460,7 +460,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                         setValue("pastedText", data.pastedText);
                       }}
                     />
-                    <EdenAiProcessingModalContained
+                    <EdenAiProcessingModal
                       open={scraping}
                       title="Give me 30 seconds!"
                     >
@@ -471,7 +471,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                           ideal interview for your candidates!
                         </p>
                       </div>
-                    </EdenAiProcessingModalContained>
+                    </EdenAiProcessingModal>
                   </div>
                 </WizardStep>
 
@@ -561,7 +561,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                       }}
                     />
                     {loadingUpdateQuestionsToPosition && (
-                      <EdenAiProcessingModalContained
+                      <EdenAiProcessingModal
                         open={loadingUpdateQuestionsToPosition}
                         title="Generating optimal interview"
                       >
@@ -570,7 +570,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                             {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
                           </p>
                         </div>
-                      </EdenAiProcessingModalContained>
+                      </EdenAiProcessingModal>
                     )}
                   </div>
                 </WizardStep>

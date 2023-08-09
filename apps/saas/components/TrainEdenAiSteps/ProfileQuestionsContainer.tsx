@@ -1,7 +1,7 @@
 "use-client";
 
 import { gql, useMutation } from "@apollo/client";
-import { Button, EdenAiProcessingModalContained } from "@eden/package-ui";
+import { Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
@@ -162,14 +162,14 @@ export const ProfileQuestionsContainer =
     return (
       <div className="w-full">
         {scraping && (
-          <EdenAiProcessingModalContained
+          <EdenAiProcessingModal
             open={scraping}
             title="Compiling candidate checklist"
           >
             <div className="text-center">
               <p>{`These are the criteria you & I will use to benchmark all of the candidates. I'm generating this list based on everything you've just told me prior - of course you'll be able to add, delete & edit!`}</p>
             </div>
-          </EdenAiProcessingModalContained>
+          </EdenAiProcessingModal>
         )}
         {!scraping && questions && (
           <div className="whitespace-pre-wrap">

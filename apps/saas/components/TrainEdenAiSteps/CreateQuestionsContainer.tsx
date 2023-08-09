@@ -3,7 +3,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { Members, QuestionType } from "@eden/package-graphql/generated";
-import { Button, EdenAiProcessingModalContained } from "@eden/package-ui";
+import { Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
@@ -280,7 +280,7 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
   return (
     <div className="w-full">
       {loadingQuestions && (
-        <EdenAiProcessingModalContained
+        <EdenAiProcessingModal
           open={loadingQuestions}
           title="Generating optimal interview"
         >
@@ -289,7 +289,7 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
               {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
             </p>
           </div>
-        </EdenAiProcessingModalContained>
+        </EdenAiProcessingModal>
       )}
       {/* <Button
         className="absolute bottom-8 right-8 z-30 mx-auto"

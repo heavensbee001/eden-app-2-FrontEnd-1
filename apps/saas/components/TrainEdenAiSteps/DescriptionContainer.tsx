@@ -70,7 +70,7 @@ export const DescriptionContainer = ({
           {...register("pastedText")}
           // onChange={handlePastedTextChange}
           placeholder="This is a sample text..."
-          className="border-edenGray-100 mb-4 block w-full resize-none rounded-md border p-4 text-sm outline-0"
+          className="h-64 border-edenGray-100 mb-4 block w-full resize-none rounded-md border p-4 text-sm outline-0"
           onFocus={(event) => {
             event.target.select();
           }}
