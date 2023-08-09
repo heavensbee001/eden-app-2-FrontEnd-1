@@ -10,7 +10,7 @@ import {
   CVUploadGPT,
   InterviewEdenAI,
   Loading,
-  ProgressBarGeneric,
+  // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
   Wizard,
@@ -540,6 +540,7 @@ const InterviewEdenAIContainer = ({
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  // eslint-disable-next-line no-unused-vars
   const { data: findPositionData } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
