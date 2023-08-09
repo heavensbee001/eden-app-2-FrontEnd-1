@@ -294,7 +294,7 @@ export const CVUploadGPT = ({
       }
     } else {
       // Use DataTransfer interface to access the file(s)
-      setFile([...e.dataTransfer?.files!][0]);
+      setFile(e.dataTransfer?.files[0]);
       setUploadCounter((prevCounter) => prevCounter + 1);
     }
   }
