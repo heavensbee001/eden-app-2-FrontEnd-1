@@ -55,6 +55,7 @@ export const ProfileQuestionsContainer =
           //   "positionTextAndConvoToReportCriteria = ",
           //   positionTextAndConvoToReportCriteria
           // );
+          debugger;
 
           setScraping(false);
 
@@ -65,6 +66,9 @@ export const ProfileQuestionsContainer =
           jobDescription = jobDescription.replace(/-\s/g, "• ");
 
           setQuestions(convertTextCategoriesToObj(jobDescription));
+        },
+        onError() {
+          setScraping(false);
         },
       }
     );
