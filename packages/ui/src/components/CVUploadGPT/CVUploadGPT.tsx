@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { AiOutlineFile } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import { toast } from "react-toastify";
 
@@ -272,25 +273,64 @@ export const CVUploadGPT = ({
 
   // console.log("summaryList", summaryList);
 
+  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+    console.log("File(s) dropped");
+
+    // Prevent default behavior (Prevent file from being opened)
+    e.preventDefault();
+
+    if (e.dataTransfer?.items) {
+      // Use DataTransferItemList interface to access the file(s)
+
+      // If dropped items aren't files, reject them
+      if (e.dataTransfer.items[0].kind === "file") {
+        const file = e.dataTransfer.items[0].getAsFile();
+
+        // console.log(`… file[${i}].name = ${file?.name}`);
+
+        setFile(file);
+        //When user tries to upload the same CV the second time
+        setUploadCounter((prevCounter) => prevCounter + 1);
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      setFile(e.dataTransfer?.files[0]);
+      setUploadCounter((prevCounter) => prevCounter + 1);
+    }
+  }
+
   return (
-    <div className="w-fit ">
+    <div className="w-full">
       <form
         // onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center space-y-2"
+        className="flex flex-col items-center justify-center space-y-2 w-full"
       >
         {/* <label>Resume(CV)</label> */}
         {/* <label htmlFor="input" className="text-center text-sm">
           Upload Recent Resume for Better Results Form Our AI
         </label> */}
-        <label htmlFor="file-upload" className="relative">
+        <label
+          htmlFor="file-upload"
+          className="relative border border-dashed border-edenGreen-300 hover:bg-edenGreen-100 w-full max-w-2xl h-40 rounded-md"
+        >
           <div
-            className={`cursor-pointer rounded-md border-2 px-4 py-1 hover:border-black hover:bg-black hover:text-white ${
-              uploaded
-                ? " !cursor-default !border-gray-200 !bg-gray-200 !text-black"
-                : ""
-            }`}
+            className="flex flex-col items-center justify-center h-full w-full cursor-pointer"
+            id="drop_zone"
+            onDrop={(e) => {
+              e.preventDefault();
+              handleDrop(e);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
           >
-            Upload Your CV
+            <div className="pb-px pl-px mb-2 bg-edenGreen-600 w-8 h-8 text-edenPink-200 flex items-center justify-center rounded-full">
+              <AiOutlineFile size={"1.2rem"} />
+            </div>
+            <p>Upload Your CV</p>
+            <p className="text-edenGray-700 text-sm">
+              Select or Drag & drop a PDF, DOC or PNG
+            </p>
           </div>
           {uploaded && (
             <BsCheckCircle

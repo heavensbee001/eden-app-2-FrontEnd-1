@@ -242,7 +242,7 @@ export const LeftToggleNav = ({
       )}
 
       {/* ---- User Button Section ---- */}
-      <section className="mt-auto">
+      <section className={classNames(!company ? "mt-auto" : "")}>
         <UserButton unwrapped={unwrapped} />
       </section>
     </nav>
