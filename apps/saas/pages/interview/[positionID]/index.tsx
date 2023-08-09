@@ -24,7 +24,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { AiOutlineLock } from "react-icons/ai";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../_app";
@@ -37,7 +36,7 @@ const HomePage: NextPageWithLayout = () => {
   const [interviewEnded, setInterviewEnded] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
+  const [step, setStep] = useState<number>(0);
   const [titleRole, setTitleRole] = useState<string>("");
   const [topSkills, setTopSkills] = useState<any[]>([]);
   const [content, setContent] = useState<{
@@ -70,28 +69,11 @@ const HomePage: NextPageWithLayout = () => {
   const handleCvEnd = () => {
     // console.log("cv end");
     setCvEnded(true);
+    setStep(1);
   };
   const handleInterviewEnd = () => {
     // console.log("interview end");
     setInterviewEnded(true);
-  };
-
-  const handleProgress = (_step: any) => {
-    switch (_step) {
-      case 1:
-        setProgress(25);
-        break;
-      case 2:
-        setProgress(50);
-        break;
-      case 3:
-        setProgress(75);
-        break;
-      case 4:
-        setProgress(100);
-        break;
-      default:
-    }
   };
 
   return (
@@ -113,35 +95,49 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll scrollbar-hide p-8">
+      <div className="relative mx-auto h-screen w-full max-w-7xl overflow-y-scroll scrollbar-hide p-8">
         {/* <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4"> */}
         {currentUser && (
-          <div className="h-full w-full">
-            <div className="mb-4 w-full">
-              <ProgressBarGeneric progress={progress} />
-            </div>
-            <Wizard canPrev={false} onStepChange={handleProgress} animate>
-              <WizardStep
-                // nextDisabled={!cvEnded}
-                label={"cv"}
+          <div className="relative h-full w-full pt-[5%]">
+            <h1 className="text-edenGreen-600 text-center">
+              Hey {currentUser.discordName}!
+            </h1>
+            <div className="h-[95%] w-full">
+              <p className="text-edenGray-900 text-center">
+                {`Congrats! You’ve been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
+              </p>
+              <Wizard
+                showStepsHeader={step !== 0}
+                forceStep={step}
+                canPrev={false}
+                onStepChange={(_stepNum: number) => {
+                  if (_stepNum !== step) {
+                    setStep(_stepNum);
+                  }
+                }}
+                animate
               >
-                <UploadCVContainer
-                  setTitleRole={setTitleRole}
-                  setTopSkills={setTopSkills}
-                  setContent={setContent}
-                  handleCvEnd={handleCvEnd}
-                  position={findPositionData?.findPosition}
-                />
-              </WizardStep>
-              <WizardStep label={"welcome"}>
-                <ApplicationStepContainer
-                  topSkills={topSkills}
-                  titleRole={titleRole}
-                  position={findPositionData?.findPosition}
-                  content={content}
-                />
-              </WizardStep>
-              {/* <WizardStep label={"instructions"}>
+                <WizardStep
+                  // nextDisabled={!cvEnded}
+                  label={"cv"}
+                >
+                  <UploadCVContainer
+                    setTitleRole={setTitleRole}
+                    setTopSkills={setTopSkills}
+                    setContent={setContent}
+                    handleCvEnd={handleCvEnd}
+                    position={findPositionData?.findPosition}
+                  />
+                </WizardStep>
+                <WizardStep label={"welcome"}>
+                  <ApplicationStepContainer
+                    topSkills={topSkills}
+                    titleRole={titleRole}
+                    position={findPositionData?.findPosition}
+                    content={content}
+                  />
+                </WizardStep>
+                {/* <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
                 {findPositionData?.findPosition?.name && (
                   <h3 className="mb-8 text-lg font-medium">
@@ -158,24 +154,27 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
 
-              {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-              <WizardStep label={"chat"}>
-                <div className="mx-auto h-[70vh] max-w-lg">
-                  <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
-                </div>
-              </WizardStep>
+                {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
+                <WizardStep label={"chat"}>
+                  <div className="mx-auto h-[70vh] max-w-lg">
+                    <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
+                  </div>
+                </WizardStep>
 
-              <WizardStep label={"profile"}>
-                <p className="mb-8 text-center">Just a few questions missing</p>
-                <ProfileQuestionsContainer />
-              </WizardStep>
+                <WizardStep label={"profile"}>
+                  <p className="mb-8 text-center">
+                    Just a few questions missing
+                  </p>
+                  <ProfileQuestionsContainer />
+                </WizardStep>
 
-              {/* <WizardStep label={"end"}>
+                {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
               </section>
             </WizardStep> */}
-            </Wizard>
+              </Wizard>
+            </div>
           </div>
         )}
       </div>
@@ -247,34 +246,13 @@ const UploadCVContainer = ({
   };
 
   return (
-    <div className="">
-      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
-        <h3 className="mb-4 text-center text-lg font-medium">
-          Hey {currentUser?.discordName}!
-        </h3>
-        <p className="mb-4 text-center">
-          Congratulations! You&apos;ve been selected to
-          <br />
-          do a first interview with <strong>{position?.company?.name}</strong>
-          {position?.name ? (
-            <>
-              <br />
-              for the <strong>{position?.name}</strong> role
-            </>
-          ) : null}
-        </p>
-        <CVUploadGPT
-          onDataReceived={handleDataFromCVUploadGPT}
-          handleEnd={handleCvEnd}
-          positionID={positionID}
-        />
-      </section>
-      <section className="grid h-[50vh] grid-cols-3 gap-6">
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+    <div className="pt-8">
+      <section className="grid grid-cols-3 gap-6">
+        <div className="col-span-1 h-full bg-edenPink-100 rounded-md p-4">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Role Description
           </h3>
-          <ul className="list-disc pl-4">
+          <ul className="list-disc text-sm text-edenGray-900 pl-4">
             {position?.positionsRequirements?.roleDescription
               ?.slice(0, 10)
               .map((item, index) => (
@@ -284,11 +262,11 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+        <div className="col-span-1 h-full bg-edenPink-100 rounded-md p-4">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
-          <ul className="list-disc pl-4">
+          <ul className="list-disc text-sm text-edenGray-900 pl-4">
             {position?.positionsRequirements?.benefits
               ?.slice(0, 10)
               .map((item, index) => (
@@ -298,15 +276,14 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+        <div className="col-span-1 h-full bg-edenPink-300 rounded-md p-4">
           <h3 className="text-edenGreen-600 text-center text-2xl font-semibold">
             You x {position?.company?.name}
           </h3>
-          <p className="mb-4 text-center text-gray-500">
-            <AiOutlineLock className="mr-2 inline-block" />
-            Upload your CV to unlock it
+          <p className="mb-4 text-center text-sm text-edenGray-700">
+            Upload your CV for personalized feedback
           </p>
-          <ul className="list-disc pl-4">
+          <ul className="list-disc text-sm text-edenGray-900 pl-4">
             <li className="mb-2">Probability of landing this job</li>
             <li className="mb-2">What to improve to maximeze your chances</li>
             <li className="mb-2">
@@ -316,6 +293,13 @@ const UploadCVContainer = ({
             <li className="mb-2">Salary range + equity benefits</li>
           </ul>
         </div>
+      </section>
+      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md p-4">
+        <CVUploadGPT
+          onDataReceived={handleDataFromCVUploadGPT}
+          handleEnd={handleCvEnd}
+          positionID={positionID}
+        />
       </section>
     </div>
   );
@@ -410,7 +394,7 @@ const ApplicationStepContainer = ({
           </div>
         </div>
       </section>
-      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide rounded-md bg-white">
+      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide rounded-md">
         <div className="scrollbar-hide h-full overflow-y-scroll p-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -460,7 +444,7 @@ const ApplicationStepContainer = ({
             </>
           ) : null}
         </div>
-        <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-md bg-white px-4 py-2 text-xs text-gray-500 ">
+        <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-md px-4 py-2 text-xs text-gray-500 ">
           <input type="checkbox" className="mr-3" />
           <p>
             I acknowledge That my CV & responses will be stored and shared by
@@ -474,11 +458,11 @@ const ApplicationStepContainer = ({
           <h3 className="mb-2 text-lg font-semibold text-gray-400">
             What you will get:
           </h3>
-          <div className="mb-4 rounded-md bg-white p-2">
+          <div className="mb-4 rounded-md p-2">
             <h3 className="text-lg font-semibold text-gray-400">Growth:</h3>
             <p className="whitespace-pre-wrap">{content.growthAreas}</p>
           </div>
-          <div className="mb-4 rounded-md bg-white p-2">
+          <div className="mb-4 rounded-md p-2">
             <h3 className="text-lg font-semibold text-gray-400">
               Personal experience:
             </h3>
