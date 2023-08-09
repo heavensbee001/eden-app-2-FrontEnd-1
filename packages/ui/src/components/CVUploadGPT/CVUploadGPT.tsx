@@ -71,7 +71,6 @@ export const CVUploadGPT = ({
     //   setSummary(SaveCVtoUser.result);
     // },
     onCompleted: (data) => {
-      console.log("------>", data);
       // sendDataToInterview(data);
       sendDataToInterview(data);
 
@@ -79,7 +78,7 @@ export const CVUploadGPT = ({
       setUploaded(true);
       setFile(null);
       setSizeErr(false);
-      toast.success("success");
+      // toast.success("success");
       if (handleEnd) handleEnd();
     },
     onError: (err) => {
@@ -329,7 +328,8 @@ export const CVUploadGPT = ({
             </div>
             <p>Upload Your CV</p>
             <p className="text-edenGray-700 text-sm">
-              Select or Drag & drop a PDF, DOC or PNG
+              {/* Select or Drag & drop a PDF, DOC or PNG */}
+              Select or Drag & drop a PDF
             </p>
           </div>
           {uploaded && (
