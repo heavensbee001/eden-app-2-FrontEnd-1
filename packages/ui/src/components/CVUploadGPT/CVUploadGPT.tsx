@@ -281,18 +281,17 @@ export const CVUploadGPT = ({
 
     if (e.dataTransfer?.items) {
       // Use DataTransferItemList interface to access the file(s)
-      [...e.dataTransfer.items!].forEach((item, i) => {
-        // If dropped items aren't files, reject them
-        if (item.kind === "file") {
-          const file = item.getAsFile();
 
-          console.log(`… file[${i}].name = ${file?.name}`);
+      // If dropped items aren't files, reject them
+      if (e.dataTransfer.items[0].kind === "file") {
+        const file = e.dataTransfer.items[0].getAsFile();
 
-          setFile(file);
-          //When user tries to upload the same CV the second time
-          setUploadCounter((prevCounter) => prevCounter + 1);
-        }
-      });
+        // console.log(`… file[${i}].name = ${file?.name}`);
+
+        setFile(file);
+        //When user tries to upload the same CV the second time
+        setUploadCounter((prevCounter) => prevCounter + 1);
+      }
     } else {
       // Use DataTransfer interface to access the file(s)
       setFile([...e.dataTransfer?.files!][0]);
