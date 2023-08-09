@@ -228,7 +228,6 @@ const UploadCVContainer = ({
 }: UploadCVContainerProps) => {
   const router = useRouter();
   const { positionID } = router.query;
-  const { currentUser } = useContext(UserContext);
 
   const handleDataFromCVUploadGPT = (data: any) => {
     const role = data.saveCVtoUser.titleRole;
