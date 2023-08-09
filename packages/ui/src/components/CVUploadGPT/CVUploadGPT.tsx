@@ -281,7 +281,7 @@ export const CVUploadGPT = ({
 
     if (e.dataTransfer?.items) {
       // Use DataTransferItemList interface to access the file(s)
-      [...e.dataTransfer?.items].forEach((item, i) => {
+      [...e.dataTransfer.items!].forEach((item, i) => {
         // If dropped items aren't files, reject them
         if (item.kind === "file") {
           const file = item.getAsFile();
