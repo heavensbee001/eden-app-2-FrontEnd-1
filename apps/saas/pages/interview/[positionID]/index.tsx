@@ -337,6 +337,7 @@ const ApplicationStepContainer = ({
   titleRole,
   // eslint-disable-next-line no-unused-vars
   topSkills,
+  // eslint-disable-next-line no-unused-vars
   position,
   content,
 }: ApplicationStepContainerProps) => {
