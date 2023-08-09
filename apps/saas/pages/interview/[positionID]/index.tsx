@@ -10,7 +10,7 @@ import {
   CVUploadGPT,
   InterviewEdenAI,
   Loading,
-  ProgressBarGeneric,
+  // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
   Wizard,
@@ -36,6 +36,7 @@ const HomePage: NextPageWithLayout = () => {
   const [interviewEnded, setInterviewEnded] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
+  const [insightsChecked, setInsightsChecked] = useState<Boolean>(false);
   const [step, setStep] = useState<number>(0);
   const [titleRole, setTitleRole] = useState<string>("");
   const [topSkills, setTopSkills] = useState<any[]>([]);
@@ -117,10 +118,7 @@ const HomePage: NextPageWithLayout = () => {
                 }}
                 animate
               >
-                <WizardStep
-                  // nextDisabled={!cvEnded}
-                  label={"cv"}
-                >
+                <WizardStep nextDisabled={!cvEnded} label={"CV UPLOAD"}>
                   <UploadCVContainer
                     setTitleRole={setTitleRole}
                     setTopSkills={setTopSkills}
@@ -129,13 +127,30 @@ const HomePage: NextPageWithLayout = () => {
                     position={findPositionData?.findPosition}
                   />
                 </WizardStep>
-                <WizardStep label={"welcome"}>
+                <WizardStep
+                  label={"EDEN INSIGHTS"}
+                  nextDisabled={!insightsChecked}
+                >
                   <ApplicationStepContainer
                     topSkills={topSkills}
                     titleRole={titleRole}
                     position={findPositionData?.findPosition}
                     content={content}
                   />
+                  <div className="absolute -bottom-10 left-0 flex w-full justify-center rounded-md px-4 py-2 text-xs text-gray-500 ">
+                    <input
+                      type="checkbox"
+                      onChange={(e) => {
+                        setInsightsChecked(e.target.checked);
+                      }}
+                      className="mr-3"
+                    />
+                    <p>
+                      I acknowledge That my CV & responses will be stored and
+                      shared by Eden
+                      <span className="mx-1 text-red-600">*</span>
+                    </p>
+                  </div>
                 </WizardStep>
                 {/* <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
@@ -155,13 +170,13 @@ const HomePage: NextPageWithLayout = () => {
             </WizardStep> */}
 
                 {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-                <WizardStep label={"chat"}>
-                  <div className="mx-auto h-[70vh] max-w-lg">
+                <WizardStep label={"INTERVIEW"}>
+                  <div className="mx-auto h-full max-w-lg">
                     <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                   </div>
                 </WizardStep>
 
-                <WizardStep label={"profile"}>
+                <WizardStep label={"FINAL DETAILS"}>
                   <p className="mb-8 text-center">
                     Just a few questions missing
                   </p>
@@ -322,6 +337,7 @@ const ApplicationStepContainer = ({
   titleRole,
   // eslint-disable-next-line no-unused-vars
   topSkills,
+  // eslint-disable-next-line no-unused-vars
   position,
   content,
 }: ApplicationStepContainerProps) => {
@@ -345,131 +361,98 @@ const ApplicationStepContainer = ({
   const today = new Date();
 
   return (
-    <div className="grid h-full grid-cols-12 gap-6">
-      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide">
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-400">
-            Your top skills:
-          </h3>
-          <div>
-            {topSkills !== null &&
-              topSkills.map((skill: any, index: number) => (
-                <Badge key={index} text={skill} cutText={20} />
-              ))}
-          </div>
-        </div>
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-400">Salary range:</h3>
-          <p className="text-xl font-medium">
-            ${60000} - ${90000}
-          </p>
-        </div>
-        <div>
-          <div>
-            <p>Recruiting + Eden AI chat</p>
-            <p className="text-gray-500">{`${
-              monthNames[today.getMonth()]
-            } ${today.getDate()}`}</p>
-          </div>
-          <div>
-            <p>Hiring manager interviews</p>
-            <p className="text-gray-500">{`${
-              monthNames[
-                new Date(new Date().setDate(today.getDate() + 3)).getMonth()
-              ]
-            } ${new Date(
-              new Date().setDate(today.getDate() + 3)
-            ).getDate()}`}</p>
-          </div>
-          <div>
-            <p>Onboarding</p>
-            <p className="text-gray-500">{`${
-              monthNames[
-                new Date(new Date().setDate(today.getDate() + 14)).getMonth()
-              ]
-            } ${new Date(
-              new Date().setDate(today.getDate() + 14)
-            ).getDate()}`}</p>
-          </div>
-        </div>
-      </section>
-      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide rounded-md">
-        <div className="scrollbar-hide h-full overflow-y-scroll p-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="80px"
-            height="80px"
-            viewBox="0 0 24 24"
-            className="mx-auto"
-            style={{
-              fill: "rgba(215, 254, 109, 1)",
-              transform: "",
-              msFilter: "",
-            }}
-          >
-            <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
-          </svg>
-          <h2 className="mb-4 text-center text-2xl font-medium">
-            Looking great!
-          </h2>
-          {position?.name ? (
-            <>
-              <p className="text-center">Your probability of passing is:</p>
-              {content.matchPercentage &&
-                (content.matchPercentage > 50 ? (
-                  <p className="mb-4 text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
-                ) : (
-                  <p className="mb-4 text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
+    <>
+      <div>
+        <div className="grid grid-cols-12 gap-2">
+          <section className="w-full border border-edenGray-100 rounded-md bg-white p-4 col-span-12">
+            <h3 className="text-edenGreen-600 mb-2">Your Top skills</h3>
+            <div>
+              {topSkills !== null &&
+                topSkills.map((skill: any, index: number) => (
+                  <Badge key={index} text={skill} cutText={20} />
                 ))}
-
-              <section className="h-[42vh] overflow-y-scroll">
-                <div className="px-8">
-                  <h3 className="text-edenGreen-600 text-lg font-semibold">
-                    Strong suit:
-                  </h3>
-                  <p className="mb-4 whitespace-pre-wrap">
-                    {content.strongFit}
-                  </p>
+            </div>
+          </section>
+          <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-4">
+            <h3 className="text-edenGreen-600 mb-2">Salary Range</h3>
+            <p className="text-lg font-medium">
+              ${60000} - ${90000} (hardcoded)
+            </p>
+          </section>
+          <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-8">
+            <h3 className="text-edenGreen-600 mb-2">Timeline</h3>
+            <div>
+              <div className="flex flex-nowrap items-center">
+                <div>
+                  <p className="text-sm text-gray-500">{`${
+                    monthNames[today.getMonth()]
+                  } ${today.getDate()}`}</p>
+                  <p>Recruiting + Eden AI Chat</p>
                 </div>
-                <div className="px-8">
-                  <h3 className="text-edenGreen-600 text-lg font-semibold">
-                    Areas to improve:
-                  </h3>
-                  <p className="mb-8 whitespace-pre-wrap">
-                    {content.improvementPoints}
-                  </p>
+                <BiChevronRight
+                  size={"1.6rem"}
+                  color="#00462C"
+                  className="mx-5"
+                />
+                <div>
+                  <p className="text-sm text-gray-500">{`${
+                    monthNames[
+                      new Date(
+                        new Date().setDate(today.getDate() + 3)
+                      ).getMonth()
+                    ]
+                  } ${new Date(
+                    new Date().setDate(today.getDate() + 3)
+                  ).getDate()}`}</p>
+                  <p>HR Interviews</p>
                 </div>
-              </section>
-            </>
-          ) : null}
+                <BiChevronRight
+                  size={"1.6rem"}
+                  color="#00462C"
+                  className="mx-5"
+                />
+                <div>
+                  <p className="text-sm text-gray-500">{`${
+                    monthNames[
+                      new Date(
+                        new Date().setDate(today.getDate() + 14)
+                      ).getMonth()
+                    ]
+                  } ${new Date(
+                    new Date().setDate(today.getDate() + 14)
+                  ).getDate()}`}</p>
+                  <p>Onboarding</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
-        <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-md px-4 py-2 text-xs text-gray-500 ">
-          <input type="checkbox" className="mr-3" />
-          <p>
-            I acknowledge That my CV & responses will be stored and shared by
-            Eden
-            <span className="mx-1 text-red-600">*</span>
-          </p>
-        </div>
-      </section>
-      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide">
-        <div className="mb-8">
-          <h3 className="mb-2 text-lg font-semibold text-gray-400">
-            What you will get:
-          </h3>
-          <div className="mb-4 rounded-md p-2">
-            <h3 className="text-lg font-semibold text-gray-400">Growth:</h3>
+        <section className="h-64 w-full overflow-x-scroll whitespace-nowrap">
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">
+              Strong suit
+            </h3>
+            <p className="whitespace-pre-wrap">{content.strongFit}</p>
+          </div>
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">
+              Areas to improve
+            </h3>
+            <p className="whitespace-pre-wrap">{content.improvementPoints}</p>
+          </div>
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">Growth</h3>
             <p className="whitespace-pre-wrap">{content.growthAreas}</p>
           </div>
-          <div className="mb-4 rounded-md p-2">
-            <h3 className="text-lg font-semibold text-gray-400">
-              Personal experience:
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">
+              Personal Experience
             </h3>
             <p className="whitespace-pre-wrap">{content.experienceAreas}</p>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 };
 
@@ -557,6 +540,7 @@ const InterviewEdenAIContainer = ({
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  // eslint-disable-next-line no-unused-vars
   const { data: findPositionData } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
@@ -630,9 +614,9 @@ const InterviewEdenAIContainer = ({
   console.log("conversationID = ", conversationID);
 
   return (
-    <div className="w-full">
-      <div className="relative h-[68vh]">
-        <div className="absolute left-0 top-2 z-20 w-full">
+    <div className="w-full h-full">
+      <div className="relative h-full">
+        {/* <div className="absolute left-0 top-2 z-20 w-full">
           <ProgressBarGeneric
             color="accentColor"
             progress={
@@ -642,7 +626,7 @@ const InterviewEdenAIContainer = ({
               findPositionData?.findPosition?.questionsToAsk.length
             }
           />
-        </div>
+        </div> */}
         {
           <InterviewEdenAI
             key={experienceTypeID}
@@ -697,6 +681,7 @@ import {
 import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
 import { Controller, useForm } from "react-hook-form";
+import { BiChevronRight } from "react-icons/bi";
 
 interface IProfileQuestionsContainerProps {}
 
