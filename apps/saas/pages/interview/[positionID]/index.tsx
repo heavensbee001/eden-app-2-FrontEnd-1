@@ -615,7 +615,7 @@ const InterviewEdenAIContainer = ({
   return (
     <div className="w-full h-full">
       <div className="relative h-full">
-        <div className="absolute left-0 top-2 z-20 w-full">
+        {/* <div className="absolute left-0 top-2 z-20 w-full">
           <ProgressBarGeneric
             color="accentColor"
             progress={
@@ -625,7 +625,7 @@ const InterviewEdenAIContainer = ({
               findPositionData?.findPosition?.questionsToAsk.length
             }
           />
-        </div>
+        </div> */}
         {
           <InterviewEdenAI
             key={experienceTypeID}
