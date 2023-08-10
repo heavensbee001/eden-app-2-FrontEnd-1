@@ -66,6 +66,7 @@ const FIND_POSITION = gql`
     findPosition(fields: $fields) {
       _id
       name
+      icon
       positionsRequirements {
         priorities {
           priority
@@ -152,9 +153,12 @@ const TrainAiPage: NextPageWithLayout = () => {
       },
     },
     skip: !positionID,
-    onCompleted(data) {
-      setValue("position", data.findPosition);
-    },
+    // onCompleted(data) {
+    //   setValue("position", {
+    //     ...data.findPosition,
+    //     icon: data.findPosition.icon ? data.findPosition.icon : "FaCode",
+    //   });
+    // },
   });
 
   // eslint-disable-next-line no-unused-vars
@@ -383,8 +387,6 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
-  console.log("position", watch("position"));
-
   return (
     <>
       <Head>
@@ -451,15 +453,20 @@ const TrainAiPage: NextPageWithLayout = () => {
                   }
                 >
                   <div className="relative flex h-full items-center justify-center">
-                    <DescriptionContainer
-                      defaultValues={{
-                        "position.name": findPositionData?.findPosition?.name,
-                      }}
-                      onChange={(data) => {
-                        setValue("position.name", data["position.name"]);
-                        setValue("pastedText", data.pastedText);
-                      }}
-                    />
+                    {findPositionData && (
+                      <DescriptionContainer
+                        defaultValues={{
+                          "position.name": findPositionData?.findPosition?.name,
+                          "position.icon":
+                            findPositionData?.findPosition?.icon || "FaCode",
+                        }}
+                        onChange={(data) => {
+                          setValue("position.name", data["position.name"]);
+                          setValue("pastedText", data.pastedText);
+                          setValue("position.icon", data["position.icon"]);
+                        }}
+                      />
+                    )}
                     <EdenAiProcessingModal
                       open={scraping}
                       title="Give me 30 seconds!"

@@ -1,12 +1,7 @@
 import { gql } from "@apollo/client";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import {
-  HiCodeBracket,
-  HiOutlineCamera,
-  HiOutlineComputerDesktop,
-  HiOutlinePencil,
-} from "react-icons/hi2";
+import { useMemo } from "react";
+import { IconPicker } from "react-fa-icon-picker";
+import { Controller, useForm } from "react-hook-form";
 
 export const WEBPAGE_TO_MEMORY = gql`
   mutation ($fields: websiteToMemoryCompanyInput!) {
@@ -32,23 +27,23 @@ export const DescriptionContainer = ({
   // eslint-disable-next-line no-unused-vars
   const { register, watch, control, setValue, getValues } = useForm<any>({
     defaultValues: {
-      position: "",
+      position: {
+        name: defaultValues["position.name"],
+        icon: defaultValues["position.icon"],
+      },
       pastedText: "",
     },
   });
 
   const formData = watch();
 
-  useEffect(() => {
-    setValue("position.name", defaultValues["position.name"]);
-  }, []);
-
-  useEffect(() => {
+  useMemo(() => {
     onChange({
-      "position.name": formData.position.name,
+      "position.name": formData.position?.name,
+      "position.icon": formData.position?.icon,
       pastedText: formData.pastedText,
     });
-  }, [formData.position.name, formData.pastedText]);
+  }, [formData.position?.name, formData.pastedText, formData.position?.icon]);
 
   return (
     <form className="w-full max-w-[33rem]">
@@ -56,37 +51,42 @@ export const DescriptionContainer = ({
         <p className="text-edenGray-500 mb-2 block text-xs">
           Select opportunity icon
         </p>
-        <div>
-          <div className="inline-block mr-8">
-            <div className="w-8 h-8 rounded-md bg-edenPink-200 flex items-center justify-center cursor-pointer hover:bg-edenPink-100">
-              <HiCodeBracket size={"1.2rem"} />
-            </div>
-          </div>
-          <div className="inline-block mr-8">
-            <div className="w-8 h-8 rounded-md bg-edenPink-200 flex items-center justify-center cursor-pointer hover:bg-edenPink-100">
-              <HiOutlinePencil size={"1.2rem"} />
-            </div>
-          </div>
-          <div className="inline-block mr-8">
-            <div className="w-8 h-8 rounded-md bg-edenPink-200 flex items-center justify-center cursor-pointer hover:bg-edenPink-100">
-              <HiOutlineCamera size={"1.2rem"} />
-            </div>
-          </div>
-          <div className="inline-block mr-8">
-            <div className="w-8 h-8 rounded-md bg-edenPink-200 flex items-center justify-center cursor-pointer hover:bg-edenPink-100">
-              <HiOutlineComputerDesktop size={"1.2rem"} />
-            </div>
-          </div>
+        <div className="">
+          <Controller
+            name={"position.icon"}
+            control={control}
+            render={({ field: { onChange } }: any) => (
+              <IconPicker
+                value={watch("position.icon")}
+                onChange={onChange}
+                buttonStyles={{
+                  backgroundColor: "#FCEEF5",
+                  border: "none",
+                  height: "2rem",
+                  minHeight: "2rem",
+                  width: "2rem",
+                }}
+                buttonIconStyles={{ color: "#00462C", fontSize: "1.2rem" }}
+                pickerIconStyles={{
+                  color: "#00462C",
+                  fontSize: "1.2rem",
+                  padding: "0.25rem",
+                }}
+                containerStyles={{
+                  border: "1px solid #F2F2F2",
+                  borderRadius: "0.375rem",
+                  padding: "0.25rem",
+                  justifyContent: "center",
+                }}
+                searchInputStyles={{
+                  fontSize: "0.875rem",
+                  borderBottom: "1px solid #F2F2F2",
+                  marginBottom: "0.5rem",
+                }}
+              />
+            )}
+          />
         </div>
-        {/* <input
-          id="name"
-          {...register("position.name")}
-          placeholder="Type name here..."
-          className="border-edenGray-100 block w-full rounded-md border px-4 py-2 text-sm"
-          onFocus={(event) => {
-            event.target.select();
-          }}
-        /> */}
       </div>
 
       <div className="mb-6">
