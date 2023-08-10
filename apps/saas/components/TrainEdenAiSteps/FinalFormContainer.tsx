@@ -104,7 +104,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                     <input
                       type="date"
                       id="targetedStartDate"
-                      className="  border-edenGray-100 mt-2 w-56  rounded-lg border py-[.45rem] pl-2 pr-2 outline-none "
+                      className="border-edenGray-100 mt-2 w-56 rounded-lg border p-2 outline-none"
                       required
                       {...register("targetedStartDate")}
                     />

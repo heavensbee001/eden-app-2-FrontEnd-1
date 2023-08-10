@@ -218,22 +218,20 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
           <section key={field.id} className="mb-4">
             <div>
               <div>
-                <div
-                  className={`my-auto flex items-center px-2 capitalize mb-2`}
-                >
+                <div className={`my-auto flex items-center capitalize mb-2`}>
                   <span className="mr-2">{platformIcons(field.name)}</span>
-                  <label className="text-sm" htmlFor={`link-${field.name}`}>
+                  <label className="text-xs" htmlFor={`link-${field.name}`}>
                     {field.name}
                   </label>
                 </div>
                 <div
-                  className={`border border-EdenGray-100 rounded-md px-4 flex h-8 items-center`}
+                  className={`border border-EdenGray-100 rounded-md flex p-2 items-center`}
                 >
-                  <span className={`text-sm`}>{baseUrl(field.name)}</span>
+                  <span className={`text-xs`}>{baseUrl(field.name)}</span>
 
                   <input
                     id={`link-${field.name}`}
-                    className={`w-full border-none pl-0.5 text-sm outline-none`}
+                    className={`w-full border-none pl-0.5 text-xs outline-none`}
                     type="text"
                     placeholder={
                       field.name === "portfolio" || "custom"
