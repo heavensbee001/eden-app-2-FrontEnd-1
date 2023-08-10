@@ -70,18 +70,18 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
   const { register, control, watch } = useForm<LinkValues>({
     defaultValues: {
       links: [
-        {
-          ...(cleanLink("portfolio") ?? {
-            name: "portfolio",
-            url: "",
-          }),
-        },
+        // {
+        //   ...(cleanLink("portfolio") ?? {
+        //     name: "portfolio",
+        //     url: "",
+        //   }),
+        // },
         {
           ...(cleanLink("twitter")
             ? cleanLink("twitter")
             : { name: "twitter", url: "" }),
         },
-        { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
+        // { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
         { ...(cleanLink("github") ?? { name: "github", url: "" }) },
         {
           ...(cleanLink("linkedIn") ?? {
@@ -89,7 +89,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
             url: "",
           }),
         },
-        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
+        // { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
         {
           ...(cleanLink("custom") ?? {
             name: "custom",
@@ -212,26 +212,24 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
   };
 
   return (
-    <div className="grid-template-rows-repeat(4, auto) grid-auto-flow-column gap mt-2 grid grid-cols-2 gap-x-5 gap-y-2">
+    <div className="pt-8">
       {fields.map((field, index) => {
         return (
-          <section key={field.id}>
+          <section key={field.id} className="mb-4">
             <div>
               <div>
                 <div
-                  className={`my-auto flex items-center space-x-2 px-2 capitalize`}
+                  className={`my-auto flex items-center px-2 capitalize mb-2`}
                 >
-                  {platformIcons(field.name)}
+                  <span className="mr-2">{platformIcons(field.name)}</span>
                   <label className="text-sm" htmlFor={`link-${field.name}`}>
                     {field.name}
                   </label>
                 </div>
                 <div
-                  className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-lg pl-4`}
+                  className={`border border-EdenGray-100 rounded-md px-4 flex h-8 items-center`}
                 >
-                  <span className={`text-600 text-sm`}>
-                    {baseUrl(field.name)}
-                  </span>
+                  <span className={`text-sm`}>{baseUrl(field.name)}</span>
 
                   <input
                     id={`link-${field.name}`}

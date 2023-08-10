@@ -66,14 +66,14 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
   return (
     <>
       <form className="flex items-center justify-center">
-        <div className="mt-6 h-96 w-[40rem]  rounded-lg  px-8 pb-8 pt-3">
+        <div className="mt-6 h-96 w-[40rem] rounded-lg  px-8 pb-8 pt-3">
           <Tab.Group>
-            <Tab.List className="  border-edenGreen-300 flex  w-full justify-between border-b ">
-              <div className="flex items-start gap-x-6">
+            <Tab.List className="border-edenGreen-300 flex  w-full justify-between border-b ">
+              <div className="flex items-start">
                 <Tab
                   className={({ selected }) =>
                     classNames(
-                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs px-3",
                       selected
                         ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                         : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
@@ -85,7 +85,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                 <Tab
                   className={({ selected }) =>
                     classNames(
-                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs",
+                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs px-3",
                       selected
                         ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                         : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
