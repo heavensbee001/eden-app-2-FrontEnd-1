@@ -2,6 +2,8 @@ import { useQuery } from "@apollo/client";
 import { FIND_CONVERSATIONS } from "@eden/package-graphql";
 import { Members } from "@eden/package-graphql/generated";
 import { Card } from "@eden/package-ui";
+import { useRouter } from "next/router";
+
 type Props = {
   memberImg?: string;
   conversationID?: string;
@@ -13,13 +15,21 @@ function classNames(...classes: string[]) {
 }
 
 export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
+  const router = useRouter();
+  const { positionID } = router.query;
+
+  console.log("positionID = ", positionID);
+  console.log("member._id = ", member?._id);
+
   const { data: findConversationsData } = useQuery(FIND_CONVERSATIONS, {
     variables: {
       fields: {
-        _id: [conversationID],
+        // _id: [conversationID],
+        positionID: positionID,
+        userID: [member?._id],
       },
     },
-    skip: conversationID == undefined,
+    skip: member?._id == undefined || positionID == undefined,
     ssr: false,
   });
   // console.log("conversationID = ", conversationID);
