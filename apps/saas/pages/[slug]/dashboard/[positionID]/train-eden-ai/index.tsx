@@ -391,6 +391,8 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
+  console.log(watch("position.generalDetails"));
+
   return (
     <>
       <Head>
@@ -599,9 +601,30 @@ const TrainAiPage: NextPageWithLayout = () => {
                     </p>
                     <FinalFormContainer
                       onChange={(data) => {
-                        setValue("position.name", data["position.name"]);
-                        setValue("pastedText", data.pastedText);
-                        setValue("position.icon", data["position.icon"]);
+                        setValue(
+                          "position.generalDetails.startDate",
+                          new Date(data.targetedStartDate)
+                        );
+                        setValue(
+                          "position.generalDetails.visaRequired",
+                          data.visaRequirements
+                        );
+                        setValue(
+                          "position.generalDetails.officePolicy",
+                          data.officePolicy
+                        );
+                        setValue(
+                          "position.generalDetails.officeLocation",
+                          data.officeLocation
+                        );
+                        setValue(
+                          "position.generalDetails.contractType",
+                          data.contractType
+                        );
+                        setValue(
+                          "position.generalDetails.contractDuration",
+                          data.contractDuration
+                        );
                       }}
                     />
                   </div>
