@@ -89,6 +89,7 @@ const FIND_POSITION = gql`
         question {
           _id
           content
+          category
         }
       }
     }
@@ -113,6 +114,7 @@ const ADD_QUESTIONS_TO_POSITION = gql`
         question {
           _id
           content
+          category
         }
       }
     }
@@ -331,6 +333,8 @@ const TrainAiPage: NextPageWithLayout = () => {
   // handle question suggestions submit
   const handleSaveChangesInterviewQuestions = () => {
     if (positionID) {
+      debugger;
+
       updateQuestionsPosition({
         variables: {
           fields: {
@@ -341,6 +345,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 ({
                   questionID: question.question?._id,
                   questionContent: question.question?.content,
+                  category: question?.category,
                 } as QuestionTypeInput)
             ),
           },

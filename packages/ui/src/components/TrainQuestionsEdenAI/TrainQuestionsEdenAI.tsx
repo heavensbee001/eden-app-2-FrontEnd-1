@@ -23,6 +23,7 @@ const ADD_QUESTIONS_TO_POSITION = gql`
         question {
           _id
           content
+          category
         }
       }
     }
