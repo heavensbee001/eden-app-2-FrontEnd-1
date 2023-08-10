@@ -51,6 +51,7 @@ export const POSITION_SUGGEST_QUESTIONS = gql`
 
 type QuestionSuggest = {
   question: string;
+  category: string;
   IDCriteria?: string;
 };
 
@@ -115,7 +116,11 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
       ...prevQuestions,
       [category]: [
         ...prevQuestions[category],
-        { question: "", IDCriteria: `b${prevQuestions[category].length + 1}` },
+        {
+          question: "",
+          IDCriteria: `b${prevQuestions[category].length + 1}`,
+          category: category,
+        },
       ],
     }));
   };
@@ -165,6 +170,7 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
             questionsWithCategory[q.category].push({
               question: q.question,
               IDCriteria: q.IDCriteria,
+              category: q.category,
             });
           }
         );
@@ -270,6 +276,7 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
         _mappedQuestions.push({
           question: { _id: question.IDCriteria, content: question.question },
           bestAnswer: "",
+          category: question.category,
         });
       }
     }

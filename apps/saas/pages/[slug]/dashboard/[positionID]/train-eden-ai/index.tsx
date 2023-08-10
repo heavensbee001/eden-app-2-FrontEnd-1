@@ -66,6 +66,7 @@ const FIND_POSITION = gql`
     findPosition(fields: $fields) {
       _id
       name
+      icon
       positionsRequirements {
         priorities {
           priority
@@ -88,6 +89,7 @@ const FIND_POSITION = gql`
         question {
           _id
           content
+          category
         }
       }
     }
@@ -112,6 +114,7 @@ const ADD_QUESTIONS_TO_POSITION = gql`
         question {
           _id
           content
+          category
         }
       }
     }
@@ -152,9 +155,12 @@ const TrainAiPage: NextPageWithLayout = () => {
       },
     },
     skip: !positionID,
-    onCompleted(data) {
-      setValue("position", data.findPosition);
-    },
+    // onCompleted(data) {
+    //   setValue("position", {
+    //     ...data.findPosition,
+    //     icon: data.findPosition.icon ? data.findPosition.icon : "FaCode",
+    //   });
+    // },
   });
 
   // eslint-disable-next-line no-unused-vars
@@ -327,6 +333,8 @@ const TrainAiPage: NextPageWithLayout = () => {
   // handle question suggestions submit
   const handleSaveChangesInterviewQuestions = () => {
     if (positionID) {
+      debugger;
+
       updateQuestionsPosition({
         variables: {
           fields: {
@@ -337,6 +345,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 ({
                   questionID: question.question?._id,
                   questionContent: question.question?.content,
+                  category: question?.category,
                 } as QuestionTypeInput)
             ),
           },
@@ -382,8 +391,6 @@ const TrainAiPage: NextPageWithLayout = () => {
       }, 2500);
     }
   }, [step]);
-
-  console.log("position", watch("position"));
 
   return (
     <>
@@ -451,15 +458,20 @@ const TrainAiPage: NextPageWithLayout = () => {
                   }
                 >
                   <div className="relative flex h-full items-center justify-center">
-                    <DescriptionContainer
-                      defaultValues={{
-                        "position.name": findPositionData?.findPosition?.name,
-                      }}
-                      onChange={(data) => {
-                        setValue("position.name", data["position.name"]);
-                        setValue("pastedText", data.pastedText);
-                      }}
-                    />
+                    {findPositionData && (
+                      <DescriptionContainer
+                        defaultValues={{
+                          "position.name": findPositionData?.findPosition?.name,
+                          "position.icon":
+                            findPositionData?.findPosition?.icon || "FaCode",
+                        }}
+                        onChange={(data) => {
+                          setValue("position.name", data["position.name"]);
+                          setValue("pastedText", data.pastedText);
+                          setValue("position.icon", data["position.icon"]);
+                        }}
+                      />
+                    )}
                     <EdenAiProcessingModal
                       open={scraping}
                       title="Give me 30 seconds!"
