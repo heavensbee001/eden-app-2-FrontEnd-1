@@ -177,8 +177,10 @@ const HomePage: NextPageWithLayout = () => {
                 </WizardStep>
 
                 <WizardStep label={"FINAL DETAILS"}>
-                  <p className="mb-8 text-center">
-                    Just a few questions missing
+                  <p className="mb-8 text-center text-sm">
+                    {
+                      "All done, this is the final step. Fill in some quick information and we’re off!"
+                    }
                   </p>
                   <ProfileQuestionsContainer />
                 </WizardStep>
@@ -783,43 +785,47 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   }, [userState]);
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-2xl mx-auto">
       <div className="mb-8">
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">What is your desired salary</p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block mr-12">
+          <p className="mb-2 text-xs">Your Desired Salary</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <input
               min={0}
               defaultValue={currentUser?.budget?.perHour || ""}
               type="number"
               id="budget"
-              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               required
               {...register("budget.perHour")}
             />
-            <span>$/hour</span>
+            <div className="ml-auto border-l border-edenGray-100 px-3">
+              <span>$/hour</span>
+            </div>
           </div>
         </section>
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">Share your availability</p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block">
+          <p className="mb-2">Your Availability</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <input
               type="number"
               defaultValue={currentUser?.hoursPerWeek || ""}
               min={0}
               max={40}
               id="hoursPerWeek"
-              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               required
               {...register("hoursPerWeek")}
             />
-            <span>hours/week</span>
+            <div className="ml-auto border-l border-edenGray-100 px-3">
+              <span>hours/week</span>
+            </div>
           </div>
         </section>
       </div>
       <div className="mb-8">
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">What is your location?</p>
+        <section className="mb-4 inline-block">
+          <p className="mb-2 text-xs">Your Location</p>
           <Controller
             name={"location"}
             control={control}
@@ -860,27 +866,26 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         </section>
       </div>
       <div className="mb-8">
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">
-            How many years of experience do you have in total?
-          </p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block mr-12">
+          <p className="mb-2 text-xs">Years of Experience</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <input
               type="number"
-              min={0}
-              // max={40}
-              // id="hoursPerWeek"
               defaultValue={currentUser?.experienceLevel?.years || ""}
-              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
-              // required
+              min={0}
+              id="hoursPerWeek"
+              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              required
               {...register("experienceLevel.years")}
             />
-            <span>years</span>
+            <div className="ml-auto border-l border-edenGray-100 px-3">
+              <span>years</span>
+            </div>
           </div>
         </section>
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">What is you experience level?</p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block mr-12">
+          <p className="mb-2 text-xs">Experience Level</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <Controller
               name={"experienceLevel"}
               control={control}
@@ -894,7 +899,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                 return (
                   <select
                     id="experienceLevel"
-                    className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                    className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent"
                     required
                     onChange={(e) => {
                       const _val = {

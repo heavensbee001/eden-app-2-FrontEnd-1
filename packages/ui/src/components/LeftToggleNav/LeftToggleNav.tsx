@@ -166,7 +166,7 @@ export const LeftToggleNav = ({
                     </div>
                     {unwrapped && (
                       <div className="ml-2 mr-auto w-full">
-                        <p className="whitespace-nowrap text-sm font-bold">
+                        <div className="whitespace-nowrap text-sm font-bold">
                           {position?.name?.slice(0, 20)}
                           {position?.name?.length! > 20 ? "..." : ""}
                           {position?.talentList ? (
@@ -188,7 +188,7 @@ export const LeftToggleNav = ({
                               )}
                             </div>
                           ) : null}
-                        </p>
+                        </div>
                         <p className="text-edenGray-700 whitespace-nowrap text-xs">
                           {company?.name}
                         </p>
