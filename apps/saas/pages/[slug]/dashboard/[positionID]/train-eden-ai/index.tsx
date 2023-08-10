@@ -239,6 +239,7 @@ const TrainAiPage: NextPageWithLayout = () => {
               fields: {
                 _id: positionID,
                 name: getValues("position.name"),
+                icon: getValues("position.icon"),
                 companyID: company?._id,
               },
             },
@@ -333,8 +334,6 @@ const TrainAiPage: NextPageWithLayout = () => {
   // handle question suggestions submit
   const handleSaveChangesInterviewQuestions = () => {
     if (positionID) {
-      debugger;
-
       updateQuestionsPosition({
         variables: {
           fields: {
@@ -598,12 +597,12 @@ const TrainAiPage: NextPageWithLayout = () => {
                       All done, this is the final step. Fill in some quick
                       information and we’re off!
                     </p>
-                    <Controller
-                      name={"finalDetails"}
-                      control={control}
-                      render={({ field: { onChange } }) => (
-                        <FinalFormContainer onChange={onChange} />
-                      )}
+                    <FinalFormContainer
+                      onChange={(data) => {
+                        setValue("position.name", data["position.name"]);
+                        setValue("pastedText", data.pastedText);
+                        setValue("position.icon", data["position.icon"]);
+                      }}
                     />
                   </div>
                 </WizardStep>

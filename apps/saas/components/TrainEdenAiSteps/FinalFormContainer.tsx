@@ -3,7 +3,7 @@
 import { FillSocialLinks } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { SlLocationPin } from "react-icons/sl";
 
@@ -37,32 +37,31 @@ const defaultFormValues: FormData = {
 };
 
 export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
+  // eslint-disable-next-line no-unused-vars
   const { getValues, register, watch } = useForm<FormData>({
     defaultValues: {
       ...defaultFormValues,
     },
   });
 
-  useEffect(() => {
-    onChange(
-      getValues([
-        "targetedStartDate",
-        "visaRequirements",
-        "officePolicy",
-        "officeLocation",
-        "contractType",
-        "contractDuration",
-      ])
-    );
+  const formData = watch();
+
+  useMemo(() => {
+    onChange({
+      targetedStartDate: formData["targetedStartDate"],
+      visaRequirements: formData["visaRequirements"],
+      officePolicy: formData["officePolicy"],
+      officeLocation: formData["officeLocation"],
+      contractType: formData["contractType"],
+      contractDuration: formData["contractDuration"],
+    });
   }, [
-    watch([
-      "targetedStartDate",
-      "visaRequirements",
-      "officePolicy",
-      "officeLocation",
-      "contractType",
-      "contractDuration",
-    ]),
+    formData["targetedStartDate"],
+    formData["visaRequirements"],
+    formData["officePolicy"],
+    formData["officeLocation"],
+    formData["contractType"],
+    formData["contractDuration"],
   ]);
   return (
     <>
