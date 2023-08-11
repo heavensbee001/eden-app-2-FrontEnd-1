@@ -14,12 +14,13 @@ import {
 } from "react-icons/fa";
 
 type LinkValues = {
-  links: { name: string; url: string }[];
+  links: LinkType[];
 };
 
 export interface IFillSocialLinksProps {
   links?: Maybe<LinkType>[];
-  onChange?: React.Dispatch<React.SetStateAction<LinkType[]>>;
+  // eslint-disable-next-line no-unused-vars
+  onChange: (val: LinkType[]) => void;
 }
 
 export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
@@ -159,7 +160,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         }
       });
 
-      onChange?.(newLinks as LinkType[]);
+      onChange(newLinks as LinkType[]);
     });
 
     return () => subscription.unsubscribe();
@@ -219,7 +220,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
             <div>
               <div>
                 <div className={`my-auto flex items-center capitalize mb-2`}>
-                  <span className="mr-2">{platformIcons(field.name)}</span>
+                  <span className="mr-2">{platformIcons(field.name!)}</span>
                   <label className="text-xs" htmlFor={`link-${field.name}`}>
                     {field.name}
                   </label>
@@ -227,7 +228,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
                 <div
                   className={`border border-EdenGray-100 rounded-md flex p-2 items-center`}
                 >
-                  <span className={`text-xs`}>{baseUrl(field.name)}</span>
+                  <span className={`text-xs`}>{baseUrl(field.name!)}</span>
 
                   <input
                     id={`link-${field.name}`}
