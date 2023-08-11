@@ -121,6 +121,33 @@ const ADD_QUESTIONS_TO_POSITION = gql`
   }
 `;
 
+const UPDATE_POSITION_GENERAL_DETAILS = gql`
+  mutation UpdatePositionGeneralDetails(
+    $fields: updatePositionGeneralDetailsInput
+  ) {
+    updatePositionGeneralDetails(fields: $fields) {
+      _id
+      generalDetails {
+        startDate
+        visaRequired
+        officePolicy
+        socials {
+          portfolio
+          linkedin
+          twitter
+          telegram
+          github
+          lens
+          custom
+        }
+        officeLocation
+        contractType
+        contractDuration
+      }
+    }
+  }
+`;
+
 const UPADTE_PRIORITIES_AND_TRADEOFFS = gql`
   mutation UpdatePrioritiesTradeOffs($fields: updatePrioritiesTradeOffsInput) {
     updatePrioritiesTradeOffs(fields: $fields) {
@@ -326,6 +353,32 @@ const TrainAiPage: NextPageWithLayout = () => {
   };
 
   // ------ QUESTIONS STEP ------
+  const [
+    updatePositionGeneralDetails,
+    { loading: loadingUpdatePositionGeneralDetails },
+  ] = useMutation(UPDATE_POSITION_GENERAL_DETAILS);
+
+  // handle question suggestions submit
+  const handleSaveGeneralDetails = () => {
+    if (positionID) {
+      updatePositionGeneralDetails({
+        variables: {
+          fields: {
+            _id: typeof positionID === "string" ? positionID : positionID[0],
+            ...getValues("position.generalDetails"),
+          },
+        },
+        onCompleted() {
+          setStep(step + 1);
+        },
+        onError() {
+          toast.error("There was an error while submitting");
+        },
+      });
+    }
+  };
+  // ------ QUESTIONS STEP ------
+
   const [
     updateQuestionsPosition,
     { loading: loadingUpdateQuestionsToPosition },
@@ -589,7 +642,17 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </WizardStep>
                 <WizardStep
                   label={"Final Details"}
-                  navigationDisabled={step === 0}
+                  // navigationDisabled={step === 0}
+                  nextButton={
+                    <Button
+                      variant={"primary"}
+                      className="mx-auto"
+                      loading={loadingUpdatePositionGeneralDetails}
+                      onClick={() => handleSaveGeneralDetails()}
+                    >
+                      Save & Continue
+                    </Button>
+                  }
                 >
                   <div className="mx-auto max-w-3xl text-center">
                     <h2 className="text-xl font-medium">
@@ -624,6 +687,10 @@ const TrainAiPage: NextPageWithLayout = () => {
                         setValue(
                           "position.generalDetails.contractDuration",
                           data.contractDuration
+                        );
+                        setValue(
+                          "position.generalDetails.socials",
+                          data.socials
                         );
                       }}
                     />

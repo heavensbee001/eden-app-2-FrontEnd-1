@@ -1,5 +1,6 @@
 "use-client";
 
+import { GeneralDetailsType, LinkType } from "@eden/package-graphql/generated";
 import { FillSocialLinks } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
@@ -25,6 +26,7 @@ type FormData = {
   officeLocation: string;
   contractType: "fulltime" | "parttime" | "freelance" | "intern";
   contractDuration: string; // You can specify more options if you have them
+  socials: { [key: string]: string };
 };
 
 const defaultFormValues: FormData = {
@@ -34,11 +36,12 @@ const defaultFormValues: FormData = {
   officeLocation: "",
   contractType: "fulltime",
   contractDuration: "",
+  socials: {},
 };
 
 export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
   // eslint-disable-next-line no-unused-vars
-  const { getValues, register, watch } = useForm<FormData>({
+  const { setValue, getValues, register, watch } = useForm<FormData>({
     defaultValues: {
       ...defaultFormValues,
     },
@@ -49,12 +52,13 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
   useMemo(() => {
     onChange({
       targetedStartDate: formData["targetedStartDate"],
-      visaRequirements: formData["visaRequirements"],
+      visaRequirements: formData["visaRequirements"] === "yes" ? true : false,
       officePolicy: formData["officePolicy"],
       officeLocation: formData["officeLocation"],
       contractType: formData["contractType"],
       contractDuration: formData["contractDuration"],
-    });
+      socials: formData["socials"],
+    } as GeneralDetailsType);
   }, [
     formData["targetedStartDate"],
     formData["visaRequirements"],
@@ -62,7 +66,19 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
     formData["officeLocation"],
     formData["contractType"],
     formData["contractDuration"],
+    formData["socials"],
   ]);
+
+  const handleChangeSocials = (val: LinkType[]) => {
+    const _socials: { [key: string]: string } = {};
+
+    val.forEach((element) => {
+      if (element.name && element.url) _socials[element.name] = element.url;
+    });
+
+    setValue("socials", _socials);
+  };
+
   return (
     <>
       <form className="flex items-center justify-center">
@@ -196,6 +212,11 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                         <option value={""} disabled hidden>
                           Select duration of contract
                         </option>
+                        <option value={"3 months"}>3 months</option>
+                        <option value={"6 months"}>6 months</option>
+                        <option value={"1 year"}>1 year</option>
+                        <option value={"2 year"}>2 year</option>
+                        <option value={"indefinite"}>Indefinite</option>
                       </select>
                     </div>
                   </div>
@@ -203,7 +224,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
               </Tab.Panel>
               <Tab.Panel>
                 <div className=" gird grid-cols-2">
-                  <FillSocialLinks />
+                  <FillSocialLinks onChange={handleChangeSocials} />
                 </div>
               </Tab.Panel>
             </Tab.Panels>
