@@ -39,13 +39,13 @@ export const InfoTab: FC<Props> = ({
     <>
       {member?.letterAndColor?.totalMatchPerc?.letter && (
         <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
-          <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
+          {/* <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
             <span
               className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
             >
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </span>
-          </div>
+          </div> */}
           {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
             <div className="">
               <h2 className="text-edenGreen-600 mb-3">

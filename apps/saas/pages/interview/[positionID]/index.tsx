@@ -10,7 +10,7 @@ import {
   CVUploadGPT,
   InterviewEdenAI,
   Loading,
-  ProgressBarGeneric,
+  // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
   Wizard,
@@ -24,7 +24,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { AiOutlineLock } from "react-icons/ai";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../_app";
@@ -37,7 +36,8 @@ const HomePage: NextPageWithLayout = () => {
   const [interviewEnded, setInterviewEnded] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
+  const [insightsChecked, setInsightsChecked] = useState<Boolean>(false);
+  const [step, setStep] = useState<number>(0);
   const [titleRole, setTitleRole] = useState<string>("");
   const [topSkills, setTopSkills] = useState<any[]>([]);
   const [content, setContent] = useState<{
@@ -70,28 +70,11 @@ const HomePage: NextPageWithLayout = () => {
   const handleCvEnd = () => {
     // console.log("cv end");
     setCvEnded(true);
+    setStep(1);
   };
   const handleInterviewEnd = () => {
     // console.log("interview end");
     setInterviewEnded(true);
-  };
-
-  const handleProgress = (_step: any) => {
-    switch (_step) {
-      case 1:
-        setProgress(25);
-        break;
-      case 2:
-        setProgress(50);
-        break;
-      case 3:
-        setProgress(75);
-        break;
-      case 4:
-        setProgress(100);
-        break;
-      default:
-    }
   };
 
   return (
@@ -113,35 +96,63 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll scrollbar-hide p-8">
+      <div className="relative mx-auto h-screen w-full max-w-7xl overflow-y-scroll scrollbar-hide p-8">
         {/* <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4"> */}
         {currentUser && (
-          <div className="h-full w-full">
-            <div className="mb-4 w-full">
-              <ProgressBarGeneric progress={progress} />
-            </div>
-            <Wizard canPrev={false} onStepChange={handleProgress} animate>
-              <WizardStep
-                // nextDisabled={!cvEnded}
-                label={"cv"}
+          <div className="relative h-full w-full pt-[5%]">
+            <h1 className="text-edenGreen-600 text-center">
+              Hey {currentUser.discordName}!
+            </h1>
+            <div className="h-[95%] w-full">
+              <p className="text-edenGray-900 text-center">
+                {`Congrats! You’ve been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
+              </p>
+              <Wizard
+                showStepsHeader={step !== 0}
+                forceStep={step}
+                canPrev={false}
+                onStepChange={(_stepNum: number) => {
+                  if (_stepNum !== step) {
+                    setStep(_stepNum);
+                  }
+                }}
+                animate
               >
-                <UploadCVContainer
-                  setTitleRole={setTitleRole}
-                  setTopSkills={setTopSkills}
-                  setContent={setContent}
-                  handleCvEnd={handleCvEnd}
-                  position={findPositionData?.findPosition}
-                />
-              </WizardStep>
-              <WizardStep label={"welcome"}>
-                <ApplicationStepContainer
-                  topSkills={topSkills}
-                  titleRole={titleRole}
-                  position={findPositionData?.findPosition}
-                  content={content}
-                />
-              </WizardStep>
-              {/* <WizardStep label={"instructions"}>
+                <WizardStep nextDisabled={!cvEnded} label={"CV UPLOAD"}>
+                  <UploadCVContainer
+                    setTitleRole={setTitleRole}
+                    setTopSkills={setTopSkills}
+                    setContent={setContent}
+                    handleCvEnd={handleCvEnd}
+                    position={findPositionData?.findPosition}
+                  />
+                </WizardStep>
+                <WizardStep
+                  label={"EDEN INSIGHTS"}
+                  nextDisabled={!insightsChecked}
+                >
+                  <ApplicationStepContainer
+                    topSkills={topSkills}
+                    titleRole={titleRole}
+                    position={findPositionData?.findPosition}
+                    content={content}
+                  />
+                  <div className="absolute -bottom-10 left-0 flex w-full justify-center rounded-md px-4 py-2 text-xs text-gray-500 ">
+                    <input
+                      type="checkbox"
+                      onChange={(e) => {
+                        setInsightsChecked(e.target.checked);
+                      }}
+                      className="mr-3"
+                    />
+                    <p>
+                      I acknowledge That my CV & responses will be stored and
+                      shared by Eden
+                      <span className="mx-1 text-red-600">*</span>
+                    </p>
+                  </div>
+                </WizardStep>
+                {/* <WizardStep label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
                 {findPositionData?.findPosition?.name && (
                   <h3 className="mb-8 text-lg font-medium">
@@ -158,24 +169,29 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
 
-              {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-              <WizardStep label={"chat"}>
-                <div className="mx-auto h-[70vh] max-w-lg">
-                  <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
-                </div>
-              </WizardStep>
+                {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
+                <WizardStep label={"INTERVIEW"}>
+                  <div className="mx-auto h-full max-w-lg">
+                    <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
+                  </div>
+                </WizardStep>
 
-              <WizardStep label={"profile"}>
-                <p className="mb-8 text-center">Just a few questions missing</p>
-                <ProfileQuestionsContainer />
-              </WizardStep>
+                <WizardStep label={"FINAL DETAILS"}>
+                  <p className="mb-8 text-center text-sm">
+                    {
+                      "All done, this is the final step. Fill in some quick information and we’re off!"
+                    }
+                  </p>
+                  <ProfileQuestionsContainer />
+                </WizardStep>
 
-              {/* <WizardStep label={"end"}>
+                {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
                 <h2 className="mb-8 text-2xl font-medium">Thanks</h2>
               </section>
             </WizardStep> */}
-            </Wizard>
+              </Wizard>
+            </div>
           </div>
         )}
       </div>
@@ -229,7 +245,6 @@ const UploadCVContainer = ({
 }: UploadCVContainerProps) => {
   const router = useRouter();
   const { positionID } = router.query;
-  const { currentUser } = useContext(UserContext);
 
   const handleDataFromCVUploadGPT = (data: any) => {
     const role = data.saveCVtoUser.titleRole;
@@ -247,34 +262,13 @@ const UploadCVContainer = ({
   };
 
   return (
-    <div className="">
-      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md border border-gray-300 bg-white p-4">
-        <h3 className="mb-4 text-center text-lg font-medium">
-          Hey {currentUser?.discordName}!
-        </h3>
-        <p className="mb-4 text-center">
-          Congratulations! You&apos;ve been selected to
-          <br />
-          do a first interview with <strong>{position?.company?.name}</strong>
-          {position?.name ? (
-            <>
-              <br />
-              for the <strong>{position?.name}</strong> role
-            </>
-          ) : null}
-        </p>
-        <CVUploadGPT
-          onDataReceived={handleDataFromCVUploadGPT}
-          handleEnd={handleCvEnd}
-          positionID={positionID}
-        />
-      </section>
-      <section className="grid h-[50vh] grid-cols-3 gap-6">
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+    <div className="pt-8">
+      <section className="grid grid-cols-3 gap-6">
+        <div className="col-span-1 h-full bg-edenPink-100 rounded-md p-4">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Role Description
           </h3>
-          <ul className="list-disc pl-4">
+          <ul className="list-disc text-sm text-edenGray-900 pl-4">
             {position?.positionsRequirements?.roleDescription
               ?.slice(0, 10)
               .map((item, index) => (
@@ -284,11 +278,11 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+        <div className="col-span-1 h-full bg-edenPink-100 rounded-md p-4">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
-          <ul className="list-disc pl-4">
+          <ul className="list-disc text-sm text-edenGray-900 pl-4">
             {position?.positionsRequirements?.benefits
               ?.slice(0, 10)
               .map((item, index) => (
@@ -298,15 +292,14 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="col-span-1 h-full rounded-md border border-gray-300 bg-white p-4">
+        <div className="col-span-1 h-full bg-edenPink-300 rounded-md p-4">
           <h3 className="text-edenGreen-600 text-center text-2xl font-semibold">
             You x {position?.company?.name}
           </h3>
-          <p className="mb-4 text-center text-gray-500">
-            <AiOutlineLock className="mr-2 inline-block" />
-            Upload your CV to unlock it
+          <p className="mb-4 text-center text-sm text-edenGray-700">
+            Upload your CV for personalized feedback
           </p>
-          <ul className="list-disc pl-4">
+          <ul className="list-disc text-sm text-edenGray-900 pl-4">
             <li className="mb-2">Probability of landing this job</li>
             <li className="mb-2">What to improve to maximeze your chances</li>
             <li className="mb-2">
@@ -316,6 +309,13 @@ const UploadCVContainer = ({
             <li className="mb-2">Salary range + equity benefits</li>
           </ul>
         </div>
+      </section>
+      <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md p-4">
+        <CVUploadGPT
+          onDataReceived={handleDataFromCVUploadGPT}
+          handleEnd={handleCvEnd}
+          positionID={positionID}
+        />
       </section>
     </div>
   );
@@ -339,6 +339,7 @@ const ApplicationStepContainer = ({
   titleRole,
   // eslint-disable-next-line no-unused-vars
   topSkills,
+  // eslint-disable-next-line no-unused-vars
   position,
   content,
 }: ApplicationStepContainerProps) => {
@@ -362,131 +363,98 @@ const ApplicationStepContainer = ({
   const today = new Date();
 
   return (
-    <div className="grid h-full grid-cols-12 gap-6">
-      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide">
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-400">
-            Your top skills:
-          </h3>
-          <div>
-            {topSkills !== null &&
-              topSkills.map((skill: any, index: number) => (
-                <Badge key={index} text={skill} cutText={20} />
-              ))}
-          </div>
-        </div>
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-400">Salary range:</h3>
-          <p className="text-xl font-medium">
-            ${60000} - ${90000}
-          </p>
-        </div>
-        <div>
-          <div>
-            <p>Recruiting + Eden AI chat</p>
-            <p className="text-gray-500">{`${
-              monthNames[today.getMonth()]
-            } ${today.getDate()}`}</p>
-          </div>
-          <div>
-            <p>Hiring manager interviews</p>
-            <p className="text-gray-500">{`${
-              monthNames[
-                new Date(new Date().setDate(today.getDate() + 3)).getMonth()
-              ]
-            } ${new Date(
-              new Date().setDate(today.getDate() + 3)
-            ).getDate()}`}</p>
-          </div>
-          <div>
-            <p>Onboarding</p>
-            <p className="text-gray-500">{`${
-              monthNames[
-                new Date(new Date().setDate(today.getDate() + 14)).getMonth()
-              ]
-            } ${new Date(
-              new Date().setDate(today.getDate() + 14)
-            ).getDate()}`}</p>
-          </div>
-        </div>
-      </section>
-      <section className="relative col-span-6 h-full max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide rounded-md bg-white">
-        <div className="scrollbar-hide h-full overflow-y-scroll p-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="80px"
-            height="80px"
-            viewBox="0 0 24 24"
-            className="mx-auto"
-            style={{
-              fill: "rgba(215, 254, 109, 1)",
-              transform: "",
-              msFilter: "",
-            }}
-          >
-            <path d="M19.965 8.521C19.988 8.347 20 8.173 20 8c0-2.379-2.143-4.288-4.521-3.965C14.786 2.802 13.466 2 12 2s-2.786.802-3.479 2.035C6.138 3.712 4 5.621 4 8c0 .173.012.347.035.521C2.802 9.215 2 10.535 2 12s.802 2.785 2.035 3.479A3.976 3.976 0 0 0 4 16c0 2.379 2.138 4.283 4.521 3.965C9.214 21.198 10.534 22 12 22s2.786-.802 3.479-2.035C17.857 20.283 20 18.379 20 16c0-.173-.012-.347-.035-.521C21.198 14.785 22 13.465 22 12s-.802-2.785-2.035-3.479zm-9.01 7.895-3.667-3.714 1.424-1.404 2.257 2.286 4.327-4.294 1.408 1.42-5.749 5.706z"></path>
-          </svg>
-          <h2 className="mb-4 text-center text-2xl font-medium">
-            Looking great!
-          </h2>
-          {position?.name ? (
-            <>
-              <p className="text-center">Your probability of passing is:</p>
-              {content.matchPercentage &&
-                (content.matchPercentage > 50 ? (
-                  <p className="mb-4 text-center text-[50px] text-lime-400">{`${content.matchPercentage}%`}</p>
-                ) : (
-                  <p className="mb-4 text-center text-[50px] text-red-600">{`${content.matchPercentage}%`}</p>
+    <>
+      <div>
+        <div className="grid grid-cols-12 gap-2">
+          <section className="w-full border border-edenGray-100 rounded-md bg-white p-4 col-span-12">
+            <h3 className="text-edenGreen-600 mb-2">Your Top skills</h3>
+            <div>
+              {topSkills !== null &&
+                topSkills.map((skill: any, index: number) => (
+                  <Badge key={index} text={skill} cutText={20} />
                 ))}
-
-              <section className="h-[42vh] overflow-y-scroll">
-                <div className="px-8">
-                  <h3 className="text-edenGreen-600 text-lg font-semibold">
-                    Strong suit:
-                  </h3>
-                  <p className="mb-4 whitespace-pre-wrap">
-                    {content.strongFit}
-                  </p>
+            </div>
+          </section>
+          <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-4">
+            <h3 className="text-edenGreen-600 mb-2">Salary Range</h3>
+            <p className="text-lg font-medium">
+              ${60000} - ${90000} (hardcoded)
+            </p>
+          </section>
+          <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-8">
+            <h3 className="text-edenGreen-600 mb-2">Timeline</h3>
+            <div>
+              <div className="flex flex-nowrap items-center">
+                <div>
+                  <p className="text-sm text-gray-500">{`${
+                    monthNames[today.getMonth()]
+                  } ${today.getDate()}`}</p>
+                  <p>Recruiting + Eden AI Chat</p>
                 </div>
-                <div className="px-8">
-                  <h3 className="text-edenGreen-600 text-lg font-semibold">
-                    Areas to improve:
-                  </h3>
-                  <p className="mb-8 whitespace-pre-wrap">
-                    {content.improvementPoints}
-                  </p>
+                <BiChevronRight
+                  size={"1.6rem"}
+                  color="#00462C"
+                  className="mx-5"
+                />
+                <div>
+                  <p className="text-sm text-gray-500">{`${
+                    monthNames[
+                      new Date(
+                        new Date().setDate(today.getDate() + 3)
+                      ).getMonth()
+                    ]
+                  } ${new Date(
+                    new Date().setDate(today.getDate() + 3)
+                  ).getDate()}`}</p>
+                  <p>HR Interviews</p>
                 </div>
-              </section>
-            </>
-          ) : null}
+                <BiChevronRight
+                  size={"1.6rem"}
+                  color="#00462C"
+                  className="mx-5"
+                />
+                <div>
+                  <p className="text-sm text-gray-500">{`${
+                    monthNames[
+                      new Date(
+                        new Date().setDate(today.getDate() + 14)
+                      ).getMonth()
+                    ]
+                  } ${new Date(
+                    new Date().setDate(today.getDate() + 14)
+                  ).getDate()}`}</p>
+                  <p>Onboarding</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
-        <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-md bg-white px-4 py-2 text-xs text-gray-500 ">
-          <input type="checkbox" className="mr-3" />
-          <p>
-            I acknowledge That my CV & responses will be stored and shared by
-            Eden
-            <span className="mx-1 text-red-600">*</span>
-          </p>
-        </div>
-      </section>
-      <section className="col-span-3 max-h-[calc(88vh-5rem)] overflow-y-scroll scrollbar-hide">
-        <div className="mb-8">
-          <h3 className="mb-2 text-lg font-semibold text-gray-400">
-            What you will get:
-          </h3>
-          <div className="mb-4 rounded-md bg-white p-2">
-            <h3 className="text-lg font-semibold text-gray-400">Growth:</h3>
+        <section className="h-64 w-full overflow-x-scroll whitespace-nowrap">
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">
+              Strong suit
+            </h3>
+            <p className="whitespace-pre-wrap">{content.strongFit}</p>
+          </div>
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">
+              Areas to improve
+            </h3>
+            <p className="whitespace-pre-wrap">{content.improvementPoints}</p>
+          </div>
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">Growth</h3>
             <p className="whitespace-pre-wrap">{content.growthAreas}</p>
           </div>
-          <div className="mb-4 rounded-md bg-white p-2">
-            <h3 className="text-lg font-semibold text-gray-400">
-              Personal experience:
+          <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll">
+            <h3 className="text-edenGreen-600 text-lg font-semibold">
+              Personal Experience
             </h3>
             <p className="whitespace-pre-wrap">{content.experienceAreas}</p>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 };
 
@@ -574,6 +542,7 @@ const InterviewEdenAIContainer = ({
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  // eslint-disable-next-line no-unused-vars
   const { data: findPositionData } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
@@ -647,9 +616,9 @@ const InterviewEdenAIContainer = ({
   console.log("conversationID = ", conversationID);
 
   return (
-    <div className="w-full">
-      <div className="relative h-[68vh]">
-        <div className="absolute left-0 top-2 z-20 w-full">
+    <div className="w-full h-full">
+      <div className="relative h-full">
+        {/* <div className="absolute left-0 top-2 z-20 w-full">
           <ProgressBarGeneric
             color="accentColor"
             progress={
@@ -659,7 +628,7 @@ const InterviewEdenAIContainer = ({
               findPositionData?.findPosition?.questionsToAsk.length
             }
           />
-        </div>
+        </div> */}
         {
           <InterviewEdenAI
             key={experienceTypeID}
@@ -714,6 +683,7 @@ import {
 import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
 import { Controller, useForm } from "react-hook-form";
+import { BiChevronRight } from "react-icons/bi";
 
 interface IProfileQuestionsContainerProps {}
 
@@ -815,43 +785,47 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
   }, [userState]);
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-2xl mx-auto">
       <div className="mb-8">
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">What is your desired salary</p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block mr-12">
+          <p className="mb-2 text-xs">Your Desired Salary</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <input
               min={0}
               defaultValue={currentUser?.budget?.perHour || ""}
               type="number"
               id="budget"
-              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               required
               {...register("budget.perHour")}
             />
-            <span>$/hour</span>
+            <div className="ml-auto border-l border-edenGray-100 px-3">
+              <span>$/hour</span>
+            </div>
           </div>
         </section>
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">Share your availability</p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block">
+          <p className="mb-2">Your Availability</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <input
               type="number"
               defaultValue={currentUser?.hoursPerWeek || ""}
               min={0}
               max={40}
               id="hoursPerWeek"
-              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               required
               {...register("hoursPerWeek")}
             />
-            <span>hours/week</span>
+            <div className="ml-auto border-l border-edenGray-100 px-3">
+              <span>hours/week</span>
+            </div>
           </div>
         </section>
       </div>
       <div className="mb-8">
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">What is your location?</p>
+        <section className="mb-4 inline-block">
+          <p className="mb-2 text-xs">Your Location</p>
           <Controller
             name={"location"}
             control={control}
@@ -892,27 +866,26 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         </section>
       </div>
       <div className="mb-8">
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">
-            How many years of experience do you have in total?
-          </p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block mr-12">
+          <p className="mb-2 text-xs">Years of Experience</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <input
               type="number"
-              min={0}
-              // max={40}
-              // id="hoursPerWeek"
               defaultValue={currentUser?.experienceLevel?.years || ""}
-              className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
-              // required
+              min={0}
+              id="hoursPerWeek"
+              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              required
               {...register("experienceLevel.years")}
             />
-            <span>years</span>
+            <div className="ml-auto border-l border-edenGray-100 px-3">
+              <span>years</span>
+            </div>
           </div>
         </section>
-        <section className="mb-4 inline-block w-1/2 pr-12">
-          <p className="mb-2">What is you experience level?</p>
-          <div className="flex items-center">
+        <section className="mb-4 inline-block mr-12">
+          <p className="mb-2 text-xs">Experience Level</p>
+          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <Controller
               name={"experienceLevel"}
               control={control}
@@ -926,7 +899,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
                 return (
                   <select
                     id="experienceLevel"
-                    className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 mr-2 block flex w-20 w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
+                    className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent"
                     required
                     onChange={(e) => {
                       const _val = {

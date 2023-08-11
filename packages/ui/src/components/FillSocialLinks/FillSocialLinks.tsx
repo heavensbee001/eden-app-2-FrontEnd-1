@@ -13,15 +13,14 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 
-import { TextInputLabel } from "../../atoms";
-
 type LinkValues = {
-  links: { name: string; url: string }[];
+  links: LinkType[];
 };
 
 export interface IFillSocialLinksProps {
   links?: Maybe<LinkType>[];
-  onChange?: React.Dispatch<React.SetStateAction<LinkType[]>>;
+  // eslint-disable-next-line no-unused-vars
+  onChange: (val: LinkType[]) => void;
 }
 
 export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
@@ -72,18 +71,18 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
   const { register, control, watch } = useForm<LinkValues>({
     defaultValues: {
       links: [
-        {
-          ...(cleanLink("portfolio") ?? {
-            name: "portfolio",
-            url: "",
-          }),
-        },
+        // {
+        //   ...(cleanLink("portfolio") ?? {
+        //     name: "portfolio",
+        //     url: "",
+        //   }),
+        // },
         {
           ...(cleanLink("twitter")
             ? cleanLink("twitter")
             : { name: "twitter", url: "" }),
         },
-        { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
+        // { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
         { ...(cleanLink("github") ?? { name: "github", url: "" }) },
         {
           ...(cleanLink("linkedIn") ?? {
@@ -91,7 +90,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
             url: "",
           }),
         },
-        { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
+        // { ...(cleanLink("lens") ?? { name: "lens", url: "" }) },
         {
           ...(cleanLink("custom") ?? {
             name: "custom",
@@ -161,7 +160,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         }
       });
 
-      onChange?.(newLinks as LinkType[]);
+      onChange(newLinks as LinkType[]);
     });
 
     return () => subscription.unsubscribe();
@@ -214,30 +213,26 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
   };
 
   return (
-    <div className="grid-template-rows-repeat(4, auto) grid-auto-flow-column gap mt-2 grid grid-cols-2 gap-x-5 gap-y-2">
+    <div className="pt-8">
       {fields.map((field, index) => {
         return (
-          <section key={field.id}>
+          <section key={field.id} className="mb-4">
             <div>
               <div>
-                <div
-                  className={`my-auto flex items-center space-x-2 px-2 capitalize`}
-                >
-                  {platformIcons(field.name)}
-                  <label className="text-sm" htmlFor={`link-${field.name}`}>
+                <div className={`my-auto flex items-center capitalize mb-2`}>
+                  <span className="mr-2">{platformIcons(field.name!)}</span>
+                  <label className="text-xs" htmlFor={`link-${field.name}`}>
                     {field.name}
                   </label>
                 </div>
                 <div
-                  className={`input-primary focus-within:border-accentColor focus-within:ring-soilGreen-500 rounded-lg pl-4`}
+                  className={`border border-EdenGray-100 rounded-md flex p-2 items-center`}
                 >
-                  <span className={`text-600 text-sm`}>
-                    {baseUrl(field.name)}
-                  </span>
+                  <span className={`text-xs`}>{baseUrl(field.name!)}</span>
 
                   <input
                     id={`link-${field.name}`}
-                    className={`w-full border-none pl-0.5 text-sm outline-none`}
+                    className={`w-full border-none pl-0.5 text-xs outline-none`}
                     type="text"
                     placeholder={
                       field.name === "portfolio" || "custom"

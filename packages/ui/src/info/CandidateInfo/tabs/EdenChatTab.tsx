@@ -2,6 +2,8 @@ import { useQuery } from "@apollo/client";
 import { FIND_CONVERSATIONS } from "@eden/package-graphql";
 import { Members } from "@eden/package-graphql/generated";
 import { Card } from "@eden/package-ui";
+import { useRouter } from "next/router";
+
 type Props = {
   memberImg?: string;
   conversationID?: string;
@@ -13,13 +15,21 @@ function classNames(...classes: string[]) {
 }
 
 export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
+  const router = useRouter();
+  const { positionID } = router.query;
+
+  console.log("positionID = ", positionID);
+  console.log("member._id = ", member?._id);
+
   const { data: findConversationsData } = useQuery(FIND_CONVERSATIONS, {
     variables: {
       fields: {
-        _id: [conversationID],
+        // _id: [conversationID],
+        positionID: positionID,
+        userID: [member?._id],
       },
     },
-    skip: conversationID == undefined,
+    skip: member?._id == undefined || positionID == undefined,
     ssr: false,
   });
   // console.log("conversationID = ", conversationID);
@@ -28,7 +38,7 @@ export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
     <>
       <Card
         border
-        className="mx-auto mt-3 h-[calc(100vh-17rem)] max-w-lg overflow-scroll !border-gray-200 bg-white"
+        className="mx-auto mt-3 h-[calc(100vh-22rem)] max-w-lg overflow-scroll !border-gray-200 bg-white"
       >
         <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col space-y-4 p-3">
           <div>
@@ -39,53 +49,56 @@ export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
                 ].conversation
                   .slice(1)
                   .map((chat: any, index: any) => (
-                    <div className="chat-message p-2" key={index}>
+                    <div className="chat-message mb-4" key={index}>
                       <div
                         className={classNames(
-                          chat.role == "assistant" ? "" : "justify-end",
+                          chat.role === "assistant" ? "" : "justify-end",
                           "flex items-start"
                         )}
                       >
                         <div
                           className={classNames(
-                            chat.role == "assistant" ? "order-2" : "order-1",
+                            chat.role === "assistant" ? "order-2" : "order-1",
                             "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                           )}
                         >
                           <div className="relative">
-                            {chat.role !== "assistant" ? (
-                              <>
-                                <span className="text-edenGray-700 float-right  pl-64 text-right text-xs font-semibold">
-                                  {member?.discordName}
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <span className="font-Moret text-edenGreen-600 text-sm font-semibold">
-                                  Eden
-                                </span>
-                              </>
-                            )}
-                            <div
-                              className={classNames(
-                                "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
-                                chat.role == "assistant"
-                                  ? "bg-edenPink-300 -left-[0.3rem]"
-                                  : "bg-edenGray-100 -right-[0.3rem]"
+                            <div>
+                              {chat.role !== "assistant" && (
+                                <>
+                                  <span className="text-edenGray-700 float-right text-xs font-semibold">
+                                    {member?.discordName}
+                                  </span>
+                                </>
                               )}
-                            ></div>
+
+                              {chat.role === "assistant" && (
+                                <>
+                                  <span className="font-Moret text-edenGreen-600 text-sm font-semibold">
+                                    Eden
+                                  </span>
+                                </>
+                              )}
+                            </div>
 
                             <span
-                              // className="inline-block rounded-lg rounded-bl-none bg-gray-300 px-4 py-2 text-gray-600"
                               className={classNames(
-                                chat.role == "assistant"
+                                chat.role === "assistant"
                                   ? "bg-edenPink-300"
-                                  : "bg-edenGray-100 ",
-                                "inline-block whitespace-pre-wrap rounded-lg px-4 py-2"
+                                  : "bg-edenGray-100",
+                                "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
                               )}
                             >
                               {chat.content}
                             </span>
+                            <div
+                              className={classNames(
+                                "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
+                                chat.role === "assistant"
+                                  ? "bg-edenPink-300 -left-[0.3rem]"
+                                  : "bg-edenGray-100 -right-[0.3rem]"
+                              )}
+                            ></div>
                           </div>
                         </div>
                       </div>

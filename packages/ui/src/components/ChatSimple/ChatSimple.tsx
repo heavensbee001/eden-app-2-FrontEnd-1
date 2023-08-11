@@ -123,10 +123,10 @@ export const ChatSimple = ({
     <>
       <div className="flex h-full flex-col justify-between">
         <div className="h-full">
-          <div className="border h-full border-edenGray-100 bg-white overflow-hidden rounded-md">
+          <div className="border-edenGray-100 h-full overflow-hidden rounded-md border bg-white">
             {headerText && (
-              <section className="h-[2.75rem] flex items-center border-b border-edenGray-100">
-                <h3 className="text-center w-full text-edenGreen-600">
+              <section className="border-edenGray-100 flex h-[2.75rem] items-center border-b">
+                <h3 className="text-edenGreen-600 w-full text-center">
                   {headerText}
                 </h3>
               </section>
@@ -146,7 +146,7 @@ export const ChatSimple = ({
               <div
                 ref={componentRef}
                 // className="h-full overflow-y-auto bg-white p-4"
-                className="scrollbar-thumb-blue h-full scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex flex-col px-6 py-4"
+                className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex h-full flex-col px-6 py-4"
               >
                 {/* <div className="p:2 flex h-screen flex-1 flex-col justify-between sm:p-6"> */}
                 {/* <p className="text-lg font-bold">Message Title</p> */}
@@ -171,7 +171,7 @@ export const ChatSimple = ({
                                 <div>
                                   {chat.user !== "01" && (
                                     <>
-                                      <span className="text-xs text-edenGray-700 font-semibold float-right">
+                                      <span className="text-edenGray-700 float-right text-xs font-semibold">
                                         {currentUser?.discordName}
                                       </span>
                                     </>
@@ -198,7 +198,7 @@ export const ChatSimple = ({
                                 </span>
                                 <div
                                   className={classNames(
-                                    "h-4 w-4 absolute bottom-2 -rotate-45 rounded-sm",
+                                    "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
                                     chat.user === "01"
                                       ? "bg-edenPink-300 -left-[0.3rem]"
                                       : "bg-edenGray-100 -right-[0.3rem]"
@@ -238,6 +238,7 @@ export const ChatSimple = ({
                 </div>
               </div>
             </section>
+
             <section
               className={classNames(
                 "flex w-full items-center justify-between px-3 gap-3 transition-height ease-in-out",
@@ -262,7 +263,7 @@ export const ChatSimple = ({
               />
               <button
                 className={classNames(
-                  "flex h-[38px] w-[38px] items-center justify-center border border-edenGray-100 rounded-full overflow-hidden",
+                  "border-edenGray-100 flex h-[38px] w-[38px] items-center justify-center overflow-hidden rounded-full border",
                   inputMessage ? "cursor-pointer" : "bg-edenGray-100"
                 )}
                 disabled={!inputMessage}
@@ -282,8 +283,8 @@ export const ChatSimple = ({
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
                         fill="#9CA3AF"
                       />
@@ -299,8 +300,8 @@ export const ChatSimple = ({
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
                         fill="#00462C"
                       />

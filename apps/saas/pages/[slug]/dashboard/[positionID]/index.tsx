@@ -13,7 +13,9 @@ import {
   TradeOffsType,
 } from "@eden/package-graphql/generated";
 import {
+  AI_INTERVIEW_SERVICES,
   AppUserLayout,
+  AskEdenPopUp,
   Avatar,
   Button,
   // CandidateInfo,
@@ -105,6 +107,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID, slug, listID } = router.query;
   const { company } = useContext(CompanyContext);
+  const { currentUser } = useContext(UserContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
   const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
@@ -270,6 +273,13 @@ const PositionCRM: NextPageWithLayout = () => {
               };
             }
 
+            console.log(
+              "candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore = ",
+              candidate?.compareCandidatePosition
+                ?.CV_ConvoToPositionAverageScore
+            );
+            console.log("letterAndColor = ", letterAndColor);
+
             totalMatchPerc = totalMatchPerc / totalMatchPercCount;
 
             totalMatchPerc = parseInt(totalMatchPerc.toFixed(1));
@@ -286,6 +296,11 @@ const PositionCRM: NextPageWithLayout = () => {
               letterAndColor,
             };
           }
+        );
+
+        console.log(
+          "candidatesListWithSkillMatch = ",
+          candidatesListWithSkillMatch
         );
 
         // sort the candidatesList by the totalMatchPerc
@@ -309,32 +324,32 @@ const PositionCRM: NextPageWithLayout = () => {
 
         setCandidatesFromTalentList(sortedCandidatesList);
 
-        const rejectedCandidatesIDs = data.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Rejected"
-        )?.talent.length
-          ? data.findPosition.talentList
-              .find((list: TalentListType) => list.name === "Rejected")
-              ?.talent.map((candidate: any) => candidate?.user?._id)
-          : [];
+        // const rejectedCandidatesIDs = data.findPosition.talentList.find(
+        //   (list: TalentListType) => list.name === "Rejected"
+        // )?.talent.length
+        //   ? data.findPosition.talentList
+        //       .find((list: TalentListType) => list.name === "Rejected")
+        //       ?.talent.map((candidate: any) => candidate?.user?._id)
+        //   : [];
 
-        const approvedCandidatesIDs = data.findPosition.talentList.find(
-          (list: TalentListType) => list.name === "Accepted"
-        )?.talent.length
-          ? data.findPosition.talentList
-              .find((list: TalentListType) => list.name === "Accepted")
-              ?.talent.map((candidate: any) => candidate?.user?._id)
-          : [];
+        // const approvedCandidatesIDs = data.findPosition.talentList.find(
+        //   (list: TalentListType) => list.name === "Accepted"
+        // )?.talent.length
+        //   ? data.findPosition.talentList
+        //       .find((list: TalentListType) => list.name === "Accepted")
+        //       ?.talent.map((candidate: any) => candidate?.user?._id)
+        //   : [];
 
         setCandidatesUnqualifiedList(
           sortedCandidatesList
-            .filter(
-              (candidate: any) =>
-                !rejectedCandidatesIDs.includes(candidate.user._id)
-            )
-            .filter(
-              (candidate: any) =>
-                !approvedCandidatesIDs.includes(candidate.user._id)
-            )
+          // .filter(
+          //   (candidate: any) =>
+          //     !rejectedCandidatesIDs.includes(candidate.user._id)
+          // )
+          // .filter(
+          //   (candidate: any) =>
+          //     !approvedCandidatesIDs.includes(candidate.user._id)
+          // )
         );
 
         if (findPositionData?.findPosition?.talentList) {
@@ -409,11 +424,11 @@ const PositionCRM: NextPageWithLayout = () => {
   const getGrade = (percentage: number, mainColumn: boolean): Grade => {
     let grade: Grade = { letter: "", color: "" };
 
-    if (percentage >= 85) {
+    if (percentage >= 70) {
       grade = { letter: "A", color: "text-utilityGreen" };
-    } else if (percentage >= 70) {
-      grade = { letter: "B", color: "text-utilityYellow" };
     } else if (percentage >= 50) {
+      grade = { letter: "B", color: "text-utilityYellow" };
+    } else if (percentage >= 30) {
       grade = { letter: "C", color: "text-utilityOrange" };
       // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
       // else grade = { letter: "C", color: "text-black" };
@@ -1647,17 +1662,19 @@ const PositionCRM: NextPageWithLayout = () => {
                 </div>
               )}
 
-              <div
-                className="border-edenGray-100 group ml-auto flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border"
-                onClick={handleShareTalentListButton}
-                data-tip="Share talent list"
-                data-for={`share-button`}
-              >
-                <FaShare
-                  size={18}
-                  className="text-edenGray-700 group-hover:text-edenGray-500"
-                />
-              </div>
+              {talentListSelected?._id && (
+                <div
+                  className="border-edenGray-100 group ml-auto flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border"
+                  onClick={handleShareTalentListButton}
+                  data-tip="Share talent list"
+                  data-for={`share-button`}
+                >
+                  <FaShare
+                    size={18}
+                    className="text-edenGray-700 group-hover:text-edenGray-500"
+                  />
+                </div>
+              )}
               <ReactTooltip
                 id="share-button"
                 place="left"
@@ -1834,6 +1851,16 @@ const PositionCRM: NextPageWithLayout = () => {
             </>
           )}
         </div>
+
+        {!selectedUserId &&
+          !router.query.candidate1 &&
+          !router.query.candidate2 &&
+          currentUser?._id && (
+            <AskEdenPopUp
+              memberID={currentUser?._id!}
+              service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
+            />
+          )}
       </div>
     </>
   );
@@ -1843,7 +1870,7 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default PositionCRM;
 
-import { CompanyContext } from "@eden/package-context";
+import { CompanyContext, UserContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";

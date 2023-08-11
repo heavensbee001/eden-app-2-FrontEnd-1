@@ -7,6 +7,7 @@ export * from "./ColorPicker";
 export * from "./Date";
 export * from "./Dropdown";
 export * from "./EdenAiProcessingModal";
+export * from "./EdenAiProcessingModalContained";
 export * from "./EdenIcons";
 export * from "./Favorite";
 export * from "./LevelAvatar";
