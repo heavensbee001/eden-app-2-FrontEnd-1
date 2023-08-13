@@ -46,64 +46,62 @@ export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
             findConversationsData.findConversations.length
               ? findConversationsData.findConversations[
                   findConversationsData.findConversations.length - 1
-                ].conversation
-                  .slice(1)
-                  .map((chat: any, index: any) => (
-                    <div className="chat-message mb-4" key={index}>
+                ].conversation.map((chat: any, index: any) => (
+                  <div className="chat-message mb-4" key={index}>
+                    <div
+                      className={classNames(
+                        chat.role === "assistant" ? "" : "justify-end",
+                        "flex items-start"
+                      )}
+                    >
                       <div
                         className={classNames(
-                          chat.role === "assistant" ? "" : "justify-end",
-                          "flex items-start"
+                          chat.role === "assistant" ? "order-2" : "order-1",
+                          "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                         )}
                       >
-                        <div
-                          className={classNames(
-                            chat.role === "assistant" ? "order-2" : "order-1",
-                            "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
-                          )}
-                        >
-                          <div className="relative">
-                            <div>
-                              {chat.role !== "assistant" && (
-                                <>
-                                  <span className="text-edenGray-700 float-right text-xs font-semibold">
-                                    {member?.discordName}
-                                  </span>
-                                </>
-                              )}
+                        <div className="relative">
+                          <div>
+                            {chat.role !== "assistant" && (
+                              <>
+                                <span className="text-edenGray-700 float-right text-xs font-semibold">
+                                  {member?.discordName}
+                                </span>
+                              </>
+                            )}
 
-                              {chat.role === "assistant" && (
-                                <>
-                                  <span className="font-Moret text-edenGreen-600 text-sm font-semibold">
-                                    Eden
-                                  </span>
-                                </>
-                              )}
-                            </div>
-
-                            <span
-                              className={classNames(
-                                chat.role === "assistant"
-                                  ? "bg-edenPink-300"
-                                  : "bg-edenGray-100",
-                                "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
-                              )}
-                            >
-                              {chat.content}
-                            </span>
-                            <div
-                              className={classNames(
-                                "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
-                                chat.role === "assistant"
-                                  ? "bg-edenPink-300 -left-[0.3rem]"
-                                  : "bg-edenGray-100 -right-[0.3rem]"
-                              )}
-                            ></div>
+                            {chat.role === "assistant" && (
+                              <>
+                                <span className="font-Moret text-edenGreen-600 text-sm font-semibold">
+                                  Eden
+                                </span>
+                              </>
+                            )}
                           </div>
+
+                          <span
+                            className={classNames(
+                              chat.role === "assistant"
+                                ? "bg-edenPink-300"
+                                : "bg-edenGray-100",
+                              "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
+                            )}
+                          >
+                            {chat.content}
+                          </span>
+                          <div
+                            className={classNames(
+                              "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
+                              chat.role === "assistant"
+                                ? "bg-edenPink-300 -left-[0.3rem]"
+                                : "bg-edenGray-100 -right-[0.3rem]"
+                            )}
+                          ></div>
                         </div>
                       </div>
                     </div>
-                  ))
+                  </div>
+                ))
               : null}
             {/* <hr
               style={{
