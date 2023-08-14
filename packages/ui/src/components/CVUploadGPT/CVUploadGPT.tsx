@@ -367,7 +367,7 @@ export const CVUploadGPT = ({
         </button> */}
       </form>
       {sizeErr && (
-        <p className="mt-6 max-w-md text-center text-red-400">
+        <p className="mt-6 max-w-2xl text-red-400 mx-auto text-xs">
           File size is exceeding the limit and you that your CV could not be
           processed. Please attempt again using a file of 1MB or smaller.
           <br />
