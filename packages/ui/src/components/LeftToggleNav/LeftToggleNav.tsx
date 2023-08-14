@@ -85,7 +85,7 @@ export const LeftToggleNav = ({
   };
 
   const hideCreatePosition =
-    router.pathname === "/interview/[positionID]" ||
+    router.pathname.includes("/interview/") ||
     router.pathname.includes("/train-eden-ai");
 
   return (

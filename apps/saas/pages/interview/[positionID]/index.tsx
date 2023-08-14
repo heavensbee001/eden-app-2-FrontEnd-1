@@ -8,6 +8,7 @@ import {
   ChatMessage,
   CountdownTimer,
   CVUploadGPT,
+  EdenAiProcessingModal,
   InterviewEdenAI,
   Loading,
   // ProgressBarGeneric,
@@ -684,6 +685,7 @@ import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
 import { Controller, useForm } from "react-hook-form";
 import { BiChevronRight } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 interface IProfileQuestionsContainerProps {}
 
@@ -710,10 +712,11 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     onCompleted({ updateMember }: Mutation) {
       if (!updateMember) console.log("updateMember is null");
       router.push(`/interview/${router.query.positionID}/submitted`);
-      setSubmitting(false);
+      // setSubmitting(false);
     },
     onError: () => {
       setSubmitting(false);
+      toast.error("Server error");
     },
   });
 
@@ -805,7 +808,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           </div>
         </section>
         <section className="mb-4 inline-block">
-          <p className="mb-2">Your Availability</p>
+          <p className="mb-2 text-xs">Your Availability</p>
           <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
             <input
               type="number"
@@ -824,45 +827,62 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         </section>
       </div>
       <div className="mb-8">
-        <section className="mb-4 inline-block">
+        <section className="mb-4 inline-block w-4/5 pr-12">
           <p className="mb-2 text-xs">Your Location</p>
-          <Controller
-            name={"location"}
-            control={control}
-            render={() => (
-              <select
-                defaultValue={
-                  currentUser?.timeZone && currentUser?.location
-                    ? `(${currentUser?.timeZone}) ${currentUser?.location}`
-                    : ""
-                }
-                id="location"
-                className="font-Unica focus:border-accentColor focus:ring-soilGreen-500 block flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring focus:ring-opacity-50"
-                required
-                onChange={(e) => {
-                  const _gmt = e.target.value.split(" ")[0].slice(1, -1);
+          <div className="text-xs w-full flex items-center border border-EdenGray-100 rounded-md bg-white">
+            <input
+              type="text"
+              defaultValue={currentUser?.location || ""}
+              id="location"
+              className="h-[34px] bg-transparent w-full p-2"
+              required
+              {...register("location")}
+            />
+          </div>
+        </section>
+        <section className="mb-4 inline-block w-1/5">
+          <p className="mb-2 text-xs outline-none font-Unica resize-none h-full bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+            Your Timezone
+          </p>
+          <div className="text-xs w-full flex items-center border border-EdenGray-100 rounded-md bg-white">
+            <Controller
+              name={"timeZone"}
+              control={control}
+              render={() => (
+                <select
+                  defaultValue={
+                    currentUser?.timeZone && currentUser?.location
+                      ? `(${currentUser?.timeZone}) ${currentUser?.location}`
+                      : ""
+                  }
+                  id="timeZone"
+                  className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent"
+                  required
+                  onChange={(e) => {
+                    const _gmt = e.target.value.split(" ")[0].slice(1, -1);
 
-                  const _location = e.target.value
-                    .split(" ")
-                    .splice(1)
-                    .join(" ");
+                    // const _location = e.target.value
+                    //   .split(" ")
+                    //   .splice(1)
+                    //   .join(" ");
 
-                  setValue("timeZone", _gmt);
-                  setValue("location", _location);
-                }}
-              >
-                <option value={""} disabled hidden>
-                  Select a location...
-                </option>
-                {locations.map((loc, index) => (
-                  <option
-                    value={`(${loc.gmt}) ${loc.location}`}
-                    key={index}
-                  >{`(${loc.gmt}) ${loc.location}`}</option>
-                ))}
-              </select>
-            )}
-          />
+                    setValue("timeZone", _gmt);
+                    // setValue("location", _location);
+                  }}
+                >
+                  <option value={""} disabled hidden>
+                    Select a location...
+                  </option>
+                  {locations.map((loc, index) => (
+                    <option
+                      value={`(${loc.gmt}) ${loc.location}`}
+                      key={index}
+                    >{`(${loc.gmt}) ${loc.location}`}</option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
         </section>
       </div>
       <div className="mb-8">
@@ -924,14 +944,20 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           </div>
         </section>
       </div>
-      <Button
-        className="absolute bottom-4 right-4 z-20"
-        variant="primary"
-        onClick={handleSubmit}
-        disabled={!valid}
-      >
-        Submit
-      </Button>
+      <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
+        <Button
+          className="mx-auto"
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={!valid}
+        >
+          Submit
+        </Button>
+      </div>
+
+      {submitting && (
+        <EdenAiProcessingModal title="Submitting" open={submitting} />
+      )}
     </div>
   );
 };
