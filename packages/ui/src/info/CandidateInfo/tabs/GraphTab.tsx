@@ -25,16 +25,18 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
           </div>
         </div>
       )} */}
-      {member?.letterAndColor?.skill?.letter && (
+      {candidate?.analysisCandidateEdenAI?.skills?.content && (
         <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
-          <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
-            <span
-              className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
-            >
-              {`${member?.letterAndColor?.skill?.letter}`}
-            </span>
-          </div>
-          {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+          {member?.letterAndColor?.skill?.letter && (
+            <div className="border-edenPink-300 float-right -mt-2 flex h-10 w-10 items-center justify-center rounded-full border-2 pb-[2px]">
+              <span
+                className={`${member?.letterAndColor?.totalMatchPerc?.color} text-3xl`}
+              >
+                {`${member?.letterAndColor?.skill?.letter}`}
+              </span>
+            </div>
+          )}
+          {candidate?.analysisCandidateEdenAI?.skills?.content && (
             <div className="">
               <h2 className="text-edenGreen-600 mb-3">
                 Eden&apos;s{"  "}
@@ -43,7 +45,7 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
                 </span>
               </h2>
 
-              {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
+              {candidate?.analysisCandidateEdenAI?.skills?.content}
             </div>
           )}
         </div>
