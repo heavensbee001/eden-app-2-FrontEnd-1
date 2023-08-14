@@ -15,9 +15,18 @@ const FIND_COMPANY_FROM_SLUG = gql`
       positions {
         _id
         name
+        icon
         talentList {
           _id
           name
+        }
+        company {
+          _id
+          name
+        }
+        generalDetails {
+          officePolicy
+          contractType
         }
       }
     }
