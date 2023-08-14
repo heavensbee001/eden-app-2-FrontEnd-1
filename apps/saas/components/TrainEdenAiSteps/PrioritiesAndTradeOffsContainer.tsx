@@ -128,9 +128,14 @@ export const PrioritiesAndTradeOffsContainer = ({
   };
 
   useEffect(() => {
-    console.log(priorities, tradeOffs);
-
-    onChange({ priorities: priorities, tradeOffs: tradeOffs });
+    if (
+      priorities &&
+      tradeOffs &&
+      priorities.length > 0 &&
+      tradeOffs.length > 0
+    ) {
+      onChange({ priorities: priorities, tradeOffs: tradeOffs });
+    }
   }, [priorities, tradeOffs]);
 
   return (

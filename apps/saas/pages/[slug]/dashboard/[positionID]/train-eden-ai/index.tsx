@@ -26,7 +26,7 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { MdContentCopy, MdLink } from "react-icons/md";
 import { toast } from "react-toastify";
 
@@ -444,8 +444,6 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
-  console.log(watch("position.generalDetails"));
-
   return (
     <>
       <Head>
@@ -469,7 +467,7 @@ const TrainAiPage: NextPageWithLayout = () => {
         key={typeof positionID === "string" ? positionID : ""}
         className="scrollbar-hide relative mx-auto h-screen w-full max-w-5xl overflow-y-scroll p-8"
       >
-        {currentUser && (
+        {currentUser && findPositionData && (
           <div className="relative h-full w-full pt-[5%]">
             {/* <div className="absolute left-0 top-0 w-full">
               <ProgressBarGeneric progress={progress} />
@@ -573,15 +571,18 @@ const TrainAiPage: NextPageWithLayout = () => {
                   }
                 >
                   <div className="mx-auto flex h-full max-w-5xl items-center">
-                    <Controller
-                      name={"position.positionsRequirements"}
-                      control={control}
-                      render={({ field: { onChange } }) => (
-                        <PrioritiesAndTradeOffsContainer
-                          position={getValues("position")}
-                          onChange={onChange}
-                        />
-                      )}
+                    <PrioritiesAndTradeOffsContainer
+                      position={getValues("position")}
+                      onChange={(val) => {
+                        setValue(
+                          "position.positionsRequirements.priorities",
+                          val.priorities
+                        );
+                        setValue(
+                          "position.positionsRequirements.tradeOffs",
+                          val.tradeOffs
+                        );
+                      }}
                     />
                   </div>
                 </WizardStep>
