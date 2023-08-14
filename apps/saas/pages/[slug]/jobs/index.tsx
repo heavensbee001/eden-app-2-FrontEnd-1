@@ -8,6 +8,7 @@ import { IconPickerItem } from "react-fa-icon-picker";
 import type { NextPageWithLayout } from "../../_app";
 
 const HomePage: NextPageWithLayout = () => {
+  // eslint-disable-next-line no-unused-vars
   const router = useRouter();
   const { company } = useContext(CompanyContext);
 
