@@ -80,9 +80,53 @@ const HomePage: NextPageWithLayout = () => {
     setInterviewEnded(true);
   };
 
+  const [updateMember, { loading: submittingGeneralDetails }] = useMutation(
+    UPDATE_MEMBER,
+    {
+      onCompleted({ updateMember }: Mutation) {
+        if (!updateMember) console.log("updateMember is null");
+        setStep(step + 1);
+      },
+      onError: () => {
+        toast.error("Server error");
+      },
+    }
+  );
+
   const handleGeneralDetailsSubmit = () => {
-    // console.log("interview end");
-    setInterviewEnded(true);
+    const fields: UpdateMemberInput = {};
+
+    if (generalDetails?._id) fields._id = generalDetails?._id;
+    if (generalDetails?.budget?.perHour)
+      fields.budget = { perHour: Number(generalDetails?.budget?.perHour || 0) };
+    if (generalDetails?.hoursPerWeek)
+      fields.hoursPerWeek = Number(generalDetails?.hoursPerWeek || 0);
+    if (generalDetails?.location) fields.location = generalDetails?.location;
+    if (generalDetails?.timeZone) fields.timeZone = generalDetails?.timeZone;
+    if (generalDetails?.experienceLevel?.total)
+      fields.experienceLevel = fields.experienceLevel
+        ? {
+            ...fields.experienceLevel,
+            total: +generalDetails?.experienceLevel?.total,
+          }
+        : {
+            total: +generalDetails?.experienceLevel?.total,
+          };
+    if (generalDetails?.experienceLevel?.years)
+      fields.experienceLevel = fields.experienceLevel
+        ? {
+            ...fields.experienceLevel,
+            years: +generalDetails?.experienceLevel?.years,
+          }
+        : {
+            years: +generalDetails?.experienceLevel?.years,
+          };
+
+    updateMember({
+      variables: {
+        fields: fields,
+      },
+    });
   };
 
   return (
@@ -126,9 +170,6 @@ const HomePage: NextPageWithLayout = () => {
                 }}
                 animate
               >
-                <WizardStep label={"ALL DONE"}>
-                  <FinalContainer />
-                </WizardStep>
                 <WizardStep nextDisabled={!cvEnded} label={"CV UPLOAD"}>
                   <UploadCVContainer
                     setTitleRole={setTitleRole}
@@ -187,13 +228,49 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
                 </WizardStep>
 
-                <WizardStep label={"FINAL DETAILS"}>
+                <WizardStep
+                  label={"FINAL DETAILS"}
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      // type="submit"
+                      className="mx-auto"
+                      onClick={() => {
+                        handleGeneralDetailsSubmit();
+                      }}
+                      disabled={
+                        !(
+                          generalDetails?.budget?.perHour &&
+                          generalDetails?.hoursPerWeek &&
+                          generalDetails?.location &&
+                          generalDetails?.timeZone &&
+                          (generalDetails?.experienceLevel?.years ||
+                            generalDetails?.experienceLevel?.years === 0) &&
+                          (generalDetails?.experienceLevel?.total ||
+                            generalDetails?.experienceLevel?.years === 0)
+                        )
+                      }
+                    >
+                      Save & Continue
+                    </Button>
+                  }
+                >
                   <p className="mb-8 text-center text-sm">
                     {
                       "All done, this is the final step. Fill in some quick information and we’re off!"
                     }
                   </p>
-                  <ProfileQuestionsContainer />
+                  <ProfileQuestionsContainer
+                    onChange={(data) => {
+                      setGeneralDetails(data);
+                    }}
+                  />
+                  {submittingGeneralDetails && (
+                    <EdenAiProcessingModal
+                      title="Saving data"
+                      open={submittingGeneralDetails}
+                    />
+                  )}
                 </WizardStep>
                 <WizardStep label={"ALL DONE"}>
                   <FinalContainer />
@@ -718,15 +795,20 @@ import { BsLightningFill, BsTelegram, BsWhatsapp } from "react-icons/bs";
 import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
 
-interface IProfileQuestionsContainerProps {}
+interface IProfileQuestionsContainerProps {
+  // eslint-disable-next-line no-unused-vars
+  onChange: (val: any) => void;
+}
 
-const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
+const ProfileQuestionsContainer = ({
+  onChange,
+}: IProfileQuestionsContainerProps) => {
   const { currentUser } = useContext(UserContext);
   const [userState, setUserState] = useState<Members>();
-  const [valid, setValid] = useState<boolean>(false);
-  const router = useRouter();
+  // const [valid, setValid] = useState<boolean>(false);
+  // const router = useRouter();
   // eslint-disable-next-line no-unused-vars
-  const [submitting, setSubmitting] = useState(false);
+  // const [submitting, setSubmitting] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const { register, watch, control, setValue, getValues } = useForm<Members>({
@@ -739,83 +821,38 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     }
   }, [currentUser]);
 
-  const [updateMember] = useMutation(UPDATE_MEMBER, {
-    onCompleted({ updateMember }: Mutation) {
-      if (!updateMember) console.log("updateMember is null");
-      router.push(`/interview/${router.query.positionID}/submitted`);
-      // setSubmitting(false);
-    },
-    onError: () => {
-      setSubmitting(false);
-      toast.error("Server error");
-    },
-  });
-
-  const handleSubmit = () => {
-    setSubmitting(true);
-    const fields: UpdateMemberInput = {};
-
-    if (userState?._id) fields._id = userState?._id;
-    if (userState?.budget?.perHour)
-      fields.budget = { perHour: Number(userState?.budget?.perHour || 0) };
-    if (userState?.hoursPerWeek)
-      fields.hoursPerWeek = Number(userState?.hoursPerWeek || 0);
-    if (userState?.location) fields.location = userState?.location;
-    if (userState?.timeZone) fields.timeZone = userState?.timeZone;
-    if (userState?.experienceLevel?.total)
-      fields.experienceLevel = fields.experienceLevel
-        ? {
-            ...fields.experienceLevel,
-            total: +userState?.experienceLevel?.total,
-          }
-        : {
-            total: +userState?.experienceLevel?.total,
-          };
-    if (userState?.experienceLevel?.years)
-      fields.experienceLevel = fields.experienceLevel
-        ? {
-            ...fields.experienceLevel,
-            years: +userState?.experienceLevel?.years,
-          }
-        : {
-            years: +userState?.experienceLevel?.years,
-          };
-
-    updateMember({
-      variables: {
-        fields: fields,
-      },
-    });
-  };
-
   useEffect(() => {
     const subscription = watch((data: any) => {
-      console.log("WATCH ---- data", data);
+      // console.log("WATCH ---- data", data);
       if (data) setUserState(data as Members);
     });
 
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  // useEffect(() => {
+  //   if (
+  //     userState?.budget?.perHour &&
+  //     userState?.hoursPerWeek &&
+  //     userState?.location &&
+  //     userState?.timeZone &&
+  //     (userState?.experienceLevel?.years ||
+  //       userState?.experienceLevel?.years === 0) &&
+  //     (userState?.experienceLevel?.total ||
+  //       userState?.experienceLevel?.years === 0)
+  //   ) {
+  //     console.log("VALID");
+
+  //     setValid(true);
+  //   } else {
+  //     console.log("NOT VALID");
+
+  //     setValid(false);
+  //   }
+  // }, [userState]);
+
   useEffect(() => {
-    if (
-      userState?.budget?.perHour &&
-      userState?.hoursPerWeek &&
-      userState?.location &&
-      userState?.timeZone &&
-      (userState?.experienceLevel?.years ||
-        userState?.experienceLevel?.years === 0) &&
-      (userState?.experienceLevel?.total ||
-        userState?.experienceLevel?.years === 0)
-    ) {
-      console.log("VALID");
-
-      setValid(true);
-    } else {
-      console.log("NOT VALID");
-
-      setValid(false);
-    }
+    onChange(userState);
   }, [userState]);
 
   return (
@@ -975,7 +1012,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           </div>
         </section>
       </div>
-      <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
+      {/* <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
         <Button
           className="mx-auto"
           variant="primary"
@@ -984,11 +1021,11 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         >
           Submit
         </Button>
-      </div>
+      </div> */}
 
-      {submitting && (
+      {/* {submitting && (
         <EdenAiProcessingModal title="Submitting" open={submitting} />
-      )}
+      )} */}
     </div>
   );
 };
