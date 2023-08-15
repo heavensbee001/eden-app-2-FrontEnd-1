@@ -54,6 +54,7 @@ const HomePage: NextPageWithLayout = () => {
     growthAreas: null,
     experienceAreas: null,
   });
+  const [generalDetails, setGeneralDetails] = useState<any>({});
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -73,9 +74,59 @@ const HomePage: NextPageWithLayout = () => {
     setCvEnded(true);
     setStep(1);
   };
+
   const handleInterviewEnd = () => {
     // console.log("interview end");
     setInterviewEnded(true);
+  };
+
+  const [updateMember, { loading: submittingGeneralDetails }] = useMutation(
+    UPDATE_MEMBER,
+    {
+      onCompleted({ updateMember }: Mutation) {
+        if (!updateMember) console.log("updateMember is null");
+        setStep(step + 1);
+      },
+      onError: () => {
+        toast.error("Server error");
+      },
+    }
+  );
+
+  const handleGeneralDetailsSubmit = () => {
+    const fields: UpdateMemberInput = {};
+
+    if (generalDetails?._id) fields._id = generalDetails?._id;
+    if (generalDetails?.budget?.perHour)
+      fields.budget = { perHour: Number(generalDetails?.budget?.perHour || 0) };
+    if (generalDetails?.hoursPerWeek)
+      fields.hoursPerWeek = Number(generalDetails?.hoursPerWeek || 0);
+    if (generalDetails?.location) fields.location = generalDetails?.location;
+    if (generalDetails?.timeZone) fields.timeZone = generalDetails?.timeZone;
+    if (generalDetails?.experienceLevel?.total)
+      fields.experienceLevel = fields.experienceLevel
+        ? {
+            ...fields.experienceLevel,
+            total: +generalDetails?.experienceLevel?.total,
+          }
+        : {
+            total: +generalDetails?.experienceLevel?.total,
+          };
+    if (generalDetails?.experienceLevel?.years)
+      fields.experienceLevel = fields.experienceLevel
+        ? {
+            ...fields.experienceLevel,
+            years: +generalDetails?.experienceLevel?.years,
+          }
+        : {
+            years: +generalDetails?.experienceLevel?.years,
+          };
+
+    updateMember({
+      variables: {
+        fields: fields,
+      },
+    });
   };
 
   return (
@@ -177,13 +228,52 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
                 </WizardStep>
 
-                <WizardStep label={"FINAL DETAILS"}>
+                <WizardStep
+                  label={"FINAL DETAILS"}
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      // type="submit"
+                      className="mx-auto"
+                      onClick={() => {
+                        handleGeneralDetailsSubmit();
+                      }}
+                      disabled={
+                        !(
+                          generalDetails?.budget?.perHour &&
+                          generalDetails?.hoursPerWeek &&
+                          generalDetails?.location &&
+                          generalDetails?.timeZone &&
+                          (generalDetails?.experienceLevel?.years ||
+                            generalDetails?.experienceLevel?.years === 0) &&
+                          (generalDetails?.experienceLevel?.total ||
+                            generalDetails?.experienceLevel?.years === 0)
+                        )
+                      }
+                    >
+                      Save & Continue
+                    </Button>
+                  }
+                >
                   <p className="mb-8 text-center text-sm">
                     {
                       "All done, this is the final step. Fill in some quick information and we’re off!"
                     }
                   </p>
-                  <ProfileQuestionsContainer />
+                  <ProfileQuestionsContainer
+                    onChange={(data) => {
+                      setGeneralDetails(data);
+                    }}
+                  />
+                  {submittingGeneralDetails && (
+                    <EdenAiProcessingModal
+                      title="Saving data"
+                      open={submittingGeneralDetails}
+                    />
+                  )}
+                </WizardStep>
+                <WizardStep label={"ALL DONE"}>
+                  <FinalContainer />
                 </WizardStep>
 
                 {/* <WizardStep label={"end"}>
@@ -501,6 +591,21 @@ const ADD_CANDIDATE_TO_POSITION = gql`
   }
 `;
 
+const UPDATE_CONTACT = gql`
+  mutation UpdatePosition($fields: updatePositionInput) {
+    updatePosition(fields: $fields) {
+      _id
+      name
+      conduct {
+        number
+        whatsappNumber
+        telegram
+        email
+      }
+    }
+  }
+`;
+
 // interface cardsDataType {
 //   title: string;
 //   trust: number;
@@ -681,21 +786,29 @@ import {
   Position,
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
+import { classNames } from "@eden/package-ui/utils";
 import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
 import { Controller, useForm } from "react-hook-form";
 import { BiChevronRight } from "react-icons/bi";
+import { BsLightningFill, BsTelegram, BsWhatsapp } from "react-icons/bs";
+import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
 
-interface IProfileQuestionsContainerProps {}
+interface IProfileQuestionsContainerProps {
+  // eslint-disable-next-line no-unused-vars
+  onChange: (val: any) => void;
+}
 
-const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
+const ProfileQuestionsContainer = ({
+  onChange,
+}: IProfileQuestionsContainerProps) => {
   const { currentUser } = useContext(UserContext);
   const [userState, setUserState] = useState<Members>();
-  const [valid, setValid] = useState<boolean>(false);
-  const router = useRouter();
+  // const [valid, setValid] = useState<boolean>(false);
+  // const router = useRouter();
   // eslint-disable-next-line no-unused-vars
-  const [submitting, setSubmitting] = useState(false);
+  // const [submitting, setSubmitting] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const { register, watch, control, setValue, getValues } = useForm<Members>({
@@ -708,83 +821,38 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
     }
   }, [currentUser]);
 
-  const [updateMember] = useMutation(UPDATE_MEMBER, {
-    onCompleted({ updateMember }: Mutation) {
-      if (!updateMember) console.log("updateMember is null");
-      router.push(`/interview/${router.query.positionID}/submitted`);
-      // setSubmitting(false);
-    },
-    onError: () => {
-      setSubmitting(false);
-      toast.error("Server error");
-    },
-  });
-
-  const handleSubmit = () => {
-    setSubmitting(true);
-    const fields: UpdateMemberInput = {};
-
-    if (userState?._id) fields._id = userState?._id;
-    if (userState?.budget?.perHour)
-      fields.budget = { perHour: Number(userState?.budget?.perHour || 0) };
-    if (userState?.hoursPerWeek)
-      fields.hoursPerWeek = Number(userState?.hoursPerWeek || 0);
-    if (userState?.location) fields.location = userState?.location;
-    if (userState?.timeZone) fields.timeZone = userState?.timeZone;
-    if (userState?.experienceLevel?.total)
-      fields.experienceLevel = fields.experienceLevel
-        ? {
-            ...fields.experienceLevel,
-            total: +userState?.experienceLevel?.total,
-          }
-        : {
-            total: +userState?.experienceLevel?.total,
-          };
-    if (userState?.experienceLevel?.years)
-      fields.experienceLevel = fields.experienceLevel
-        ? {
-            ...fields.experienceLevel,
-            years: +userState?.experienceLevel?.years,
-          }
-        : {
-            years: +userState?.experienceLevel?.years,
-          };
-
-    updateMember({
-      variables: {
-        fields: fields,
-      },
-    });
-  };
-
   useEffect(() => {
     const subscription = watch((data: any) => {
-      console.log("WATCH ---- data", data);
+      // console.log("WATCH ---- data", data);
       if (data) setUserState(data as Members);
     });
 
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  // useEffect(() => {
+  //   if (
+  //     userState?.budget?.perHour &&
+  //     userState?.hoursPerWeek &&
+  //     userState?.location &&
+  //     userState?.timeZone &&
+  //     (userState?.experienceLevel?.years ||
+  //       userState?.experienceLevel?.years === 0) &&
+  //     (userState?.experienceLevel?.total ||
+  //       userState?.experienceLevel?.years === 0)
+  //   ) {
+  //     console.log("VALID");
+
+  //     setValid(true);
+  //   } else {
+  //     console.log("NOT VALID");
+
+  //     setValid(false);
+  //   }
+  // }, [userState]);
+
   useEffect(() => {
-    if (
-      userState?.budget?.perHour &&
-      userState?.hoursPerWeek &&
-      userState?.location &&
-      userState?.timeZone &&
-      (userState?.experienceLevel?.years ||
-        userState?.experienceLevel?.years === 0) &&
-      (userState?.experienceLevel?.total ||
-        userState?.experienceLevel?.years === 0)
-    ) {
-      console.log("VALID");
-
-      setValid(true);
-    } else {
-      console.log("NOT VALID");
-
-      setValid(false);
-    }
+    onChange(userState);
   }, [userState]);
 
   return (
@@ -944,7 +1012,7 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
           </div>
         </section>
       </div>
-      <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
+      {/* <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
         <Button
           className="mx-auto"
           variant="primary"
@@ -953,11 +1021,201 @@ const ProfileQuestionsContainer = ({}: IProfileQuestionsContainerProps) => {
         >
           Submit
         </Button>
-      </div>
+      </div> */}
 
-      {submitting && (
+      {/* {submitting && (
         <EdenAiProcessingModal title="Submitting" open={submitting} />
-      )}
+      )} */}
+    </div>
+  );
+};
+
+interface IFinalContainerProps {}
+
+const FinalContainer = ({}: IFinalContainerProps) => {
+  const router = useRouter();
+  const positionID = router.query.positionID;
+
+  const [submitting, setSubmitting] = useState(false);
+  const [selected, setSelected] =
+    useState<"email" | "whatsapp" | "telegram">("email");
+  const [contact, setContact] = useState("");
+
+  const [updateContact] = useMutation(UPDATE_CONTACT, {
+    onCompleted: () => {
+      // setSubmitting(false);
+      router.push(`/interview/${router.query.positionID}/submitted`);
+    },
+    onError: () => {
+      setSubmitting(false);
+      toast.error("Server error while submitting");
+    },
+  });
+
+  const handleSubmit = () => {
+    setSubmitting(true);
+
+    const _fields = {
+      _id: positionID,
+      conduct: {
+        whatsappNumber: "",
+        telegram: "",
+        email: "",
+      },
+    };
+
+    if (selected === "email") {
+      _fields.conduct.email = contact;
+    } else if (selected === "whatsapp") {
+      _fields.conduct.whatsappNumber = contact;
+    } else if (selected === "telegram") {
+      _fields.conduct.telegram = contact;
+    }
+    updateContact({
+      variables: {
+        fields: _fields,
+      },
+    });
+  };
+
+  const valid = !!contact;
+
+  return (
+    <div className="w-full max-w-2xl mx-auto pt-10">
+      <div className="text-center">
+        <div
+          className={
+            "mx-auto mb-2 h-20 w-20 text-edenGreen-600 bg-edenPink-100 flex items-center justify-center rounded-full"
+          }
+        >
+          <BsLightningFill size={"2rem"} />
+        </div>
+        <h1 className="text-edenGreen-600">Radical!</h1>
+        <p className="mb-6">
+          {"We're all set! expect to hear from us by x days"}
+          <br />
+          {"Select your preferred communication line"}
+        </p>
+      </div>
+      <div className="">
+        <div className="flex justify-between w-52 mx-auto mb-8">
+          <label htmlFor="whatsapp">
+            <div
+              className={classNames(
+                "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
+                selected === "whatsapp"
+                  ? "!bg-edenGreen-500 text-edenPink-300"
+                  : ""
+              )}
+            >
+              <BsWhatsapp size={"1.4rem"} />
+            </div>
+          </label>
+          <input
+            type="radio"
+            name="contactType"
+            id="whatsapp"
+            value="whatsapp"
+            className="hidden"
+            onChange={(e) => {
+              console.log(e.target.checked);
+
+              if (e.target.checked) {
+                setSelected("whatsapp");
+                setContact("");
+              }
+            }}
+          />
+          <label htmlFor="email">
+            <div
+              className={classNames(
+                "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
+                selected === "email"
+                  ? "!bg-edenGreen-500 text-edenPink-300"
+                  : ""
+              )}
+            >
+              <HiMail size={"1.4rem"} />
+            </div>
+          </label>
+          <input
+            type="radio"
+            name="contactType"
+            id="email"
+            value="email"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelected("email");
+                setContact("");
+              }
+            }}
+          />
+          <label htmlFor="telegram">
+            <div
+              className={classNames(
+                "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
+                selected === "telegram"
+                  ? "!bg-edenGreen-500 text-edenPink-300"
+                  : ""
+              )}
+            >
+              <BsTelegram size={"1.4rem"} />
+            </div>
+          </label>
+          <input
+            type="radio"
+            name="contactType"
+            id="telegram"
+            value="telegram"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelected("telegram");
+                setContact("");
+              }
+            }}
+          />
+        </div>
+        <div className="text-xs max-w-[20rem] mx-auto h-8 flex items-center border border-EdenGray-100 rounded-md bg-white">
+          <div className="ml-auto border-r border-edenGray-100 px-3 text-edenGreen-600">
+            <span>
+              {selected === "whatsapp" && <BsWhatsapp size={"1rem"} />}
+            </span>
+            <span>{selected === "email" && <HiMail size={"1rem"} />}</span>
+            <span>
+              {selected === "telegram" && <BsTelegram size={"1rem"} />}
+            </span>
+          </div>
+          <input
+            type="text"
+            id="contact"
+            className="h-full w-full bg-transparent outline-none"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+          />
+        </div>
+        {selected === "whatsapp" && (
+          <p className="mt-2 text-edenGray-500 text-2xs text-center">
+            You must include country prefix on phone number
+          </p>
+        )}
+      </div>
+      <div className="absolute z-20 bottom-4 left-0 w-full flex justify-center">
+        <Button
+          className=""
+          variant="secondary"
+          onClick={handleSubmit}
+          disabled={!valid}
+        >
+          Submit
+        </Button>
+      </div>
+      <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
+        {submitting && (
+          <EdenAiProcessingModal title="Submitting" open={submitting} />
+        )}
+      </div>
     </div>
   );
 };
