@@ -170,7 +170,11 @@ const HomePage: NextPageWithLayout = () => {
                 }}
                 animate
               >
-                <WizardStep nextDisabled={!cvEnded} label={"CV UPLOAD"}>
+                <WizardStep
+                  navigationDisabled
+                  nextDisabled={!cvEnded}
+                  label={"CV UPLOAD"}
+                >
                   <UploadCVContainer
                     setTitleRole={setTitleRole}
                     setTopSkills={setTopSkills}
@@ -180,6 +184,7 @@ const HomePage: NextPageWithLayout = () => {
                   />
                 </WizardStep>
                 <WizardStep
+                  navigationDisabled
                   label={"EDEN INSIGHTS"}
                   nextDisabled={!insightsChecked}
                 >
@@ -204,7 +209,7 @@ const HomePage: NextPageWithLayout = () => {
                     </p>
                   </div>
                 </WizardStep>
-                {/* <WizardStep label={"instructions"}>
+                {/* <WizardStep navigationDisabled label={"instructions"}>
               <section className="flex h-full flex-col items-center justify-center">
                 {findPositionData?.findPosition?.name && (
                   <h3 className="mb-8 text-lg font-medium">
@@ -221,14 +226,15 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
 
-                {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-                <WizardStep label={"INTERVIEW"}>
+                {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
+                <WizardStep navigationDisabled label={"INTERVIEW"}>
                   <div className="mx-auto h-full max-w-lg">
                     <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                   </div>
                 </WizardStep>
 
                 <WizardStep
+                  navigationDisabled
                   label={"FINAL DETAILS"}
                   nextButton={
                     <Button

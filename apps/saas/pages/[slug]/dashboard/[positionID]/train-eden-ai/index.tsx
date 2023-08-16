@@ -540,7 +540,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </WizardStep>
 
                 {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-                <WizardStep label={"Eden Convo"} navigationDisabled={true}>
+                <WizardStep label={"Eden Convo"} navigationDisabled>
                   <div className="relative mx-auto h-[60vh] max-w-2xl">
                     <InterviewEdenAIContainer
                       handleEnd={handleInterviewEnd}
@@ -553,7 +553,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Priorities & TradeOffs"}
-                  navigationDisabled={step === 1}
+                  navigationDisabled
                   nextButton={
                     <Button
                       variant="secondary"
@@ -587,7 +587,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   </div>
                 </WizardStep>
 
-                <WizardStep label={"Alignment"} navigationDisabled={step === 0}>
+                <WizardStep label={"Alignment"} navigationDisabled>
                   <div className="mx-auto h-full max-w-2xl">
                     <h2 className="mb-4">Complete Checks & Balances List</h2>
                     <p className="text-edenGray-500 mb-8 text-sm">
@@ -601,7 +601,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Eden Suggestions"}
-                  navigationDisabled={step === 0}
+                  navigationDisabled
                   nextButton={
                     <Button
                       variant={"primary"}
@@ -643,7 +643,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </WizardStep>
                 <WizardStep
                   label={"Final Details"}
-                  // navigationDisabled={step === 0}
+                  navigationDisabled
                   nextButton={
                     <Button
                       variant={"primary"}
@@ -697,10 +697,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     />
                   </div>
                 </WizardStep>
-                <WizardStep
-                  label={"Share Link"}
-                  navigationDisabled={step === 0}
-                >
+                <WizardStep label={"Share Link"} navigationDisabled>
                   <div className="flex h-full flex-col items-center justify-center pb-28">
                     <div className="max-w-3xl">
                       <h1 className="text-edenGreen-600 mb-4 text-center">
