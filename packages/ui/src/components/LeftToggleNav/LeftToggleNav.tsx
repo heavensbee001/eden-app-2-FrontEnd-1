@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { gql, useMutation } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Avatar, Button, EdenAiProcessingModal } from "@eden/package-ui";
@@ -8,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
+import { IconPickerItem } from "react-fa-icon-picker";
 import { BiPlus } from "react-icons/bi";
 import {
   BsChevronDown,
@@ -16,7 +16,6 @@ import {
   BsChevronUp,
 } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
-import { HiCodeBracket } from "react-icons/hi2";
 import { v4 as uuidv4 } from "uuid";
 
 const UPDATE_POSITION = gql`
@@ -162,7 +161,11 @@ export const LeftToggleNav = ({
                       <div className="bg-edenGreen-500 absolute left-0 top-0 h-full w-1"></div>
                     )}
                     <div className="text-edenGreen-500 flex h-6 w-6 items-center justify-center rounded-md bg-white bg-opacity-30">
-                      <HiCodeBracket size={"1rem"} />
+                      <IconPickerItem
+                        icon={position?.icon || "FaCode"}
+                        size={"1rem"}
+                        color="#00462C"
+                      />
                     </div>
                     {unwrapped && (
                       <div className="ml-2 mr-auto w-full">
