@@ -398,7 +398,7 @@ const UploadCVContainer = ({
           </p>
           <ul className="list-disc text-sm text-edenGray-900 pl-4">
             <li className="mb-2">Probability of landing this job</li>
-            <li className="mb-2">What to improve to maximeze your chances</li>
+            <li className="mb-2">What to improve to maximize your chances</li>
             <li className="mb-2">
               Ask specific questions about company, opportunity & culture in
               real time chat
