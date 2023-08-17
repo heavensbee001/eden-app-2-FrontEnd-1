@@ -1,4 +1,4 @@
-import { SEO } from "@eden/package-ui";
+import { Button, SEO } from "@eden/package-ui";
 import Lottie from "lottie-react";
 import type {
   GetServerSideProps,
@@ -45,14 +45,13 @@ const HomePage: NextPage = ({
               />
             </div>
             <div className="col-span-4 flex items-center justify-center">
-              <button
-                className="hover:text-edenGreen-600 bg-accentColor flex h-10 w-32 items-center justify-center hover:bg-white"
+              <Button
                 onClick={() => {
                   signIn("google", { callbackUrl: redirect });
                 }}
               >
-                login
-              </button>
+                Log in with Google
+              </Button>
             </div>
             <div className="col-span-4 flex items-center justify-center">
               <Lottie

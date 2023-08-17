@@ -171,7 +171,7 @@ const HomePage: NextPageWithLayout = () => {
                 animate
               >
                 <WizardStep
-                  navigationDisabled
+                  // navigationDisabled
                   nextDisabled={!cvEnded}
                   label={"CV UPLOAD"}
                 >
@@ -184,7 +184,7 @@ const HomePage: NextPageWithLayout = () => {
                   />
                 </WizardStep>
                 <WizardStep
-                  navigationDisabled
+                  // navigationDisabled
                   label={"EDEN INSIGHTS"}
                   nextDisabled={!insightsChecked}
                 >
@@ -227,14 +227,17 @@ const HomePage: NextPageWithLayout = () => {
             </WizardStep> */}
 
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
-                <WizardStep navigationDisabled label={"INTERVIEW"}>
+                <WizardStep
+                  // navigationDisabled
+                  label={"INTERVIEW"}
+                >
                   <div className="mx-auto h-full max-w-lg">
                     <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                   </div>
                 </WizardStep>
 
                 <WizardStep
-                  navigationDisabled
+                  // navigationDisabled
                   label={"FINAL DETAILS"}
                   nextButton={
                     <Button
@@ -288,17 +291,17 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
               </Wizard>
-              {!IS_PRODUCTION && (
-                <Button
-                  className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
-                  variant="secondary"
-                  onClick={() => {
-                    setStep(step + 1);
-                  }}
-                >
-                  Next
-                </Button>
-              )}
+              {/* {!IS_PRODUCTION && ( */}
+              <Button
+                className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+                variant="secondary"
+                onClick={() => {
+                  setStep(step + 1);
+                }}
+              >
+                Next
+              </Button>
+              {/* )} */}
             </div>
           </div>
         )}
@@ -812,7 +815,7 @@ import { BsLightningFill, BsTelegram, BsWhatsapp } from "react-icons/bs";
 import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
 
-import { IS_PRODUCTION } from "../../../constants";
+// import { IS_PRODUCTION } from "../../../constants";
 
 interface IProfileQuestionsContainerProps {
   // eslint-disable-next-line no-unused-vars
