@@ -171,7 +171,7 @@ const HomePage: NextPageWithLayout = () => {
                 animate
               >
                 <WizardStep
-                  navigationDisabled
+                  // navigationDisabled
                   nextDisabled={!cvEnded}
                   label={"CV UPLOAD"}
                 >
@@ -184,7 +184,7 @@ const HomePage: NextPageWithLayout = () => {
                   />
                 </WizardStep>
                 <WizardStep
-                  navigationDisabled
+                  // navigationDisabled
                   label={"EDEN INSIGHTS"}
                   nextDisabled={!insightsChecked}
                 >
@@ -227,14 +227,17 @@ const HomePage: NextPageWithLayout = () => {
             </WizardStep> */}
 
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
-                <WizardStep navigationDisabled label={"INTERVIEW"}>
+                <WizardStep
+                  // navigationDisabled
+                  label={"INTERVIEW"}
+                >
                   <div className="mx-auto h-full max-w-lg">
                     <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                   </div>
                 </WizardStep>
 
                 <WizardStep
-                  navigationDisabled
+                  // navigationDisabled
                   label={"FINAL DETAILS"}
                   nextButton={
                     <Button
