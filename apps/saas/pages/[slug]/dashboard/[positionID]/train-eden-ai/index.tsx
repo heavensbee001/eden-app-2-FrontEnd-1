@@ -37,6 +37,7 @@ import { InterviewEdenAIContainer } from "@/components/TrainEdenAiSteps/Intervie
 import { PrioritiesAndTradeOffsContainer } from "@/components/TrainEdenAiSteps/PrioritiesAndTradeOffsContainer";
 import { ProfileQuestionsContainer } from "@/components/TrainEdenAiSteps/ProfileQuestionsContainer";
 
+import { IS_PRODUCTION } from "../../../../../constants";
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
 
@@ -760,6 +761,17 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </div>
               </div>
             )} */}
+            {!IS_PRODUCTION && (
+              <Button
+                className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+                variant="secondary"
+                onClick={() => {
+                  setStep(step + 1);
+                }}
+              >
+                Next
+              </Button>
+            )}
             {step === 6 && (
               <div
                 className={`pointer-events-none fixed left-0 top-0 z-20 h-screen w-screen	`}
