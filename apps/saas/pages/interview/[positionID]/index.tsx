@@ -288,17 +288,17 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
               </Wizard>
-              {!IS_PRODUCTION && (
-                <Button
-                  className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
-                  variant="secondary"
-                  onClick={() => {
-                    setStep(step + 1);
-                  }}
-                >
-                  Next
-                </Button>
-              )}
+              {/* {!IS_PRODUCTION && ( */}
+              <Button
+                className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+                variant="secondary"
+                onClick={() => {
+                  setStep(step + 1);
+                }}
+              >
+                Next
+              </Button>
+              {/* )} */}
             </div>
           </div>
         )}

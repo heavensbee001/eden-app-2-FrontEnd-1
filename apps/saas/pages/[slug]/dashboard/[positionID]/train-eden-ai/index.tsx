@@ -761,17 +761,17 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </div>
               </div>
             )} */}
-            {!IS_PRODUCTION && (
-              <Button
-                className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
-                variant="secondary"
-                onClick={() => {
-                  setStep(step + 1);
-                }}
-              >
-                Next
-              </Button>
-            )}
+            {/* {!IS_PRODUCTION && ( */}
+            <Button
+              className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+              variant="secondary"
+              onClick={() => {
+                setStep(step + 1);
+              }}
+            >
+              Next
+            </Button>
+            {/* )} */}
             {step === 6 && (
               <div
                 className={`pointer-events-none fixed left-0 top-0 z-20 h-screen w-screen	`}
