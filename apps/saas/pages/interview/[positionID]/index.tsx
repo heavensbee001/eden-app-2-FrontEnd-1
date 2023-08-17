@@ -473,72 +473,100 @@ const ApplicationStepContainer = ({
 
   const today = new Date();
 
+  const getMatchText = () => {
+    // switch
+    if (content.matchPercentage! >= 80) {
+      return "Great fit";
+    } else if (content.matchPercentage! >= 60) {
+      return "Ok fit";
+    } else if (content.matchPercentage! >= 40) {
+      return "Not sure";
+    } else if (content.matchPercentage! >= 20) {
+      return "Probably not a fit";
+    } else if (content.matchPercentage! < 20) {
+      return "Definitely not a fit";
+    } else {
+      return "";
+    }
+  };
+  const matchText = getMatchText();
+
   return (
     <>
       <div>
         <div className="grid grid-cols-12 gap-2">
-          <section className="w-full border border-edenGray-100 rounded-md bg-white p-4 col-span-12">
-            <h3 className="text-edenGreen-600 mb-2">Your Top skills</h3>
-            <div>
-              {topSkills !== null &&
-                topSkills.map((skill: any, index: number) => (
-                  <Badge key={index} text={skill} cutText={20} />
-                ))}
+          <div className="col-span-3 bg-edenGreen-100 mb-2 rounded-md p-4">
+            <h2 className="text-center text-edenGreen-600 mb-6">
+              Probability of passing
+            </h2>
+            <div className="bg-white text-center p-4 rounded-md">
+              {matchText}
             </div>
-          </section>
-          <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-4">
-            <h3 className="text-edenGreen-600 mb-2">Salary Range</h3>
-            <p className="text-lg font-medium">
-              ${60000} - ${90000} (hardcoded)
-            </p>
-          </section>
-          <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-8">
-            <h3 className="text-edenGreen-600 mb-2">Timeline</h3>
-            <div>
-              <div className="flex flex-nowrap items-center">
-                <div>
-                  <p className="text-sm text-gray-500">{`${
-                    monthNames[today.getMonth()]
-                  } ${today.getDate()}`}</p>
-                  <p>Recruiting + Eden AI Chat</p>
-                </div>
-                <BiChevronRight
-                  size={"1.6rem"}
-                  color="#00462C"
-                  className="mx-5"
-                />
-                <div>
-                  <p className="text-sm text-gray-500">{`${
-                    monthNames[
-                      new Date(
-                        new Date().setDate(today.getDate() + 3)
-                      ).getMonth()
-                    ]
-                  } ${new Date(
-                    new Date().setDate(today.getDate() + 3)
-                  ).getDate()}`}</p>
-                  <p>HR Interviews</p>
-                </div>
-                <BiChevronRight
-                  size={"1.6rem"}
-                  color="#00462C"
-                  className="mx-5"
-                />
-                <div>
-                  <p className="text-sm text-gray-500">{`${
-                    monthNames[
-                      new Date(
-                        new Date().setDate(today.getDate() + 14)
-                      ).getMonth()
-                    ]
-                  } ${new Date(
-                    new Date().setDate(today.getDate() + 14)
-                  ).getDate()}`}</p>
-                  <p>Onboarding</p>
+          </div>
+          <div className="col-span-9 grid grid-cols-12 gap-2">
+            <section className="w-full border border-edenGray-100 rounded-md bg-white p-4 col-span-12">
+              <h3 className="text-edenGreen-600 mb-2">Your Top skills</h3>
+              <div>
+                {topSkills !== null &&
+                  topSkills.map((skill: any, index: number) => (
+                    <Badge key={index} text={skill} cutText={20} />
+                  ))}
+              </div>
+            </section>
+            <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-4">
+              <h3 className="text-edenGreen-600 mb-2">Salary Range</h3>
+              <p className="text-lg font-medium">
+                ${60000} - ${90000} (hardcoded)
+              </p>
+            </section>
+            <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-8">
+              <h3 className="text-edenGreen-600 mb-2">Timeline</h3>
+              <div>
+                <div className="flex flex-nowrap items-center">
+                  <div>
+                    <p className="text-sm text-gray-500">{`${
+                      monthNames[today.getMonth()]
+                    } ${today.getDate()}`}</p>
+                    <p>Recruiting + Eden AI Chat</p>
+                  </div>
+                  <BiChevronRight
+                    size={"1.6rem"}
+                    color="#00462C"
+                    className="mx-5"
+                  />
+                  <div>
+                    <p className="text-sm text-gray-500">{`${
+                      monthNames[
+                        new Date(
+                          new Date().setDate(today.getDate() + 3)
+                        ).getMonth()
+                      ]
+                    } ${new Date(
+                      new Date().setDate(today.getDate() + 3)
+                    ).getDate()}`}</p>
+                    <p>HR Interviews</p>
+                  </div>
+                  <BiChevronRight
+                    size={"1.6rem"}
+                    color="#00462C"
+                    className="mx-5"
+                  />
+                  <div>
+                    <p className="text-sm text-gray-500">{`${
+                      monthNames[
+                        new Date(
+                          new Date().setDate(today.getDate() + 14)
+                        ).getMonth()
+                      ]
+                    } ${new Date(
+                      new Date().setDate(today.getDate() + 14)
+                    ).getDate()}`}</p>
+                    <p>Onboarding</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
         <section className="h-64 w-full overflow-x-scroll whitespace-nowrap">
           <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
