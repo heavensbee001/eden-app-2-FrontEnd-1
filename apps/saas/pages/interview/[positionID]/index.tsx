@@ -812,7 +812,7 @@ import { BsLightningFill, BsTelegram, BsWhatsapp } from "react-icons/bs";
 import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
 
-import { IS_PRODUCTION } from "../../../constants";
+// import { IS_PRODUCTION } from "../../../constants";
 
 interface IProfileQuestionsContainerProps {
   // eslint-disable-next-line no-unused-vars
