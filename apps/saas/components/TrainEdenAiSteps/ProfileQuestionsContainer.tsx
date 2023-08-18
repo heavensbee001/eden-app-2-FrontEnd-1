@@ -41,6 +41,7 @@ export const ProfileQuestionsContainer =
       null
     );
     const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
+    const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
     // const { register, watch, control, setValue, getValues } = useForm<Members>({
     //   defaultValues: { ...currentUser },
@@ -58,6 +59,8 @@ export const ProfileQuestionsContainer =
           // );
 
           setScraping(false);
+
+          setScrapingSave(false);
 
           let jobDescription =
             positionTextAndConvoToReportCriteria.report.replace(/<|>/g, "");
