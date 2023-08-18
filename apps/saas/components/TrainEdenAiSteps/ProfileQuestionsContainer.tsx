@@ -163,6 +163,19 @@ export const ProfileQuestionsContainer =
       setEditQuestionIndex(position);
     };
 
+    const handleSaveChanges = () => {
+      setScrapingSave(true);
+
+      positionTextAndConvoToReportCriteria({
+        variables: {
+          fields: {
+            positionID: positionID,
+            updatedReport: convertCategoryToText(categories, questions),
+          },
+        },
+      });
+    };
+
     return (
       <div className="w-full">
         {scraping && (
@@ -251,6 +264,14 @@ export const ProfileQuestionsContainer =
                     >
                       + Add a Question
                     </Button>
+                    <Button
+                      className="absolute bottom-8 right-8 z-30 mx-auto"
+                      variant={"primary"}
+                      loading={scrapingSave}
+                      onClick={() => handleSaveChanges()}
+                    >
+                      Save Changes
+                    </Button>
                   </Tab.Panel>
                 ))}
               </Tab.Panels>
@@ -264,6 +285,31 @@ export const ProfileQuestionsContainer =
 interface Category {
   name: string;
   bullets: string[];
+}
+
+function convertCategoryToText(
+  categories: Category[],
+  categoriesObj: QuestionGroupedByCategory
+) {
+  let content = "";
+
+  let idx = 0;
+  let bulletIdx = 0;
+
+  for (const category of categories) {
+    idx += 1;
+    content += `<Category ${idx}: ${category.name}>\n`;
+
+    const bullets = categoriesObj[category.name];
+
+    for (const bullet of bullets) {
+      bulletIdx += 1;
+
+      content += `- b${bulletIdx}: ${bullet.question}\n`;
+    }
+  }
+
+  return content;
 }
 
 function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
