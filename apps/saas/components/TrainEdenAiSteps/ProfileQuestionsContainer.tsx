@@ -37,8 +37,9 @@ export const ProfileQuestionsContainer =
 
     const [scraping, setScraping] = useState<boolean>(false);
     const [index, setIndex] = useState<number>(0);
-    const [editQuestionIndex, setEditQuestionIndex] =
-      useState<number | null>(null);
+    const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
+      null
+    );
     const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
     // const { register, watch, control, setValue, getValues } = useForm<Members>({
@@ -264,6 +265,7 @@ interface Category {
   name: string;
   bullets: string[];
 }
+
 function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
   const categories: Category[] = [];
 
