@@ -2,7 +2,11 @@
 
 import { gql, useMutation } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
-import { Members, QuestionType } from "@eden/package-graphql/generated";
+import {
+  Members,
+  Mutation,
+  QuestionType,
+} from "@eden/package-graphql/generated";
 import { Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
@@ -12,29 +16,29 @@ import { useForm } from "react-hook-form";
 import { HiPencil } from "react-icons/hi";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
-// const ADD_QUESTIONS_TO_POSITION = gql`
-//   mutation ($fields: addQuestionsToAskPositionInput) {
-//     addQuestionsToAskPosition(fields: $fields) {
-//       _id
-//       name
-//       candidates {
-//         overallScore
-//         user {
-//           _id
-//           discordName
-//           discordAvatar
-//         }
-//       }
-//       questionsToAsk {
-//         bestAnswer
-//         question {
-//           _id
-//           content
-//         }
-//       }
-//     }
-//   }
-// `;
+const ADD_QUESTIONS_TO_POSITION = gql`
+  mutation ($fields: addQuestionsToAskPositionInput) {
+    addQuestionsToAskPosition(fields: $fields) {
+      _id
+      name
+      candidates {
+        overallScore
+        user {
+          _id
+          discordName
+          discordAvatar
+        }
+      }
+      questionsToAsk {
+        bestAnswer
+        question {
+          _id
+          content
+        }
+      }
+    }
+  }
+`;
 
 export const POSITION_SUGGEST_QUESTIONS = gql`
   mutation ($fields: positionSuggestQuestionsAskCandidateInput!) {
