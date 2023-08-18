@@ -41,6 +41,8 @@ export const ProfileQuestionsContainer =
       null
     );
     const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
+
+    const [categories, setCategories] = useState<Category[]>([]);
     const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
     // const { register, watch, control, setValue, getValues } = useForm<Members>({
@@ -69,6 +71,7 @@ export const ProfileQuestionsContainer =
           jobDescription = jobDescription.replace(/-\s/g, "• ");
 
           setQuestions(convertTextCategoriesToObj(jobDescription));
+          setCategories(resConvert.categories);
         },
         onError() {
           setScraping(false);
