@@ -70,7 +70,10 @@ export const ProfileQuestionsContainer =
           //Change - to •
           jobDescription = jobDescription.replace(/-\s/g, "• ");
 
-          setQuestions(convertTextCategoriesToObj(jobDescription));
+          const resConvert = convertTextCategoriesToObj(jobDescription);
+
+          // setQuestions(convertTextCategoriesToObj(jobDescription));
+          setQuestions(resConvert.categoriesObj);
           setCategories(resConvert.categories);
         },
         onError() {
@@ -318,10 +321,12 @@ function convertCategoryToText(
   return content;
 }
 
-function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
+function convertTextCategoriesToObj(text: string) {
+  // function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
   const categories: Category[] = [];
 
   // Split the text into lines
+
   const lines = text.split("\n");
 
   let currentCategory: Category | null = null;
@@ -365,27 +370,10 @@ function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
     {} as QuestionGroupedByCategory
   );
 
-  // Render the elements
-  // const elements = categories.map((category, index) => (
-  //   <div key={index} className="mb-6">
-  //     <div className="border-edenGreen-300 flex justify-between border-b px-4">
-  //       <h3 className="text-edenGreen-500 mb-3">{category.name}</h3>
-  //     </div>
-  //     <ul>
-  //       {category.bullets.map((bullet: string, bulletIndex: number) => (
-  //         <li
-  //           className="border-edenGray-100 w-full rounded-md border-b px-4"
-  //           key={bulletIndex}
-  //         >
-  //           <div className="flex w-full columns-2 items-center justify-between py-4">
-  //             <p className="w-full pr-4 text-sm">{bullet}</p>
-  //           </div>
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   </div>
-  // ));
+  console.log("categories = ", categories);
 
-  // Render the elements inside a div
-  return categoriesObj;
+  return {
+    categoriesObj: categoriesObj,
+    categories: categories,
+  };
 }
