@@ -78,7 +78,7 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
 
-  const [scraping, setScraping] = useState<boolean>(false);
+  // const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
   const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
     null
@@ -161,8 +161,6 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
         //   positionSuggestQuestionsAskCandidate
         // );
 
-        setScraping(false);
-
         // setQuestions(positionSuggestQuestionsAskCandidate.questionSuggest);
 
         const questionsWithCategory: QuestionGroupedByCategory = {};
@@ -213,9 +211,9 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
         },
       },
     });
-    return () => {
-      setScraping(false);
-    };
+    // return () => {
+    //   setScraping(false);
+    // };
   }, []);
 
   // console.log("questionsSuggest = ", questionsSuggest);
