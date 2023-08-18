@@ -253,9 +253,12 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
         for (let j = 0; j < categoryQuestions.length; j++) {
           const question = categoryQuestions[j];
 
+          // console.log("question = " , question)
+
           questionsToAsk.push({
             questionContent: question.question,
             bestAnswer: "",
+            category: category,
           });
         }
       }
