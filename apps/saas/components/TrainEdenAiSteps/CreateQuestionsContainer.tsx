@@ -80,9 +80,8 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
 
   // const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
-    null
-  );
+  const [editQuestionIndex, setEditQuestionIndex] =
+    useState<number | null>(null);
 
   const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
@@ -179,6 +178,9 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
           }
         );
 
+        if (!questionsWithCategory["Others"]) {
+          questionsWithCategory["Others"] = [];
+        }
         // console.log("questionsWithCategory = ", questionsWithCategory);
         setQuestions(questionsWithCategory);
       },
