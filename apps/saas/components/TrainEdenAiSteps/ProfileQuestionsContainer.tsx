@@ -37,9 +37,13 @@ export const ProfileQuestionsContainer =
 
     const [scraping, setScraping] = useState<boolean>(false);
     const [index, setIndex] = useState<number>(0);
-    const [editQuestionIndex, setEditQuestionIndex] =
-      useState<number | null>(null);
+    const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
+      null
+    );
     const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
+
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
     // const { register, watch, control, setValue, getValues } = useForm<Members>({
     //   defaultValues: { ...currentUser },
@@ -58,13 +62,19 @@ export const ProfileQuestionsContainer =
 
           setScraping(false);
 
+          setScrapingSave(false);
+
           let jobDescription =
             positionTextAndConvoToReportCriteria.report.replace(/<|>/g, "");
 
           //Change - to •
           jobDescription = jobDescription.replace(/-\s/g, "• ");
 
-          setQuestions(convertTextCategoriesToObj(jobDescription));
+          const resConvert = convertTextCategoriesToObj(jobDescription);
+
+          // setQuestions(convertTextCategoriesToObj(jobDescription));
+          setQuestions(resConvert.categoriesObj);
+          setCategories(resConvert.categories);
         },
         onError() {
           setScraping(false);
@@ -162,6 +172,19 @@ export const ProfileQuestionsContainer =
       setEditQuestionIndex(position);
     };
 
+    const handleSaveChanges = () => {
+      setScrapingSave(true);
+
+      positionTextAndConvoToReportCriteria({
+        variables: {
+          fields: {
+            positionID: positionID,
+            updatedReport: convertCategoryToText(categories, questions),
+          },
+        },
+      });
+    };
+
     return (
       <div className="w-full">
         {scraping && (
@@ -250,6 +273,14 @@ export const ProfileQuestionsContainer =
                     >
                       + Add a Question
                     </Button>
+                    <Button
+                      className="absolute bottom-8 right-8 z-30 mx-auto"
+                      variant={"primary"}
+                      loading={scrapingSave}
+                      onClick={() => handleSaveChanges()}
+                    >
+                      Save Changes
+                    </Button>
                   </Tab.Panel>
                 ))}
               </Tab.Panels>
@@ -264,10 +295,38 @@ interface Category {
   name: string;
   bullets: string[];
 }
-function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
+
+function convertCategoryToText(
+  categories: Category[],
+  categoriesObj: QuestionGroupedByCategory
+) {
+  let content = "";
+
+  let idx = 0;
+  let bulletIdx = 0;
+
+  for (const category of categories) {
+    idx += 1;
+    content += `<Category ${idx}: ${category.name}>\n`;
+
+    const bullets = categoriesObj[category.name];
+
+    for (const bullet of bullets) {
+      bulletIdx += 1;
+
+      content += `- b${bulletIdx}: ${bullet.question}\n`;
+    }
+  }
+
+  return content;
+}
+
+function convertTextCategoriesToObj(text: string) {
+  // function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
   const categories: Category[] = [];
 
   // Split the text into lines
+
   const lines = text.split("\n");
 
   let currentCategory: Category | null = null;
@@ -311,27 +370,10 @@ function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
     {} as QuestionGroupedByCategory
   );
 
-  // Render the elements
-  // const elements = categories.map((category, index) => (
-  //   <div key={index} className="mb-6">
-  //     <div className="border-edenGreen-300 flex justify-between border-b px-4">
-  //       <h3 className="text-edenGreen-500 mb-3">{category.name}</h3>
-  //     </div>
-  //     <ul>
-  //       {category.bullets.map((bullet: string, bulletIndex: number) => (
-  //         <li
-  //           className="border-edenGray-100 w-full rounded-md border-b px-4"
-  //           key={bulletIndex}
-  //         >
-  //           <div className="flex w-full columns-2 items-center justify-between py-4">
-  //             <p className="w-full pr-4 text-sm">{bullet}</p>
-  //           </div>
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   </div>
-  // ));
+  console.log("categories = ", categories);
 
-  // Render the elements inside a div
-  return categoriesObj;
+  return {
+    categoriesObj: categoriesObj,
+    categories: categories,
+  };
 }

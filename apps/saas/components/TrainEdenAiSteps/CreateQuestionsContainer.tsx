@@ -2,7 +2,11 @@
 
 import { gql, useMutation } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
-import { Members, QuestionType } from "@eden/package-graphql/generated";
+import {
+  Members,
+  Mutation,
+  QuestionType,
+} from "@eden/package-graphql/generated";
 import { Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
@@ -12,29 +16,29 @@ import { useForm } from "react-hook-form";
 import { HiPencil } from "react-icons/hi";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
-// const ADD_QUESTIONS_TO_POSITION = gql`
-//   mutation ($fields: addQuestionsToAskPositionInput) {
-//     addQuestionsToAskPosition(fields: $fields) {
-//       _id
-//       name
-//       candidates {
-//         overallScore
-//         user {
-//           _id
-//           discordName
-//           discordAvatar
-//         }
-//       }
-//       questionsToAsk {
-//         bestAnswer
-//         question {
-//           _id
-//           content
-//         }
-//       }
-//     }
-//   }
-// `;
+const ADD_QUESTIONS_TO_POSITION = gql`
+  mutation ($fields: addQuestionsToAskPositionInput) {
+    addQuestionsToAskPosition(fields: $fields) {
+      _id
+      name
+      candidates {
+        overallScore
+        user {
+          _id
+          discordName
+          discordAvatar
+        }
+      }
+      questionsToAsk {
+        bestAnswer
+        question {
+          _id
+          content
+        }
+      }
+    }
+  }
+`;
 
 export const POSITION_SUGGEST_QUESTIONS = gql`
   mutation ($fields: positionSuggestQuestionsAskCandidateInput!) {
@@ -76,9 +80,11 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
 
   // const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] =
-    useState<number | null>(null);
-  // const [scrapingSave, setScrapingSave] = useState<boolean>(false);
+  const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
+    null
+  );
+
+  const [scrapingSave, setScrapingSave] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
@@ -155,8 +161,6 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
         //   positionSuggestQuestionsAskCandidate
         // );
 
-        // setScraping(false);
-
         // setQuestions(positionSuggestQuestionsAskCandidate.questionSuggest);
 
         const questionsWithCategory: QuestionGroupedByCategory = {};
@@ -214,55 +218,58 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
 
   // console.log("questionsSuggest = ", questionsSuggest);
 
-  // const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
-  //   // eslint-disable-next-line no-unused-vars
-  //   onCompleted({ updateNodesToMember }: Mutation) {
-  //     // console.log("updateNodesToMember = ", updateNodesToMember);
-  //     setScrapingSave(false);
-  //   },
-  //   // skip: positionID == "" || positionID == null,
-  // });
+  const [updateQuestionsPosition] = useMutation(ADD_QUESTIONS_TO_POSITION, {
+    // eslint-disable-next-line no-unused-vars
+    onCompleted({ updateNodesToMember }: Mutation) {
+      // console.log("updateNodesToMember = ", updateNodesToMember);
+      setScrapingSave(false);
+    },
+    // skip: positionID == "" || positionID == null,
+  });
 
-  // const handleSaveChanges = () => {
-  //   let positionID_ = "";
+  const handleSaveChanges = () => {
+    let positionID_ = "";
 
-  //   if (Array.isArray(positionID)) {
-  //     if (positionID.length > 0) {
-  //       positionID_ = positionID[0];
-  //     }
-  //   } else {
-  //     if (positionID != undefined) {
-  //       positionID_ = positionID;
-  //     }
-  //   }
-  //   if (positionID_ != "") {
-  //     setScrapingSave(true);
+    if (Array.isArray(positionID)) {
+      if (positionID.length > 0) {
+        positionID_ = positionID[0];
+      }
+    } else {
+      if (positionID != undefined) {
+        positionID_ = positionID;
+      }
+    }
+    if (positionID_ != "") {
+      setScrapingSave(true);
 
-  //     const questionsToAsk: any[] = [];
+      const questionsToAsk: any[] = [];
 
-  //     // Object.keys(questions).forEach((category) => {
-  //     for (const category in questions) {
-  //       const categoryQuestions = questions[category];
+      // Object.keys(questions).forEach((category) => {
+      for (const category in questions) {
+        const categoryQuestions = questions[category];
 
-  //       for (let j = 0; j < categoryQuestions.length; j++) {
-  //         const question = categoryQuestions[j];
+        for (let j = 0; j < categoryQuestions.length; j++) {
+          const question = categoryQuestions[j];
 
-  //         questionsToAsk.push({
-  //           questionContent: question.question,
-  //           bestAnswer: "",
-  //         });
-  //       }
-  //     }
-  //     updateQuestionsPosition({
-  //       variables: {
-  //         fields: {
-  //           positionID: positionID_,
-  //           questionsToAsk: questionsToAsk,
-  //         },
-  //       },
-  //     });
-  //   }
-  // };
+          // console.log("question = " , question)
+
+          questionsToAsk.push({
+            questionContent: question.question,
+            bestAnswer: "",
+            category: category,
+          });
+        }
+      }
+      updateQuestionsPosition({
+        variables: {
+          fields: {
+            positionID: positionID_,
+            questionsToAsk: questionsToAsk,
+          },
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     const _mappedQuestions: QuestionType[] = [];
@@ -298,14 +305,14 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
           </div>
         </EdenAiProcessingModal>
       )}
-      {/* <Button
+      <Button
         className="absolute bottom-8 right-8 z-30 mx-auto"
         variant={"primary"}
         loading={scrapingSave}
         onClick={() => handleSaveChanges()}
       >
         Save Changes
-      </Button> */}
+      </Button>
       <div className="">
         <Tab.Group
           defaultIndex={index}
