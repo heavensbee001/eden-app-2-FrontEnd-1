@@ -349,7 +349,7 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
                       <textarea
                         name="question"
                         disabled={editQuestionIndex !== __index}
-                        defaultValue={question.question.toString()}
+                        value={question.question.toString()}
                         onChange={(event) =>
                           handleQuestionChange(event, __index, category)
                         }
