@@ -6,7 +6,7 @@ import {
   Badge,
   Button,
   ChatMessage,
-  CountdownTimer,
+  // CountdownTimer,
   CVUploadGPT,
   EdenAiProcessingModal,
   InterviewEdenAI,
@@ -812,7 +812,7 @@ const InterviewEdenAIContainer = ({
           />
         }
       </div>
-      <CountdownTimer />
+      {/* <CountdownTimer /> */}
       {/* <div className="absolute right-0 top-32 pr-6">
         <span>
           progress{" "}
