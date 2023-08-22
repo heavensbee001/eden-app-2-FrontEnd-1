@@ -639,16 +639,9 @@ const ADD_CANDIDATE_TO_POSITION = gql`
 `;
 
 const UPDATE_CONTACT = gql`
-  mutation UpdatePosition($fields: updatePositionInput) {
-    updatePosition(fields: $fields) {
+  mutation UpdateMember($fields: updateMemberInput!) {
+    updateMember(fields: $fields) {
       _id
-      name
-      conduct {
-        number
-        whatsappNumber
-        telegram
-        email
-      }
     }
   }
 `;
@@ -1083,7 +1076,8 @@ interface IFinalContainerProps {}
 
 const FinalContainer = ({}: IFinalContainerProps) => {
   const router = useRouter();
-  const positionID = router.query.positionID;
+  // const positionID = router.query.positionID;
+  const { currentUser } = useContext(UserContext);
 
   const [submitting, setSubmitting] = useState(false);
   const [selected, setSelected] =
@@ -1105,7 +1099,7 @@ const FinalContainer = ({}: IFinalContainerProps) => {
     setSubmitting(true);
 
     const _fields = {
-      _id: positionID,
+      _id: currentUser?._id,
       conduct: {
         whatsappNumber: "",
         telegram: "",
