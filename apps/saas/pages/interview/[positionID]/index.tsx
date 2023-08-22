@@ -474,17 +474,16 @@ const ApplicationStepContainer = ({
   const today = new Date();
 
   const getMatchText = () => {
-    // switch
     if (content.matchPercentage! >= 80) {
-      return "Great fit";
+      return "Very High";
     } else if (content.matchPercentage! >= 60) {
-      return "Ok fit";
+      return "High";
     } else if (content.matchPercentage! >= 40) {
-      return "Not sure";
+      return "Average";
     } else if (content.matchPercentage! >= 20) {
-      return "Probably not a fit";
+      return "Low";
     } else if (content.matchPercentage! < 20) {
-      return "Definitely not a fit";
+      return "Very Low";
     } else {
       return "";
     }
