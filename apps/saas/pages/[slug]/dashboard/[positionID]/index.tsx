@@ -1909,16 +1909,18 @@ const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
       className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0"
       onClick={onClick}
     >
-      <div className="flex px-4 py-6" onClick={onClick}>
-        <div className="mr-4">
+      <div className="relative flex px-4 pt-2 pb-2" onClick={onClick}>
+        <div className="mr-4 flex items-center">
           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
         </div>
-        <p className="font-bold">{candidate.user?.discordName}</p>
-        {candidate.user?.oneLiner && (
-          <p className="text-edenGray-600 text-sm">
-            {candidate.user?.oneLiner}
-          </p>
-        )}
+        <div className="w-3/4">
+          <p className="font-bold">{candidate.user?.discordName}</p>
+          {candidate.user?.oneLiner && (
+            <p className="text-edenGray-600 text-xs w-full whitespace-normal">
+              {candidate.user?.oneLiner}
+            </p>
+          )}
+        </div>
         <Button
           className="bg-edenGreen-100 group-hover:bg-edenGreen-200 absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center !rounded-full !p-0"
           variant="tertiary"
