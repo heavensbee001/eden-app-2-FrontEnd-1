@@ -132,6 +132,7 @@ const UPDATE_POSITION_GENERAL_DETAILS = gql`
         startDate
         visaRequired
         officePolicy
+        yearlySalary
         socials {
           portfolio
           linkedin
@@ -702,6 +703,10 @@ const TrainAiPage: NextPageWithLayout = () => {
                         setValue(
                           "position.generalDetails.contractDuration",
                           data.contractDuration
+                        );
+                        setValue(
+                          "position.generalDetails.yearlySalary",
+                          Number(data.yearlySalary)
                         );
                         setValue(
                           "position.generalDetails.socials",
