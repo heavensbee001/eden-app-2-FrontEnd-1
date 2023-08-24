@@ -66,6 +66,8 @@ export const FIND_POSITION_LIGHT = gql`
           flagAnalysisCreated
           background {
             content
+            smallVersion
+            oneLiner
           }
           fitRequirements {
             content
