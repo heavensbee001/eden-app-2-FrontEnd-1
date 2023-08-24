@@ -26,6 +26,7 @@ type FormData = {
   officeLocation: string;
   contractType: "fulltime" | "parttime" | "freelance" | "intern";
   contractDuration: string; // You can specify more options if you have them
+  yearlySalary: number;
   socials: { [key: string]: string };
 };
 
@@ -36,6 +37,7 @@ const defaultFormValues: FormData = {
   officeLocation: "",
   contractType: "fulltime",
   contractDuration: "",
+  yearlySalary: 0,
   socials: {},
 };
 
@@ -57,6 +59,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
       officeLocation: formData["officeLocation"],
       contractType: formData["contractType"],
       contractDuration: formData["contractDuration"],
+      yearlySalary: formData["yearlySalary"],
       socials: formData["socials"],
     } as GeneralDetailsType);
   }, [
@@ -66,6 +69,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
     formData["officeLocation"],
     formData["contractType"],
     formData["contractDuration"],
+    formData["yearlySalary"],
     formData["socials"],
   ]);
 
@@ -138,7 +142,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                       </select>
                     </div>
                   </div>
-                  <div className="flex   w-full flex-col items-start pr-2">
+                  <div className="flex w-full flex-col items-start pr-2">
                     <label className="text-xs ">Office Policy</label>
                     <div className="border-edenGray-100 mt-2  w-full rounded-lg border bg-white p-2 text-xs">
                       <select
@@ -169,7 +173,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                 </div>
 
                 <div>
-                  <div className="relative mb-12 mt-6 flex flex-col items-start">
+                  <div className="relative mb-6 mt-6 flex flex-col items-start">
                     <label className="text-xs">Office Locations</label>
                     <div className="mt-2 w-full rounded-lg bg-white text-xs">
                       <SlLocationPin className="absolute bottom-2 left-2 h-5 w-5 " />
@@ -182,6 +186,25 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                     </div>
                   </div>
                 </div>
+
+                <section className="text-start mb-6">
+                  <p className="mb-2 text-xs">Anual Salary</p>
+                  <div className="text-xs w-64 flex items-center border border-EdenGray-100 rounded-md bg-white">
+                    <input
+                      min={0}
+                      // defaultValue={}
+                      type="number"
+                      id="budget"
+                      className="w-full text-end outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      required
+                      {...register("yearlySalary")}
+                    />
+                    <div className="ml-auto border-l border-edenGray-100 px-3">
+                      <span>$/year</span>
+                    </div>
+                  </div>
+                </section>
+
                 <div className="flex gap-x-8 ">
                   <div className="flex flex-col items-start">
                     <label className="text-xs">Contact Type</label>
