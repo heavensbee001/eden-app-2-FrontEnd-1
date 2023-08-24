@@ -116,10 +116,17 @@ export type Combo = {
 export type Company = {
   __typename?: "Company";
   _id?: Maybe<Scalars["ID"]>;
+  candidatesNum?: Maybe<Scalars["Int"]>;
+  communitySubscribers?: Maybe<Array<Maybe<CommunitySubscribersType>>>;
+  companySubscribersCommunity?: Maybe<Array<Maybe<Company>>>;
+  description?: Maybe<Scalars["String"]>;
   employees?: Maybe<Array<Maybe<EmployeeType>>>;
   name?: Maybe<Scalars["String"]>;
+  positionSubscribersCommunity?: Maybe<Array<Maybe<Position>>>;
   positions?: Maybe<Array<Maybe<Position>>>;
+  skillsNum?: Maybe<Scalars["Int"]>;
   slug?: Maybe<Scalars["String"]>;
+  type?: Maybe<TypeCompany>;
   url?: Maybe<Scalars["String"]>;
 };
 
@@ -128,6 +135,7 @@ export type Conversation = {
   _id?: Maybe<Scalars["ID"]>;
   convKey?: Maybe<Scalars["String"]>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
+  extraPositionsID?: Maybe<Array<Maybe<Scalars["ID"]>>>;
   positionID?: Maybe<Scalars["String"]>;
   positionTrainEdenAI?: Maybe<Scalars["Boolean"]>;
   questionsAnswered?: Maybe<Array<Maybe<QuestionAnsweredType>>>;
@@ -318,6 +326,7 @@ export type Members = {
   budget?: Maybe<BudgetMemberType>;
   chat?: Maybe<ChatResponse>;
   completedOpportunities?: Maybe<Scalars["Int"]>;
+  conduct?: Maybe<ConductType>;
   content?: Maybe<ContentType>;
   cvInfo?: Maybe<CvInfoType>;
   discordAvatar?: Maybe<Scalars["String"]>;
@@ -445,6 +454,7 @@ export type Mutation = {
   interviewQuestionCreationUser?: Maybe<Position>;
   login: User;
   messageToGPT?: Maybe<MessageToGptOutput>;
+  moveCandidateToPosition?: Maybe<Position>;
   newTweetProject?: Maybe<TweetsProject>;
   positionSuggestQuestionsAskCandidate?: Maybe<PositionSuggestQuestionsAskCandidateOutput>;
   positionTextAndConvoToReportCriteria?: Maybe<PositionTextAndConvoToReportCriteriaOutput>;
@@ -761,6 +771,10 @@ export type MutationMessageToGptArgs = {
   fields?: InputMaybe<MessageToGptInput>;
 };
 
+export type MutationMoveCandidateToPositionArgs = {
+  fields?: InputMaybe<MoveCandidateToPositionInput>;
+};
+
 export type MutationNewTweetProjectArgs = {
   fields: NewTweetProjectInput;
 };
@@ -1025,6 +1039,7 @@ export type Position = {
   candidatesFlagAnalysisCreated?: Maybe<Scalars["Boolean"]>;
   candidatesReadyToDisplay?: Maybe<Scalars["Boolean"]>;
   company?: Maybe<Company>;
+  conduct?: Maybe<ConductType>;
   convRecruiter?: Maybe<Array<Maybe<ConvRecruiterType>>>;
   convRecruiterReadyToDisplay?: Maybe<Scalars["Boolean"]>;
   generalDetails?: Maybe<GeneralDetailsType>;
@@ -1205,6 +1220,7 @@ export type Query = {
   messageMapKG_V4?: Maybe<MessageMapKg_V4Output>;
   messageMapKG_V5?: Maybe<MessageMapKg_V5Output>;
   nodes_autocomplete?: Maybe<Array<Maybe<Node>>>;
+  sendEmailViaSendGrid?: Maybe<Scalars["Boolean"]>;
   sendWhatsAppMessage?: Maybe<Scalars["Boolean"]>;
   setAllMatch_v2?: Maybe<Scalars["Boolean"]>;
   skills?: Maybe<PaginatedSkills>;
@@ -1627,6 +1643,10 @@ export type QueryMessageMapKg_V5Args = {
 
 export type QueryNodes_AutocompleteArgs = {
   fields?: InputMaybe<Nodes_AutocompleteInput>;
+};
+
+export type QuerySendEmailViaSendGridArgs = {
+  fields?: InputMaybe<EmailInput>;
 };
 
 export type QuerySendWhatsAppMessageArgs = {
@@ -2197,6 +2217,8 @@ export type AvailabilityInput = {
 export type BackgroundAnalysisType = {
   __typename?: "backgroundAnalysisType";
   content?: Maybe<Scalars["String"]>;
+  oneLiner?: Maybe<Scalars["String"]>;
+  smallVersion?: Maybe<Scalars["String"]>;
 };
 
 export type BudgetInput = {
@@ -2299,12 +2321,33 @@ export type CollaborationLinksType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export type CommunitySubscribersType = {
+  __typename?: "communitySubscribersType";
+  companyID?: Maybe<Scalars["ID"]>;
+  positionID?: Maybe<Scalars["ID"]>;
+};
+
 export type CompareCandidatePositionType = {
   __typename?: "compareCandidatePositionType";
   CVToPosition?: Maybe<CvToPositionType>;
   CV_ConvoToPosition?: Maybe<Array<Maybe<NotesInterviewType>>>;
   CV_ConvoToPositionAverageScore?: Maybe<Scalars["Float"]>;
   reportPassFail?: Maybe<Array<Maybe<ReportPassFailType2>>>;
+};
+
+export type ConductInput = {
+  email?: InputMaybe<Scalars["String"]>;
+  number?: InputMaybe<Scalars["String"]>;
+  telegram?: InputMaybe<Scalars["String"]>;
+  whatsappNumber?: InputMaybe<Scalars["String"]>;
+};
+
+export type ConductType = {
+  __typename?: "conductType";
+  email?: Maybe<Scalars["String"]>;
+  number?: Maybe<Scalars["String"]>;
+  telegram?: Maybe<Scalars["String"]>;
+  whatsappNumber?: Maybe<Scalars["String"]>;
 };
 
 export type Conn_Node_WhType = {
@@ -2862,6 +2905,14 @@ export type EdgeSettingSplitIn = {
   nodeTypeMiddle?: InputMaybe<Scalars["String"]>;
   nodeTypeSource?: InputMaybe<Scalars["String"]>;
   nodeTypeTarget?: InputMaybe<Scalars["String"]>;
+};
+
+export type EmailInput = {
+  from: Scalars["String"];
+  html?: InputMaybe<Scalars["String"]>;
+  subject?: InputMaybe<Scalars["String"]>;
+  text?: InputMaybe<Scalars["String"]>;
+  to: Scalars["String"];
 };
 
 export type EndorcmentInput = {
@@ -3704,6 +3755,12 @@ export type MostRelevantMemberNodeType = {
   score?: Maybe<Scalars["Float"]>;
 };
 
+export type MoveCandidateToPositionInput = {
+  positionNewID?: InputMaybe<Scalars["ID"]>;
+  positionOldID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+};
+
 export type NetworkInput = {
   endorcment?: InputMaybe<Array<InputMaybe<EndorcmentInput>>>;
   memberID?: InputMaybe<Scalars["ID"]>;
@@ -4420,6 +4477,11 @@ export type TweetsType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export enum TypeCompany {
+  Community = "COMMUNITY",
+  Company = "COMPANY",
+}
+
 export enum TypeConvoEnum {
   Align = "ALIGN",
   AskCandidate = "ASK_CANDIDATE",
@@ -4464,8 +4526,12 @@ export type UpdateChatResultInput = {
 
 export type UpdateCompanyInput = {
   _id?: InputMaybe<Scalars["ID"]>;
+  addCompanySubscribersID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  addPositionSubscribersID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  description?: InputMaybe<Scalars["String"]>;
   name?: InputMaybe<Scalars["String"]>;
   slug?: InputMaybe<Scalars["String"]>;
+  type?: InputMaybe<TypeCompany>;
 };
 
 export type UpdateConvSummariesInput = {
@@ -4521,6 +4587,7 @@ export type UpdateMemberInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   bio?: InputMaybe<Scalars["String"]>;
   budget?: InputMaybe<BudgetInputTk>;
+  conduct?: InputMaybe<ConductInput>;
   content?: InputMaybe<ContentInput>;
   discordAvatar?: InputMaybe<Scalars["String"]>;
   discordName?: InputMaybe<Scalars["String"]>;
@@ -4601,6 +4668,7 @@ export type UpdatePositionGeneralDetailsInput = {
 export type UpdatePositionInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   companyID?: InputMaybe<Scalars["ID"]>;
+  conduct?: InputMaybe<ConductInput>;
   icon?: InputMaybe<Scalars["String"]>;
   mainUserID?: InputMaybe<Scalars["ID"]>;
   name?: InputMaybe<Scalars["String"]>;

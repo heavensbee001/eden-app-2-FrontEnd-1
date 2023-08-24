@@ -20,6 +20,7 @@ import {
   Button,
   // CandidateInfo,
   CandidatesTableList,
+  EdenIconExclamation,
   EdenTooltip,
   ListModeEnum,
   Loading,
@@ -1906,25 +1907,49 @@ interface ICandidateCardProps {
 const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
   return (
     <div
-      className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0"
+      className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0 whitespace-normal"
       onClick={onClick}
     >
-      <div className="flex px-4 py-6" onClick={onClick}>
-        <div className="mr-4">
+      <div className="relative flex px-4 pt-2 pb-2" onClick={onClick}>
+        <div className="mr-4 flex items-center">
           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
         </div>
-        <p className="font-bold">{candidate.user?.discordName}</p>
-        {candidate.user?.oneLiner && (
-          <p className="text-edenGray-600 text-sm">
-            {candidate.user?.oneLiner}
-          </p>
-        )}
+        <div className="w-3/4">
+          <p className="font-bold">{candidate.user?.discordName}</p>
+          {candidate.analysisCandidateEdenAI?.background?.oneLiner && (
+            <p className="text-edenGray-600 text-xs w-full whitespace-normal">
+              {candidate.analysisCandidateEdenAI.background.oneLiner}
+            </p>
+          )}
+        </div>
         <Button
           className="bg-edenGreen-100 group-hover:bg-edenGreen-200 absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center !rounded-full !p-0"
           variant="tertiary"
         >
           <FaArrowRight size={"0.75rem"} />
         </Button>
+        {candidate.analysisCandidateEdenAI?.background?.content && (
+          <EdenTooltip
+            id={candidate.user?._id + "_tooltip"}
+            innerTsx={
+              <div className="w-96">
+                <span className="text-gray-600">
+                  {candidate.analysisCandidateEdenAI?.background?.content}
+                </span>
+              </div>
+            }
+            place="top"
+            effect="solid"
+            backgroundColor="white"
+            border
+            borderColor="#e5e7eb"
+            padding="0.5rem"
+          >
+            <div className="bg-edenPink-200 rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
+              <EdenIconExclamation className="w-full h-full" />
+            </div>
+          </EdenTooltip>
+        )}
       </div>
     </div>
   );

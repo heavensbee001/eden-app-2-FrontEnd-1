@@ -17,6 +17,7 @@ export const FIND_POSITION_LIGHT = gql`
           discordAvatar
           timeZone
           location
+          oneLiner
           budget {
             perHour
           }
@@ -65,6 +66,8 @@ export const FIND_POSITION_LIGHT = gql`
           flagAnalysisCreated
           background {
             content
+            smallVersion
+            oneLiner
           }
           fitRequirements {
             content
