@@ -3384,6 +3384,7 @@ export type GeneralDetailsType = {
   socials?: Maybe<SocialsType>;
   startDate?: Maybe<Scalars["String"]>;
   visaRequired?: Maybe<Scalars["Boolean"]>;
+  yearlySalary?: Maybe<Scalars["Float"]>;
 };
 
 export type InputToGptInput = {
@@ -4663,6 +4664,7 @@ export type UpdatePositionGeneralDetailsInput = {
   socials?: InputMaybe<SocialsInput>;
   startDate?: InputMaybe<Scalars["String"]>;
   visaRequired?: InputMaybe<Scalars["Boolean"]>;
+  yearlySalary?: InputMaybe<Scalars["Float"]>;
 };
 
 export type UpdatePositionInput = {

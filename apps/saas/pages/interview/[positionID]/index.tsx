@@ -513,9 +513,9 @@ const ApplicationStepContainer = ({
               </div>
             </section>
             <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-4">
-              <h3 className="text-edenGreen-600 mb-2">Salary Range</h3>
+              <h3 className="text-edenGreen-600 mb-2">Yearly Salary</h3>
               <p className="text-lg font-medium">
-                ${60000} - ${90000} (hardcoded)
+                ${position.generalDetails?.yearlySalary}
               </p>
             </section>
             <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-8">
@@ -616,6 +616,9 @@ const FIND_POSITION = gql`
       positionsRequirements {
         roleDescription
         benefits
+      }
+      generalDetails {
+        yearlySalary
       }
     }
   }
@@ -913,7 +916,7 @@ const ProfileQuestionsContainer = ({
               {...register("budget.perHour")}
             />
             <div className="ml-auto border-l border-edenGray-100 px-3">
-              <span>$/hour</span>
+              <span>$/year</span>
             </div>
           </div>
         </section>
