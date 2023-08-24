@@ -178,9 +178,22 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
           }
         );
 
-        if (!questionsWithCategory["Others"]) {
-          questionsWithCategory["Others"] = [];
+        if (!questionsWithCategory["Technical Skills"]) {
+          questionsWithCategory["Technical Skills"] = [];
         }
+        if (!questionsWithCategory["Human Skills"]) {
+          questionsWithCategory["Human Skills"] = [];
+        }
+        if (!questionsWithCategory["Experiences"]) {
+          questionsWithCategory["Experiences"] = [];
+        }
+        if (!questionsWithCategory["Industry Knowledge"]) {
+          questionsWithCategory["Industry Knowledge"] = [];
+        }
+        if (!questionsWithCategory["Other"]) {
+          questionsWithCategory["Other"] = [];
+        }
+
         // console.log("questionsWithCategory = ", questionsWithCategory);
         setQuestions(questionsWithCategory);
       },
