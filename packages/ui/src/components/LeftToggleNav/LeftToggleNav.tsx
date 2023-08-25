@@ -271,17 +271,21 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
         unwrapped ? "" : "justify-center"
       )}
     >
-      {unwrapped && (
-        <div className={"mr-auto flex w-2/3 items-center"}>
+      <div className={"mr-auto flex w-2/3 items-center"}>
+        <div className="z-10">
           {currentUser.discordAvatar && (
             <Avatar size="xs" src={currentUser.discordAvatar} />
           )}
-          <span className="font-Moret text-edenGreen-600 ml-2">
+        </div>
+        {unwrapped && (
+          <span className="font-Moret text-edenGreen-600 ml-2 whitespace-nowrap">
             {currentUser.discordName}
           </span>
-        </div>
+        )}
+      </div>
+      {unwrapped && (
+        <FiLogOut className="cursor-pointer" size={20} onClick={handleLogout} />
       )}
-      <FiLogOut className="cursor-pointer" size={20} onClick={handleLogout} />
     </div>
   ) : null;
 };
