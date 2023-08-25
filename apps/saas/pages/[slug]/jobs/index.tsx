@@ -61,20 +61,29 @@ const HomePage: NextPageWithLayout = () => {
       </div>
       <section className="fixed top-8 right-8 w-[calc(33vw-4rem)] bg-edenGreen-100 p-4">
         <Button className="float-right">Post a magic job</Button>
-        <div className="pt-8">
+        <div className="pt-12 pb-4">
           <div className="mb-4">
             {company?.name ? (
               <h2 className="text-edenGreen-600">{`${company?.name}’s talent oasis`}</h2>
             ) : (
               <h2 className="text-edenGreen-600">Community talent oasis</h2>
             )}
-            <p>{company?.candidatesNum} candidates</p>
+            <p className="text-xs">
+              <span className="font-bold text-normal">
+                {company?.candidatesNum}
+              </span>{" "}
+              pre-vetted candidates ·{" "}
+              <span className="font-bold text-normal">
+                {company?.skillsNum}
+              </span>{" "}
+              combined skills
+            </p>
           </div>
 
           {company?.description && (
             <div className="mb-4">
               <h3>About us</h3>
-              <p>{company?.description}</p>
+              <p className="text-xs">{company?.description}</p>
             </div>
           )}
 
