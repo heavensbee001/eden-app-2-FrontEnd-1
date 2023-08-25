@@ -11,6 +11,7 @@ import {
   EdenAiProcessingModal,
   InterviewEdenAI,
   Loading,
+  Modal,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -39,6 +40,7 @@ const HomePage: NextPageWithLayout = () => {
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [insightsChecked, setInsightsChecked] = useState<Boolean>(false);
   const [step, setStep] = useState<number>(0);
+  const [showInterviewModal, setShowInterviewModal] = useState<boolean>(false);
   const [titleRole, setTitleRole] = useState<string>("");
   const [topSkills, setTopSkills] = useState<any[]>([]);
   const [content, setContent] = useState<{
@@ -129,6 +131,10 @@ const HomePage: NextPageWithLayout = () => {
     });
   };
 
+  function handleFinishInterviewStep() {
+    setShowInterviewModal(true);
+  }
+
   return (
     <>
       <Head>
@@ -209,31 +215,52 @@ const HomePage: NextPageWithLayout = () => {
                     </p>
                   </div>
                 </WizardStep>
-                {/* <WizardStep navigationDisabled label={"instructions"}>
-              <section className="flex h-full flex-col items-center justify-center">
-                {findPositionData?.findPosition?.name && (
-                  <h3 className="mb-8 text-lg font-medium">
-                    Your first interview with {findPositionData.findPosition.name}{" "}
-                    will be a discussion with Eden AI
-                  </h3>
-                )}
-                <div className="mt-8 flex h-[70%] w-full justify-center">
-                  <RawDataGraph
-                    rawData={rawDataPersonProject}
-                    disableZoom={true}
-                  />
-                </div>
-              </section>
-            </WizardStep> */}
-
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
                 <WizardStep
                   // navigationDisabled
                   label={"INTERVIEW"}
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      className="mx-auto"
+                      onClick={() => {
+                        handleFinishInterviewStep();
+                      }}
+                    >
+                      Finish Interview
+                    </Button>
+                  }
                 >
                   <div className="mx-auto h-full max-w-lg">
                     <InterviewEdenAIContainer handleEnd={handleInterviewEnd} />
                   </div>
+
+                  <Modal open={showInterviewModal} closeOnEsc={false}>
+                    <div className="py-8 px-4">
+                      <h2 className="mb-12 text-center">
+                        Are you sure you want to end the interview?
+                      </h2>
+                      <div className="flex justify-evenly">
+                        <Button
+                          onClick={() => {
+                            setShowInterviewModal(false);
+                          }}
+                          variant="tertiary"
+                        >
+                          {"I'm not done yet"}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            setShowInterviewModal(false);
+                            setStep(step + 1);
+                          }}
+                        >
+                          Finish Interview
+                        </Button>
+                      </div>
+                    </div>
+                  </Modal>
                 </WizardStep>
 
                 <WizardStep
