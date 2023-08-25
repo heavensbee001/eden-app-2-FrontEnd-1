@@ -12,6 +12,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
       _id
       name
       slug
+      description
       positions {
         _id
         name
@@ -29,6 +30,8 @@ const FIND_COMPANY_FROM_SLUG = gql`
           contractType
         }
       }
+      candidatesNum
+      skillsNum
     }
   }
 `;
