@@ -543,7 +543,7 @@ const ApplicationStepContainer = ({
             <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-4">
               <h3 className="text-edenGreen-600 mb-2">Yearly Salary</h3>
               <p className="text-lg font-medium">
-                ${position.generalDetails?.yearlySalary}
+                ${position?.generalDetails?.yearlySalary}
               </p>
             </section>
             <section className="w-full border border-edenGray-100 rounded-md bg-white mb-2 p-4 col-span-8">
