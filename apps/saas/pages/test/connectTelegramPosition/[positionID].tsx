@@ -19,9 +19,9 @@ export const INITIATE_CONNECTION_TG = gql`
   }
 `;
 
-export const MEMBER_DATA_CONNECTED_TG = gql`
-  subscription ($fields: memberDataConnectedTGInput) {
-    memberDataConnectedTG(fields: $fields) {
+export const POSITION_DATA_CONNECTED_TG = gql`
+  subscription ($fields: positionDataConnectedTGInput) {
+    positionDataConnectedTG(fields: $fields) {
       _id
       conduct {
         telegram
@@ -34,7 +34,7 @@ export const MEMBER_DATA_CONNECTED_TG = gql`
 
 const connectTelegram: NextPageWithLayout = () => {
   const router = useRouter();
-  const { userID } = router.query;
+  const { positionID } = router.query;
 
   const [telegramAuthCode, setTelegramAuthCode] = useState<String>("");
   const [flagFinishTGconnection, setFlagFinishTGconnection] =
@@ -50,14 +50,14 @@ const connectTelegram: NextPageWithLayout = () => {
     },
   });
 
-  useSubscription(MEMBER_DATA_CONNECTED_TG, {
+  useSubscription(POSITION_DATA_CONNECTED_TG, {
     variables: {
       fields: {},
     },
     onData: ({ data }) => {
       console.log("data donki= ", data);
-      if (data?.data?.memberDataConnectedTG) {
-        if (data?.data?.memberDataConnectedTG?._id == userID) {
+      if (data?.data?.positionDataConnectedTG) {
+        if (data?.data?.positionDataConnectedTG?._id == positionID) {
           setFlagFinishTGconnection(true);
         }
       }
@@ -65,10 +65,11 @@ const connectTelegram: NextPageWithLayout = () => {
   });
 
   const handleTelegramClick = () => {
+    console.log("positionID = ", positionID);
     initiateConnectionTelegram({
       variables: {
         fields: {
-          memberID: userID,
+          positionID: positionID,
         },
       },
     });
