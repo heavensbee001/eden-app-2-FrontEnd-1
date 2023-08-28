@@ -1298,13 +1298,12 @@ const ProfileQuestionsContainer = ({
 export const INITIATE_CONNECTION_TG = gql`
   mutation ($fields: initiateConnectionTelegramInput) {
     initiateConnectionTelegram(fields: $fields) {
+      done
       _id
-      discordName
-      conduct {
-        telegram
-        telegramChatID
-        telegramConnectionCode
-      }
+      name
+      telegram
+      telegramChatID
+      authTelegramCode
     }
   }
 `;
@@ -1313,7 +1312,6 @@ export const MEMBER_DATA_CONNECTED_TG = gql`
   subscription ($fields: memberDataConnectedTGInput) {
     memberDataConnectedTG(fields: $fields) {
       _id
-      discordName
       conduct {
         telegram
         telegramChatID
@@ -1337,10 +1335,8 @@ const ConnectTelegramContainer = ({}: IConnectTelegramContainerProps) => {
     onCompleted({ initiateConnectionTelegram }) {
       console.log("data tl= ", initiateConnectionTelegram);
 
-      if (initiateConnectionTelegram.conduct.telegramConnectionCode) {
-        setTelegramAuthCode(
-          initiateConnectionTelegram.conduct.telegramConnectionCode
-        );
+      if (initiateConnectionTelegram.authTelegramCode) {
+        setTelegramAuthCode(initiateConnectionTelegram.authTelegramCode);
       }
     },
   });
@@ -1414,7 +1410,7 @@ const ConnectTelegramContainer = ({}: IConnectTelegramContainerProps) => {
                 <p className="text-center mb-8">
                   <Link
                     target="_blank"
-                    href={"https://t.me/soilDeploy_bot"}
+                    href={"https://t.me/soilDeploy_bot"} //make link dynamic dependig on prod or dev
                     className="text-center inline"
                   >
                     <Button variant="primary">
