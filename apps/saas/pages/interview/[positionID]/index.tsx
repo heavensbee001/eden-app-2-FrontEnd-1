@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import {
   AI_INTERVIEW_SERVICES,
@@ -309,7 +309,8 @@ const HomePage: NextPageWithLayout = () => {
                   )}
                 </WizardStep>
                 <WizardStep label={"ALL DONE"}>
-                  <FinalContainer />
+                  {/* <FinalContainer /> */}
+                  <ConnectTelegramContainer />
                 </WizardStep>
 
                 {/* <WizardStep label={"end"}>
@@ -668,13 +669,13 @@ const ADD_CANDIDATE_TO_POSITION = gql`
   }
 `;
 
-const UPDATE_CONTACT = gql`
-  mutation UpdateMember($fields: updateMemberInput!) {
-    updateMember(fields: $fields) {
-      _id
-    }
-  }
-`;
+// const UPDATE_CONTACT = gql`
+//   mutation UpdateMember($fields: updateMemberInput!) {
+//     updateMember(fields: $fields) {
+//       _id
+//     }
+//   }
+// `;
 
 // interface cardsDataType {
 //   title: string;
@@ -856,13 +857,14 @@ import {
   Position,
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
-import { classNames } from "@eden/package-ui/utils";
+// import { classNames } from "@eden/package-ui/utils";
 import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
+import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { BiChevronRight } from "react-icons/bi";
-import { BsLightningFill, BsTelegram, BsWhatsapp } from "react-icons/bs";
-import { HiMail } from "react-icons/hi";
+import { BsLightningFill } from "react-icons/bs";
+// import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
 
 // import { IS_PRODUCTION } from "../../../constants";
@@ -1102,193 +1104,342 @@ const ProfileQuestionsContainer = ({
   );
 };
 
-interface IFinalContainerProps {}
+// interface IFinalContainerProps {}
 
-const FinalContainer = ({}: IFinalContainerProps) => {
-  const router = useRouter();
-  // const positionID = router.query.positionID;
+// const FinalContainer = ({}: IFinalContainerProps) => {
+//   const router = useRouter();
+//   // const positionID = router.query.positionID;
+//   const { currentUser } = useContext(UserContext);
+
+//   const [submitting, setSubmitting] = useState(false);
+//   const [selected, setSelected] =
+//     useState<"email" | "whatsapp" | "telegram">("email");
+//   const [contact, setContact] = useState("");
+
+//   const [updateContact] = useMutation(UPDATE_CONTACT, {
+//     onCompleted: () => {
+//       // setSubmitting(false);
+//       router.push(`/interview/${router.query.positionID}/submitted`);
+//     },
+//     onError: () => {
+//       setSubmitting(false);
+//       toast.error("Server error while submitting");
+//     },
+//   });
+
+//   const handleSubmit = () => {
+//     setSubmitting(true);
+
+//     const _fields = {
+//       _id: currentUser?._id,
+//       conduct: {
+//         whatsappNumber: "",
+//         telegram: "",
+//         email: "",
+//       },
+//     };
+
+//     if (selected === "email") {
+//       _fields.conduct.email = contact;
+//     } else if (selected === "whatsapp") {
+//       _fields.conduct.whatsappNumber = contact;
+//     } else if (selected === "telegram") {
+//       _fields.conduct.telegram = contact;
+//     }
+//     updateContact({
+//       variables: {
+//         fields: _fields,
+//       },
+//     });
+//   };
+
+//   const valid = !!contact;
+
+//   return (
+//     <div className="w-full max-w-2xl mx-auto pt-10">
+//       <div className="text-center">
+//         <div
+//           className={
+//             "mx-auto mb-2 h-20 w-20 text-edenGreen-600 bg-edenPink-100 flex items-center justify-center rounded-full"
+//           }
+//         >
+//           <BsLightningFill size={"2rem"} />
+//         </div>
+//         <h1 className="text-edenGreen-600">Radical!</h1>
+//         <p className="mb-6">
+//           {"We're all set! expect to hear from us by x days"}
+//           <br />
+//           {"Select your preferred communication line"}
+//         </p>
+//       </div>
+//       <div className="">
+//         <div className="flex justify-between w-52 mx-auto mb-8">
+//           <label htmlFor="whatsapp">
+//             <div
+//               className={classNames(
+//                 "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
+//                 selected === "whatsapp"
+//                   ? "!bg-edenGreen-500 text-edenPink-300"
+//                   : ""
+//               )}
+//             >
+//               <BsWhatsapp size={"1.4rem"} />
+//             </div>
+//           </label>
+//           <input
+//             type="radio"
+//             name="contactType"
+//             id="whatsapp"
+//             value="whatsapp"
+//             className="hidden"
+//             onChange={(e) => {
+//               console.log(e.target.checked);
+
+//               if (e.target.checked) {
+//                 setSelected("whatsapp");
+//                 setContact("");
+//               }
+//             }}
+//           />
+//           <label htmlFor="email">
+//             <div
+//               className={classNames(
+//                 "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
+//                 selected === "email"
+//                   ? "!bg-edenGreen-500 text-edenPink-300"
+//                   : ""
+//               )}
+//             >
+//               <HiMail size={"1.4rem"} />
+//             </div>
+//           </label>
+//           <input
+//             type="radio"
+//             name="contactType"
+//             id="email"
+//             value="email"
+//             className="hidden"
+//             onChange={(e) => {
+//               if (e.target.checked) {
+//                 setSelected("email");
+//                 setContact("");
+//               }
+//             }}
+//           />
+//           <label htmlFor="telegram">
+//             <div
+//               className={classNames(
+//                 "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
+//                 selected === "telegram"
+//                   ? "!bg-edenGreen-500 text-edenPink-300"
+//                   : ""
+//               )}
+//             >
+//               <BsTelegram size={"1.4rem"} />
+//             </div>
+//           </label>
+//           <input
+//             type="radio"
+//             name="contactType"
+//             id="telegram"
+//             value="telegram"
+//             className="hidden"
+//             onChange={(e) => {
+//               if (e.target.checked) {
+//                 setSelected("telegram");
+//                 setContact("");
+//               }
+//             }}
+//           />
+//         </div>
+//         <div className="text-xs max-w-[20rem] mx-auto h-8 flex items-center border border-EdenGray-100 rounded-md bg-white">
+//           <div className="ml-auto border-r border-edenGray-100 px-3 text-edenGreen-600">
+//             <span>
+//               {selected === "whatsapp" && <BsWhatsapp size={"1rem"} />}
+//             </span>
+//             <span>{selected === "email" && <HiMail size={"1rem"} />}</span>
+//             <span>
+//               {selected === "telegram" && <BsTelegram size={"1rem"} />}
+//             </span>
+//           </div>
+//           <input
+//             type="text"
+//             id="contact"
+//             className="h-full w-full bg-transparent outline-none"
+//             value={contact}
+//             onChange={(e) => setContact(e.target.value)}
+//           />
+//         </div>
+//         {selected === "whatsapp" && (
+//           <p className="mt-2 text-edenGray-500 text-2xs text-center">
+//             You must include country prefix on phone number
+//           </p>
+//         )}
+//       </div>
+//       <div className="absolute z-20 bottom-4 left-0 w-full flex justify-center">
+//         <Button
+//           className=""
+//           variant="secondary"
+//           onClick={handleSubmit}
+//           disabled={!valid}
+//         >
+//           Submit
+//         </Button>
+//       </div>
+//       <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
+//         {submitting && (
+//           <EdenAiProcessingModal title="Submitting" open={submitting} />
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+export const INITIATE_CONNECTION_TG = gql`
+  mutation ($fields: initiateConnectionTelegramInput) {
+    initiateConnectionTelegram(fields: $fields) {
+      _id
+      discordName
+      conduct {
+        telegram
+        telegramChatID
+        telegramConnectionCode
+      }
+    }
+  }
+`;
+
+export const MEMBER_DATA_CONNECTED_TG = gql`
+  subscription ($fields: memberDataConnectedTGInput) {
+    memberDataConnectedTG(fields: $fields) {
+      _id
+      discordName
+      conduct {
+        telegram
+        telegramChatID
+        telegramConnectionCode
+      }
+    }
+  }
+`;
+
+interface IConnectTelegramContainerProps {}
+
+const ConnectTelegramContainer = ({}: IConnectTelegramContainerProps) => {
   const { currentUser } = useContext(UserContext);
+  const userID = currentUser?._id;
 
-  const [submitting, setSubmitting] = useState(false);
-  const [selected, setSelected] =
-    useState<"email" | "whatsapp" | "telegram">("email");
-  const [contact, setContact] = useState("");
+  const [telegramAuthCode, setTelegramAuthCode] = useState<String>("");
+  const [flagFinishTGconnection, setFlagFinishTGconnection] =
+    useState<Boolean>(false);
 
-  const [updateContact] = useMutation(UPDATE_CONTACT, {
-    onCompleted: () => {
-      // setSubmitting(false);
-      router.push(`/interview/${router.query.positionID}/submitted`);
-    },
-    onError: () => {
-      setSubmitting(false);
-      toast.error("Server error while submitting");
+  const [initiateConnectionTelegram, {}] = useMutation(INITIATE_CONNECTION_TG, {
+    onCompleted({ initiateConnectionTelegram }) {
+      console.log("data tl= ", initiateConnectionTelegram);
+
+      if (initiateConnectionTelegram.conduct.telegramConnectionCode) {
+        setTelegramAuthCode(
+          initiateConnectionTelegram.conduct.telegramConnectionCode
+        );
+      }
     },
   });
 
-  const handleSubmit = () => {
-    setSubmitting(true);
+  useSubscription(MEMBER_DATA_CONNECTED_TG, {
+    variables: {
+      fields: {},
+    },
+    onData: ({ data }) => {
+      if (data?.data?.memberDataConnectedTG) {
+        if (data?.data?.memberDataConnectedTG?._id == userID) {
+          setFlagFinishTGconnection(true);
+        }
+      }
+    },
+  });
 
-    const _fields = {
-      _id: currentUser?._id,
-      conduct: {
-        whatsappNumber: "",
-        telegram: "",
-        email: "",
-      },
-    };
-
-    if (selected === "email") {
-      _fields.conduct.email = contact;
-    } else if (selected === "whatsapp") {
-      _fields.conduct.whatsappNumber = contact;
-    } else if (selected === "telegram") {
-      _fields.conduct.telegram = contact;
-    }
-    updateContact({
+  const handleTelegramClick = () => {
+    initiateConnectionTelegram({
       variables: {
-        fields: _fields,
+        fields: {
+          memberID: userID,
+        },
       },
     });
   };
 
-  const valid = !!contact;
-
   return (
     <div className="w-full max-w-2xl mx-auto pt-10">
-      <div className="text-center">
-        <div
-          className={
-            "mx-auto mb-2 h-20 w-20 text-edenGreen-600 bg-edenPink-100 flex items-center justify-center rounded-full"
-          }
-        >
-          <BsLightningFill size={"2rem"} />
-        </div>
-        <h1 className="text-edenGreen-600">Radical!</h1>
-        <p className="mb-6">
-          {"We're all set! expect to hear from us by x days"}
-          <br />
-          {"Select your preferred communication line"}
-        </p>
-      </div>
-      <div className="">
-        <div className="flex justify-between w-52 mx-auto mb-8">
-          <label htmlFor="whatsapp">
+      {!telegramAuthCode && (
+        <>
+          <div className="text-center">
+            {" "}
             <div
-              className={classNames(
-                "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
-                selected === "whatsapp"
-                  ? "!bg-edenGreen-500 text-edenPink-300"
-                  : ""
-              )}
-            >
-              <BsWhatsapp size={"1.4rem"} />
-            </div>
-          </label>
-          <input
-            type="radio"
-            name="contactType"
-            id="whatsapp"
-            value="whatsapp"
-            className="hidden"
-            onChange={(e) => {
-              console.log(e.target.checked);
-
-              if (e.target.checked) {
-                setSelected("whatsapp");
-                setContact("");
+              className={
+                "mx-auto mb-2 h-20 w-20 text-edenGreen-600 bg-edenPink-100 flex items-center justify-center rounded-full"
               }
-            }}
-          />
-          <label htmlFor="email">
-            <div
-              className={classNames(
-                "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
-                selected === "email"
-                  ? "!bg-edenGreen-500 text-edenPink-300"
-                  : ""
-              )}
             >
-              <HiMail size={"1.4rem"} />
+              <BsLightningFill size={"2rem"} />
             </div>
-          </label>
-          <input
-            type="radio"
-            name="contactType"
-            id="email"
-            value="email"
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelected("email");
-                setContact("");
-              }
-            }}
-          />
-          <label htmlFor="telegram">
-            <div
-              className={classNames(
-                "cursor-pointer h-12 w-12 text-edenGreen-600 bg-edenPink-300 flex items-center justify-center rounded-md hover:bg-edenPink-200",
-                selected === "telegram"
-                  ? "!bg-edenGreen-500 text-edenPink-300"
-                  : ""
-              )}
-            >
-              <BsTelegram size={"1.4rem"} />
-            </div>
-          </label>
-          <input
-            type="radio"
-            name="contactType"
-            id="telegram"
-            value="telegram"
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelected("telegram");
-                setContact("");
-              }
-            }}
-          />
-        </div>
-        <div className="text-xs max-w-[20rem] mx-auto h-8 flex items-center border border-EdenGray-100 rounded-md bg-white">
-          <div className="ml-auto border-r border-edenGray-100 px-3 text-edenGreen-600">
-            <span>
-              {selected === "whatsapp" && <BsWhatsapp size={"1rem"} />}
-            </span>
-            <span>{selected === "email" && <HiMail size={"1rem"} />}</span>
-            <span>
-              {selected === "telegram" && <BsTelegram size={"1rem"} />}
-            </span>
+            <h1 className="text-edenGreen-600">Radical!</h1>
+            <p className="mb-6">
+              {"We're all set!"}
+              {/* {"We're all set! expect to hear from us by x days"} */}
+            </p>
           </div>
-          <input
-            type="text"
-            id="contact"
-            className="h-full w-full bg-transparent outline-none"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-          />
-        </div>
-        {selected === "whatsapp" && (
-          <p className="mt-2 text-edenGray-500 text-2xs text-center">
-            You must include country prefix on phone number
+          <p className="mb-4 text-center">
+            {
+              "We are only missing your Telegram account so we can communicate you any updates"
+            }
           </p>
-        )}
-      </div>
-      <div className="absolute z-20 bottom-4 left-0 w-full flex justify-center">
-        <Button
-          className=""
-          variant="secondary"
-          onClick={handleSubmit}
-          disabled={!valid}
-        >
-          Submit
-        </Button>
-      </div>
-      <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
-        {submitting && (
-          <EdenAiProcessingModal title="Submitting" open={submitting} />
-        )}
-      </div>
+        </>
+      )}
+      {flagFinishTGconnection == false && (
+        <>
+          {!telegramAuthCode ? (
+            <Button
+              variant="secondary"
+              className="mx-auto block"
+              onClick={handleTelegramClick}
+            >
+              Connect Telegram
+            </Button>
+          ) : (
+            telegramAuthCode && (
+              <>
+                <p className="text-center mb-6">
+                  Open Soil bot on Telegram and click{" "}
+                  <span className="font-bold text-edenGreen-500">/start</span>
+                </p>
+                <p className="text-center mb-8">
+                  <Link
+                    target="_blank"
+                    href={"https://t.me/soilDeploy_bot"}
+                    className="text-center inline"
+                  >
+                    <Button variant="primary">
+                      Go to Telegram
+                      <BiChevronRight size="1.4rem" className="ml-2 inline" />
+                    </Button>
+                  </Link>
+                </p>
+                <p className="text-center text-edenGray-500">
+                  Your activation code is:
+                </p>
+                <h2 className="text-edenGreen-600 text-center text-[5rem] tracking-widest">
+                  {telegramAuthCode}
+                </h2>
+              </>
+            )
+          )}
+        </>
+      )}
+
+      {flagFinishTGconnection == true && (
+        <>
+          <p className="">Telegram Connected</p>
+        </>
+      )}
     </div>
   );
 };
