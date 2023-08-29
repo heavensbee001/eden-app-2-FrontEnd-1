@@ -13,6 +13,9 @@ export const FIND_CURRENTUSER = gql`
       interest
       timeZone
       location
+      conduct {
+        telegramChatID
+      }
       budget {
         perHour
       }

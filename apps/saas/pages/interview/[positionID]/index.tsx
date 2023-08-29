@@ -310,7 +310,11 @@ const HomePage: NextPageWithLayout = () => {
                 </WizardStep>
                 <WizardStep label={"ALL DONE"}>
                   {/* <FinalContainer /> */}
-                  <ConnectTelegramContainer />
+                  <ConnectTelegramContainer
+                    candidateTelegramID={
+                      currentUser.conduct?.telegramChatID || undefined
+                    }
+                  />
                 </WizardStep>
 
                 {/* <WizardStep label={"end"}>
@@ -1321,11 +1325,19 @@ export const MEMBER_DATA_CONNECTED_TG = gql`
   }
 `;
 
-interface IConnectTelegramContainerProps {}
+interface IConnectTelegramContainerProps {
+  candidateTelegramID: string | undefined;
+}
 
-const ConnectTelegramContainer = ({}: IConnectTelegramContainerProps) => {
+const ConnectTelegramContainer = ({
+  candidateTelegramID = undefined,
+}: IConnectTelegramContainerProps) => {
   const { currentUser } = useContext(UserContext);
   const userID = currentUser?._id;
+  const router = useRouter();
+  const { positionID } = router.query;
+
+  const [submitting, setSubmitting] = useState(false);
 
   const [telegramAuthCode, setTelegramAuthCode] = useState<String>("");
   const [flagFinishTGconnection, setFlagFinishTGconnection] =
@@ -1383,14 +1395,20 @@ const ConnectTelegramContainer = ({}: IConnectTelegramContainerProps) => {
               {/* {"We're all set! expect to hear from us by x days"} */}
             </p>
           </div>
-          <p className="mb-4 text-center">
-            {
-              "We are only missing your Telegram account so we can communicate you any updates"
-            }
-          </p>
+          {!candidateTelegramID ? (
+            <p className="mb-4 text-center">
+              {
+                "We are only missing your Telegram account so we can communicate you any updates"
+              }
+            </p>
+          ) : (
+            <p className="mb-4 text-center">
+              {"We'll reach you via Telegram if there are any updates"}
+            </p>
+          )}
         </>
       )}
-      {flagFinishTGconnection == false && (
+      {flagFinishTGconnection == false && !candidateTelegramID && (
         <>
           {!telegramAuthCode ? (
             <Button
@@ -1410,7 +1428,7 @@ const ConnectTelegramContainer = ({}: IConnectTelegramContainerProps) => {
                 <p className="text-center mb-8">
                   <Link
                     target="_blank"
-                    href={"https://t.me/soilDeploy_bot"} //make link dynamic dependig on prod or dev
+                    href={`https://t.me/${process.env.NEXT_PUBLIC_EDEN_TG_BOT}`}
                     className="text-center inline"
                   >
                     <Button variant="primary">
@@ -1432,10 +1450,27 @@ const ConnectTelegramContainer = ({}: IConnectTelegramContainerProps) => {
       )}
 
       {flagFinishTGconnection == true && (
-        <>
-          <p className="">Telegram Connected</p>
-        </>
+        <p className="mb-4 text-center">Telegram Connected</p>
       )}
+
+      <div className="absolute z-20 bottom-4 left-0 w-full flex justify-center">
+        <Button
+          className=""
+          variant="secondary"
+          onClick={() => {
+            setSubmitting(true);
+            router.push(`/interview/${positionID}/submitted`);
+          }}
+          disabled={!candidateTelegramID}
+        >
+          Submit
+        </Button>
+      </div>
+      <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
+        {submitting && (
+          <EdenAiProcessingModal title="Submitting" open={submitting} />
+        )}
+      </div>
     </div>
   );
 };
