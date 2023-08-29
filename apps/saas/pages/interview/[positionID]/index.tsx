@@ -1409,7 +1409,7 @@ const ConnectTelegramContainer = ({
         </>
       )}
       {/* To be removed */}
-      {flagFinishTGconnection == false && (
+      {flagFinishTGconnection == false && !!candidateTelegramID && (
         <>
           {!telegramAuthCode ? (
             <Button
