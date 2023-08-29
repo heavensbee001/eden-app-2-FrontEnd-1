@@ -416,6 +416,7 @@ export type Mutation = {
   autoUpdateUserInfoFromCV?: Maybe<AutoUpdateUserInfoFromCvOutput>;
   calculateReputation?: Maybe<Members>;
   changeTeamMember_Phase_Project?: Maybe<Project>;
+  checkUsersForTGConnection?: Maybe<UpdateTgOutput>;
   conversationCVPositionToReport?: Maybe<ConversationCvPositionToReportOutput>;
   createEndorsementLink?: Maybe<EndorsementLink>;
   createError?: Maybe<ErrorLog>;
@@ -450,6 +451,7 @@ export type Mutation = {
   exitRoom?: Maybe<Rooms>;
   findEndorsements?: Maybe<Array<Maybe<Endorsement>>>;
   findReviews?: Maybe<Array<Maybe<Review>>>;
+  initiateConnectionTelegram?: Maybe<UpdateTgOutput>;
   inputToGPT?: Maybe<InputToGptOutput>;
   interviewQuestionCreationUser?: Maybe<Position>;
   login: User;
@@ -619,6 +621,10 @@ export type MutationChangeTeamMember_Phase_ProjectArgs = {
   fields: ChangeTeamMember_Phase_ProjectInput;
 };
 
+export type MutationCheckUsersForTgConnectionArgs = {
+  fields?: InputMaybe<CheckUsersForTgConnectionInput>;
+};
+
 export type MutationConversationCvPositionToReportArgs = {
   fields?: InputMaybe<ConversationCvPositionToReportInput>;
 };
@@ -753,6 +759,10 @@ export type MutationFindEndorsementsArgs = {
 
 export type MutationFindReviewsArgs = {
   fields?: InputMaybe<FindReviewsInput>;
+};
+
+export type MutationInitiateConnectionTelegramArgs = {
+  fields?: InputMaybe<InitiateConnectionTelegramInput>;
 };
 
 export type MutationInputToGptArgs = {
@@ -1683,6 +1693,7 @@ export type QueryResponse = {
   question?: Maybe<QuestionQueryType>;
   responder?: Maybe<ResponderType>;
   sender?: Maybe<SenderType>;
+  sentFlag?: Maybe<Scalars["Boolean"]>;
 };
 
 export type QuestionContentType = {
@@ -1884,11 +1895,17 @@ export type StyleNodeOut = {
 
 export type Subscription = {
   __typename?: "Subscription";
+  memberDataConnectedTG?: Maybe<Members>;
   memberUpdated?: Maybe<Members>;
   memberUpdatedInRoom?: Maybe<Members>;
+  positionDataConnectedTG?: Maybe<Position>;
   queryResponseUpdated?: Maybe<QueryResponse>;
   roomUpdated?: Maybe<Rooms>;
   userCVSavedToDB?: Maybe<AddCvToUserOutput>;
+};
+
+export type SubscriptionMemberDataConnectedTgArgs = {
+  fields?: InputMaybe<MemberDataConnectedTgInput>;
 };
 
 export type SubscriptionMemberUpdatedArgs = {
@@ -1899,8 +1916,12 @@ export type SubscriptionMemberUpdatedInRoomArgs = {
   fields?: InputMaybe<FindRoomsInput>;
 };
 
+export type SubscriptionPositionDataConnectedTgArgs = {
+  fields?: InputMaybe<PositionDataConnectedTgInput>;
+};
+
 export type SubscriptionQueryResponseUpdatedArgs = {
-  fields?: InputMaybe<QueryResponseUpdatedInput>;
+  fields?: InputMaybe<FindRoomsInput>;
 };
 
 export type SubscriptionRoomUpdatedArgs = {
@@ -2310,6 +2331,12 @@ export type ChatResponse = {
   numReply?: Maybe<Scalars["Int"]>;
 };
 
+export type CheckUsersForTgConnectionInput = {
+  authNumberTGMessage?: InputMaybe<Scalars["String"]>;
+  telegramChatID?: InputMaybe<Scalars["String"]>;
+  telegramID?: InputMaybe<Scalars["String"]>;
+};
+
 export type CollaborationLinksInput = {
   link?: InputMaybe<Scalars["String"]>;
   title?: InputMaybe<Scalars["String"]>;
@@ -2347,6 +2374,8 @@ export type ConductType = {
   email?: Maybe<Scalars["String"]>;
   number?: Maybe<Scalars["String"]>;
   telegram?: Maybe<Scalars["String"]>;
+  telegramChatID?: Maybe<Scalars["String"]>;
+  telegramConnectionCode?: Maybe<Scalars["String"]>;
   whatsappNumber?: Maybe<Scalars["String"]>;
 };
 
@@ -3143,6 +3172,7 @@ export type FindMemberInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   discordName?: InputMaybe<Scalars["ID"]>;
   serverID?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  telegramChatID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type FindMemberToMemberGraphInput = {
@@ -3217,6 +3247,7 @@ export type FindOneMemberToMembersGraphInput = {
 
 export type FindPositionInput = {
   _id?: InputMaybe<Scalars["ID"]>;
+  telegramChatID?: InputMaybe<Scalars["String"]>;
 };
 
 export type FindPositionsInput = {
@@ -3281,6 +3312,7 @@ export type FindQueryResponsesInput = {
   responderType?: InputMaybe<SendRespTypeEnum>;
   senderID?: InputMaybe<Scalars["ID"]>;
   senderType?: InputMaybe<SendRespTypeEnum>;
+  sentFlag?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type FindQuestionEdenAiInput = {
@@ -3385,6 +3417,11 @@ export type GeneralDetailsType = {
   startDate?: Maybe<Scalars["String"]>;
   visaRequired?: Maybe<Scalars["Boolean"]>;
   yearlySalary?: Maybe<Scalars["Float"]>;
+};
+
+export type InitiateConnectionTelegramInput = {
+  memberID?: InputMaybe<Scalars["ID"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type InputToGptInput = {
@@ -3652,6 +3689,10 @@ export type Match_V2_UpdateType = {
   projectRole?: Maybe<Scalars["Boolean"]>;
 };
 
+export type MemberDataConnectedTgInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+};
+
 export type MemberPieChartNodeCategoriesInput = {
   memberID?: InputMaybe<Scalars["ID"]>;
 };
@@ -3876,6 +3917,10 @@ export enum PhaseType {
   Rejected = "rejected",
   Shortlisted = "shortlisted",
 }
+
+export type PositionDataConnectedTgInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+};
 
 export type PositionSuggestQuestionsAskCandidateInput = {
   positionID?: InputMaybe<Scalars["ID"]>;
@@ -4721,6 +4766,7 @@ export type UpdateQueryResponseInput = {
   responderType?: InputMaybe<SendRespTypeEnum>;
   senderID?: InputMaybe<Scalars["ID"]>;
   senderType?: InputMaybe<SendRespTypeEnum>;
+  sentFlag?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type UpdateServerInput = {
@@ -4753,6 +4799,16 @@ export type UpdateSkillSubCategoryInput = {
   id_lightcast?: InputMaybe<Scalars["String"]>;
   name?: InputMaybe<Scalars["String"]>;
   skills?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+};
+
+export type UpdateTgOutput = {
+  __typename?: "updateTGOutput";
+  _id?: Maybe<Scalars["ID"]>;
+  authTelegramCode?: Maybe<Scalars["String"]>;
+  done?: Maybe<Scalars["Boolean"]>;
+  name?: Maybe<Scalars["String"]>;
+  telegram?: Maybe<Scalars["String"]>;
+  telegramChatID?: Maybe<Scalars["String"]>;
 };
 
 export type UpdateUrlInput = {
