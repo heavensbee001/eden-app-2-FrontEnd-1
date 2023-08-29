@@ -1408,6 +1408,48 @@ const ConnectTelegramContainer = ({
           )}
         </>
       )}
+      {/* To be removed */}
+      {flagFinishTGconnection == false && (
+        <>
+          {!telegramAuthCode ? (
+            <Button
+              variant="secondary"
+              className="mx-auto block fixed right-4 bottom-4 z-40 opacity-0 hover:opacity-10"
+              onClick={handleTelegramClick}
+            >
+              Connect Telegram
+            </Button>
+          ) : (
+            telegramAuthCode && (
+              <>
+                <p className="text-center mb-6">
+                  Open Soil bot on Telegram and click{" "}
+                  <span className="font-bold text-edenGreen-500">/start</span>
+                </p>
+                <p className="text-center mb-8">
+                  <Link
+                    target="_blank"
+                    href={`https://t.me/${process.env.NEXT_PUBLIC_EDEN_TG_BOT}`}
+                    className="text-center inline"
+                  >
+                    <Button variant="primary">
+                      Go to Telegram
+                      <BiChevronRight size="1.4rem" className="ml-2 inline" />
+                    </Button>
+                  </Link>
+                </p>
+                <p className="text-center text-edenGray-500">
+                  Your activation code is:
+                </p>
+                <h2 className="text-edenGreen-600 text-center text-[5rem] tracking-widest">
+                  {telegramAuthCode}
+                </h2>
+              </>
+            )
+          )}
+        </>
+      )}
+      {/* ---------- */}
       {flagFinishTGconnection == false && !candidateTelegramID && (
         <>
           {!telegramAuthCode ? (
