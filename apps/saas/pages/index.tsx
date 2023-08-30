@@ -7,7 +7,7 @@ import type {
 } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 
 import animationData2 from "../public/lotties/select-candidate.json";
 import animationData1 from "../public/lotties/working-laptop.json";
@@ -142,8 +142,7 @@ const HomePage: NextPage = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // const session = await getSession(ctx);
-
+  const session = await getSession(ctx);
   const { redirect } = ctx.query;
 
   // let redirectUrl = "/";
@@ -158,18 +157,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   //   redirectUrl = redirect;
   // }
 
-  // if (session) {
-  //   return {
-  //     redirect: {
-  //       destination: redirectUrl ? `/${redirectUrl}` : `/`,
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (session) {
+    return {
+      redirect: {
+        destination: redirect || "/D_D/jobs",
+        permanent: false,
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {
-      redirect: redirect || "",
+      redirect: redirect || "/D_D/jobs",
     },
   };
 };
