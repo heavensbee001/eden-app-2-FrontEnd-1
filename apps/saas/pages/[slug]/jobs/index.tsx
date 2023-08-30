@@ -1,7 +1,8 @@
-import { CompanyContext } from "@eden/package-context";
+import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import { AppUserLayout, Badge, Button, SEO } from "@eden/package-ui";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import { useContext } from "react";
 import { IconPickerItem } from "react-fa-icon-picker";
 
@@ -11,6 +12,7 @@ const HomePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
   const { company } = useContext(CompanyContext);
+  const { currentUser } = useContext(UserContext);
 
   return (
     <>
@@ -31,7 +33,25 @@ const HomePage: NextPageWithLayout = () => {
       <section className="w-full mb-4">
         <div className="bg-edenGreen-600 w-full h-48"></div>
       </section>
-      <div className="w-[67%] p-8 pt-12">
+      <div className="w-[67%] px-8">
+        {!currentUser && (
+          <section className="bg-edenPink-100 rounded-md p-4 mb-4">
+            <h2 className="text-edenGreen-600 mb-2">
+              Login to chat with Eden!
+            </h2>
+            <p className="mb-4 text-sm text-edenGray-900">
+              Login to unleash the power of Eden - she can understand you and
+              become your no1 companion in helping you find your dream job
+            </p>
+            <Button
+              onClick={() => {
+                signIn("google", { callbackUrl: router.asPath });
+              }}
+            >
+              Log in with Google
+            </Button>
+          </section>
+        )}
         <section className="">
           <h3 className="mb-2">Open opportunities</h3>
           <div className="w-full -m-2">
