@@ -1,12 +1,8 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext } from "@eden/package-context";
-import {
-  AppUserLayout,
-  Button,
-  EdenAiProcessingModal,
-  SEO,
-} from "@eden/package-ui";
+import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { useContext, useMemo, useState } from "react";
@@ -111,7 +107,22 @@ const HomePage: NextPageWithLayout = () => {
 
   return (
     <>
-      <SEO />
+      <Head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(h,o,t,j,a,r){
+                  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                  h._hjSettings={hjid:${process.env.HOTJAR_ID},hjsv:6};
+                  a=o.getElementsByTagName('head')[0];
+                  r=o.createElement('script');r.async=1;
+                  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                  a.appendChild(r);
+              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+            `,
+          }}
+        />
+      </Head>
       {!companyLoading && (
         <div className="mx-auto max-w-4xl pt-20 text-center">
           <h1 className="text-edenGreen-500 mb-4">Welcome to Eden</h1>
