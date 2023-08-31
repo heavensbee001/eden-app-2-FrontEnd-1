@@ -14,6 +14,7 @@ import {
   EdenChatTab,
   GraphTab,
   InfoTab,
+  ListModeEnum,
   LongText,
   MatchTab,
   MeetingNotes,
@@ -54,6 +55,7 @@ export interface ICandidateInfoProps {
   handleAddCandidatesToList?: (listID: string) => Promise<void>;
   // eslint-disable-next-line no-unused-vars
   handleChkSelection?: (candidate: any) => void;
+  listMode?: ListModeEnum;
 }
 
 function classNames(...classes: any[]) {
@@ -66,6 +68,7 @@ export const CandidateInfo = ({
   mostRelevantMemberNode,
   candidate,
   onClose,
+  listMode = ListModeEnum.edit,
   // rejectCandidateFn,
   // approveCandidateFn,
   // handleChkSelection,
@@ -78,9 +81,8 @@ export const CandidateInfo = ({
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [letterType, setLetterType] = useState<
-    "rejection" | "nextInterviewInvite" | undefined
-  >(undefined);
+  const [letterType, setLetterType] =
+    useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -277,19 +279,23 @@ export const CandidateInfo = ({
       {dataMember?.findMember && (
         <section className="border-edenGray-100 absolute bottom-0 right-0 flex h-20 w-full items-center gap-4 border-t-2 bg-white px-4">
           {/* ------- schedule 2nd interview button ------- */}
-          <Button variant="secondary" onClick={handleSecondInterviewLetter}>
-            Schedule 2nd interview
-          </Button>
+          {listMode !== ListModeEnum.list && (
+            <Button variant="secondary" onClick={handleSecondInterviewLetter}>
+              Schedule 2nd interview
+            </Button>
+          )}
 
           {/* ------- schedule 2nd interview button ------- */}
-          <Button
-            variant="tertiary"
-            className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
-            onClick={handleRejectionLetter}
-            // onClick={handleRejectCandidate}
-          >
-            Reject candidate
-          </Button>
+          {listMode !== ListModeEnum.list && (
+            <Button
+              variant="tertiary"
+              className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
+              onClick={handleRejectionLetter}
+              // onClick={handleRejectCandidate}
+            >
+              Reject candidate
+            </Button>
+          )}
 
           {/* ask eden chat */}
           {dataMember?.findMember && (
