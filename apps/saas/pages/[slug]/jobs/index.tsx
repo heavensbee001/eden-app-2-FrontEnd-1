@@ -31,7 +31,15 @@ const HomePage: NextPageWithLayout = () => {
         </section>
       </div>
       <section className="w-full mb-4">
-        <div className="bg-edenGreen-600 w-full h-48"></div>
+        <div
+          className="bg-edenGreen-600 w-full h-48 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              company?.slug === "D_D" || company?.slug === "tesla10"
+                ? "url(/d_d_banner.jpg)"
+                : "",
+          }}
+        ></div>
       </section>
       <div className="w-[67%] px-8">
         {!currentUser && (
