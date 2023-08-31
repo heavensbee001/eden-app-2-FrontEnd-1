@@ -245,7 +245,7 @@ const HomePage: NextPageWithLayout = () => {
                           onClick={() => {
                             setShowInterviewModal(false);
                           }}
-                          variant="tertiary"
+                          variant="primary"
                         >
                           {"I'm not done yet"}
                         </Button>
