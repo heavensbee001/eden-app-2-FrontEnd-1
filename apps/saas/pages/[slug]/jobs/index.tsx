@@ -1,6 +1,7 @@
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import { AppUserLayout, Badge, Button, SEO } from "@eden/package-ui";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useContext } from "react";
@@ -17,6 +18,22 @@ const HomePage: NextPageWithLayout = () => {
   return (
     <>
       <SEO />
+      <Head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(h,o,t,j,a,r){
+                  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                  h._hjSettings={hjid:${process.env.HOTJAR_ID},hjsv:6};
+                  a=o.getElementsByTagName('head')[0];
+                  r=o.createElement('script');r.async=1;
+                  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                  a.appendChild(r);
+              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+            `,
+          }}
+        />
+      </Head>
       <div className="w-[67%] px-8 pt-12">
         <section className="mb-4">
           <h1 className="text-edenGreen-600">
