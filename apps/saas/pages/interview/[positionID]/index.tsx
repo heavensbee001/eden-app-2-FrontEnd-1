@@ -531,10 +531,189 @@ const ApplicationStepContainer = ({
   };
   const matchText = getMatchText();
 
+  const [openSections, setOpenSections] = useState<{
+    areasToImprove: boolean;
+    growth: boolean;
+    strongSuit: boolean;
+  }>({
+    areasToImprove: true,
+    growth: false,
+    strongSuit: false,
+  });
+
   return (
     <>
       <div>
-        <div className="grid grid-cols-12 gap-2">
+        <div className="w-full grid grid-cols-12 gap-2">
+          <div className="col-span-9">
+            <section className="relative rounded-sm bg-edenPink-100 p-4 mb-2">
+              <div
+                className="absolute right-4 top-4 p-1 cursor-pointer"
+                onClick={() =>
+                  setOpenSections({
+                    ...openSections,
+                    areasToImprove: !openSections.areasToImprove,
+                  })
+                }
+              >
+                {openSections.areasToImprove ? (
+                  <BiChevronUp color="#626262" size={"1.2rem"} />
+                ) : (
+                  <BiChevronDown color="#626262" size={"1.2rem"} />
+                )}
+              </div>
+              <h3 className="text-edenGreen-600 text-lg font-semibold">
+                Areas to improve
+              </h3>
+              <p className="text-sm text-edenGray-900 mb-2">
+                Find out about the areas you can improve on
+              </p>
+              <p
+                className={classNames(
+                  "text-sm whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  openSections.areasToImprove ? "max-h-[80vh]" : "max-h-0"
+                )}
+              >
+                {content.improvementPoints}
+              </p>
+            </section>
+            <section className="relative border-b border-edenGreen-100 p-4 mb-2">
+              <div
+                className="absolute right-4 top-4 p-1 cursor-pointer"
+                onClick={() =>
+                  setOpenSections({
+                    ...openSections,
+                    growth: !openSections.growth,
+                  })
+                }
+              >
+                {openSections.growth ? (
+                  <BiChevronUp color="#626262" size={"1.2rem"} />
+                ) : (
+                  <BiChevronDown color="#626262" size={"1.2rem"} />
+                )}
+              </div>
+              <h3 className="text-edenGreen-600 text-lg font-semibold">
+                Growth
+              </h3>
+              <p className="text-sm text-edenGray-900 mb-2">
+                Find out about the areas you can grow in
+              </p>
+              <p
+                className={classNames(
+                  "text-sm whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  openSections.growth ? "max-h-[80vh]" : "max-h-0"
+                )}
+              >
+                {content.improvementPoints}
+              </p>
+            </section>
+            <section className="relative border-b border-edenGreen-100 p-4 mb-2">
+              <div
+                className="absolute right-4 top-4 p-1 cursor-pointer"
+                onClick={() =>
+                  setOpenSections({
+                    ...openSections,
+                    strongSuit: !openSections.strongSuit,
+                  })
+                }
+              >
+                {openSections.strongSuit ? (
+                  <BiChevronUp color="#626262" size={"1.2rem"} />
+                ) : (
+                  <BiChevronDown color="#626262" size={"1.2rem"} />
+                )}
+              </div>
+              <h3 className="text-edenGreen-600 text-lg font-semibold">
+                Strong Suit
+              </h3>
+              <p className="text-sm text-edenGray-900 mb-2">
+                Find out about the areas you are strong at
+              </p>
+              <p
+                className={classNames(
+                  "text-sm whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  openSections.strongSuit ? "max-h-[80vh]" : "max-h-0"
+                )}
+              >
+                {content.improvementPoints}
+              </p>
+            </section>
+          </div>
+          <div className="col-span-3 border border-edenGreen-100 rounded-sm">
+            <section className="mb-2 rounded-md p-4 text-center border-b border-edenGreen-100">
+              <h2 className="text-center text-edenGreen-600 mb-4">
+                Probability of Passing
+              </h2>
+              <div className="inline-block border border-edenGreen-400 text-center px-3 py-1 text-edenGreen-600 font-Moret text-lg">
+                {matchText.toUpperCase()}
+              </div>
+            </section>
+            <section className="mb-2 p-4">
+              <h3 className="text-edenGreen-600 mb-2">Yearly Salary</h3>
+              <p className="text-lg font-medium">
+                ${position?.generalDetails?.yearlySalary}
+              </p>
+            </section>
+            <section className="mb-2 p-4">
+              <h3 className="text-edenGreen-600 mb-2">Timeline</h3>
+              <div>
+                <div className="">
+                  <div>
+                    <p className="text-xs text-gray-500">{`${
+                      monthNames[today.getMonth()]
+                    } ${today.getDate()}`}</p>
+                    <p className="text-sm">Recruiting + Eden AI Chat</p>
+                  </div>
+                  <BiChevronDown
+                    size={"1.6rem"}
+                    color="#00462C"
+                    className="mx-auto"
+                  />
+                  <div>
+                    <p className="text-xs text-gray-500">{`${
+                      monthNames[
+                        new Date(
+                          new Date().setDate(today.getDate() + 3)
+                        ).getMonth()
+                      ]
+                    } ${new Date(
+                      new Date().setDate(today.getDate() + 3)
+                    ).getDate()}`}</p>
+                    <p className="text-sm">HR Interviews</p>
+                  </div>
+                  <BiChevronDown
+                    size={"1.6rem"}
+                    color="#00462C"
+                    className="mx-auto"
+                  />
+                  <div>
+                    <p className="text-xs text-gray-500">{`${
+                      monthNames[
+                        new Date(
+                          new Date().setDate(today.getDate() + 14)
+                        ).getMonth()
+                      ]
+                    } ${new Date(
+                      new Date().setDate(today.getDate() + 14)
+                    ).getDate()}`}</p>
+                    <p className="text-sm">Onboarding</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section className="mb-2 p-4 w-full">
+              <h3 className="text-edenGreen-600 mb-2">Your Top skills</h3>
+              <div>
+                {topSkills !== null &&
+                  topSkills.map((skill: any, index: number) => (
+                    <Badge key={index} text={skill} cutText={20} />
+                  ))}
+              </div>
+            </section>
+          </div>
+        </div>
+        {/* <div className="grid grid-cols-12 gap-2">
           <div className="col-span-3 bg-edenGreen-100 mb-2 rounded-md p-4">
             <h2 className="text-center text-edenGreen-600 mb-6">
               Probability of passing
@@ -607,8 +786,8 @@ const ApplicationStepContainer = ({
               </div>
             </section>
           </div>
-        </div>
-        <section className="h-64 w-full overflow-x-scroll whitespace-nowrap">
+        </div> */}
+        {/* <section className="h-64 w-full overflow-x-scroll whitespace-nowrap">
           <div className="border border-edenGray-100 rounded-md bg-white p-4 w-72 h-full inline-block align-top overflow-y-scroll mr-2">
             <h3 className="text-edenGreen-600 text-lg font-semibold">
               Strong suit
@@ -631,7 +810,7 @@ const ApplicationStepContainer = ({
             </h3>
             <p className="whitespace-pre-wrap">{content.experienceAreas}</p>
           </div>
-        </section>
+        </section> */}
       </div>
     </>
   );
@@ -876,7 +1055,7 @@ import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
-import { BiChevronRight } from "react-icons/bi";
+import { BiChevronDown, BiChevronRight, BiChevronUp } from "react-icons/bi";
 import { BsLightningFill } from "react-icons/bs";
 // import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
