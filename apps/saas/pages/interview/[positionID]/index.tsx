@@ -157,14 +157,23 @@ const HomePage: NextPageWithLayout = () => {
       <div className="relative mx-auto h-screen w-full max-w-7xl overflow-y-scroll scrollbar-hide p-8">
         {/* <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4"> */}
         {currentUser && (
-          <div className="relative h-full w-full pt-[5%]">
-            <h1 className="text-edenGreen-600 text-center">
-              Hey {currentUser.discordName}!
-            </h1>
-            <div className="h-[95%] w-full">
-              <p className="text-edenGray-900 text-center">
-                {`Congrats! You’ve been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
-              </p>
+          <div className="relative h-full w-full">
+            {step === 0 && (
+              <div className="pt-8">
+                <h1 className="text-edenGreen-600 text-center">
+                  Hey {currentUser.discordName}!
+                </h1>
+                <p className="text-edenGray-900 text-center">
+                  {`Congrats! You’ve been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
+                </p>
+              </div>
+            )}
+            <div
+              className={classNames(
+                "w-full",
+                step === 0 ? "h-[calc(100%-6rem)]" : "h-full"
+              )}
+            >
               <Wizard
                 showStepsHeader={step !== 0}
                 forceStep={step}
@@ -861,6 +870,7 @@ import {
   Position,
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
+import { classNames } from "@eden/package-ui/utils";
 // import { classNames } from "@eden/package-ui/utils";
 import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
