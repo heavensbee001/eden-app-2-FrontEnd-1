@@ -563,6 +563,11 @@ const ApplicationStepContainer = ({
                 )}
               </div>
               <h3 className="text-edenGreen-600 text-lg font-semibold">
+                <BsFillFileEarmarkMinusFill
+                  color="#00462C"
+                  size="1.3rem"
+                  className="inline mr-2 -mt-1"
+                />
                 Areas to improve
               </h3>
               <p className="text-sm text-edenGray-900 mb-2">
@@ -594,6 +599,11 @@ const ApplicationStepContainer = ({
                 )}
               </div>
               <h3 className="text-edenGreen-600 text-lg font-semibold">
+                <BsFillFileEarmarkBarGraphFill
+                  color="#00462C"
+                  size="1.3rem"
+                  className="inline mr-2 -mt-1"
+                />
                 Growth
               </h3>
               <p className="text-sm text-edenGray-900 mb-2">
@@ -625,6 +635,11 @@ const ApplicationStepContainer = ({
                 )}
               </div>
               <h3 className="text-edenGreen-600 text-lg font-semibold">
+                <BsFillFileEarmarkPlusFill
+                  color="#00462C"
+                  size="1.3rem"
+                  className="inline mr-2 -mt-1"
+                />
                 Strong Suit
               </h3>
               <p className="text-sm text-edenGray-900 mb-2">
@@ -650,13 +665,23 @@ const ApplicationStepContainer = ({
               </div>
             </section>
             <section className="mb-2 p-4">
-              <h3 className="text-edenGreen-600 mb-2">Yearly Salary</h3>
+              <h3 className="text-edenGreen-600 mb-2">
+                <IoWallet size="1.3rem" className="inline mr-2" />
+                Yearly Salary
+              </h3>
               <p className="text-lg font-medium">
                 ${position?.generalDetails?.yearlySalary}
               </p>
             </section>
             <section className="mb-2 p-4">
-              <h3 className="text-edenGreen-600 mb-2">Timeline</h3>
+              <h3 className="text-edenGreen-600 mb-2">
+                <BiCalendarExclamation
+                  color="#00462C"
+                  size="1.3rem"
+                  className="inline mr-2 -mt-1"
+                />
+                Timeline
+              </h3>
               <div>
                 <div className="">
                   <div>
@@ -703,7 +728,14 @@ const ApplicationStepContainer = ({
               </div>
             </section>
             <section className="mb-2 p-4 w-full">
-              <h3 className="text-edenGreen-600 mb-2">Your Top skills</h3>
+              <h3 className="text-edenGreen-600 mb-2">
+                <FaStar
+                  size="1.3rem"
+                  color="#00462C"
+                  className="inline mr-2 -mt-1"
+                />
+                Your Top skills
+              </h3>
               <div>
                 {topSkills !== null &&
                   topSkills.map((skill: any, index: number) => (
@@ -1055,8 +1087,20 @@ import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
-import { BiChevronDown, BiChevronRight, BiChevronUp } from "react-icons/bi";
-import { BsLightningFill } from "react-icons/bs";
+import {
+  BiCalendarExclamation,
+  BiChevronDown,
+  BiChevronRight,
+  BiChevronUp,
+} from "react-icons/bi";
+import {
+  BsFillFileEarmarkBarGraphFill,
+  BsFillFileEarmarkMinusFill,
+  BsFillFileEarmarkPlusFill,
+  BsLightningFill,
+} from "react-icons/bs";
+import { FaStar } from "react-icons/fa";
+import { IoWallet } from "react-icons/io5";
 // import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
 
