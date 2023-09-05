@@ -26,6 +26,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../_app";
@@ -412,6 +413,7 @@ const UploadCVContainer = ({
       experienceAreas: data.saveCVtoUser.experienceAreas,
     });
   };
+  const [recaptcha, setRecaptcha] = useState<string | null>(null);
 
   return (
     <div className="pt-8">
@@ -463,11 +465,22 @@ const UploadCVContainer = ({
         </div>
       </section>
       <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md p-4">
-        <CVUploadGPT
-          onDataReceived={handleDataFromCVUploadGPT}
-          handleEnd={handleCvEnd}
-          positionID={positionID}
-        />
+        {!recaptcha && ReCAPTCHA ? (
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}
+            onChange={(val: any) => {
+              if (val) {
+                setRecaptcha(val);
+              }
+            }}
+          />
+        ) : (
+          <CVUploadGPT
+            onDataReceived={handleDataFromCVUploadGPT}
+            handleEnd={handleCvEnd}
+            positionID={positionID}
+          />
+        )}
       </section>
     </div>
   );
