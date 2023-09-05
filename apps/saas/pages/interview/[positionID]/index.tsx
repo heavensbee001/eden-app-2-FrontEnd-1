@@ -467,7 +467,7 @@ const UploadCVContainer = ({
       <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md p-4">
         {!recaptcha && ReCAPTCHA ? (
           <ReCAPTCHA
-            sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}
+            sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY || ""}
             onChange={(val: any) => {
               if (val) {
                 setRecaptcha(val);
