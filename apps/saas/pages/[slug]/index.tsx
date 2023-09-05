@@ -37,6 +37,8 @@ const FIND_COMPANY_FROM_SLUG = gql`
   }
 `;
 
+// @TODO remove this page & keep redirect to jobs
+
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { getCompanyFunc } = useContext(CompanyContext);
@@ -169,5 +171,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {},
+    redirect: {
+      destination: `${url}/jobs`,
+      permanent: false,
+    },
   };
 };

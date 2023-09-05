@@ -581,14 +581,14 @@ const ApplicationStepContainer = ({
                   size="1.3rem"
                   className="inline mr-2 -mt-1"
                 />
-                Areas to improve
+                Resume Missing Points
               </h3>
-              <p className="text-sm text-edenGray-900 mb-2">
-                Find out about the areas you can improve on
+              <p className="text-sm text-edenGray-500 mb-2">
+                Mention during Interview
               </p>
               <p
                 className={classNames(
-                  "text-sm whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  "whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
                   openSections.areasToImprove ? "max-h-[80vh]" : "max-h-0"
                 )}
               >
@@ -619,16 +619,16 @@ const ApplicationStepContainer = ({
                 />
                 Growth
               </h3>
-              <p className="text-sm text-edenGray-900 mb-2">
+              <p className="text-sm text-edenGray-500 mb-2">
                 Find out about the areas you can grow in
               </p>
               <p
                 className={classNames(
-                  "text-sm whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  "whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
                   openSections.growth ? "max-h-[80vh]" : "max-h-0"
                 )}
               >
-                {content.improvementPoints}
+                {content.growthAreas}
               </p>
             </section>
             <section className="relative border-b border-edenGreen-100 p-4 mb-2">
@@ -655,16 +655,16 @@ const ApplicationStepContainer = ({
                 />
                 Strong Suit
               </h3>
-              <p className="text-sm text-edenGray-900 mb-2">
+              <p className="text-sm text-edenGray-500 mb-2">
                 Find out about the areas you are strong at
               </p>
               <p
                 className={classNames(
-                  "text-sm whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  "whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
                   openSections.strongSuit ? "max-h-[80vh]" : "max-h-0"
                 )}
               >
-                {content.improvementPoints}
+                {content.strongFit}
               </p>
             </section>
           </div>

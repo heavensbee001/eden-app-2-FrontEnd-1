@@ -84,6 +84,9 @@ const HomePage: NextPageWithLayout = () => {
               <div
                 key={index}
                 className="bg-white relative cursor-pointer transition-all hover:scale-[101%] w-[calc(50%-2rem)] min-w-[20rem] inline-block m-2 p-4 border border-edenGray-100 rounded-md align-top"
+                onClick={() => {
+                  router.push(`/interview/${position?._id}`);
+                }}
               >
                 <div className="absolute left-4 top-4 rounded-md h-12 w-12 bg-edenPink-400 flex items-center justify-center pl-px mr-4">
                   <IconPickerItem
