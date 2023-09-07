@@ -82,11 +82,12 @@ export const EdenTooltipAsk: FC<IEdenTooltipAskProps> = ({
           senderType: "POSITION",
           responderID: candidateId,
           responderType: "USER",
-          question: "How old are you?",
+          question: question,
         },
       },
     });
   };
+  const [question, setQuestion] = useState("");
 
   return (
     <>
@@ -145,12 +146,15 @@ export const EdenTooltipAsk: FC<IEdenTooltipAskProps> = ({
             className={
               "w-full resize-none bg-transparent px-2 border-edenGray-200 border-box rounded-md border mb-4"
             }
+            onChange={(e) => {
+              setQuestion(e.currentTarget.value);
+            }}
           />
           <Button
             variant="secondary"
             onClick={handleSubmitQuestion}
             className="mx-auto block"
-            disabled={updateQueryResponseLoading}
+            disabled={updateQueryResponseLoading || !question}
             loading={updateQueryResponseLoading}
           >
             Ask Candidate
