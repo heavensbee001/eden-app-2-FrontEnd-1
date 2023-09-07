@@ -12,6 +12,7 @@ export * from "./DragDrop";
 export * from "./EdenAiChat";
 export * from "./EdenAiLetter";
 export * from "./EdenTooltip";
+export * from "./EdenTooltipAsk";
 export * from "./ExperienceCreateProfileChatTalentSearch";
 export * from "./FillSocialLinks";
 export * from "./InterviewEdenAI";
