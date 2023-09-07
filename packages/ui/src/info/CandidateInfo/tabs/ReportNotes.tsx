@@ -1,8 +1,5 @@
-import {
-  CandidateTypeSkillMatch,
-  EdenIconExclamation,
-  EdenTooltip,
-} from "@eden/package-ui";
+import { CandidateTypeSkillMatch, EdenTooltipAsk } from "@eden/package-ui";
+import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 
 import { classNames } from "../../../../utils";
@@ -32,6 +29,7 @@ interface ReportNotesData {
 }
 
 export const ReportNotes: FC<Props> = ({ member, candidate }) => {
+  const router = useRouter();
   const [reportNotesData, setReportNotesData] = useState<ReportNotesData>();
 
   useEffect(() => {
@@ -61,9 +59,11 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
 
         let average = 0;
         let letter = "-";
+
         if (totalN > 0) {
           average = total / totalN;
-          let LT = getGrade(average);
+          const LT = getGrade(average);
+
           letter = LT.letter;
         }
 
@@ -188,28 +188,16 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                             </p>
                             <div className="relative border-edenGray-100 -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                               <span className={color}>{letter}</span>
-                              {item.reason && (
-                                <EdenTooltip
-                                  id={item.title.split(" ").join("")}
-                                  innerTsx={
-                                    <div className="w-60">
-                                      <span className="text-gray-600">
-                                        {item.reason}
-                                      </span>
-                                    </div>
-                                  }
-                                  place="top"
-                                  effect="solid"
-                                  backgroundColor="white"
-                                  border
-                                  borderColor="#e5e7eb"
-                                  padding="0.5rem"
-                                >
-                                  <div className="bg-edenPink-200 cursor-pointer rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
-                                    <EdenIconExclamation className="w-full h-full" />
-                                  </div>
-                                </EdenTooltip>
-                              )}
+                              <EdenTooltipAsk
+                                item={item}
+                                positionId={
+                                  typeof router.query.positionID === "string"
+                                    ? router.query.positionID
+                                    : router.query.positionID![0] || ""
+                                }
+                                candidateId={member?.user?._id || ""}
+                                letter={letter}
+                              />
                             </div>
                           </div>
                         </li>
