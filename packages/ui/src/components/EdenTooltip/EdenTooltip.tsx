@@ -9,12 +9,22 @@ export interface IEdenTooltipProps extends TooltipProps {
   innerTsx: React.ReactNode;
   id: string;
   containerClassName?: string;
+  clickable?: boolean;
+  delayHide?: number;
 }
 
 export const EdenTooltip: FC<IEdenTooltipProps> = (
   props: IEdenTooltipProps
 ) => {
-  const { id, innerTsx, children, className, containerClassName } = props;
+  const {
+    id,
+    innerTsx,
+    children,
+    clickable = false,
+    delayHide = 0,
+    className,
+    containerClassName,
+  } = props;
 
   return (
     <>
@@ -31,6 +41,8 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
             className || ""
           )}
           id={`badgeTip-${id}-description`}
+          clickable={clickable}
+          delayHide={delayHide}
         >
           <div className="chat-message text-gray-700">
             <div className={"flex "}>
