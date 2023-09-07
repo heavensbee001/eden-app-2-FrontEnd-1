@@ -74,6 +74,23 @@ export const InfoTab: FC<Props> = ({
         />
       </div>
 
+      {/* ---- Background ---- */}
+      {member?.user?.previousProjects &&
+      member?.user.previousProjects.length ? (
+        <div className="mb-10">
+          <div className="border-edenGreen-300 border-b px-4">
+            <h3 className="text-edenGreen-500 mb-3">Background</h3>
+          </div>
+          <div className="px-4">
+            <UserBackground
+              background={member?.user.previousProjects || []}
+              setExperienceOpen={setExperienceOpen!}
+              experienceOpen={experienceOpen!}
+            />
+          </div>
+        </div>
+      ) : null}
+
       {/* ---- other data ---- */}
       <section className="mb-10 px-12">
         <div className="grid grid-cols-12 gap-4">
@@ -194,21 +211,6 @@ export const InfoTab: FC<Props> = ({
           </div>
         )}
       </section>
-      {member?.user?.previousProjects &&
-      member?.user.previousProjects.length ? (
-        <div className="mb-10">
-          <div className="border-edenGreen-300 border-b px-4">
-            <h3 className="text-edenGreen-500 mb-3">Background</h3>
-          </div>
-          <div className="px-4">
-            <UserBackground
-              background={member?.user.previousProjects || []}
-              setExperienceOpen={setExperienceOpen!}
-              experienceOpen={experienceOpen!}
-            />
-          </div>
-        </div>
-      ) : null}
     </>
   );
 };
