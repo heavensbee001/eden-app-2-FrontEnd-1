@@ -1669,7 +1669,7 @@ const ConnectTelegramContainer = ({
             telegramAuthCode && (
               <>
                 <p className="text-center mb-6">
-                  Open Soil bot on Telegram and click{" "}
+                  Open EdenAI bot on Telegram and click{" "}
                   <span className="font-bold text-edenGreen-500">/start</span>
                 </p>
                 <p className="text-center mb-8">
@@ -1710,7 +1710,7 @@ const ConnectTelegramContainer = ({
             telegramAuthCode && (
               <>
                 <p className="text-center mb-6">
-                  Open Soil bot on Telegram and click{" "}
+                  Open EdenAI bot on Telegram and click{" "}
                   <span className="font-bold text-edenGreen-500">/start</span>
                 </p>
                 <p className="text-center mb-8">
