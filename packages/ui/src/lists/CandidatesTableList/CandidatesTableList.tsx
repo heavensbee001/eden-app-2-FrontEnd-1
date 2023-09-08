@@ -167,7 +167,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 <Loading />
               </td>
             </tr>
-          ) : Boolean(candidatesList) ? (
+          ) : Boolean(candidatesList.length) ? (
             candidatesList.map((candidate, idx) => (
               <tr
                 key={`${candidate.user?._id}-${idx}`}
