@@ -20,6 +20,7 @@ import {
 } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -96,6 +97,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
   };
+  const router = useRouter();
+  const { positionID } = router.query;
   // const [showMatchDetails, setShowMatchDetails] = useState(true);
 
   // console.log("candidatesList 00 0 = ", candidatesList);
@@ -117,8 +120,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     }
   };
 
-  const interviewLink =
-    "https://www.edenprotocol.app/interview/64e311bf3c477e32522fd57b";
+  const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
 
   return (
     <section className="bg-bgColor w-full overflow-hidden rounded-tl-md rounded-tr-md">
