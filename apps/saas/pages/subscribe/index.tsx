@@ -1,5 +1,10 @@
+import { UserContext } from "@eden/package-context";
 import { AppUserLayout, Button } from "@eden/package-ui";
+import axios from "axios";
+import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import { useContext } from "react";
 import { BiCheck, BiInfinite } from "react-icons/bi";
 import { MdClose } from "react-icons/md";
 
@@ -145,6 +150,34 @@ const PRODUCTS: PRODUCTS_TYPE = [
 const SubscribePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
+  const { currentUser } = useContext(UserContext);
+
+  const handleSubscribeClick = async () => {
+    const origin =
+      typeof window !== "undefined" && window.location.origin
+        ? window.location.origin
+        : "";
+
+    const redirect = await axios.post(
+      `${process.env.NEXT_PUBLIC_AUTH_URL}/stripe/create-checkout-session` as string,
+      {
+        // eslint-disable-next-line camelcase
+        price_id: "price_1NnKzqBxX85c6z0CuUKA0uku",
+        // eslint-disable-next-line camelcase
+        success_url: `${origin}/subscribe`,
+        // eslint-disable-next-line camelcase
+        cancel_url: `${origin}/subscribe`,
+        userid: currentUser?._id,
+      },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `*`,
+        },
+      }
+    );
+
+    if (origin && redirect.data) window.location.assign(redirect.data);
+  };
 
   return (
     <div className="h-screen flex items-center justify-center">
@@ -228,7 +261,11 @@ const SubscribePage: NextPageWithLayout = () => {
               </ul>
             </section>
             <div className="w-full pt-2">
-              <Button className="block mx-auto" variant="secondary">
+              <Button
+                className="block mx-auto"
+                variant="secondary"
+                onClick={handleSubscribeClick}
+              >
                 Subscribe
               </Button>
             </div>
@@ -240,5 +277,27 @@ const SubscribePage: NextPageWithLayout = () => {
 };
 
 SubscribePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+
+export async function getServerSideProps(ctx: {
+  req: IncomingMessage;
+  res: ServerResponse;
+}) {
+  const session = await getSession(ctx);
+
+  const url = ctx.req.url;
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/?redirect=${url}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 export default SubscribePage;
