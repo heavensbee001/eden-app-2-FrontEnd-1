@@ -2,8 +2,10 @@ import { CandidateType } from "@eden/package-graphql/generated";
 import {
   Avatar,
   Badge,
+  Button,
   CheckBox,
   Loading,
+  TextField,
   TextHeading2,
 } from "@eden/package-ui";
 import clsx from "clsx";
@@ -17,6 +19,7 @@ import {
   useState,
 } from "react";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -113,6 +116,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
         return null;
     }
   };
+
+  const interviewLink =
+    "https://www.edenprotocol.app/interview/64e311bf3c477e32522fd57b";
 
   return (
     <section className="bg-bgColor w-full overflow-hidden rounded-tl-md rounded-tr-md">
@@ -322,14 +328,74 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 textColor="black"
                 colSpan={8}
               >
-                <Image
-                  alt="sleeping dashboard'
+                <div className="flex flex-col items-center">
+                  <Image
+                    className="mb-4 mt-16"
+                    alt="sleeping dashboard'
 "
-                  src="/sleeping-dashboard.png"
-                  width={216}
-                  height={83}
-                ></Image>
-                No candidates found
+                    src="/sleeping-dashboard.png"
+                    width={216}
+                    height={83}
+                  ></Image>
+                  <h1>Your talent oasis awaits!</h1>
+                  <p>
+                    Fill your dashboard with stellar candidates by sharing the
+                    interview link
+                  </p>
+                  <div className="items-center-center mt-6 flex w-7/12 space-x-2 ">
+                    <div className="relative w-full ">
+                      <TextField
+                        className="h-12 w-96 border-2 border-neutral-400 pl-10"
+                        onChange={() => console.log("hi")}
+                        value={interviewLink}
+                      ></TextField>
+                      <div className="absolute bottom-3 left-3 ">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="h-5 w-5 "
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    <Button
+                      variant="primary"
+                      className="font-Unica h-12  w-36  border-neutral-400 font-medium text-black "
+                      onClick={() => {
+                        navigator.clipboard.writeText(interviewLink);
+                        toast.success("interview link copied to clipboard");
+                      }}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          width={16}
+                          height={16}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z"
+                          />
+                        </svg>
+                        <span className="text-sm">Copy Link</span>
+                      </div>
+                    </Button>
+                  </div>
+                </div>
               </ColumnStyled>
             </tr>
           )}
