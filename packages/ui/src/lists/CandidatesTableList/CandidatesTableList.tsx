@@ -16,6 +16,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import Image from "next/image";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -158,7 +159,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 <Loading />
               </td>
             </tr>
-          ) : Boolean(candidatesList) ? (
+          ) : Boolean(!candidatesList) ? (
             candidatesList.map((candidate, idx) => (
               <tr
                 key={`${candidate.user?._id}-${idx}`}
@@ -321,6 +322,13 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 textColor="black"
                 colSpan={8}
               >
+                <Image
+                  alt="sleeping dashboard'
+"
+                  src="/sleeping-dashboard.png"
+                  width={216}
+                  height={83}
+                ></Image>
                 No candidates found
               </ColumnStyled>
             </tr>
