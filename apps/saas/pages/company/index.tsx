@@ -6,7 +6,7 @@ import type { NextPageWithLayout } from "../../_app";
 const CreateCompany: NextPageWithLayout = () => {
   const { register, handleSubmit } = useForm();
 
-  const submitHandler = (data) => {
+  const submitHandler = (data: any) => {
     console.log("data from company page: ", data);
   };
 
