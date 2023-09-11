@@ -85,11 +85,13 @@ export const LeftToggleNav = ({
 
   const hideCreatePosition =
     router.pathname.includes("/jobs") ||
+    router.pathname.includes("/subscribe") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/train-eden-ai");
 
   const hideTalentPools =
     router.pathname.includes("/jobs") ||
+    router.pathname.includes("/subscribe") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/train-eden-ai");
 
