@@ -1,7 +1,8 @@
 import { AppUserLayout, Button, SEO } from "@eden/package-ui";
 import { useForm } from "react-hook-form";
 
-import type { NextPageWithLayout } from "../../_app";
+// @ts-ignore
+import type NextPageWithLayout from "../../_app";
 
 const CreateCompany: NextPageWithLayout = () => {
   const { register, handleSubmit } = useForm();
@@ -45,6 +46,6 @@ const CreateCompany: NextPageWithLayout = () => {
   );
 };
 
-CreateCompany.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+CreateCompany.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default CreateCompany;
