@@ -8,12 +8,14 @@ import { useContext } from "react";
 import { BiCheck, BiInfinite } from "react-icons/bi";
 import { MdClose } from "react-icons/md";
 
+import { IS_PRODUCTION } from "../../constants";
 import type { NextPageWithLayout } from "../_app";
 
 type PRODUCTS_TYPE = {
   name: string;
   description: string;
   monthlyPrice: number;
+  priceID: string;
   features: {
     [key: string]: {
       [key: string]: {
@@ -30,6 +32,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     description:
       "For those looking to build the future with likeminded people.",
     monthlyPrice: 500,
+    priceID: IS_PRODUCTION
+      ? "price_1Np71oBxX85c6z0CNwi9ZBMa"
+      : "price_1NnKzqBxX85c6z0CuUKA0uku",
     features: {
       access: {
         magicJobPosts: { value: 2, text: "Magic job posts" },
@@ -70,6 +75,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     description:
       "For those looking to build the future with likeminded people.",
     monthlyPrice: 500,
+    priceID: IS_PRODUCTION
+      ? "price_1Np77EBxX85c6z0C0DPou3hC"
+      : "price_1NnKzqBxX85c6z0CuUKA0uku",
     features: {
       access: {
         magicJobPosts: { value: 5, text: "Magic job posts" },
@@ -110,6 +118,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     description:
       "For those looking to build the future with likeminded people.",
     monthlyPrice: 500,
+    priceID: IS_PRODUCTION
+      ? "price_1Np7AsBxX85c6z0CsMSl5VnB"
+      : "price_1NnKzqBxX85c6z0CuUKA0uku",
     features: {
       access: {
         magicJobPosts: { value: 9999, text: "Magic job posts" },
@@ -152,7 +163,7 @@ const SubscribePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { currentUser } = useContext(UserContext);
 
-  const handleSubscribeClick = async () => {
+  const handleSubscribeClick = async (priceID: string) => {
     const origin =
       typeof window !== "undefined" && window.location.origin
         ? window.location.origin
@@ -162,7 +173,7 @@ const SubscribePage: NextPageWithLayout = () => {
       `${process.env.NEXT_PUBLIC_AUTH_URL}/stripe/create-checkout-session` as string,
       {
         // eslint-disable-next-line camelcase
-        price_id: "price_1NnKzqBxX85c6z0CuUKA0uku",
+        price_id: priceID,
         // eslint-disable-next-line camelcase
         success_url: `${origin}/subscribe`,
         // eslint-disable-next-line camelcase
@@ -264,7 +275,7 @@ const SubscribePage: NextPageWithLayout = () => {
               <Button
                 className="block mx-auto"
                 variant="secondary"
-                onClick={handleSubscribeClick}
+                onClick={() => handleSubscribeClick(product.priceID)}
               >
                 Subscribe
               </Button>
