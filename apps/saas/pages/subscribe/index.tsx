@@ -74,7 +74,7 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Scaleup",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 500,
+    monthlyPrice: 2000,
     priceID: IS_PRODUCTION
       ? "price_1Np77EBxX85c6z0C0DPou3hC"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
@@ -117,7 +117,7 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Head of platform @ VC",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 500,
+    monthlyPrice: 5000,
     priceID: IS_PRODUCTION
       ? "price_1Np7AsBxX85c6z0CsMSl5VnB"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
