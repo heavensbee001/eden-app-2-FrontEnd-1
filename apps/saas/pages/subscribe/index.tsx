@@ -1,14 +1,21 @@
+import { UserContext } from "@eden/package-context";
 import { AppUserLayout, Button } from "@eden/package-ui";
+import axios from "axios";
+import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import { useContext } from "react";
 import { BiCheck, BiInfinite } from "react-icons/bi";
 import { MdClose } from "react-icons/md";
 
+import { IS_PRODUCTION } from "../../constants";
 import type { NextPageWithLayout } from "../_app";
 
 type PRODUCTS_TYPE = {
   name: string;
   description: string;
   monthlyPrice: number;
+  priceID: string;
   features: {
     [key: string]: {
       [key: string]: {
@@ -25,6 +32,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     description:
       "For those looking to build the future with likeminded people.",
     monthlyPrice: 500,
+    priceID: IS_PRODUCTION
+      ? "price_1Np71oBxX85c6z0CNwi9ZBMa"
+      : "price_1NnKzqBxX85c6z0CuUKA0uku",
     features: {
       access: {
         magicJobPosts: { value: 2, text: "Magic job posts" },
@@ -64,7 +74,10 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Scaleup",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 500,
+    monthlyPrice: 2000,
+    priceID: IS_PRODUCTION
+      ? "price_1Np77EBxX85c6z0C0DPou3hC"
+      : "price_1NnKzqBxX85c6z0CuUKA0uku",
     features: {
       access: {
         magicJobPosts: { value: 5, text: "Magic job posts" },
@@ -104,7 +117,10 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Head of platform @ VC",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 500,
+    monthlyPrice: 5000,
+    priceID: IS_PRODUCTION
+      ? "price_1Np7AsBxX85c6z0CsMSl5VnB"
+      : "price_1NnKzqBxX85c6z0CuUKA0uku",
     features: {
       access: {
         magicJobPosts: { value: 9999, text: "Magic job posts" },
@@ -145,6 +161,34 @@ const PRODUCTS: PRODUCTS_TYPE = [
 const SubscribePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
+  const { currentUser } = useContext(UserContext);
+
+  const handleSubscribeClick = async (priceID: string) => {
+    const origin =
+      typeof window !== "undefined" && window.location.origin
+        ? window.location.origin
+        : "";
+
+    const redirect = await axios.post(
+      `${process.env.NEXT_PUBLIC_AUTH_URL}/stripe/create-checkout-session` as string,
+      {
+        // eslint-disable-next-line camelcase
+        price_id: priceID,
+        // eslint-disable-next-line camelcase
+        success_url: `${origin}/subscribe`,
+        // eslint-disable-next-line camelcase
+        cancel_url: `${origin}/subscribe`,
+        userid: currentUser?._id,
+      },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `*`,
+        },
+      }
+    );
+
+    if (origin && redirect.data) window.location.assign(redirect.data);
+  };
 
   return (
     <div className="h-screen flex items-center justify-center">
@@ -228,7 +272,11 @@ const SubscribePage: NextPageWithLayout = () => {
               </ul>
             </section>
             <div className="w-full pt-2">
-              <Button className="block mx-auto" variant="secondary">
+              <Button
+                className="block mx-auto"
+                variant="secondary"
+                onClick={() => handleSubscribeClick(product.priceID)}
+              >
                 Subscribe
               </Button>
             </div>
@@ -240,5 +288,27 @@ const SubscribePage: NextPageWithLayout = () => {
 };
 
 SubscribePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+
+export async function getServerSideProps(ctx: {
+  req: IncomingMessage;
+  res: ServerResponse;
+}) {
+  const session = await getSession(ctx);
+
+  const url = ctx.req.url;
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/?redirect=${url}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 export default SubscribePage;
