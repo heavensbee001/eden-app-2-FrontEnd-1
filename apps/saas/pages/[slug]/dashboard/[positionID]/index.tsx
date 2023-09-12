@@ -1124,7 +1124,7 @@ const PositionCRM: NextPageWithLayout = () => {
           </Button>
         </div>
       </Modal>
-      <div className="mx-auto max-w-screen-xl flex-grow p-8">
+      <div className="relative mx-auto max-w-screen-xl flex-grow p-8">
         <div className="z-20 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
@@ -1775,15 +1775,15 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out",
+            "fixed right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out flex",
             router.query.candidate1 && router.query.candidate2
-              ? "w-[100vw]"
+              ? "w-100%"
               : "w-0"
           )}
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide relative h-screen w-1/2 overflow-y-scroll scrollbar-hide border-box border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1800,7 +1800,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   onClose={() => {
                     router.push(
                       {
-                        pathname: "/dashboard/" + positionID,
+                        pathname: `/${company?.slug}/dashboard/${positionID}`,
                       },
                       undefined,
                       { shallow: true }
@@ -1815,7 +1815,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
+              <div className="scrollbar-hide relative h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}
@@ -1832,7 +1832,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   onClose={() => {
                     router.push(
                       {
-                        pathname: "/dashboard/" + positionID,
+                        pathname: `/${company?.slug}/dashboard/${positionID}`,
                       },
                       undefined,
                       { shallow: true }
