@@ -559,16 +559,16 @@ const ApplicationStepContainer = ({
       <div>
         <div className="grid w-full grid-cols-12 gap-2">
           <div className="col-span-9">
-            <section className="bg-edenPink-100 relative mb-2 rounded-sm p-4">
-              <div
-                className="absolute right-4 top-4 cursor-pointer p-1"
-                onClick={() =>
-                  setOpenSections({
-                    ...openSections,
-                    areasToImprove: !openSections.areasToImprove,
-                  })
-                }
-              >
+            <section
+              className="bg-edenPink-100 relative mb-2 rounded-sm p-4 cursor-pointer"
+              onClick={() =>
+                setOpenSections({
+                  ...openSections,
+                  areasToImprove: !openSections.areasToImprove,
+                })
+              }
+            >
+              <div className="absolute right-4 top-4 cursor-pointer p-1">
                 {openSections.areasToImprove ? (
                   <BiChevronUp color="#626262" size={"1.2rem"} />
                 ) : (
@@ -595,16 +595,16 @@ const ApplicationStepContainer = ({
                 {content.improvementPoints}
               </p>
             </section>
-            <section className="border-edenGreen-100 relative mb-2 border-b p-4">
-              <div
-                className="absolute right-4 top-4 cursor-pointer p-1"
-                onClick={() =>
-                  setOpenSections({
-                    ...openSections,
-                    growth: !openSections.growth,
-                  })
-                }
-              >
+            <section
+              className="border-edenGreen-100 relative mb-2 border-b p-4 cursor-pointer"
+              onClick={() =>
+                setOpenSections({
+                  ...openSections,
+                  growth: !openSections.growth,
+                })
+              }
+            >
+              <div className="absolute right-4 top-4 cursor-pointer p-1">
                 {openSections.growth ? (
                   <BiChevronUp color="#626262" size={"1.2rem"} />
                 ) : (
@@ -631,16 +631,16 @@ const ApplicationStepContainer = ({
                 {content.growthAreas}
               </p>
             </section>
-            <section className="border-edenGreen-100 relative mb-2 border-b p-4">
-              <div
-                className="absolute right-4 top-4 cursor-pointer p-1"
-                onClick={() =>
-                  setOpenSections({
-                    ...openSections,
-                    strongSuit: !openSections.strongSuit,
-                  })
-                }
-              >
+            <section
+              className="border-edenGreen-100 relative mb-2 border-b p-4 cursor-pointer"
+              onClick={() =>
+                setOpenSections({
+                  ...openSections,
+                  strongSuit: !openSections.strongSuit,
+                })
+              }
+            >
+              <div className="absolute right-4 top-4 cursor-pointer p-1">
                 {openSections.strongSuit ? (
                   <BiChevronUp color="#626262" size={"1.2rem"} />
                 ) : (
@@ -1655,7 +1655,7 @@ const ConnectTelegramContainer = ({
         </>
       )}
       {/* To be removed */}
-      {!!candidateTelegramID && (
+      {flagFinishTGconnection == false && !!candidateTelegramID && (
         <>
           {!telegramAuthCode ? (
             <Button

@@ -56,6 +56,7 @@ export interface ICandidateInfoProps {
   // eslint-disable-next-line no-unused-vars
   handleChkSelection?: (candidate: any) => void;
   listMode?: ListModeEnum;
+  showAskEden?: boolean;
 }
 
 function classNames(...classes: any[]) {
@@ -77,6 +78,7 @@ export const CandidateInfo = ({
   // handleAddCandidatesToList,
   // eslint-disable-next-line no-unused-vars
   qualified = false,
+  showAskEden = true,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -135,7 +137,7 @@ export const CandidateInfo = ({
       ),
     },
     {
-      tab: "Interview",
+      tab: "Notes",
       Content: () => (
         <MatchTab
           member={
@@ -298,11 +300,12 @@ export const CandidateInfo = ({
           )}
 
           {/* ask eden chat */}
-          {dataMember?.findMember && (
+          {dataMember?.findMember && showAskEden && (
             <AskEdenPopUp
               memberID={dataMember?.findMember._id}
               service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
               placeholder="Ask me any question about the Candidate"
+              title={`Ask Eden about ${dataMember?.findMember?.discordName}`}
             />
           )}
         </section>
