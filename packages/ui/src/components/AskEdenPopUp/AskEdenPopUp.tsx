@@ -44,12 +44,14 @@ export interface IAskEdenPopUpProps {
   memberID: string;
   service: AI_INTERVIEW_SERVICES;
   placeholder?: string;
+  title?: string;
 }
 
 export const AskEdenPopUp = ({
   memberID,
   service,
   placeholder = "Ask me any question",
+  title,
 }: IAskEdenPopUpProps) => {
   const [open, setOpen] = useState(false);
 
@@ -105,16 +107,30 @@ export const AskEdenPopUp = ({
       <div className="fixed bottom-4 right-4 z-40">
         <div
           className={classNames(
-            "w-12 h-12 bg-edenPink-400 drop-shadow-sm rounded-full flex items-center justify-center cursor-pointer transition-all transform ease-in-out",
-            open ? "-rotate-45" : "rotate-0"
+            "relative drop-shadow-sm rounded-full cursor-pointer transition-all ease-in-out",
+            title
+              ? "h-[calc(3rem+4px)] overflow-hidden scrollbar-hide border-2 border-edenGreen-600 pl-4 flex items-center justify-between hover:bg-edenGreen-100"
+              : "",
+            open && title ? "max-w-[calc(3rem+4px)]" : "max-w-[50vw]"
           )}
           onClick={() => setOpen(!open)}
         >
-          {open ? (
-            <EdenIconQuestion className="w-8 h-8" />
-          ) : (
-            <EdenIconExclamationAndQuestion className="w-8 h-8" />
+          {title && (
+            <span className="text-edenGreen-600 font-Moret mr-16">{title}</span>
           )}
+          <div
+            className={classNames(
+              "w-12 h-12 bg-edenPink-400 rounded-full flex items-center justify-center cursor-pointer transition-all transform ease-in-out",
+              open ? "-rotate-45" : "rotate-0",
+              title ? "absolute right-0 float-right" : ""
+            )}
+          >
+            {open ? (
+              <EdenIconQuestion className="w-8 h-8" />
+            ) : (
+              <EdenIconExclamationAndQuestion className="w-8 h-8" />
+            )}
+          </div>
         </div>
         <Transition
           show={open}
