@@ -155,7 +155,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="relative mx-auto h-screen w-full max-w-7xl overflow-y-scroll scrollbar-hide p-8">
+      <div className="scrollbar-hide relative mx-auto h-screen w-full max-w-7xl overflow-y-scroll p-8">
         {/* <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4"> */}
         {currentUser && (
           <div className="relative h-full w-full">
@@ -246,7 +246,7 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
 
                   <Modal open={showInterviewModal} closeOnEsc={false}>
-                    <div className="py-8 px-4">
+                    <div className="px-4 py-8">
                       <h2 className="mb-12 text-center">
                         Are you sure you want to end the interview?
                       </h2>
@@ -335,7 +335,7 @@ const HomePage: NextPageWithLayout = () => {
               </Wizard>
               {/* {!IS_PRODUCTION && ( */}
               <Button
-                className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+                className="absolute bottom-0 left-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
                 variant="secondary"
                 onClick={() => {
                   setStep(step + 1);
@@ -418,11 +418,11 @@ const UploadCVContainer = ({
   return (
     <div className="pt-8">
       <section className="grid grid-cols-3 gap-6">
-        <div className="col-span-1 h-full bg-edenPink-100 rounded-md p-4">
+        <div className="bg-edenPink-100 col-span-1 h-full rounded-md p-4">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Role Description
           </h3>
-          <ul className="list-disc text-sm text-edenGray-900 pl-4">
+          <ul className="text-edenGray-900 list-disc pl-4 text-sm">
             {position?.positionsRequirements?.roleDescription
               ?.slice(0, 10)
               .map((item, index) => (
@@ -432,11 +432,11 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="col-span-1 h-full bg-edenPink-100 rounded-md p-4">
+        <div className="bg-edenPink-100 col-span-1 h-full rounded-md p-4">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
-          <ul className="list-disc text-sm text-edenGray-900 pl-4">
+          <ul className="text-edenGray-900 list-disc pl-4 text-sm">
             {position?.positionsRequirements?.benefits
               ?.slice(0, 10)
               .map((item, index) => (
@@ -446,14 +446,14 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="col-span-1 h-full bg-edenPink-300 rounded-md p-4">
+        <div className="bg-edenPink-300 col-span-1 h-full rounded-md p-4">
           <h3 className="text-edenGreen-600 text-center text-2xl font-semibold">
             You x {position?.company?.name}
           </h3>
-          <p className="mb-4 text-center text-sm text-edenGray-700">
+          <p className="text-edenGray-700 mb-4 text-center text-sm">
             Upload your CV for personalized feedback
           </p>
-          <ul className="list-disc text-sm text-edenGray-900 pl-4">
+          <ul className="text-edenGray-900 list-disc pl-4 text-sm">
             <li className="mb-2">Probability of landing this job</li>
             <li className="mb-2">What to improve to maximize your chances</li>
             <li className="mb-2">
@@ -557,11 +557,11 @@ const ApplicationStepContainer = ({
   return (
     <>
       <div>
-        <div className="w-full grid grid-cols-12 gap-2">
+        <div className="grid w-full grid-cols-12 gap-2">
           <div className="col-span-9">
-            <section className="relative rounded-sm bg-edenPink-100 p-4 mb-2">
+            <section className="bg-edenPink-100 relative mb-2 rounded-sm p-4">
               <div
-                className="absolute right-4 top-4 p-1 cursor-pointer"
+                className="absolute right-4 top-4 cursor-pointer p-1"
                 onClick={() =>
                   setOpenSections({
                     ...openSections,
@@ -579,25 +579,25 @@ const ApplicationStepContainer = ({
                 <BsFillFileEarmarkMinusFill
                   color="#00462C"
                   size="1.3rem"
-                  className="inline mr-2 -mt-1"
+                  className="-mt-1 mr-2 inline"
                 />
                 Resume Missing Points
               </h3>
-              <p className="text-sm text-edenGray-500 mb-2">
+              <p className="text-edenGray-500 mb-2 text-sm">
                 Mention during Interview
               </p>
               <p
                 className={classNames(
-                  "whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  "text-edenGray-900 overflow-hidden whitespace-pre-wrap transition-all ease-in-out",
                   openSections.areasToImprove ? "max-h-[80vh]" : "max-h-0"
                 )}
               >
                 {content.improvementPoints}
               </p>
             </section>
-            <section className="relative border-b border-edenGreen-100 p-4 mb-2">
+            <section className="border-edenGreen-100 relative mb-2 border-b p-4">
               <div
-                className="absolute right-4 top-4 p-1 cursor-pointer"
+                className="absolute right-4 top-4 cursor-pointer p-1"
                 onClick={() =>
                   setOpenSections({
                     ...openSections,
@@ -615,25 +615,25 @@ const ApplicationStepContainer = ({
                 <BsFillFileEarmarkBarGraphFill
                   color="#00462C"
                   size="1.3rem"
-                  className="inline mr-2 -mt-1"
+                  className="-mt-1 mr-2 inline"
                 />
                 Growth
               </h3>
-              <p className="text-sm text-edenGray-500 mb-2">
+              <p className="text-edenGray-500 mb-2 text-sm">
                 Find out about the areas you can grow in
               </p>
               <p
                 className={classNames(
-                  "whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  "text-edenGray-900 overflow-hidden whitespace-pre-wrap transition-all ease-in-out",
                   openSections.growth ? "max-h-[80vh]" : "max-h-0"
                 )}
               >
                 {content.growthAreas}
               </p>
             </section>
-            <section className="relative border-b border-edenGreen-100 p-4 mb-2">
+            <section className="border-edenGreen-100 relative mb-2 border-b p-4">
               <div
-                className="absolute right-4 top-4 p-1 cursor-pointer"
+                className="absolute right-4 top-4 cursor-pointer p-1"
                 onClick={() =>
                   setOpenSections({
                     ...openSections,
@@ -651,16 +651,16 @@ const ApplicationStepContainer = ({
                 <BsFillFileEarmarkPlusFill
                   color="#00462C"
                   size="1.3rem"
-                  className="inline mr-2 -mt-1"
+                  className="-mt-1 mr-2 inline"
                 />
                 Strong Suit
               </h3>
-              <p className="text-sm text-edenGray-500 mb-2">
+              <p className="text-edenGray-500 mb-2 text-sm">
                 Find out about the areas you are strong at
               </p>
               <p
                 className={classNames(
-                  "whitespace-pre-wrap text-edenGray-900 transition-all ease-in-out overflow-hidden",
+                  "text-edenGray-900 overflow-hidden whitespace-pre-wrap transition-all ease-in-out",
                   openSections.strongSuit ? "max-h-[80vh]" : "max-h-0"
                 )}
               >
@@ -668,18 +668,18 @@ const ApplicationStepContainer = ({
               </p>
             </section>
           </div>
-          <div className="col-span-3 border border-edenGreen-100 rounded-sm">
-            <section className="mb-2 rounded-md p-4 text-center border-b border-edenGreen-100">
-              <h2 className="text-center text-edenGreen-600 mb-4">
+          <div className="border-edenGreen-100 col-span-3 rounded-sm border">
+            <section className="border-edenGreen-100 mb-2 rounded-md border-b p-4 text-center">
+              <h2 className="text-edenGreen-600 mb-4 text-center">
                 Probability of Passing
               </h2>
-              <div className="inline-block border border-edenGreen-400 text-center px-3 py-1 text-edenGreen-600 font-Moret text-lg">
+              <div className="border-edenGreen-400 text-edenGreen-600 font-Moret inline-block border px-3 py-1 text-center text-lg">
                 {matchText.toUpperCase()}
               </div>
             </section>
             <section className="mb-2 p-4">
               <h3 className="text-edenGreen-600 mb-2">
-                <IoWallet size="1.3rem" className="inline mr-2" />
+                <IoWallet size="1.3rem" className="mr-2 inline" />
                 Yearly Salary
               </h3>
               <p className="text-lg font-medium">
@@ -691,7 +691,7 @@ const ApplicationStepContainer = ({
                 <BiCalendarExclamation
                   color="#00462C"
                   size="1.3rem"
-                  className="inline mr-2 -mt-1"
+                  className="-mt-1 mr-2 inline"
                 />
                 Timeline
               </h3>
@@ -740,12 +740,12 @@ const ApplicationStepContainer = ({
                 </div>
               </div>
             </section>
-            <section className="mb-2 p-4 w-full">
+            <section className="mb-2 w-full p-4">
               <h3 className="text-edenGreen-600 mb-2">
                 <FaStar
                   size="1.3rem"
                   color="#00462C"
-                  className="inline mr-2 -mt-1"
+                  className="-mt-1 mr-2 inline"
                 />
                 Your Top skills
               </h3>
@@ -1030,7 +1030,7 @@ const InterviewEdenAIContainer = ({
   console.log("conversationID = ", conversationID);
 
   return (
-    <div className="w-full h-full">
+    <div className="h-full w-full">
       <div className="relative h-full">
         {/* <div className="absolute left-0 top-2 z-20 w-full">
           <ProgressBarGeneric
@@ -1180,39 +1180,39 @@ const ProfileQuestionsContainer = ({
   }, [userState]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="mx-auto w-full max-w-2xl">
       <div className="mb-8">
-        <section className="mb-4 inline-block mr-12">
+        <section className="mb-4 mr-12 inline-block">
           <p className="mb-2 text-xs">Your Desired Salary</p>
-          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
+          <div className="border-EdenGray-100 flex w-48 items-center rounded-md border bg-white text-xs">
             <input
               min={0}
               defaultValue={currentUser?.budget?.perHour || ""}
               type="number"
               id="budget"
-              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               required
               {...register("budget.perHour")}
             />
-            <div className="ml-auto border-l border-edenGray-100 px-3">
+            <div className="border-edenGray-100 ml-auto border-l px-3">
               <span>$/year</span>
             </div>
           </div>
         </section>
         <section className="mb-4 inline-block">
           <p className="mb-2 text-xs">Your Availability</p>
-          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
+          <div className="border-EdenGray-100 flex w-48 items-center rounded-md border bg-white text-xs">
             <input
               type="number"
               defaultValue={currentUser?.hoursPerWeek || ""}
               min={0}
               max={40}
               id="hoursPerWeek"
-              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               required
               {...register("hoursPerWeek")}
             />
-            <div className="ml-auto border-l border-edenGray-100 px-3">
+            <div className="border-edenGray-100 ml-auto border-l px-3">
               <span>hours/week</span>
             </div>
           </div>
@@ -1221,22 +1221,22 @@ const ProfileQuestionsContainer = ({
       <div className="mb-8">
         <section className="mb-4 inline-block w-4/5 pr-12">
           <p className="mb-2 text-xs">Your Location</p>
-          <div className="text-xs w-full flex items-center border border-EdenGray-100 rounded-md bg-white">
+          <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
             <input
               type="text"
               defaultValue={currentUser?.location || ""}
               id="location"
-              className="h-[34px] bg-transparent w-full p-2"
+              className="h-[34px] w-full bg-transparent p-2"
               required
               {...register("location")}
             />
           </div>
         </section>
         <section className="mb-4 inline-block w-1/5">
-          <p className="mb-2 text-xs outline-none font-Unica resize-none h-full bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+          <p className="font-Unica mb-2 h-full resize-none bg-transparent text-xs outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
             Your Timezone
           </p>
-          <div className="text-xs w-full flex items-center border border-EdenGray-100 rounded-md bg-white">
+          <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
             <Controller
               name={"timeZone"}
               control={control}
@@ -1248,7 +1248,7 @@ const ProfileQuestionsContainer = ({
                       : ""
                   }
                   id="timeZone"
-                  className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent"
+                  className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none"
                   required
                   onChange={(e) => {
                     const _gmt = e.target.value.split(" ")[0].slice(1, -1);
@@ -1278,26 +1278,26 @@ const ProfileQuestionsContainer = ({
         </section>
       </div>
       <div className="mb-8">
-        <section className="mb-4 inline-block mr-12">
+        <section className="mb-4 mr-12 inline-block">
           <p className="mb-2 text-xs">Years of Experience</p>
-          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
+          <div className="border-EdenGray-100 flex w-48 items-center rounded-md border bg-white text-xs">
             <input
               type="number"
               defaultValue={currentUser?.experienceLevel?.years || ""}
               min={0}
               id="hoursPerWeek"
-              className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               required
               {...register("experienceLevel.years")}
             />
-            <div className="ml-auto border-l border-edenGray-100 px-3">
+            <div className="border-edenGray-100 ml-auto border-l px-3">
               <span>years</span>
             </div>
           </div>
         </section>
-        <section className="mb-4 inline-block mr-12">
+        <section className="mb-4 mr-12 inline-block">
           <p className="mb-2 text-xs">Experience Level</p>
-          <div className="text-xs w-48 flex items-center border border-EdenGray-100 rounded-md bg-white">
+          <div className="border-EdenGray-100 flex w-48 items-center rounded-md border bg-white text-xs">
             <Controller
               name={"experienceLevel"}
               control={control}
@@ -1311,7 +1311,7 @@ const ProfileQuestionsContainer = ({
                 return (
                   <select
                     id="experienceLevel"
-                    className="w-full outline-none font-Unica resize-none h-full p-2 bg-transparent"
+                    className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none"
                     required
                     onChange={(e) => {
                       const _val = {
@@ -1623,14 +1623,14 @@ const ConnectTelegramContainer = ({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto pt-10">
+    <div className="mx-auto w-full max-w-2xl pt-10">
       {!telegramAuthCode && (
         <>
           <div className="text-center">
             {" "}
             <div
               className={
-                "mx-auto mb-2 h-20 w-20 text-edenGreen-600 bg-edenPink-100 flex items-center justify-center rounded-full"
+                "text-edenGreen-600 bg-edenPink-100 mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full"
               }
             >
               <BsLightningFill size={"2rem"} />
@@ -1660,7 +1660,7 @@ const ConnectTelegramContainer = ({
           {!telegramAuthCode ? (
             <Button
               variant="secondary"
-              className="mx-auto block fixed right-4 bottom-4 z-40 opacity-0 hover:opacity-10"
+              className="fixed bottom-4 right-4 z-40 mx-auto block opacity-0 hover:opacity-10"
               onClick={handleTelegramClick}
             >
               Connect Telegram
@@ -1668,15 +1668,15 @@ const ConnectTelegramContainer = ({
           ) : (
             telegramAuthCode && (
               <>
-                <p className="text-center mb-6">
+                <p className="mb-6 text-center">
                   Open EdenAI bot on Telegram and click{" "}
-                  <span className="font-bold text-edenGreen-500">/start</span>
+                  <span className="text-edenGreen-500 font-bold">/start</span>
                 </p>
-                <p className="text-center mb-8">
+                <p className="mb-8 text-center">
                   <Link
                     target="_blank"
                     href={`https://t.me/${process.env.NEXT_PUBLIC_EDEN_TG_BOT}`}
-                    className="text-center inline"
+                    className="inline text-center"
                   >
                     <Button variant="primary">
                       Go to Telegram
@@ -1684,12 +1684,43 @@ const ConnectTelegramContainer = ({
                     </Button>
                   </Link>
                 </p>
-                <p className="text-center text-edenGray-500">
+                <p className="text-edenGray-500 text-center">
                   Your activation code is:
                 </p>
-                <h2 className="text-edenGreen-600 text-center text-[5rem] tracking-widest">
-                  {telegramAuthCode}
-                </h2>
+                <div className="flex items-center justify-center">
+                  <h2 className="text-edenGreen-600 text-center text-[5rem] tracking-widest">
+                    {telegramAuthCode}
+                  </h2>
+
+                  <div>Hi!</div>
+
+                  <Button
+                    variant="primary"
+                    className=" h-fit  w-fit border-none font-medium text-black "
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        telegramAuthCode.toString()
+                      );
+                      toast.success("Telegram Code copied to clipboard");
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      width={45}
+                      height={45}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z"
+                      />
+                    </svg>
+                  </Button>
+                </div>
               </>
             )
           )}
@@ -1709,15 +1740,15 @@ const ConnectTelegramContainer = ({
           ) : (
             telegramAuthCode && (
               <>
-                <p className="text-center mb-6">
+                <p className="mb-6 text-center">
                   Open EdenAI bot on Telegram and click{" "}
-                  <span className="font-bold text-edenGreen-500">/start</span>
+                  <span className="text-edenGreen-500 font-bold">/start</span>
                 </p>
-                <p className="text-center mb-8">
+                <p className="mb-8 text-center">
                   <Link
                     target="_blank"
                     href={`https://t.me/${process.env.NEXT_PUBLIC_EDEN_TG_BOT}`}
-                    className="text-center inline"
+                    className="inline text-center"
                   >
                     <Button variant="primary">
                       Go to Telegram
@@ -1725,12 +1756,42 @@ const ConnectTelegramContainer = ({
                     </Button>
                   </Link>
                 </p>
-                <p className="text-center text-edenGray-500">
+
+                <p className="text-edenGray-500 text-center">
                   Your activation code is:
                 </p>
-                <h2 className="text-edenGreen-600 text-center text-[5rem] tracking-widest">
-                  {telegramAuthCode}
-                </h2>
+                <div className="flex items-center justify-center">
+                  <h2 className="text-edenGreen-600 text-center text-[5rem] tracking-widest">
+                    {telegramAuthCode}
+                  </h2>
+
+                  <Button
+                    variant="primary"
+                    className=" h-fit  w-fit border-none font-medium text-black "
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        telegramAuthCode.toString()
+                      );
+                      toast.success("Telegram Code copied to clipboard");
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      width={45}
+                      height={45}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z"
+                      />
+                    </svg>
+                  </Button>
+                </div>
               </>
             )
           )}
@@ -1741,7 +1802,7 @@ const ConnectTelegramContainer = ({
         <p className="mb-4 text-center">Telegram Connected</p>
       )}
 
-      <div className="absolute z-20 bottom-4 left-0 w-full flex justify-center">
+      <div className="absolute bottom-4 left-0 z-20 flex w-full justify-center">
         <Button
           className=""
           variant="secondary"
@@ -1754,7 +1815,7 @@ const ConnectTelegramContainer = ({
           Submit
         </Button>
       </div>
-      <div className="absolute bottom-4 mx-auto z-20 w-full max-w-2xl text-center">
+      <div className="absolute bottom-4 z-20 mx-auto w-full max-w-2xl text-center">
         {submitting && (
           <EdenAiProcessingModal title="Submitting" open={submitting} />
         )}
