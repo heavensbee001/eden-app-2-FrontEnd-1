@@ -132,7 +132,9 @@ const HomePage: NextPageWithLayout = () => {
               </h2>
             )}
             {!!company?.description && (
-              <p className="text-xs">{company?.description}</p>
+              <p className="text-xs mb-4 whitespace-pre-wrap">
+                {company?.description}
+              </p>
             )}
             <div className="bg-white rounded-md px-3 py-2 mr-2 inline-block leading-none text-edenGray-700">
               <p className="text-xs">Pre-vetted Candidates</p>
@@ -148,12 +150,12 @@ const HomePage: NextPageWithLayout = () => {
             </div>
           </div>
 
-          {company?.description && (
+          {/* {company?.description && (
             <div className="mb-4">
               <h3>About us</h3>
               <p className="text-xs">{company?.description}</p>
             </div>
-          )}
+          )} */}
 
           <h2 className="text-edenGreen-600">
             Talent Pools active in {company?.name ? company?.name : "community"}
