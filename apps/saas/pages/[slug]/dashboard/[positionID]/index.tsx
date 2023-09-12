@@ -1404,7 +1404,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
-                <div className="whitespace-nowrap">
+                <div className="whitespace-nowrap flex items-stretch">
                   {candidatesUnqualifiedList
                     .slice(0, 3)
                     .map((candidate, index) => (
@@ -1910,11 +1910,11 @@ const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
       className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0 whitespace-normal"
       onClick={onClick}
     >
-      <div className="relative flex px-4 pt-2 pb-2" onClick={onClick}>
+      <div className="relative flex px-4 pt-2 pb-2 h-full" onClick={onClick}>
         <div className="mr-4 flex items-center">
           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
         </div>
-        <div className="w-3/4">
+        <div className="w-3/4 flex flex-col justify-center">
           <p className="font-bold">{candidate.user?.discordName}</p>
           {candidate.analysisCandidateEdenAI?.background?.oneLiner && (
             <p className="text-edenGray-600 text-xs w-full whitespace-normal">
