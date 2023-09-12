@@ -49,7 +49,7 @@ export const DescriptionContainer = ({
     <form className="w-full max-w-[33rem]">
       <div className="mb-6">
         <p className="text-edenGray-500 mb-2 block text-xs">
-          Select opportunity icon
+          Pick opportunity icon
         </p>
         <div className="">
           <Controller
