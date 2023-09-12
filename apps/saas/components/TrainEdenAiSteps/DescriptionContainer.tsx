@@ -109,7 +109,7 @@ export const DescriptionContainer = ({
           <span className="mr-2">
             Copy/paste your job description from LinkedIn, Greenhouse...
           </span>
-          <span className="text-edenGreen-500">
+          <span className="text-edenGreen-400">
             The more details, the better
           </span>
         </label>
