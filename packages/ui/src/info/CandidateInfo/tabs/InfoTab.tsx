@@ -2,7 +2,7 @@
 import {
   Badge,
   CandidateTypeSkillMatch,
-  LongText,
+  // LongText,
   NodeList,
   // SocialMediaComp,
   UserBackground,
