@@ -46,10 +46,10 @@ export const DescriptionContainer = ({
   }, [formData.position?.name, formData.pastedText, formData.position?.icon]);
 
   return (
-    <form className="w-full max-w-[33rem]">
+    <form className="w-full max-w-[33rem] pt-4">
       <div className="mb-6">
         <p className="text-edenGray-500 mb-2 block text-xs">
-          Select opportunity icon
+          Pick opportunity icon
         </p>
         <div className="">
           <Controller
@@ -106,7 +106,12 @@ export const DescriptionContainer = ({
 
       <div className="mb-6">
         <label className="text-edenGray-500 mb-2 block text-xs">
-          Copy/paste your job description from LinkedIn, Greenhouse...
+          <span className="mr-2">
+            Copy/paste your job description from LinkedIn, Greenhouse...
+          </span>
+          <span className="text-edenGreen-400">
+            The more details, the better
+          </span>
         </label>
 
         <textarea

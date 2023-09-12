@@ -1124,7 +1124,7 @@ const PositionCRM: NextPageWithLayout = () => {
           </Button>
         </div>
       </Modal>
-      <div className="mx-auto max-w-screen-xl flex-grow p-8">
+      <div className="relative mx-auto max-w-screen-xl flex-grow p-8">
         <div className="z-20 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
@@ -1404,7 +1404,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
-                <div className="whitespace-nowrap">
+                <div className="whitespace-nowrap flex items-stretch">
                   {candidatesUnqualifiedList
                     .slice(0, 3)
                     .map((candidate, index) => (
@@ -1636,6 +1636,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     )}
                     onClick={() => {
                       if (newTalentListCandidatesIds.length !== 2) return;
+                      setSelectedUserId(null);
                       router.push(
                         {
                           pathname: `/${company?.slug}/dashboard/${positionID}`,
@@ -1775,15 +1776,15 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out",
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out flex",
             router.query.candidate1 && router.query.candidate2
-              ? "w-[100vw]"
+              ? "w-full"
               : "w-0"
           )}
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide relative h-screen w-1/2 overflow-y-scroll scrollbar-hide border-box border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1800,7 +1801,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   onClose={() => {
                     router.push(
                       {
-                        pathname: "/dashboard/" + positionID,
+                        pathname: `/${company?.slug}/dashboard/${positionID}`,
                       },
                       undefined,
                       { shallow: true }
@@ -1808,6 +1809,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   }}
                   handleCreateNewList={handleCreateNewList}
                   talentListsAvailables={talentListsAvailables}
+                  showAskEden={false}
                 />
                 {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1815,7 +1817,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative inline-block min-h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
+              <div className="scrollbar-hide relative h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}
@@ -1832,7 +1834,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   onClose={() => {
                     router.push(
                       {
-                        pathname: "/dashboard/" + positionID,
+                        pathname: `/${company?.slug}/dashboard/${positionID}`,
                       },
                       undefined,
                       { shallow: true }
@@ -1842,6 +1844,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   handleAddCandidatesToList={function (): Promise<void> {
                     throw new Error("Function not implemented.");
                   }}
+                  showAskEden={false}
                 />
                 {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1910,11 +1913,11 @@ const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
       className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0 whitespace-normal"
       onClick={onClick}
     >
-      <div className="relative flex px-4 pt-2 pb-2" onClick={onClick}>
+      <div className="relative flex px-4 pt-2 pb-2 h-full" onClick={onClick}>
         <div className="mr-4 flex items-center">
           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
         </div>
-        <div className="w-3/4">
+        <div className="w-3/4 flex flex-col justify-center">
           <p className="font-bold">{candidate.user?.discordName}</p>
           {candidate.analysisCandidateEdenAI?.background?.oneLiner && (
             <p className="text-edenGray-600 text-xs w-full whitespace-normal">

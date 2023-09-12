@@ -2,7 +2,7 @@
 import {
   Badge,
   CandidateTypeSkillMatch,
-  LongText,
+  // LongText,
   NodeList,
   // SocialMediaComp,
   UserBackground,
@@ -62,7 +62,7 @@ export const InfoTab: FC<Props> = ({
       )}
 
       {/* ---- Bio ---- */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <div className="border-edenGreen-300 mb-4 border-b px-4">
           <h3 className="text-edenGreen-500 mb-3">Bio</h3>
         </div>
@@ -72,7 +72,7 @@ export const InfoTab: FC<Props> = ({
           className={`text-edenGray-900 w-full whitespace-pre-wrap px-4 text-sm`}
           maxHeight={"10rem"}
         />
-      </div>
+      </div> */}
 
       {/* ---- Background ---- */}
       {member?.user?.previousProjects &&
