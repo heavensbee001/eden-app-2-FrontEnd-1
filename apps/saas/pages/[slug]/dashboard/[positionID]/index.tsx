@@ -1636,6 +1636,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     )}
                     onClick={() => {
                       if (newTalentListCandidatesIds.length !== 2) return;
+                      setSelectedUserId(null);
                       router.push(
                         {
                           pathname: `/${company?.slug}/dashboard/${positionID}`,
@@ -1775,9 +1776,9 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "fixed right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out flex",
+            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out flex",
             router.query.candidate1 && router.query.candidate2
-              ? "w-100%"
+              ? "w-full"
               : "w-0"
           )}
         >
@@ -1808,6 +1809,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   }}
                   handleCreateNewList={handleCreateNewList}
                   talentListsAvailables={talentListsAvailables}
+                  showAskEden={false}
                 />
                 {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1842,6 +1844,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   handleAddCandidatesToList={function (): Promise<void> {
                     throw new Error("Function not implemented.");
                   }}
+                  showAskEden={false}
                 />
                 {/* ) : (
             <div className="w-full pt-20 text-center">
