@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { AppUserLayout, Button, SEO, TextArea } from "@eden/package-ui";
+import { AppUserLayout, Button, SEO } from "@eden/package-ui";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
