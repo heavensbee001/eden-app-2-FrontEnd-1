@@ -5,7 +5,7 @@ import {
   AppUserLayout,
   Badge,
   Button,
-  ChatMessage,
+  // ChatMessage,
   // CountdownTimer,
   CVUploadGPT,
   EdenAiProcessingModal,
@@ -558,7 +558,13 @@ const ApplicationStepContainer = ({
     <>
       <div>
         <div className="grid w-full grid-cols-12 gap-2">
-          <div className="col-span-9">
+          <div className="col-span-9 pt-8">
+            <h1 className="text-edenGreen-600">
+              Before you dive into the interview
+            </h1>
+            <p className="text-edenGray-900 text-sm mb-10">
+              A couple of quick notes to set you up for success
+            </p>
             <section
               className="bg-edenPink-100 relative mb-2 rounded-sm p-4 cursor-pointer"
               onClick={() =>
@@ -581,10 +587,10 @@ const ApplicationStepContainer = ({
                   size="1.3rem"
                   className="-mt-1 mr-2 inline"
                 />
-                Resume Missing Points
+                Missing from your resume
               </h3>
               <p className="text-edenGray-500 mb-2 text-sm">
-                Mention during Interview
+                Make sure to address this in your interview
               </p>
               <p
                 className={classNames(
@@ -617,7 +623,7 @@ const ApplicationStepContainer = ({
                   size="1.3rem"
                   className="-mt-1 mr-2 inline"
                 />
-                Growth
+                Your opportunity to grow
               </h3>
               <p className="text-edenGray-500 mb-2 text-sm">
                 Find out about the areas you can grow in
@@ -653,7 +659,7 @@ const ApplicationStepContainer = ({
                   size="1.3rem"
                   className="-mt-1 mr-2 inline"
                 />
-                Strong Suit
+                What already stands out about you
               </h3>
               <p className="text-edenGray-500 mb-2 text-sm">
                 Find out about the areas you are strong at
@@ -1023,11 +1029,11 @@ const InterviewEdenAIContainer = ({
 
   const [experienceTypeID] = useState<string>("");
 
-  const [chatN, setChatN] = useState<ChatMessage>([]);
+  // const [chatN, setChatN] = useState<ChatMessage>([]);
 
-  console.log("chatN = ", chatN);
+  // console.log("chatN = ", chatN);
 
-  console.log("conversationID = ", conversationID);
+  // console.log("conversationID = ", conversationID);
 
   return (
     <div className="h-full w-full">
@@ -1049,8 +1055,9 @@ const InterviewEdenAIContainer = ({
             // aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
             aiReplyService={AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY}
             experienceTypeID={experienceTypeID}
+            // eslint-disable-next-line no-unused-vars
             handleChangeChat={(_chat: any) => {
-              setChatN(_chat);
+              // setChatN(_chat);
             }}
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
