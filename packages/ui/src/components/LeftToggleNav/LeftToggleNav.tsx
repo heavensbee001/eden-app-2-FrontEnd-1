@@ -87,12 +87,14 @@ export const LeftToggleNav = ({
     router.pathname.includes("/jobs") ||
     router.pathname.includes("/subscribe") ||
     router.pathname.includes("/interview/") ||
+    router.pathname.includes("/create-company") ||
     router.pathname.includes("/train-eden-ai");
 
   const hideTalentPools =
     router.pathname.includes("/jobs") ||
     router.pathname.includes("/subscribe") ||
     router.pathname.includes("/interview/") ||
+    router.pathname.includes("/create-company") ||
     router.pathname.includes("/train-eden-ai");
 
   return (

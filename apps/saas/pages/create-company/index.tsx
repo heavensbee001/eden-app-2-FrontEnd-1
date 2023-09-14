@@ -5,12 +5,13 @@ import {
   EdenAiProcessingModal,
   SEO,
 } from "@eden/package-ui";
+import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-// @ts-ignore
-import type NextPageWithLayout from "../../_app";
+import { NextPageWithLayout } from "../_app";
 
 type FormData = {
   companyName: string;
@@ -127,5 +128,27 @@ const CreateCompany: NextPageWithLayout = () => {
 };
 
 CreateCompany.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
+
+export async function getServerSideProps(ctx: {
+  req: IncomingMessage;
+  res: ServerResponse;
+}) {
+  const session = await getSession(ctx);
+
+  const url = ctx.req.url;
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/?redirect=${url}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 export default CreateCompany;
