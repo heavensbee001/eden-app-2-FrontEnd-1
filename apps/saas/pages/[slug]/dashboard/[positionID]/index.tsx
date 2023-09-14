@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
   FIND_POSITION_LIGHT,
@@ -24,6 +24,7 @@ import {
   EdenTooltip,
   ListModeEnum,
   Loading,
+  MenuDropdown,
   Modal,
   NodeList,
   SelectList,
@@ -31,7 +32,6 @@ import {
   TrainQuestionsEdenAI,
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useMemo, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
@@ -55,15 +55,15 @@ const CandidateInfo = dynamic(
 
 import { NextPageWithLayout } from "../../../_app";
 
-const CREATE_FAKE_USER_CV = gql`
-  mutation CreateFakeUserCVnew($fields: createFakeUserCVnewInput) {
-    createFakeUserCVnew(fields: $fields) {
-      _id
-      discordName
-      discordAvatar
-    }
-  }
-`;
+// const CREATE_FAKE_USER_CV = gql`
+//   mutation CreateFakeUserCVnew($fields: createFakeUserCVnewInput) {
+//     createFakeUserCVnew(fields: $fields) {
+//       _id
+//       discordName
+//       discordAvatar
+//     }
+//   }
+// `;
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -106,6 +106,7 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
+  // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID } = router.query;
   const { company } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
@@ -142,7 +143,6 @@ const PositionCRM: NextPageWithLayout = () => {
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
-  const [notificationOpen, setNotificationOpen] = useState(false);
   const [trainModalOpen, setTrainModalOpen] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -791,34 +791,34 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  const handleTrainButtonClick = () => {
-    // setTrainModalOpen(true);
-    router.push(`/${slug}/dashboard/${positionID}/train-eden-ai`);
-  };
+  // const handleTrainButtonClick = () => {
+  //   // setTrainModalOpen(true);
+  //   router.push(`/${slug}/dashboard/${positionID}/train-eden-ai`);
+  // };
 
-  const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
+  // const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
 
-  const handleFindBestTalentClick = () => {
-    // setTrainModalOpen(true);
+  // const handleFindBestTalentClick = () => {
+  //   // setTrainModalOpen(true);
 
-    createFakeUserCV({
-      variables: {
-        fields: {
-          positionID: positionID,
-        },
-      },
-    });
-  };
+  //   createFakeUserCV({
+  //     variables: {
+  //       fields: {
+  //         positionID: positionID,
+  //       },
+  //     },
+  //   });
+  // };
 
   const handleCloseTrainModal = () => {
     setTrainModalOpen(false);
   };
 
-  const handleCalculateSkillScore = () => {
-    // console.log("change = 232322");
+  // const handleCalculateSkillScore = () => {
+  //   // console.log("change = 232322");
 
-    setUpdateSkillScore(true);
-  };
+  //   setUpdateSkillScore(true);
+  // };
 
   const handleSelectedTalentList = (list: TalentListType) => {
     if (!company) return;
@@ -951,10 +951,7 @@ const PositionCRM: NextPageWithLayout = () => {
     const url = window.location.origin + "/interview/" + positionID;
 
     navigator.clipboard.writeText(url);
-    setNotificationOpen(true);
-    setTimeout(() => {
-      setNotificationOpen(false);
-    }, 3000);
+    toast.success("Link copied!");
   };
 
   const handleCandidateCheckboxSelection = (candidate: CandidateType) => {
@@ -1125,7 +1122,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
       </Modal>
       <div className="relative mx-auto max-w-screen-xl flex-grow p-8">
-        <div className="z-20 w-full transition-all duration-200 ease-in-out">
+        <div className="z-40 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
               <h1 className="text-edenGreen-600 mr-6">
@@ -1135,6 +1132,32 @@ const PositionCRM: NextPageWithLayout = () => {
                   : ""}
               </h1>
               <p>{company?.name}</p>
+            </div>
+            <div className="absolute right-8 top-4">
+              <MenuDropdown>
+                <li
+                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  onClick={handleCopyLink}
+                >
+                  <HiOutlineLink size={14} className="mb-1 mr-1 inline" />
+                  Copy interview link
+                </li>
+                <li className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100">
+                  <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
+                  Create talent list
+                </li>
+                <li className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100">
+                  <BsFillGearFill size={16} className="mb-1 mr-1 inline" />
+                  Configure opportunity
+                </li>
+                <li className="group text-sm cursor-pointer text-utilityRed px-4 py-1 hover:bg-edenGreen-100">
+                  <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />
+                  Delete opportunity
+                  <span className="ml-1 hidden group-hover:animate-ping group-hover:inline font-bold">
+                    !
+                  </span>
+                </li>
+              </MenuDropdown>
             </div>
 
             <Button
@@ -1146,7 +1169,7 @@ const PositionCRM: NextPageWithLayout = () => {
               <HiOutlineLink className="mr-1" />
               interview link
             </Button>
-            <Button
+            {/* <Button
               size="sm"
               className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
@@ -1192,7 +1215,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   />
                 </div>
               </div>
-            </Button>
+            </Button> */}
           </div>
 
           <section
@@ -1879,6 +1902,8 @@ import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
+import { BsFillGearFill } from "react-icons/bs";
+import { TbTrashXFilled } from "react-icons/tb";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;

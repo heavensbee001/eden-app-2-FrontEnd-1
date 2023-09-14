@@ -158,6 +158,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             {/* <th className="py-2 font-medium">Level</th> */}
             <th className="font-normal">Location</th>
             <th className="font-normal">Timezone</th>
+            <th className="font-normal">Application date</th>
           </tr>
         </thead>
         <tbody>
@@ -319,6 +320,12 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                         : "GMT - 02:00"}
                     </p>
                     // <p className="text-sm">{candidate.user?.timeZone}</p>
+                  )}
+                </ColumnStyled>
+
+                <ColumnStyled textColor="text-center" extraCssClass="w-auto">
+                  {candidate.dateApply && (
+                    <p className="text-sm">{candidate.dateApply}</p>
                   )}
                 </ColumnStyled>
               </tr>
