@@ -1,14 +1,51 @@
+import { gql, useMutation } from "@apollo/client";
 import { AppUserLayout, Button, SEO } from "@eden/package-ui";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 // @ts-ignore
 import type NextPageWithLayout from "../../_app";
 
+type FormData = {
+  companyName: string;
+  companyAbbreviation: string;
+};
+
+const UPDATE_COMPANY = gql`
+  mutation ($fields: updateCompanyInput!) {
+    updateCompany(fields: $fields) {
+      name
+      type
+      slug
+    }
+  }
+`;
 const CreateCompany: NextPageWithLayout = () => {
+  const [formData, setFormData] = useState<FormData | null>(null);
   const { register, handleSubmit } = useForm();
 
+  const router = useRouter();
+
+  const [updateCompany] = useMutation(UPDATE_COMPANY, {
+    onCompleted() {
+      if (formData) {
+        router.push(`/${formData.companyAbbreviation}/dashboard`);
+      }
+    },
+  });
+
   const submitHandler = (data: any) => {
-    console.log("data from company page: ", data);
+    setFormData(data);
+    updateCompany({
+      variables: {
+        fields: {
+          name: data.companyName,
+          slug: data.companyAbbreviation,
+          type: "COMPANY",
+        },
+      },
+    });
   };
 
   return (
@@ -23,7 +60,7 @@ const CreateCompany: NextPageWithLayout = () => {
               id="Name"
               className="h-[34px] w-full bg-transparent p-2"
               required
-              {...register("Company Name")}
+              {...register("companyName")}
             />
           </div>
           <p className="mb-2 text-xs">Company Abbreviation</p>
@@ -33,13 +70,11 @@ const CreateCompany: NextPageWithLayout = () => {
               id="Abbreviation"
               className="h-[34px] w-full bg-transparent p-2"
               required
-              {...register("Company Abbreviation")}
+              {...register("companyAbbreviation")}
             />
           </div>
 
-          <Button type="submit" onClick={submitHandler}>
-            Summit
-          </Button>
+          <Button type="submit">Submit</Button>
         </section>
       </form>
     </>
