@@ -1,6 +1,14 @@
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
-import { AppUserLayout, Badge, Button, SEO } from "@eden/package-ui";
+import {
+  AppUserLayout,
+  Badge,
+  Button,
+  EdenIconExclamation,
+  EdenTooltip,
+  SEO,
+} from "@eden/package-ui";
+import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
@@ -8,6 +16,21 @@ import { useContext } from "react";
 import { IconPickerItem } from "react-fa-icon-picker";
 
 import type { NextPageWithLayout } from "../../_app";
+
+const FAKE_MATCHSTIMATES = [
+  {
+    grade: "HIGH",
+    text: "Your previous experience at Humain.ai as a product designer makes you a very likely fit. Be sure to mention how your ideas ended up having a huge impact on the direction of the company.",
+  },
+  {
+    grade: "MEDIUM",
+    text: "Your previous experience at Humain.ai as a product designer makes you a medium fit. Be sure to mention how your ideas ended up having a huge impact on the direction of the company.",
+  },
+  {
+    grade: "LOW",
+    text: "You're not a strong fit for this opportunity. Be sure to mention how your ideas ended up having a huge impact on the direction of the company.",
+  },
+];
 
 const HomePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
@@ -73,48 +96,116 @@ const HomePage: NextPageWithLayout = () => {
                 signIn("google", { callbackUrl: router.asPath });
               }}
             >
-              Log in with Google
+              Sign up
             </Button>
           </section>
         )}
         <section className="">
           <h3 className="mb-2">Open opportunities</h3>
           <div className="w-full -m-2">
-            {company?.positions?.map((position: Maybe<Position>, index) => (
-              <div
-                key={index}
-                className="bg-white relative cursor-pointer transition-all hover:scale-[101%] w-[calc(50%-2rem)] min-w-[20rem] inline-block m-2 p-4 border border-edenGray-100 rounded-md align-top"
-                onClick={() => {
-                  router.push(`/interview/${position?._id}`);
-                }}
-              >
-                <div className="absolute left-4 top-4 rounded-md h-12 w-12 bg-edenPink-400 flex items-center justify-center pl-px mr-4">
-                  <IconPickerItem
-                    icon={position?.icon || "FaCode"}
-                    size={"2rem"}
-                    color="#00462C"
-                  />
-                </div>
-                <div className="pl-16">
-                  <p className="font-medium text-edenGray-900">
-                    {position?.name}
-                  </p>
-                  <p className="text-edenGray-900">{position?.company?.name}</p>
-                  <p className="text-sm text-edenGray-900">
-                    {position?.generalDetails?.officePolicy &&
-                      position?.generalDetails?.officePolicy}
-                    {position?.generalDetails?.contractType &&
-                      " • " + position?.generalDetails?.contractType}
-                  </p>
-                  {(!!position?.generalDetails?.yearlySalary ||
-                    position?.generalDetails?.yearlySalary === 0) && (
-                    <p className="text-xs text-edenGray-500">
-                      ${position?.generalDetails?.yearlySalary}
+            {company?.positions?.map((position: Maybe<Position>, index) => {
+              const randMatchstimate =
+                FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
+
+              return (
+                <div
+                  key={index}
+                  className="bg-white relative cursor-pointer transition-all w-[calc(50%-2rem)] min-w-[20rem] inline-block m-2 p-4 border border-edenGray-100 rounded-md align-top"
+                  onClick={() => {
+                    if (currentUser) router.push(`/interview/${position?._id}`);
+                  }}
+                >
+                  <div className="absolute -right-2 -top-1">
+                    <EdenTooltip
+                      id={`tradeoff-${index}`}
+                      delayHide={currentUser ? 0 : 300}
+                      clickable={currentUser ? false : true}
+                      innerTsx={
+                        <div className="w-60 pt-2">
+                          <div
+                            className={classNames(
+                              "absolute top-2 right-2 border rounded-sm px-2",
+                              currentUser
+                                ? "border-edenGreen-500"
+                                : "border-edenGray-500"
+                            )}
+                          >
+                            <h3
+                              className={classNames(
+                                currentUser
+                                  ? "text-edenGreen-600"
+                                  : "text-edenGray-500 font-Unica font-normal px-2"
+                              )}
+                            >
+                              {currentUser ? randMatchstimate.grade : "?"}
+                            </h3>
+                          </div>
+                          {currentUser ? (
+                            <p>{randMatchstimate.text}</p>
+                          ) : (
+                            <>
+                              <p className="mb-4">
+                                {`Sign up to the ${company.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
+                              </p>
+                              <Button
+                                onClick={() => {
+                                  signIn("google", {
+                                    callbackUrl: router.asPath,
+                                  });
+                                }}
+                                variant="secondary"
+                                className="h-6 !py-0 px-2 flex justify-center items-center"
+                              >
+                                Sign up
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      }
+                      title="matchstimate"
+                      place="top"
+                      effect="solid"
+                      backgroundColor="white"
+                      border
+                      borderColor="#e5e7eb"
+                      padding="0.5rem"
+                      containerClassName="w-full"
+                    >
+                      <div className="shadow bg-edenPink-200 rounded-full p-1 w-5 h-5">
+                        <EdenIconExclamation className="w-full h-full" />
+                      </div>
+                    </EdenTooltip>
+                  </div>
+                  <div className="absolute left-4 top-4 rounded-md h-12 w-12 bg-edenPink-400 flex items-center justify-center pl-px mr-4">
+                    <IconPickerItem
+                      icon={position?.icon || "FaCode"}
+                      size={"2rem"}
+                      color="#00462C"
+                    />
+                  </div>
+                  <div className="pl-16">
+                    <p className="font-medium text-edenGray-900">
+                      {position?.name}
                     </p>
-                  )}
+                    <p className="text-edenGray-900">
+                      {position?.company?.name}
+                    </p>
+                    <p className="text-sm text-edenGray-900">
+                      {position?.generalDetails?.officePolicy &&
+                        position?.generalDetails?.officePolicy}
+                      {position?.generalDetails?.contractType &&
+                        " • " + position?.generalDetails?.contractType}
+                    </p>
+                    {(!!position?.generalDetails?.yearlySalary ||
+                      position?.generalDetails?.yearlySalary === 0) && (
+                      <p className="text-xs text-edenGray-500">
+                        ${position?.generalDetails?.yearlySalary}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>

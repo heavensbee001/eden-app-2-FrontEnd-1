@@ -5,6 +5,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 export interface IEdenTooltipProps extends TooltipProps {
+  title?: string;
   children: React.ReactNode;
   innerTsx: React.ReactNode;
   id: string;
@@ -18,6 +19,7 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
 ) => {
   const {
     id,
+    title,
     innerTsx,
     children,
     clickable = false,
@@ -57,7 +59,9 @@ export const EdenTooltip: FC<IEdenTooltipProps> = (
                 >
                   <div className="flex items-center gap-1 text-[18px] text-zinc-600">
                     <h1 className="text-edenGreen-600 text-md ">Eden&apos;s</h1>
-                    <p className="mt-[2px] text-[14px]">insights</p>
+                    <p className="mt-[2px] text-[14px]">
+                      {title ? title : "insights"}
+                    </p>
                   </div>
 
                   <div className="mt-[1px] text-[14px]">{innerTsx}</div>
