@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_NEW_TALENT_LIST,
   FIND_POSITION_LIGHT,
@@ -55,15 +55,15 @@ const CandidateInfo = dynamic(
 
 import { NextPageWithLayout } from "../../../_app";
 
-// const CREATE_FAKE_USER_CV = gql`
-//   mutation CreateFakeUserCVnew($fields: createFakeUserCVnewInput) {
-//     createFakeUserCVnew(fields: $fields) {
-//       _id
-//       discordName
-//       discordAvatar
-//     }
-//   }
-// `;
+const CREATE_FAKE_USER_CV = gql`
+  mutation CreateFakeUserCVnew($fields: createFakeUserCVnewInput) {
+    createFakeUserCVnew(fields: $fields) {
+      _id
+      discordName
+      discordAvatar
+    }
+  }
+`;
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -791,34 +791,34 @@ const PositionCRM: NextPageWithLayout = () => {
     },
   });
 
-  // const handleTrainButtonClick = () => {
-  //   // setTrainModalOpen(true);
-  //   router.push(`/${slug}/dashboard/${positionID}/train-eden-ai`);
-  // };
+  const handleTrainButtonClick = () => {
+    // setTrainModalOpen(true);
+    router.push(`/${slug}/dashboard/${positionID}/train-eden-ai`);
+  };
 
-  // const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
+  const [createFakeUserCV] = useMutation(CREATE_FAKE_USER_CV);
 
-  // const handleFindBestTalentClick = () => {
-  //   // setTrainModalOpen(true);
+  const handleFindBestTalentClick = () => {
+    // setTrainModalOpen(true);
 
-  //   createFakeUserCV({
-  //     variables: {
-  //       fields: {
-  //         positionID: positionID,
-  //       },
-  //     },
-  //   });
-  // };
+    createFakeUserCV({
+      variables: {
+        fields: {
+          positionID: positionID,
+        },
+      },
+    });
+  };
 
   const handleCloseTrainModal = () => {
     setTrainModalOpen(false);
   };
 
-  // const handleCalculateSkillScore = () => {
-  //   // console.log("change = 232322");
+  const handleCalculateSkillScore = () => {
+    // console.log("change = 232322");
 
-  //   setUpdateSkillScore(true);
-  // };
+    setUpdateSkillScore(true);
+  };
 
   const handleSelectedTalentList = (list: TalentListType) => {
     if (!company) return;
@@ -1160,7 +1160,7 @@ const PositionCRM: NextPageWithLayout = () => {
               </MenuDropdown>
             </div>
 
-            <Button
+            {/* <Button
               size="sm"
               className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
@@ -1168,8 +1168,8 @@ const PositionCRM: NextPageWithLayout = () => {
             >
               <HiOutlineLink className="mr-1" />
               interview link
-            </Button>
-            {/* <Button
+            </Button> */}
+            <Button
               size="sm"
               className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
               variant="default"
@@ -1177,9 +1177,6 @@ const PositionCRM: NextPageWithLayout = () => {
             >
               Calculate Skill Score
             </Button>
-            {notificationOpen && (
-              <span className="text-sm text-gray-400">Link copied!</span>
-            )}
             <Button
               className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
               radius="pill"
@@ -1187,16 +1184,6 @@ const PositionCRM: NextPageWithLayout = () => {
               onClick={handleTrainButtonClick}
             >
               Align with Eden
-              <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#ff5656]">
-                <div className="h-[40px] w-[40px] min-w-[40px]">
-                  <Image
-                    src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                    width={40}
-                    height={40}
-                    alt=""
-                  />
-                </div>
-              </div>
             </Button>
             <Button
               className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
@@ -1205,17 +1192,7 @@ const PositionCRM: NextPageWithLayout = () => {
               onClick={handleFindBestTalentClick}
             >
               Recruit Similar Candidates
-              <div className="absolute -right-[2px] -top-[2px] flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-2 border-[#007bff]">
-                <div className="h-[40px] w-[40px] min-w-[40px]">
-                  <Image
-                    src="https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg"
-                    width={40}
-                    height={40}
-                    alt=""
-                  />
-                </div>
-              </div>
-            </Button> */}
+            </Button>
           </div>
 
           <section
