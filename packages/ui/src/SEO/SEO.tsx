@@ -27,7 +27,7 @@ export const SEO: FC<Props> = ({
 
   return (
     <Head>
-      <meta property="og:site_name" content={`Eden protocol - alpha`} />
+      <meta property="og:site_name" content={`Eden protocol`} />
       <meta property="og:title" content={appTitle} />
       <meta property="og:description" content={appDescription} />
       <meta property="og:image" content={image} />
@@ -35,13 +35,13 @@ export const SEO: FC<Props> = ({
       <meta property="og:image:height" content="400" />
 
       <meta property="twitter:card" content="summary" />
-      <meta property="twitter:site" content={`Eden protocol - alpha`} />
+      <meta property="twitter:site" content={`Eden protocol`} />
       <meta property="twitter:title" content={appTitle} />
       <meta property="twitter:description" content={appDescription} />
       <meta property="twitter:image:src" content={image} />
       <meta property="twitter:image:width" content="400" />
       <meta property="twitter:image:height" content="400" />
-      <meta property="twitter:creator" content={`Eden protocol - alpha`} />
+      <meta property="twitter:creator" content={`Eden protocol`} />
     </Head>
   );
 };

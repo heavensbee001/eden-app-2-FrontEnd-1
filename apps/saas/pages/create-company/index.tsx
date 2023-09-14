@@ -1,10 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import {
-  AppUserLayout,
-  Button,
-  EdenAiProcessingModal,
-  SEO,
-} from "@eden/package-ui";
+import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
@@ -67,7 +62,6 @@ const CreateCompany: NextPageWithLayout = () => {
 
   return (
     <>
-      <SEO />
       <div className="h-screen w-full flex items-center justify-center">
         <form
           className="w-full max-w-2xl"
