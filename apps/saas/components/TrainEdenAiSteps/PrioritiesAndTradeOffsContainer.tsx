@@ -6,7 +6,11 @@ import {
   PrioritiesType,
   TradeOffsType,
 } from "@eden/package-graphql/generated";
-import { EdenAiProcessingModal, EdenTooltip } from "@eden/package-ui";
+import {
+  EdenAiProcessingModal,
+  EdenIconExclamation,
+  EdenTooltip,
+} from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -162,59 +166,63 @@ export const PrioritiesAndTradeOffsContainer = ({
             priorities.map((priority, index) => (
               <li
                 key={index}
-                className="relative mb-2 cursor-pointer rounded-md bg-white px-4 py-4"
+                className="relative mb-2 rounded-md bg-white px-4 py-4"
               >
-                <EdenTooltip
-                  id={priority.reason!.split(" ").join("")}
-                  innerTsx={
-                    <div className="w-60">
-                      <p>{priority.reason}</p>
-                    </div>
-                  }
-                  place="top"
-                  effect="solid"
-                  backgroundColor="white"
-                  border
-                  borderColor="#e5e7eb"
-                  padding="0.5rem"
-                  offset={{ left: 100 }}
-                >
-                  <div className="flex w-full items-center">
-                    <div className="-my-2 mr-4">
-                      <div
-                        className={classNames(
-                          "text-edenGreen-500 hover:text-edenGreen-300",
-                          index === 0 ? "hidden" : "",
-                          index === priorities.length - 1 ? "" : "-mb-2"
-                        )}
-                      >
-                        <BiChevronUp
-                          size={"1.5rem"}
-                          onClick={() => {
-                            permutePriorities(index, index - 1);
-                          }}
-                        />
+                <div className="absolute -right-2 -top-1">
+                  <EdenTooltip
+                    id={priority.reason!.split(" ").join("")}
+                    innerTsx={
+                      <div className="w-60">
+                        <p>{priority.reason}</p>
                       </div>
-                      <div
-                        className={classNames(
-                          "text-edenGreen-500 hover:text-edenGreen-300",
-                          index === priorities.length - 1 ? "hidden" : "",
-                          index === 0 ? "" : "-mt-2"
-                        )}
-                      >
-                        <BiChevronDown
-                          size={"1.5rem"}
-                          onClick={() => {
-                            permutePriorities(index, index + 1);
-                          }}
-                        />
-                      </div>
+                    }
+                    place="top"
+                    effect="solid"
+                    backgroundColor="white"
+                    border
+                    borderColor="#e5e7eb"
+                    padding="0.5rem"
+                  >
+                    <div className="shadow-md bg-edenPink-200 rounded-full p-1 w-5 h-5">
+                      <EdenIconExclamation className="w-full h-full" />
                     </div>
-                    <div className="">
-                      {index + 1}. {priority.priority}
+                  </EdenTooltip>
+                </div>
+                <div className="relative flex w-full items-center">
+                  <div className="-my-2 mr-4">
+                    <div
+                      className={classNames(
+                        "text-edenGreen-500 hover:text-edenGreen-300 cursor-pointer",
+                        index === 0 ? "hidden" : "",
+                        index === priorities.length - 1 ? "" : "-mb-2"
+                      )}
+                    >
+                      <BiChevronUp
+                        size={"1.5rem"}
+                        onClick={() => {
+                          permutePriorities(index, index - 1);
+                        }}
+                      />
+                    </div>
+                    <div
+                      className={classNames(
+                        "text-edenGreen-500 hover:text-edenGreen-300 cursor-pointer",
+                        index === priorities.length - 1 ? "hidden" : "",
+                        index === 0 ? "" : "-mt-2"
+                      )}
+                    >
+                      <BiChevronDown
+                        size={"1.5rem"}
+                        onClick={() => {
+                          permutePriorities(index, index + 1);
+                        }}
+                      />
                     </div>
                   </div>
-                </EdenTooltip>
+                  <div className="">
+                    {index + 1}. {priority.priority}
+                  </div>
+                </div>
               </li>
             ))}
         </ul>
@@ -230,22 +238,28 @@ export const PrioritiesAndTradeOffsContainer = ({
           {tradeOffs &&
             tradeOffs.length > 0 &&
             tradeOffs.map((tradeOff, index) => (
-              <EdenTooltip
-                key={index}
-                id={`tradeoff-${index}`}
-                innerTsx={
-                  <div className="w-60">
-                    <p>{tradeOff.reason}</p>
-                  </div>
-                }
-                place="top"
-                effect="solid"
-                backgroundColor="white"
-                border
-                borderColor="#e5e7eb"
-                padding="0.5rem"
-                containerClassName="w-full"
-              >
+              <div key={index} className="relative w-full">
+                <div className="absolute z-10 -right-2 -top-1">
+                  <EdenTooltip
+                    id={`tradeoff-${index}`}
+                    innerTsx={
+                      <div className="w-60">
+                        <p>{tradeOff.reason}</p>
+                      </div>
+                    }
+                    place="top"
+                    effect="solid"
+                    backgroundColor="white"
+                    border
+                    borderColor="#e5e7eb"
+                    padding="0.5rem"
+                    containerClassName="w-full"
+                  >
+                    <div className="shadow bg-edenPink-200 rounded-full p-1 w-5 h-5">
+                      <EdenIconExclamation className="w-full h-full" />
+                    </div>
+                  </EdenTooltip>
+                </div>
                 <div className="grid grid-cols-2">
                   <label
                     className={classNames(
@@ -300,7 +314,7 @@ export const PrioritiesAndTradeOffsContainer = ({
                     </div>
                   </label>
                 </div>
-              </EdenTooltip>
+              </div>
             ))}
         </div>
       </section>
