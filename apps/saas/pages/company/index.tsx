@@ -10,6 +10,7 @@ import type NextPageWithLayout from "../../_app";
 type FormData = {
   companyName: string;
   companyAbbreviation: string;
+  companyDescription: string;
 };
 
 const UPDATE_COMPANY = gql`
@@ -18,6 +19,7 @@ const UPDATE_COMPANY = gql`
       name
       type
       slug
+      description
     }
   }
 `;
@@ -28,7 +30,8 @@ const CreateCompany: NextPageWithLayout = () => {
   const router = useRouter();
 
   const [updateCompany] = useMutation(UPDATE_COMPANY, {
-    onCompleted() {
+    onCompleted({ data }) {
+      console.log("data from onComplete", data);
       if (formData) {
         router.push(`/${formData.companyAbbreviation}/dashboard`);
       }
@@ -37,12 +40,14 @@ const CreateCompany: NextPageWithLayout = () => {
 
   const submitHandler = (data: any) => {
     setFormData(data);
+    console.log("data from handler:", data);
     updateCompany({
       variables: {
         fields: {
           name: data.companyName,
           slug: data.companyAbbreviation,
           type: "COMPANY",
+          description: data.companyDescription,
         },
       },
     });
@@ -53,25 +58,43 @@ const CreateCompany: NextPageWithLayout = () => {
       <SEO />
       <form className="h-full w-full" onSubmit={handleSubmit(submitHandler)}>
         <section className="mb-4 inline-block w-4/5 space-y-3 border-2 p-4 pr-12">
-          <p className="mb-2 text-xs">Company Name</p>
-          <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
-            <input
-              type="text"
-              id="Name"
-              className="h-[34px] w-full bg-transparent p-2"
-              required
-              {...register("companyName")}
-            />
+          <div className="space-y-1">
+            <p className=" text-xs">Company Name</p>
+            <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
+              <input
+                type="text"
+                id="Name"
+                className="h-[34px] w-full bg-transparent p-2"
+                required
+                {...register("companyName")}
+              />
+            </div>
           </div>
-          <p className="mb-2 text-xs">Company Abbreviation</p>
-          <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
-            <input
-              type="text"
-              id="Abbreviation"
-              className="h-[34px] w-full bg-transparent p-2"
-              required
-              {...register("companyAbbreviation")}
-            />
+
+          <div className="space-y-1">
+            <p className=" text-xs">Company Abbreviation</p>
+            <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
+              <input
+                type="text"
+                id="Abbreviation"
+                className="h-[34px] w-full bg-transparent p-2"
+                required
+                {...register("companyAbbreviation")}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <p className=" text-xs">Description of the Company</p>
+            <div>
+              <textarea
+                className="border-EdenGray-100 w-full border p-2"
+                rows={4}
+                id="Description"
+                required
+                {...register("companyDescription")}
+              />
+            </div>
           </div>
 
           <Button type="submit">Submit</Button>
