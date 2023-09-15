@@ -30,6 +30,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
       positions {
         _id
         name
+        status
         talentList {
           _id
           name
