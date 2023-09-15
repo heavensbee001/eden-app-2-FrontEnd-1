@@ -65,6 +65,14 @@ const CREATE_FAKE_USER_CV = gql`
   }
 `;
 
+const UPDATE_POSITION = gql`
+  mutation ($fields: updatePositionInput!) {
+    updatePosition(fields: $fields) {
+      _id
+    }
+  }
+`;
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -108,7 +116,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID } = router.query;
-  const { company } = useContext(CompanyContext);
+  const { company, getCompanyFunc } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
@@ -954,6 +962,23 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("Link copied!");
   };
 
+  const [updatePosition] = useMutation(UPDATE_POSITION, {
+    onCompleted() {
+      getCompanyFunc();
+    },
+  });
+
+  const handleDelete = () => {
+    updatePosition({
+      variables: {
+        fields: {
+          _id: positionID,
+          status: "DELETED",
+        },
+      },
+    });
+  };
+
   const handleCandidateCheckboxSelection = (candidate: CandidateType) => {
     setNewTalentListCandidatesIds((prev) => {
       const newCandidatesIds = [...prev];
@@ -1125,12 +1150,32 @@ const PositionCRM: NextPageWithLayout = () => {
         <div className="z-40 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
-              <h1 className="text-edenGreen-600 mr-6">
-                {findPositionData && findPositionData.findPosition.name
-                  ? findPositionData.findPosition.name.charAt(0).toUpperCase() +
-                    findPositionData.findPosition.name.slice(1)
-                  : ""}
-              </h1>
+              <div className="flex items-center mr-6">
+                <h1 className="text-edenGreen-600">
+                  {findPositionData && findPositionData.findPosition.name
+                    ? findPositionData.findPosition.name
+                        .charAt(0)
+                        .toUpperCase() +
+                      findPositionData.findPosition.name.slice(1)
+                    : ""}
+                </h1>
+                {(findPositionData?.findPosition?.status === "DELETED" ||
+                  findPositionData?.findPosition?.status === "ARCHIVED") && (
+                  <div
+                    className={classNames(
+                      "px-2 text-xs ml-2 rounded-md pb-px",
+                      findPositionData?.findPosition?.status === "DELETED"
+                        ? "bg-utilityRed text-white"
+                        : "",
+                      findPositionData?.findPosition?.status === "ARCHIVED"
+                        ? "bg-edenGray-700 text-white"
+                        : ""
+                    )}
+                  >
+                    {findPositionData?.findPosition?.status}
+                  </div>
+                )}
+              </div>
               <p>{company?.name}</p>
             </div>
             <div className="absolute right-8 top-4">
@@ -1142,15 +1187,28 @@ const PositionCRM: NextPageWithLayout = () => {
                   <HiOutlineLink size={14} className="mb-1 mr-1 inline" />
                   Copy interview link
                 </li>
-                <li className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100">
+                <li
+                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  onClick={handleCreateNewList}
+                >
                   <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
                   Create talent list
                 </li>
-                <li className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100">
+                <li
+                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  onClick={() => {
+                    router.push(
+                      `/${slug}/dashboard/${positionID}/train-eden-ai`
+                    );
+                  }}
+                >
                   <BsFillGearFill size={16} className="mb-1 mr-1 inline" />
                   Configure opportunity
                 </li>
-                <li className="group text-sm cursor-pointer text-utilityRed px-4 py-1 hover:bg-edenGreen-100">
+                <li
+                  className="group text-sm cursor-pointer text-utilityRed px-4 py-1 hover:bg-edenGreen-100"
+                  onClick={handleDelete}
+                >
                   <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />
                   Delete opportunity
                   <span className="ml-1 hidden group-hover:animate-ping group-hover:inline font-bold">
@@ -1863,6 +1921,7 @@ const PositionCRM: NextPageWithLayout = () => {
             <AskEdenPopUp
               memberID={currentUser?._id!}
               service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
+              title="Ask Eden about all candidates"
             />
           )}
       </div>

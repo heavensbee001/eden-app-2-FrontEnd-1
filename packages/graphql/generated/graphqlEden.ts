@@ -1085,9 +1085,16 @@ export type Position = {
   nodes?: Maybe<Array<Maybe<NodeDataType>>>;
   positionsRequirements?: Maybe<PositionsRequirementsType>;
   questionsToAsk?: Maybe<Array<Maybe<QuestionType>>>;
+  status?: Maybe<PositionStatus>;
   talentList?: Maybe<Array<Maybe<TalentListType>>>;
   url?: Maybe<Scalars["String"]>;
 };
+
+export enum PositionStatus {
+  Active = "ACTIVE",
+  Archived = "ARCHIVED",
+  Deleted = "DELETED",
+}
 
 export type Project = {
   __typename?: "Project";
@@ -4803,6 +4810,7 @@ export type UpdatePositionInput = {
   icon?: InputMaybe<Scalars["String"]>;
   mainUserID?: InputMaybe<Scalars["ID"]>;
   name?: InputMaybe<Scalars["String"]>;
+  status?: InputMaybe<PositionStatus>;
   updatePosition?: InputMaybe<Scalars["ID"]>;
 };
 

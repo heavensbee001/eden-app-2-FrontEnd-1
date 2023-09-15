@@ -7,6 +7,7 @@ export const FIND_POSITION_LIGHT = gql`
     findPosition(fields: $fields) {
       _id
       name
+      status
       candidates {
         dateApply
         overallScore

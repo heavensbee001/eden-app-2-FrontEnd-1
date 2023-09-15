@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext } from "@eden/package-context";
+import { Position } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
@@ -67,7 +68,13 @@ const HomePage: NextPageWithLayout = () => {
       findCompanyData?.findCompanyFromSlug?.positions?.length > 0
     ) {
       router.push(
-        `/${findCompanyData?.findCompanyFromSlug?.slug}/dashboard/${findCompanyData?.findCompanyFromSlug?.positions[0]?._id}`
+        `/${findCompanyData?.findCompanyFromSlug?.slug}/dashboard/${
+          findCompanyData?.findCompanyFromSlug?.positions.filter(
+            (_position: Position) =>
+              _position?.status !== "ARCHIVED" &&
+              _position?.status !== "DELETED"
+          )[0]?._id
+        }`
       );
     } else if (companyLoading && findCompanyData?.findCompanyFromSlug) {
       setCompanyLoading(false);

@@ -153,88 +153,94 @@ export const LeftToggleNav = ({
             </h3>
             {company &&
               company.positions &&
-              company.positions.map((position, index) => (
-                <Link
-                  key={index}
-                  href={`/${company.slug}/dashboard/${position?._id}`}
-                >
-                  <div
-                    className={classNames(
-                      "hover:bg-edenPink-200 relative -mx-4 min-h-[3rem] w-[calc(100%+2rem)] px-4 py-2",
-                      unwrapped ? "border-edenPink-500 border-b" : "",
-                      router.query.positionID === position?._id
-                        ? "bg-edenPink-200"
-                        : ""
-                    )}
+              company.positions
+                .filter(
+                  (_position) =>
+                    _position?.status !== "ARCHIVED" &&
+                    _position?.status !== "DELETED"
+                )
+                .map((position, index) => (
+                  <Link
+                    key={index}
+                    href={`/${company.slug}/dashboard/${position?._id}`}
                   >
-                    <div className="flex items-center justify-center">
-                      {router.query.positionID === position?._id && (
-                        <div className="bg-edenGreen-500 absolute left-0 top-0 h-full w-1"></div>
+                    <div
+                      className={classNames(
+                        "hover:bg-edenPink-200 relative -mx-4 min-h-[3rem] w-[calc(100%+2rem)] px-4 py-2",
+                        unwrapped ? "border-edenPink-500 border-b" : "",
+                        router.query.positionID === position?._id
+                          ? "bg-edenPink-200"
+                          : ""
                       )}
-                      <div className="text-edenGreen-500 flex h-6 w-6 items-center justify-center rounded-md bg-white bg-opacity-30">
-                        <IconPickerItem
-                          icon={position?.icon || "FaCode"}
-                          size={"1rem"}
-                          color="#00462C"
-                        />
-                      </div>
-                      {unwrapped && (
-                        <div className="ml-2 mr-auto w-full">
-                          <div className="whitespace-nowrap text-sm font-bold">
-                            {position?.name?.slice(0, 20)}
-                            {position?.name?.length! > 20 ? "..." : ""}
-                            {position?.talentList ? (
-                              <div
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setUnwrappedPosition(
-                                    unwrappedPosition === position?._id
-                                      ? null
-                                      : position._id!
-                                  );
-                                }}
-                                className="hover:bg-edenPink-500 flexitems-center absolute right-1 top-5 flex h-5 w-5 items-center justify-center justify-center rounded-full"
-                              >
-                                {unwrappedPosition === position?._id ? (
-                                  <BsChevronUp className="-mb-px w-3" />
-                                ) : (
-                                  <BsChevronDown className="-mb-px w-3" />
-                                )}
-                              </div>
-                            ) : null}
-                          </div>
-                          <p className="text-edenGray-700 whitespace-nowrap text-xs">
-                            {company?.name}
-                          </p>
+                    >
+                      <div className="flex items-center justify-center">
+                        {router.query.positionID === position?._id && (
+                          <div className="bg-edenGreen-500 absolute left-0 top-0 h-full w-1"></div>
+                        )}
+                        <div className="text-edenGreen-500 flex h-6 w-6 items-center justify-center rounded-md bg-white bg-opacity-30">
+                          <IconPickerItem
+                            icon={position?.icon || "FaCode"}
+                            size={"1rem"}
+                            color="#00462C"
+                          />
                         </div>
+                        {unwrapped && (
+                          <div className="ml-2 mr-auto w-full">
+                            <div className="whitespace-nowrap text-sm font-bold">
+                              {position?.name?.slice(0, 20)}
+                              {position?.name?.length! > 20 ? "..." : ""}
+                              {position?.talentList ? (
+                                <div
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setUnwrappedPosition(
+                                      unwrappedPosition === position?._id
+                                        ? null
+                                        : position._id!
+                                    );
+                                  }}
+                                  className="hover:bg-edenPink-500 flexitems-center absolute right-1 top-5 flex h-5 w-5 items-center justify-center justify-center rounded-full"
+                                >
+                                  {unwrappedPosition === position?._id ? (
+                                    <BsChevronUp className="-mb-px w-3" />
+                                  ) : (
+                                    <BsChevronDown className="-mb-px w-3" />
+                                  )}
+                                </div>
+                              ) : null}
+                            </div>
+                            <p className="text-edenGray-700 whitespace-nowrap text-xs">
+                              {company?.name}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      {unwrapped && unwrappedPosition === position?._id && (
+                        <ul className="mb-2 mt-2 pl-6">
+                          {[
+                            { _id: "000", name: "All candidates" },
+                            ...position?.talentList!,
+                          ]?.map((_talentList, index) => (
+                            <li key={index}>
+                              <Link
+                                href={`/${company.slug}/dashboard/${
+                                  position?._id
+                                }${
+                                  _talentList?._id !== "000"
+                                    ? "?listID=" + _talentList?._id
+                                    : ""
+                                }`}
+                                className="text-xs hover:font-bold"
+                              >
+                                {_talentList?.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
                       )}
                     </div>
-                    {unwrapped && unwrappedPosition === position?._id && (
-                      <ul className="mb-2 mt-2 pl-6">
-                        {[
-                          { _id: "000", name: "All candidates" },
-                          ...position?.talentList!,
-                        ]?.map((_talentList, index) => (
-                          <li key={index}>
-                            <Link
-                              href={`/${company.slug}/dashboard/${
-                                position?._id
-                              }${
-                                _talentList?._id !== "000"
-                                  ? "?listID=" + _talentList?._id
-                                  : ""
-                              }`}
-                              className="text-xs hover:font-bold"
-                            >
-                              {_talentList?.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
           </>
         )}
       </section>
