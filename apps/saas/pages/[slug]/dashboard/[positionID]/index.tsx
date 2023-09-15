@@ -1921,6 +1921,7 @@ const PositionCRM: NextPageWithLayout = () => {
             <AskEdenPopUp
               memberID={currentUser?._id!}
               service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
+              title="Ask Eden about all candidates"
             />
           )}
       </div>

@@ -109,7 +109,7 @@ export const AskEdenPopUp = ({
           className={classNames(
             "relative drop-shadow-sm rounded-full cursor-pointer transition-all ease-in-out",
             title
-              ? "h-[calc(3rem+4px)] overflow-hidden scrollbar-hide border-2 border-edenGreen-600 pl-4 flex items-center justify-between hover:bg-edenGreen-100"
+              ? "h-[calc(3rem+4px)] overflow-hidden scrollbar-hide border-2 border-edenGreen-600 pl-4 flex items-center justify-between bg-white hover:bg-edenGreen-100"
               : "",
             open && title ? "max-w-[calc(3rem+4px)]" : "max-w-[50vw]"
           )}
