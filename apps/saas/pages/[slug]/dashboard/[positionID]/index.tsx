@@ -1194,7 +1194,14 @@ const PositionCRM: NextPageWithLayout = () => {
                   <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
                   Create talent list
                 </li>
-                <li className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100">
+                <li
+                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  onClick={() => {
+                    router.push(
+                      `/${slug}/dashboard/${positionID}/train-eden-ai`
+                    );
+                  }}
+                >
                   <BsFillGearFill size={16} className="mb-1 mr-1 inline" />
                   Configure opportunity
                 </li>
