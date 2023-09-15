@@ -2,7 +2,8 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext } from "@eden/package-context";
 import { Position } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
-import { GetServerSideProps } from "next";
+import axios from "axios";
+import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
@@ -160,7 +161,10 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export async function getServerSideProps(ctx: {
+  req: IncomingMessage;
+  res: ServerResponse;
+}) {
   const session = await getSession(ctx);
 
   const url = ctx.req.url;
@@ -174,7 +178,40 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  if (!session.productID) {
+    const _user = await axios({
+      url: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+      method: "post",
+      data: {
+        query: `
+        query {
+          findMembers(fields: {
+            _id: ${session.user?.id}
+          }) {
+            _id
+            stripe {
+              product {
+                ID
+              }
+            }
+          }
+        }`,
+      },
+    });
+
+    if (!_user.data.data.findMembers[0].stripe.product.ID) {
+      return {
+        redirect: {
+          destination: `/subscribe`,
+          permanent: false,
+        },
+      };
+    } else {
+      session.productID = _user.data.data.findMembers[0].stripe;
+    }
+  }
+
   return {
-    props: {},
+    props: { key: url },
   };
-};
+}

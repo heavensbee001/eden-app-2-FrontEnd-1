@@ -10,6 +10,7 @@ type decodedType = {
   _id: string;
   discordName: string;
   accessLevel: number;
+  productID: string | null;
 };
 
 type edenTokenType = {
@@ -67,6 +68,7 @@ export default NextAuth({
         if (edenToken.edenToken) {
           decoded = jwt_decode<decodedType>(edenToken.edenToken);
           session.accessLevel = decoded.accessLevel;
+          session.productID = decoded.productID || null;
         }
       }
 

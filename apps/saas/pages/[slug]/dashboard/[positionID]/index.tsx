@@ -1934,6 +1934,7 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 export default PositionCRM;
 
 import { CompanyContext, UserContext } from "@eden/package-context";
+import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -1956,7 +1957,39 @@ export async function getServerSideProps(ctx: {
         permanent: false,
       },
     };
-    // signIn("google");
+  }
+
+  if (!session.productID) {
+    const _user = await axios({
+      url: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+      method: "post",
+      data: {
+        query: `
+        query {
+          findMembers(fields: {
+            _id: ${session.user?.id}
+          }) {
+            _id
+            stripe {
+              product {
+                ID
+              }
+            }
+          }
+        }`,
+      },
+    });
+
+    if (!_user.data.data.findMembers[0].stripe.product.ID) {
+      return {
+        redirect: {
+          destination: `/subscribe`,
+          permanent: false,
+        },
+      };
+    } else {
+      session.productID = _user.data.data.findMembers[0].stripe;
+    }
   }
 
   return {

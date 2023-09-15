@@ -8,5 +8,6 @@ declare module "next-auth" {
     };
     error?: string;
     accessLevel?: number | null;
+    productID?: string | null;
   }
 }

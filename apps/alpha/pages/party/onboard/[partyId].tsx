@@ -227,8 +227,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       },
     });
 
-    // console.log("data", data);
-
     return {
       props: {
         room: data.findRoom,

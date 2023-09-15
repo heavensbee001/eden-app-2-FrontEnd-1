@@ -175,7 +175,7 @@ const SubscribePage: NextPageWithLayout = () => {
         // eslint-disable-next-line camelcase
         price_id: priceID,
         // eslint-disable-next-line camelcase
-        success_url: `${origin}/subscribe`,
+        success_url: `${origin}/create-company`,
         // eslint-disable-next-line camelcase
         cancel_url: `${origin}/subscribe`,
         userid: currentUser?._id,
