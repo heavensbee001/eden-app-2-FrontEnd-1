@@ -1187,7 +1187,10 @@ const PositionCRM: NextPageWithLayout = () => {
                   <HiOutlineLink size={14} className="mb-1 mr-1 inline" />
                   Copy interview link
                 </li>
-                <li className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100">
+                <li
+                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  onClick={handleCreateNewList}
+                >
                   <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
                   Create talent list
                 </li>
