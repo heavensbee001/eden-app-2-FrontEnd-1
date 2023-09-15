@@ -17,6 +17,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
         _id
         name
         icon
+        status
         talentList {
           _id
           name

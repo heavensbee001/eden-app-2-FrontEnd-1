@@ -104,109 +104,116 @@ const HomePage: NextPageWithLayout = () => {
         <section className="">
           <h3 className="mb-2">Open opportunities</h3>
           <div className="w-full -m-2">
-            {company?.positions?.map((position: Maybe<Position>, index) => {
-              const randMatchstimate =
-                FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
+            {company
+              ?.positions!.filter(
+                (_position) =>
+                  _position?.status !== "ARCHIVED" &&
+                  _position?.status !== "DELETED"
+              )
+              ?.map((position: Maybe<Position>, index) => {
+                const randMatchstimate =
+                  FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
 
-              return (
-                <div
-                  key={index}
-                  className="bg-white relative cursor-pointer transition-all w-[calc(50%-2rem)] min-w-[20rem] inline-block m-2 p-4 border border-edenGray-100 rounded-md align-top"
-                  onClick={() => {
-                    if (currentUser) router.push(`/interview/${position?._id}`);
-                  }}
-                >
-                  <div className="absolute -right-2 -top-1">
-                    <EdenTooltip
-                      id={`tradeoff-${index}`}
-                      delayHide={currentUser ? 0 : 300}
-                      clickable={currentUser ? false : true}
-                      innerTsx={
-                        <div className="w-60 pt-2">
-                          <div
-                            className={classNames(
-                              "absolute top-2 right-2 border rounded-sm px-2",
-                              currentUser
-                                ? "border-edenGreen-500"
-                                : "border-edenGray-500"
-                            )}
-                          >
-                            <h3
+                return (
+                  <div
+                    key={index}
+                    className="bg-white relative cursor-pointer transition-all w-[calc(50%-2rem)] min-w-[20rem] inline-block m-2 p-4 border border-edenGray-100 rounded-md align-top"
+                    onClick={() => {
+                      if (currentUser)
+                        router.push(`/interview/${position?._id}`);
+                    }}
+                  >
+                    <div className="absolute -right-2 -top-1">
+                      <EdenTooltip
+                        id={`tradeoff-${index}`}
+                        delayHide={currentUser ? 0 : 300}
+                        clickable={currentUser ? false : true}
+                        innerTsx={
+                          <div className="w-60 pt-2">
+                            <div
                               className={classNames(
+                                "absolute top-2 right-2 border rounded-sm px-2",
                                 currentUser
-                                  ? "text-edenGreen-600"
-                                  : "text-edenGray-500 font-Unica font-normal px-2"
+                                  ? "border-edenGreen-500"
+                                  : "border-edenGray-500"
                               )}
                             >
-                              {currentUser ? randMatchstimate.grade : "?"}
-                            </h3>
-                          </div>
-                          {currentUser ? (
-                            <p>{randMatchstimate.text}</p>
-                          ) : (
-                            <>
-                              <p className="mb-4">
-                                {`Sign up to the ${company.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
-                              </p>
-                              <Button
-                                onClick={() => {
-                                  signIn("google", {
-                                    callbackUrl: router.asPath,
-                                  });
-                                }}
-                                variant="secondary"
-                                className="h-6 !py-0 px-2 flex justify-center items-center"
+                              <h3
+                                className={classNames(
+                                  currentUser
+                                    ? "text-edenGreen-600"
+                                    : "text-edenGray-500 font-Unica font-normal px-2"
+                                )}
                               >
-                                Sign up
-                              </Button>
-                            </>
-                          )}
+                                {currentUser ? randMatchstimate.grade : "?"}
+                              </h3>
+                            </div>
+                            {currentUser ? (
+                              <p>{randMatchstimate.text}</p>
+                            ) : (
+                              <>
+                                <p className="mb-4">
+                                  {`Sign up to the ${company.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
+                                </p>
+                                <Button
+                                  onClick={() => {
+                                    signIn("google", {
+                                      callbackUrl: router.asPath,
+                                    });
+                                  }}
+                                  variant="secondary"
+                                  className="h-6 !py-0 px-2 flex justify-center items-center"
+                                >
+                                  Sign up
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        }
+                        title="matchstimate"
+                        place="top"
+                        effect="solid"
+                        backgroundColor="white"
+                        border
+                        borderColor="#e5e7eb"
+                        padding="0.5rem"
+                        containerClassName="w-full"
+                      >
+                        <div className="shadow bg-edenPink-200 rounded-full p-1 w-5 h-5">
+                          <EdenIconExclamation className="w-full h-full" />
                         </div>
-                      }
-                      title="matchstimate"
-                      place="top"
-                      effect="solid"
-                      backgroundColor="white"
-                      border
-                      borderColor="#e5e7eb"
-                      padding="0.5rem"
-                      containerClassName="w-full"
-                    >
-                      <div className="shadow bg-edenPink-200 rounded-full p-1 w-5 h-5">
-                        <EdenIconExclamation className="w-full h-full" />
-                      </div>
-                    </EdenTooltip>
-                  </div>
-                  <div className="absolute left-4 top-4 rounded-md h-12 w-12 bg-edenPink-400 flex items-center justify-center pl-px mr-4">
-                    <IconPickerItem
-                      icon={position?.icon || "FaCode"}
-                      size={"2rem"}
-                      color="#00462C"
-                    />
-                  </div>
-                  <div className="pl-16">
-                    <p className="font-medium text-edenGray-900">
-                      {position?.name}
-                    </p>
-                    <p className="text-edenGray-900">
-                      {position?.company?.name}
-                    </p>
-                    <p className="text-sm text-edenGray-900">
-                      {position?.generalDetails?.officePolicy &&
-                        position?.generalDetails?.officePolicy}
-                      {position?.generalDetails?.contractType &&
-                        " • " + position?.generalDetails?.contractType}
-                    </p>
-                    {(!!position?.generalDetails?.yearlySalary ||
-                      position?.generalDetails?.yearlySalary === 0) && (
-                      <p className="text-xs text-edenGray-500">
-                        ${position?.generalDetails?.yearlySalary}
+                      </EdenTooltip>
+                    </div>
+                    <div className="absolute left-4 top-4 rounded-md h-12 w-12 bg-edenPink-400 flex items-center justify-center pl-px mr-4">
+                      <IconPickerItem
+                        icon={position?.icon || "FaCode"}
+                        size={"2rem"}
+                        color="#00462C"
+                      />
+                    </div>
+                    <div className="pl-16">
+                      <p className="font-medium text-edenGray-900">
+                        {position?.name}
                       </p>
-                    )}
+                      <p className="text-edenGray-900">
+                        {position?.company?.name}
+                      </p>
+                      <p className="text-sm text-edenGray-900">
+                        {position?.generalDetails?.officePolicy &&
+                          position?.generalDetails?.officePolicy}
+                        {position?.generalDetails?.contractType &&
+                          " • " + position?.generalDetails?.contractType}
+                      </p>
+                      {(!!position?.generalDetails?.yearlySalary ||
+                        position?.generalDetails?.yearlySalary === 0) && (
+                        <p className="text-xs text-edenGray-500">
+                          ${position?.generalDetails?.yearlySalary}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </section>
       </div>
@@ -255,17 +262,33 @@ const HomePage: NextPageWithLayout = () => {
           <h2 className="text-edenGreen-600">
             Talent Pools active in {company?.name ? company?.name : "community"}
           </h2>
-          {company?.positions?.slice(0, 5).map((position, index) => (
-            <Badge
-              key={index}
-              text={position?.name || ""}
-              cutText={22}
-              className="border border-edenGray-500 text-edenGreen-600"
-            />
-          ))}
-          {company?.positions && company?.positions?.length > 6 && (
-            <p className="text-edenGray-500 text-xs">and more...</p>
-          )}
+          {company?.positions
+            ?.filter(
+              (_position) =>
+                _position?.status !== "ARCHIVED" &&
+                _position?.status !== "DELETED"
+            )
+            .slice(0, 5)
+            .map((position, index) => (
+              <Badge
+                key={index}
+                text={position?.name || ""}
+                cutText={22}
+                className="border border-edenGray-500 text-edenGreen-600"
+              />
+            ))}
+          {company?.positions!.filter(
+            (_position) =>
+              _position?.status !== "ARCHIVED" &&
+              _position?.status !== "DELETED"
+          ) &&
+            company?.positions!.filter(
+              (_position) =>
+                _position?.status !== "ARCHIVED" &&
+                _position?.status !== "DELETED"
+            ).length > 6 && (
+              <p className="text-edenGray-500 text-xs">and more...</p>
+            )}
         </div>
       </section>
     </>
