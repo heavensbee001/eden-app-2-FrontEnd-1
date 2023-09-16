@@ -11,8 +11,8 @@ import { IconPickerItem } from "react-fa-icon-picker";
 import { BiPlus } from "react-icons/bi";
 import {
   BsChevronDown,
-  BsChevronLeft,
-  BsChevronRight,
+  // BsChevronLeft,
+  // BsChevronRight,
   BsChevronUp,
 } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
@@ -26,17 +26,17 @@ const UPDATE_POSITION = gql`
   }
 `;
 
-export interface LeftToggleNavProps {
+export interface LeftNavProps {
   unwrapped: boolean;
   logoLink?: string;
   onToggleNav?: () => void;
 }
 
-export const LeftToggleNav = ({
+export const LeftNav = ({
   unwrapped = false,
   logoLink = "/",
-  onToggleNav,
-}: LeftToggleNavProps) => {
+}: // onToggleNav,
+LeftNavProps) => {
   const router = useRouter();
   const { company, getCompanyFunc } = useContext(CompanyContext);
 
@@ -99,14 +99,16 @@ export const LeftToggleNav = ({
     router.pathname.includes("/train-eden-ai");
 
   return (
-    <nav
-      className={classNames(
-        "bg-edenPink-400 transition-width fixed left-0 top-0 z-30 flex h-screen flex-col ease-in-out",
-        unwrapped ? "w-[14.5rem]" : "w-16"
-      )}
-    >
+    // <nav
+    //   className={classNames(
+    //     "bg-edenPink-400 transition-width fixed left-0 top-0 z-30 flex h-screen flex-col ease-in-out",
+    //     unwrapped ? "w-[14.5rem]" : "w-16"
+    //   )}
+    // >
+    <nav className="transition-width fixed left-0 top-0 z-30 flex h-screen flex-col ease-in-out">
       {/* ---- Eden logo section ---- */}
-      <section className="border-edenPink-500 relative flex h-[4.5rem] items-center border-b p-4">
+      {/* <section className="border-edenPink-500 relative flex h-[4.5rem] items-center border-b p-4"> */}
+      <section className="border-edenPink-500 relative flex h-[4.5rem] items-center p-4">
         {unwrapped ? (
           <span
             className="text-edenGreen-600 font-Moret cursor-pointer text-2xl font-bold"
@@ -128,7 +130,7 @@ export const LeftToggleNav = ({
             }}
           />
         )}
-        <div
+        {/* <div
           className="color-edenGreen-600 bg-edenPink-500 absolute -bottom-3 -right-2 z-10 -mb-px flex h-12 h-6 w-5 w-6 cursor-pointer items-center justify-center rounded-md"
           onClick={onToggleNav}
         >
@@ -137,7 +139,7 @@ export const LeftToggleNav = ({
           ) : (
             <BsChevronRight className="w-3" />
           )}
-        </div>
+        </div> */}
       </section>
 
       {/* ---- Talent Pools Section ---- */}
@@ -286,12 +288,13 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
   };
 
   return currentUser ? (
-    <div
-      className={classNames(
-        "border-edenPink-500 flex h-[5.5rem] items-center border-t p-4",
-        unwrapped ? "" : "justify-center"
-      )}
-    >
+    // <div
+    //   className={classNames(
+    //     "border-edenPink-500 flex h-[5.5rem] items-center border-t p-4",
+    //     unwrapped ? "" : "justify-center"
+    //   )}
+    // >
+    <div className="border-edenPink-500 flex h-[5.5rem] items-center  p-4">
       <div className={"mr-auto flex w-2/3 items-center"}>
         <div className="z-10">
           {currentUser.discordAvatar && (
