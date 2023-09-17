@@ -6,7 +6,6 @@ import { useContext } from "react";
 
 export interface LeftNavProps {
   logoLink?: string;
-  onToggleNav?: () => void;
 }
 
 export const LeftNav = ({ logoLink = "/" }: LeftNavProps) => {
