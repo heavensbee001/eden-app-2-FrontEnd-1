@@ -42,8 +42,9 @@ export const LeftToggleNav = ({
 
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
-  const [unwrappedPosition, setUnwrappedPosition] =
-    useState<string | null>(null);
+  const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
+    null
+  );
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
@@ -140,7 +141,7 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- Talent Pools Section ---- */}
-      <section className="relative mb-auto max-h-[calc(100vh-15rem)] overflow-y-scroll scrollbar-hide px-4 py-8">
+      <section className="scrollbar-hide relative mb-auto max-h-[calc(100vh-15rem)] overflow-y-scroll px-4 py-8">
         {company && !hideTalentPools && (
           <>
             <h3
