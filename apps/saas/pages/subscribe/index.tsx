@@ -33,7 +33,7 @@ const PRODUCTS: PRODUCTS_TYPE = [
       "For those looking to build the future with likeminded people.",
     monthlyPrice: 500,
     priceID: IS_PRODUCTION
-      ? "price_1Np71oBxX85c6z0CNwi9ZBMa"
+      ? "price_1NreSZBxX85c6z0CXzCngNS2"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
     features: {
       access: {
