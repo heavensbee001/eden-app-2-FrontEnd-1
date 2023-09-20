@@ -97,6 +97,15 @@ const FIND_POSITION = gql`
   }
 `;
 
+export const POSITION_TEXT_CONVO_TO_REPORT = gql`
+  mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
+    positionTextAndConvoToReportCriteria(fields: $fields) {
+      success
+      report
+    }
+  }
+`;
+
 const ADD_QUESTIONS_TO_POSITION = gql`
   mutation ($fields: addQuestionsToAskPositionInput) {
     addQuestionsToAskPosition(fields: $fields) {
@@ -354,7 +363,36 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   };
 
+  // ------ ALIGNMENT STEP ------
+
+  const [
+    positionTextAndConvoToReportCriteria,
+    { loading: loadingUpdateReportToPosition },
+  ] = useMutation(POSITION_TEXT_CONVO_TO_REPORT, {
+    // eslint-disable-next-line no-unused-vars
+    onCompleted({ positionTextAndConvoToReportCriteria }) {
+      setStep(step + 1);
+    },
+    onError() {
+      // setScraping(false);
+    },
+  });
+
+  const handleSubmitAlignment = () => {
+    // setScraping(true);
+
+    positionTextAndConvoToReportCriteria({
+      variables: {
+        fields: {
+          positionID: positionID,
+          updatedReport: getValues("position.positionsRequirements.content"),
+        },
+      },
+    });
+  };
+
   // ------ QUESTIONS STEP ------
+
   const [
     updatePositionGeneralDetails,
     { loading: loadingUpdatePositionGeneralDetails },
@@ -602,6 +640,22 @@ const TrainAiPage: NextPageWithLayout = () => {
                 <WizardStep
                   label={"Alignment"}
                   // navigationDisabled
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      className="mx-auto"
+                      onClick={() => {
+                        handleSubmitAlignment();
+                      }}
+                      loading={loadingUpdateReportToPosition}
+                      disabled={
+                        !watch("position.positionsRequirements.content") ||
+                        loadingUpdateReportToPosition
+                      }
+                    >
+                      Save & Continue
+                    </Button>
+                  }
                 >
                   <div className="mx-auto h-full max-w-2xl">
                     <h2 className="mb-4">Complete Checks & Balances List</h2>
@@ -610,7 +664,23 @@ const TrainAiPage: NextPageWithLayout = () => {
                         "Here’s a list of all the must & nice to have. Feel free to edit any line "
                       }
                     </p>
-                    <ProfileQuestionsContainer />
+                    <ProfileQuestionsContainer
+                      onChange={(val) => {
+                        setValue("position.positionsRequirements.content", val);
+                      }}
+                    />
+                    {loadingUpdateQuestionsToPosition && (
+                      <EdenAiProcessingModal
+                        open={loadingUpdateReportToPosition}
+                        title="Generating optimal interview"
+                      >
+                        <div className="text-center">
+                          <p>
+                            {`I've done 1000s of interviews and I'm currently cross-referencing the best seed questions to ask based on everything you've just told me. You'll be able to add, delete & adapt of course!`}
+                          </p>
+                        </div>
+                      </EdenAiProcessingModal>
+                    )}
                   </div>
                 </WizardStep>
 
