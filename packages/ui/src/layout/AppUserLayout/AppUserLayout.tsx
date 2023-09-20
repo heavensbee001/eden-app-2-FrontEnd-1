@@ -14,7 +14,7 @@ export const AppUserLayout = ({
   children,
   logoLink = `/`,
 }: IAppUserLayoutProps) => {
-  const [unwrappedNav, setUnwrappedNav] = useState(false);
+  const [unwrappedNav, setUnwrappedNav] = useState(true);
 
   const router = useRouter();
 
