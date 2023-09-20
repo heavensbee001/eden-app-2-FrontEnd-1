@@ -119,7 +119,7 @@ export const InfoTab: FC<Props> = ({
 
           <section className="bg-edenPink-300 col-span-4 w-full rounded-md py-3">
             <div className="border-edenGreen-300 mb-2 border-b px-4">
-              <h3 className="text-edenGreen-500 mb-1">Hourly rate</h3>
+              <h3 className="text-edenGreen-500 mb-1">Yearly rate</h3>
             </div>
             <div className="px-4">
               {member?.user?.budget?.perHour !== null &&
@@ -129,7 +129,7 @@ export const InfoTab: FC<Props> = ({
                   <span className="font-bold">
                     ${member.user.budget.perHour}
                   </span>
-                  /hour
+                  /year
                 </p>
               ) : (
                 <span className="">-</span>
