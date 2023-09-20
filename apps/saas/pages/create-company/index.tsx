@@ -63,7 +63,7 @@ const CreateCompany: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="h-screen w-full flex items-center justify-center">
+      <div className="flex h-screen w-full items-center justify-center">
         <form
           className="w-full max-w-2xl"
           onSubmit={handleSubmit(submitHandler)}
@@ -90,7 +90,9 @@ const CreateCompany: NextPageWithLayout = () => {
                   id="Abbreviation"
                   className="h-[34px] w-full bg-transparent p-2"
                   required
-                  {...register("companyAbbreviation")}
+                  {...register("companyAbbreviation", {
+                    pattern: /^[a-z0-9-]+$/,
+                  })}
                 />
               </div>
             </div>
@@ -108,7 +110,7 @@ const CreateCompany: NextPageWithLayout = () => {
               </div>
             </div>
 
-            <Button type="submit" variant="secondary" className="block mx-auto">
+            <Button type="submit" variant="secondary" className="mx-auto block">
               Submit
             </Button>
           </section>
