@@ -22,7 +22,8 @@ export const AppUserLayout = ({
     <div className="min-h-screen w-full">
       <div className="">
         {/* <AppHeader logoLink={logoLink} inApp /> */}
-        {router.pathname.includes("/jobs") ? (
+        {router.pathname.includes("/jobs") ||
+        router.pathname.includes("/interview") ? (
           <LeftNav logoLink={logoLink} />
         ) : (
           <LeftToggleNav
