@@ -435,7 +435,7 @@ const TrainAiPage: NextPageWithLayout = () => {
             questionsToAsk: getValues("position.questionsToAsk").map(
               (question: QuestionType) =>
                 ({
-                  questionID: question.question?._id,
+                  // questionID: question.question?._id,
                   questionContent: question.question?.content,
                   category: question?.category,
                 } as QuestionTypeInput)
@@ -585,7 +585,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   // navigationDisabled
                 >
                   <div className="relative mx-auto h-full max-w-2xl">
-                    <div className="relative mx-auto h-[calc(100%-4rem)] w-full mb-4">
+                    <div className="relative mx-auto mb-4 h-[calc(100%-4rem)] w-full">
                       <InterviewEdenAIContainer
                         handleEnd={handleInterviewEnd}
                         interviewQuestionsForPosition={
@@ -847,7 +847,7 @@ const TrainAiPage: NextPageWithLayout = () => {
             )} */}
             {/* {!IS_PRODUCTION && ( */}
             <Button
-              className="absolute left-0 bottom-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+              className="absolute bottom-0 left-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
               variant="secondary"
               onClick={() => {
                 setStep(step + 1);
