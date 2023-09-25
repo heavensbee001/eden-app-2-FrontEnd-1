@@ -1,6 +1,5 @@
 import { AppUserLayout, Button } from "@eden/package-ui";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 import { NextPageWithLayout } from "../_app";
 
