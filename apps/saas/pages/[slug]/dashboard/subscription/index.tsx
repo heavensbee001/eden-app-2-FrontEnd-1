@@ -1,11 +1,11 @@
-import { UserContext } from "@eden/package-context";
+// import { UserContext } from "@eden/package-context";
 import { AppUserLayout, Button } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { useContext } from "react";
+// import { useContext } from "react";
 import { BiCheck, BiInfinite } from "react-icons/bi";
 import {
   HiOutlineBuildingOffice,
@@ -14,8 +14,8 @@ import {
 } from "react-icons/hi2";
 import { MdClose } from "react-icons/md";
 
-import { IS_PRODUCTION } from "../../constants";
-import type { NextPageWithLayout } from "../_app";
+import { IS_PRODUCTION } from "../../../../constants";
+import type { NextPageWithLayout } from "../../../_app";
 
 type PRODUCTS_TYPE = {
   name: string;
@@ -175,7 +175,8 @@ const PRODUCTS: PRODUCTS_TYPE = [
 const SubscribePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
-  const { currentUser } = useContext(UserContext);
+  const slug = router.query.slug;
+  // const { currentUser } = useContext(UserContext);
 
   const handleSubscribeClick = async (priceID: string) => {
     const origin =
@@ -189,10 +190,10 @@ const SubscribePage: NextPageWithLayout = () => {
         // eslint-disable-next-line camelcase
         price_id: priceID,
         // eslint-disable-next-line camelcase
-        success_url: `${origin}/create-company`,
+        success_url: `${origin}/${slug}/dashboard`,
         // eslint-disable-next-line camelcase
-        cancel_url: `${origin}/subscribe`,
-        userid: currentUser?._id,
+        cancel_url: `${origin}/${slug}/dashboard/subscription`,
+        companySlug: slug,
       },
       {
         headers: {
@@ -339,6 +340,7 @@ SubscribePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
+  query: { slug: string };
 }) {
   const session = await getSession(ctx);
 
@@ -353,8 +355,44 @@ export async function getServerSideProps(ctx: {
     };
   }
 
+  if (session.accessLevel === 5) {
+    return {
+      props: { key: url },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userID: session.user!.id,
+        companySlug: ctx.query.slug,
+      }),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (res.status === 404) {
+    return {
+      redirect: {
+        destination: `/create-company`,
+        permanent: false,
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: { key: url },
   };
 }
 

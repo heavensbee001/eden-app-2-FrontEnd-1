@@ -883,6 +883,7 @@ export default TrainAiPage;
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
+  query: { slug: string };
 }) {
   const session = await getSession(ctx);
 
@@ -897,7 +898,61 @@ export async function getServerSideProps(ctx: {
     };
   }
 
+  if (session.accessLevel === 5) {
+    return {
+      props: { key: url },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userID: session.user!.id,
+        companySlug: ctx.query.slug,
+      }),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  console.log(res.status);
+
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (res.status === 404) {
+    return {
+      redirect: {
+        destination: `/create-company`,
+        permanent: false,
+      },
+    };
+  }
+
+  const _companyAuth = await res.json();
+
+  if (
+    res.status === 200 &&
+    (!_companyAuth.company.stripe ||
+      !_companyAuth.company.stripe.product ||
+      !_companyAuth.company.stripe.product.ID)
+  ) {
+    return {
+      redirect: {
+        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+        permanent: false,
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: { key: url },
   };
 }

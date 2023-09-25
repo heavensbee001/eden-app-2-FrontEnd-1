@@ -1,11 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
+import { UserContext } from "@eden/package-context";
+import { EmployeeTypeInput } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
-import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -18,6 +20,7 @@ type FormData = {
 const UPDATE_COMPANY = gql`
   mutation ($fields: updateCompanyInput!) {
     updateCompany(fields: $fields) {
+      _id
       name
       type
       slug
@@ -25,7 +28,24 @@ const UPDATE_COMPANY = gql`
     }
   }
 `;
+const ADD_EMPLOYEES_COMPANY = gql`
+  mutation ($fields: addEmployeesCompanyInput!) {
+    addEmployeesCompany(fields: $fields) {
+      _id
+      name
+      slug
+      employees {
+        typeT
+        user {
+          _id
+          discordName
+        }
+      }
+    }
+  }
+`;
 const CreateCompany: NextPageWithLayout = () => {
+  // eslint-disable-next-line no-unused-vars
   const [formData, setFormData] = useState<FormData | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const {
@@ -33,21 +53,48 @@ const CreateCompany: NextPageWithLayout = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { currentUser } = useContext(UserContext);
 
   const router = useRouter();
 
-  const [updateCompany] = useMutation(UPDATE_COMPANY, {
-    // eslint-disable-next-line no-unused-vars
-    onCompleted({ data }) {
-      // console.log("data from onComplete", data);
-      if (formData) {
-        router.push(`/${formData.companyAbbreviation}/dashboard`);
+  const [addEmployeesCompany] = useMutation(ADD_EMPLOYEES_COMPANY, {
+    onCompleted(data) {
+      if (data.addEmployeesCompany) {
+        router.push(
+          `/${data.addEmployeesCompany.companyAbbreviation}/dashboard`
+        );
       }
     },
     onError() {
       setSubmitting(false);
     },
   });
+
+  const [updateCompany, { data: updateCompanyData }] = useMutation(
+    UPDATE_COMPANY,
+    {
+      // eslint-disable-next-line no-unused-vars
+      onCompleted({ data }) {
+        console.log("completed add company");
+      },
+      onError() {
+        toast.error("An error occurred while submitting");
+        setSubmitting(false);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (updateCompanyData)
+      addEmployeesCompany({
+        variables: {
+          fields: {
+            companyID: updateCompanyData.updateCompany._id,
+            employees: [{ userID: currentUser!._id }] as EmployeeTypeInput[],
+          },
+        },
+      });
+  }, [updateCompanyData]);
 
   const submitHandler = (data: any) => {
     setFormData(data);
@@ -154,39 +201,6 @@ export async function getServerSideProps(ctx: {
         permanent: false,
       },
     };
-  }
-
-  if (!session.productID) {
-    const _user = await axios({
-      url: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-      method: "post",
-      data: {
-        query: `
-        query {
-          findMembers(fields: {
-            _id: ${session.user?.id}
-          }) {
-            _id
-            stripe {
-              product {
-                ID
-              }
-            }
-          }
-        }`,
-      },
-    });
-
-    if (!_user.data.data.findMembers[0].stripe.product.ID) {
-      return {
-        redirect: {
-          destination: `/subscribe`,
-          permanent: false,
-        },
-      };
-    } else {
-      session.productID = _user.data.data.findMembers[0].stripe;
-    }
   }
 
   return {

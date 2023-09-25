@@ -42,9 +42,8 @@ export const LeftToggleNav = ({
 
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
-  const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
-    null
-  );
+  const [unwrappedPosition, setUnwrappedPosition] =
+    useState<string | null>(null);
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
@@ -86,14 +85,14 @@ export const LeftToggleNav = ({
 
   const hideCreatePosition =
     router.pathname.includes("/jobs") ||
-    router.pathname.includes("/subscribe") ||
+    router.pathname.includes("/subscription") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/create-company") ||
     router.pathname.includes("/train-eden-ai");
 
   const hideTalentPools =
     router.pathname.includes("/jobs") ||
-    router.pathname.includes("/subscribe") ||
+    router.pathname.includes("/subscription") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/create-company") ||
     router.pathname.includes("/train-eden-ai");

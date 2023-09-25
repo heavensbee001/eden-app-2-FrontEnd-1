@@ -13,11 +13,6 @@ export const FIND_CURRENTUSER = gql`
       interest
       timeZone
       location
-      stripe {
-        product {
-          ID
-        }
-      }
       conduct {
         telegramChatID
       }
