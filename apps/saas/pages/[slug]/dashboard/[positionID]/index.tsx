@@ -1934,7 +1934,6 @@ PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
 export default PositionCRM;
 
 import { CompanyContext, UserContext } from "@eden/package-context";
-import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -1945,6 +1944,7 @@ import { TbTrashXFilled } from "react-icons/tb";
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
+  query: { slug: string };
 }) {
   const session = await getSession(ctx);
 
@@ -1959,43 +1959,65 @@ export async function getServerSideProps(ctx: {
     };
   }
 
-  if (!session.productID) {
-    const _user = await axios({
-      url: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-      method: "post",
-      data: {
-        query: `
-        query {
-          findMembers(fields: {
-            _id: ${session.user?.id}
-          }) {
-            _id
-            stripe {
-              product {
-                ID
-              }
-            }
-          }
-        }`,
-      },
-    });
+  if (session.accessLevel === 5) {
+    return {
+      props: { key: url },
+    };
+  }
 
-    if (!_user.data.data.findMembers[0].stripe.product.ID) {
-      return {
-        redirect: {
-          destination: `/subscribe`,
-          permanent: false,
-        },
-      };
-    } else {
-      session.productID = _user.data.data.findMembers[0].stripe;
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userID: session.user!.id,
+        companySlug: ctx.query.slug,
+      }),
+      headers: { "Content-Type": "application/json" },
     }
+  );
+
+  console.log(res.status);
+
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (res.status === 404) {
+    return {
+      redirect: {
+        destination: `/create-company`,
+        permanent: false,
+      },
+    };
+  }
+
+  const _companyAuth = await res.json();
+
+  if (
+    res.status === 200 &&
+    (!_companyAuth.company.stripe ||
+      !_companyAuth.company.stripe.product ||
+      !_companyAuth.company.stripe.product.ID)
+  ) {
+    return {
+      redirect: {
+        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+        permanent: false,
+      },
+    };
   }
 
   return {
     props: { key: url },
   };
 }
+
 interface ICandidateCardProps {
   candidate: CandidateTypeSkillMatch;
   onClick: React.MouseEventHandler<HTMLDivElement>;
