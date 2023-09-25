@@ -241,7 +241,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   </ColumnStyled>
                 )} */}
                 <ColumnStyled textColor="text-[#86C8BC] text-center">
-                  {candidate.overallScore ? (
+                  {candidate?.letterAndColor &&
+                  candidate?.letterAndColor?.requirements ? (
                     <div className="border-edenGray-100 -my-4 mx-auto mx-auto flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                       <p
                         className={classNames(
