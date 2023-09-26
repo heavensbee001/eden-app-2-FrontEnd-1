@@ -7,6 +7,7 @@ import {
 } from "@eden/package-graphql";
 import {
   CandidateType,
+  PositionStatus,
   PrioritiesType,
   TalentListType,
   TalentType,
@@ -973,7 +974,17 @@ const PositionCRM: NextPageWithLayout = () => {
       variables: {
         fields: {
           _id: positionID,
-          status: "DELETED",
+          status: PositionStatus.Deleted,
+        },
+      },
+    });
+  };
+  const handleRestore = () => {
+    updatePosition({
+      variables: {
+        fields: {
+          _id: positionID,
+          status: PositionStatus.Active,
         },
       },
     });
@@ -1159,12 +1170,14 @@ const PositionCRM: NextPageWithLayout = () => {
                       findPositionData.findPosition.name.slice(1)
                     : ""}
                 </h1>
-                {(findPositionData?.findPosition?.status === "DELETED" ||
+                {(findPositionData?.findPosition?.status ===
+                  PositionStatus.Deleted ||
                   findPositionData?.findPosition?.status === "ARCHIVED") && (
                   <div
                     className={classNames(
                       "ml-2 rounded-md px-2 pb-px text-xs",
-                      findPositionData?.findPosition?.status === "DELETED"
+                      findPositionData?.findPosition?.status ===
+                        PositionStatus.Deleted
                         ? "bg-utilityRed text-white"
                         : "",
                       findPositionData?.findPosition?.status === "ARCHIVED"
@@ -1207,13 +1220,33 @@ const PositionCRM: NextPageWithLayout = () => {
                 </li>
                 <li
                   className="text-utilityRed hover:bg-edenGreen-100 group cursor-pointer px-4 py-1 text-sm"
-                  onClick={handleDelete}
+                  onClick={() => {
+                    findPositionData.findPosition.status ===
+                    PositionStatus.Deleted
+                      ? handleRestore()
+                      : handleDelete();
+                  }}
                 >
-                  <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />
-                  Delete opportunity
-                  <span className="ml-1 hidden font-bold group-hover:inline group-hover:animate-ping">
-                    !
-                  </span>
+                  {findPositionData.findPosition.status ===
+                  PositionStatus.Deleted ? (
+                    <GiHeartWings
+                      size={20}
+                      className="mb-px mr-1 -ml-[2px] inline"
+                    />
+                  ) : (
+                    <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />
+                  )}
+                  {findPositionData.findPosition.status ===
+                  PositionStatus.Deleted ? (
+                    <span>Restore opportunity</span>
+                  ) : (
+                    <>
+                      Delete opportunity
+                      <span className="ml-1 hidden font-bold group-hover:inline group-hover:animate-ping">
+                        !
+                      </span>
+                    </>
+                  )}
                 </li>
               </MenuDropdown>
             </div>
@@ -1939,6 +1972,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
 import { BsFillGearFill } from "react-icons/bs";
+import { GiHeartWings } from "react-icons/gi";
 import { TbTrashXFilled } from "react-icons/tb";
 
 export async function getServerSideProps(ctx: {
