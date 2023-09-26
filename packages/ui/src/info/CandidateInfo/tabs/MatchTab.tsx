@@ -25,6 +25,30 @@ const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
   }
 `;
 
+const FIND_POSITION = gql`
+  query ($fields: findPositionInput) {
+    findPosition(fields: $fields) {
+      _id
+      candidates {
+        user {
+          _id
+          discordName
+        }
+        keyAttributes {
+          attribute
+          reason
+          score
+        }
+        futurePotential {
+          attribute
+          reason
+          score
+        }
+      }
+    }
+  }
+`;
+
 // const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
 //   query ($fields: memberRadioChartCharacterAttributesInput) {
 //     memberRadioChartCharacterAttributes(fields: $fields) {
@@ -142,6 +166,17 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       },
     }
   );
+
+  const {} = useQuery(FIND_POSITION, {
+    variables: {
+      fields: {
+        _id: "650a0e8547550dabc2e42d24",
+      },
+    },
+    onCompleted: (data) => {
+      console.log("data from find pos: ", data);
+    },
+  });
 
   // type radiochartType = {
   //   memberInfo: {
