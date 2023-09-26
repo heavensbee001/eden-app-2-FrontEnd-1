@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import moment from "moment";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -241,7 +242,8 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   </ColumnStyled>
                 )} */}
                 <ColumnStyled textColor="text-[#86C8BC] text-center">
-                  {candidate.overallScore ? (
+                  {candidate?.letterAndColor &&
+                  candidate?.letterAndColor?.requirements ? (
                     <div className="border-edenGray-100 -my-4 mx-auto mx-auto flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                       <p
                         className={classNames(
@@ -325,7 +327,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
 
                 <ColumnStyled textColor="text-center" extraCssClass="w-auto">
                   {candidate.dateApply && (
-                    <p className="text-sm">{candidate.dateApply}</p>
+                    <p className="text-sm">
+                      {moment(candidate.dateApply).format("MMM Do")}
+                    </p>
                   )}
                 </ColumnStyled>
               </tr>

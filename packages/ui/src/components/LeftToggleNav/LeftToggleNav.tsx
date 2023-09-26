@@ -85,14 +85,14 @@ export const LeftToggleNav = ({
 
   const hideCreatePosition =
     router.pathname.includes("/jobs") ||
-    router.pathname.includes("/subscribe") ||
+    router.pathname.includes("/subscription") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/create-company") ||
     router.pathname.includes("/train-eden-ai");
 
   const hideTalentPools =
     router.pathname.includes("/jobs") ||
-    router.pathname.includes("/subscribe") ||
+    router.pathname.includes("/subscription") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/create-company") ||
     router.pathname.includes("/train-eden-ai");
@@ -140,7 +140,7 @@ export const LeftToggleNav = ({
       </section>
 
       {/* ---- Talent Pools Section ---- */}
-      <section className="relative mb-auto max-h-[calc(100vh-15rem)] overflow-y-scroll scrollbar-hide px-4 py-8">
+      <section className="scrollbar-hide relative mb-auto max-h-[calc(100vh-15rem)] overflow-y-scroll px-4 py-8">
         {company && !hideTalentPools && (
           <>
             <h3

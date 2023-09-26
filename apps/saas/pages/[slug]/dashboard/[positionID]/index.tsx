@@ -1150,7 +1150,7 @@ const PositionCRM: NextPageWithLayout = () => {
         <div className="z-40 w-full transition-all duration-200 ease-in-out">
           <div className="mb-4 flex items-center">
             <div>
-              <div className="flex items-center mr-6">
+              <div className="mr-6 flex items-center">
                 <h1 className="text-edenGreen-600">
                   {findPositionData && findPositionData.findPosition.name
                     ? findPositionData.findPosition.name
@@ -1163,7 +1163,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   findPositionData?.findPosition?.status === "ARCHIVED") && (
                   <div
                     className={classNames(
-                      "px-2 text-xs ml-2 rounded-md pb-px",
+                      "ml-2 rounded-md px-2 pb-px text-xs",
                       findPositionData?.findPosition?.status === "DELETED"
                         ? "bg-utilityRed text-white"
                         : "",
@@ -1181,21 +1181,21 @@ const PositionCRM: NextPageWithLayout = () => {
             <div className="absolute right-8 top-4">
               <MenuDropdown>
                 <li
-                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
                   onClick={handleCopyLink}
                 >
                   <HiOutlineLink size={14} className="mb-1 mr-1 inline" />
                   Copy interview link
                 </li>
                 <li
-                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
                   onClick={handleCreateNewList}
                 >
                   <IoMdAddCircle size={16} className="mb-1 mr-1 inline" />
                   Create talent list
                 </li>
                 <li
-                  className="text-sm cursor-pointer text-edenGray-700 px-4 py-1 hover:bg-edenGreen-100 border-b border-edenGray-100"
+                  className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
                   onClick={() => {
                     router.push(
                       `/${slug}/dashboard/${positionID}/train-eden-ai`
@@ -1206,12 +1206,12 @@ const PositionCRM: NextPageWithLayout = () => {
                   Configure opportunity
                 </li>
                 <li
-                  className="group text-sm cursor-pointer text-utilityRed px-4 py-1 hover:bg-edenGreen-100"
+                  className="text-utilityRed hover:bg-edenGreen-100 group cursor-pointer px-4 py-1 text-sm"
                   onClick={handleDelete}
                 >
                   <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />
                   Delete opportunity
-                  <span className="ml-1 hidden group-hover:animate-ping group-hover:inline font-bold">
+                  <span className="ml-1 hidden font-bold group-hover:inline group-hover:animate-ping">
                     !
                   </span>
                 </li>
@@ -1229,14 +1229,14 @@ const PositionCRM: NextPageWithLayout = () => {
             </Button> */}
             <Button
               size="sm"
-              className="opacity-0 hover:opacity-10 bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white opacity-0 hover:border-[#7A98E5] hover:bg-[#7A98E5] hover:opacity-10"
               variant="default"
               onClick={handleCalculateSkillScore}
             >
               Calculate Skill Score
             </Button>
             <Button
-              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] opacity-0 duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:opacity-10 hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleTrainButtonClick}
@@ -1244,7 +1244,7 @@ const PositionCRM: NextPageWithLayout = () => {
               Align with Eden
             </Button>
             <Button
-              className="opacity-0 hover:opacity-10 transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] opacity-0 duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:opacity-10 hover:shadow-md hover:shadow-red-200"
               radius="pill"
               variant="secondary"
               onClick={handleFindBestTalentClick}
@@ -1281,7 +1281,7 @@ const PositionCRM: NextPageWithLayout = () => {
               className={classNames(
                 "border-edenGreen-200 bg-edenGreen-200 w-full overflow-hidden rounded-md border-t px-4 transition-all ease-in-out",
                 opportunityDetailsOpen
-                  ? "max-h-[50vh] overflow-y-scroll scrollbar-hide rounded-tr-none py-4"
+                  ? "scrollbar-hide max-h-[50vh] overflow-y-scroll rounded-tr-none py-4"
                   : "max-h-[0px] py-0"
               )}
             >
@@ -1326,7 +1326,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel>
-                    <ul className="w-80 mx-auto">
+                    <ul className="mx-auto w-80">
                       {priorities &&
                         priorities.length > 0 &&
                         priorities.map((priority, index) => (
@@ -1370,7 +1370,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     </div>
                   </Tab.Panel>
                   <Tab.Panel>
-                    <div className="flex max-w-lg mx-auto flex-col items-center justify-center">
+                    <div className="mx-auto flex max-w-lg flex-col items-center justify-center">
                       {tradeOffs &&
                         tradeOffs.length > 0 &&
                         tradeOffs.map((tradeOff, index) => (
@@ -1458,11 +1458,11 @@ const PositionCRM: NextPageWithLayout = () => {
 
               <div
                 className={classNames(
-                  "scrollbar-hide overflow-x-scroll scrollbar-hide transition-all ease-in-out",
+                  "scrollbar-hide scrollbar-hide overflow-x-scroll transition-all ease-in-out",
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
-                <div className="whitespace-nowrap flex items-stretch">
+                <div className="flex items-stretch whitespace-nowrap">
                   {candidatesUnqualifiedList
                     .slice(0, 3)
                     .map((candidate, index) => (
@@ -1629,7 +1629,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       {addToListOpen && (
                         <div
                           className={classNames(
-                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll scrollbar-hide rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                            "scrollbar-hide scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
                             addToListOpen ? "" : "h-0"
                           )}
                         >
@@ -1785,7 +1785,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll scrollbar-hide bg-white shadow-md duration-200 ease-in-out",
+            "transition-width scrollbar-hide fixed right-0 top-0 z-30 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
             selectedUserId ? "w-[48rem]" : "w-0"
           )}
         >
@@ -1834,7 +1834,7 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
         <div
           className={classNames(
-            "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out flex",
+            "scrollbar-hide absolute right-0 top-0 z-20 flex transform overflow-y-scroll transition-all duration-200 ease-in-out",
             router.query.candidate1 && router.query.candidate2
               ? "w-full"
               : "w-0"
@@ -1842,7 +1842,7 @@ const PositionCRM: NextPageWithLayout = () => {
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide relative h-screen w-1/2 overflow-y-scroll scrollbar-hide border-box border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide scrollbar-hide border-box relative h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1875,7 +1875,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide relative h-screen w-1/2 overflow-y-scroll scrollbar-hide bg-white">
+              <div className="scrollbar-hide scrollbar-hide relative h-screen w-1/2 overflow-y-scroll bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}
@@ -1944,6 +1944,7 @@ import { TbTrashXFilled } from "react-icons/tb";
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
+  query: { slug: string };
 }) {
   const session = await getSession(ctx);
 
@@ -1956,13 +1957,67 @@ export async function getServerSideProps(ctx: {
         permanent: false,
       },
     };
-    // signIn("google");
+  }
+
+  if (session.accessLevel === 5) {
+    return {
+      props: { key: url },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userID: session.user!.id,
+        companySlug: ctx.query.slug,
+      }),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  console.log(res.status);
+
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (res.status === 404) {
+    return {
+      redirect: {
+        destination: `/create-company`,
+        permanent: false,
+      },
+    };
+  }
+
+  const _companyAuth = await res.json();
+
+  if (
+    res.status === 200 &&
+    (!_companyAuth.company.stripe ||
+      !_companyAuth.company.stripe.product ||
+      !_companyAuth.company.stripe.product.ID)
+  ) {
+    return {
+      redirect: {
+        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+        permanent: false,
+      },
+    };
   }
 
   return {
     props: { key: url },
   };
 }
+
 interface ICandidateCardProps {
   candidate: CandidateTypeSkillMatch;
   onClick: React.MouseEventHandler<HTMLDivElement>;
@@ -1971,17 +2026,17 @@ interface ICandidateCardProps {
 const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
   return (
     <div
-      className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer rounded-md border bg-white last:mr-0 whitespace-normal"
+      className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer whitespace-normal rounded-md border bg-white last:mr-0"
       onClick={onClick}
     >
-      <div className="relative flex px-4 pt-2 pb-2 h-full" onClick={onClick}>
+      <div className="relative flex h-full px-4 pb-2 pt-2" onClick={onClick}>
         <div className="mr-4 flex items-center">
           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
         </div>
-        <div className="w-3/4 flex flex-col justify-center">
+        <div className="flex w-3/4 flex-col justify-center">
           <p className="font-bold">{candidate.user?.discordName}</p>
           {candidate.analysisCandidateEdenAI?.background?.oneLiner && (
-            <p className="text-edenGray-600 text-xs w-full whitespace-normal">
+            <p className="text-edenGray-600 w-full whitespace-normal text-xs">
               {candidate.analysisCandidateEdenAI.background.oneLiner}
             </p>
           )}
@@ -2009,8 +2064,8 @@ const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
             borderColor="#e5e7eb"
             padding="0.5rem"
           >
-            <div className="bg-edenPink-200 rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
-              <EdenIconExclamation className="w-full h-full" />
+            <div className="bg-edenPink-200 absolute -right-2 -top-1 h-5 w-5 rounded-full p-1">
+              <EdenIconExclamation className="h-full w-full" />
             </div>
           </EdenTooltip>
         )}

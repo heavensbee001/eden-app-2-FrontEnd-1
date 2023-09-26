@@ -1,21 +1,29 @@
-import { UserContext } from "@eden/package-context";
+// import { UserContext } from "@eden/package-context";
 import { AppUserLayout, Button } from "@eden/package-ui";
+import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { useContext } from "react";
+// import { useContext } from "react";
 import { BiCheck, BiInfinite } from "react-icons/bi";
+import {
+  HiOutlineBuildingOffice,
+  HiOutlineBuildingOffice2,
+  HiOutlineBuildingStorefront,
+} from "react-icons/hi2";
 import { MdClose } from "react-icons/md";
 
-import { IS_PRODUCTION } from "../../constants";
-import type { NextPageWithLayout } from "../_app";
+import { IS_PRODUCTION } from "../../../../constants";
+import type { NextPageWithLayout } from "../../../_app";
 
 type PRODUCTS_TYPE = {
   name: string;
   description: string;
+  icon: any;
   monthlyPrice: number;
   priceID: string;
+  featured: boolean;
   features: {
     [key: string]: {
       [key: string]: {
@@ -33,8 +41,10 @@ const PRODUCTS: PRODUCTS_TYPE = [
       "For those looking to build the future with likeminded people.",
     monthlyPrice: 500,
     priceID: IS_PRODUCTION
-      ? "price_1Np71oBxX85c6z0CNwi9ZBMa"
+      ? "price_1NreSZBxX85c6z0CXzCngNS2"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
+    featured: false,
+    icon: <HiOutlineBuildingStorefront />,
     features: {
       access: {
         magicJobPosts: { value: 2, text: "Magic job posts" },
@@ -78,6 +88,8 @@ const PRODUCTS: PRODUCTS_TYPE = [
     priceID: IS_PRODUCTION
       ? "price_1Np77EBxX85c6z0C0DPou3hC"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
+    featured: true,
+    icon: <HiOutlineBuildingOffice />,
     features: {
       access: {
         magicJobPosts: { value: 5, text: "Magic job posts" },
@@ -121,6 +133,8 @@ const PRODUCTS: PRODUCTS_TYPE = [
     priceID: IS_PRODUCTION
       ? "price_1Np7AsBxX85c6z0CsMSl5VnB"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
+    featured: false,
+    icon: <HiOutlineBuildingOffice2 />,
     features: {
       access: {
         magicJobPosts: { value: 9999, text: "Magic job posts" },
@@ -161,7 +175,8 @@ const PRODUCTS: PRODUCTS_TYPE = [
 const SubscribePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
-  const { currentUser } = useContext(UserContext);
+  const slug = router.query.slug;
+  // const { currentUser } = useContext(UserContext);
 
   const handleSubscribeClick = async (priceID: string) => {
     const origin =
@@ -175,10 +190,10 @@ const SubscribePage: NextPageWithLayout = () => {
         // eslint-disable-next-line camelcase
         price_id: priceID,
         // eslint-disable-next-line camelcase
-        success_url: `${origin}/subscribe`,
+        success_url: `${origin}/${slug}/dashboard`,
         // eslint-disable-next-line camelcase
-        cancel_url: `${origin}/subscribe`,
-        userid: currentUser?._id,
+        cancel_url: `${origin}/${slug}/dashboard/subscription`,
+        companySlug: slug,
       },
       {
         headers: {
@@ -192,24 +207,51 @@ const SubscribePage: NextPageWithLayout = () => {
 
   return (
     <div className="h-screen flex items-center justify-center">
-      <div className="max-w-6xl grid grid-cols-3 gap-8">
+      <div className="max-w-6xl grid grid-cols-3 gap-4">
         {PRODUCTS.map((product, index) => (
           <div
             key={index}
-            className="col-span-1 bg-edenPink-100 rounded-md p-4 hover:scale-[1.01] transition-all"
+            className={classNames(
+              "relative col-span-1 rounded-md p-4 hover:scale-[1.01] transition-all",
+              product.featured ? "bg-edenPink-300" : "bg-edenPink-100"
+            )}
           >
-            <h1 className="text-edenGreen-600">{product.name}</h1>
-            <p className="mb-8">{product.description}</p>
-            <p className="text-xs mb-4">
-              <span className="font-bold text-normal">
-                ${product.monthlyPrice}
-              </span>{" "}
-              per month
-            </p>
-            <hr className="w-full text-edenGray-500 mb-4" />
-            <h3>What you get?</h3>
-            <section className="pl-4 mb-4">
-              <h4 className="mb-2">Access</h4>
+            <div
+              className={classNames(
+                "h-8 w-8 mx-auto mb-1 text-edenGreen-600 text-xl rounded-md flex items-center justify-center",
+                product.featured ? "bg-edenPink-100" : "bg-edenPink-300"
+              )}
+            >
+              {product.icon}
+            </div>
+            <h1 className="text-edenGreen-600 text-center">{product.name}</h1>
+            <p className="mb-4 text-center text-sm">{product.description}</p>
+            <div
+              className={classNames(
+                "w-[calc(100%+2rem)] -mx-4 py-1 mb-4",
+                product.featured ? "bg-edenGreen-500" : "bg-edenPink-300"
+              )}
+            >
+              <p className="text-xs text-center">
+                <span
+                  className={classNames(
+                    "font-semibold font-Moret text-2xl inline",
+                    product.featured ? "text-white" : "text-edenGreen-600"
+                  )}
+                >
+                  ${product.monthlyPrice}
+                </span>{" "}
+                <span
+                  className={classNames(
+                    product.featured ? "text-white" : "text-edenGray-700"
+                  )}
+                >
+                  /month
+                </span>
+              </p>
+            </div>
+            <section className="mb-4">
+              <h3 className="mb-2 text-edenGreen-600">Access</h3>
               <ul>
                 {Object.keys(product.features.access).map(
                   (featName: string, index) => (
@@ -217,7 +259,9 @@ const SubscribePage: NextPageWithLayout = () => {
                       key={index}
                       className="relative pl-6 pr-10 text-xs mb-2"
                     >
-                      <BiCheck className="absolute left-0 top-1" />
+                      <div className="absolute left-0 top-px bg-edenGreen-500 h-4 w-4 text-edenPink-300 flex items-center justify-center rounded-full pr-px">
+                        <BiCheck className="" size={"1.4rem"} />
+                      </div>
                       {product.features.access[featName].text}
                       <span className="absolute right-0 top-0">
                         {product.features.access[featName].value === 9999 ? (
@@ -231,8 +275,8 @@ const SubscribePage: NextPageWithLayout = () => {
                 )}
               </ul>
             </section>
-            <section className="pl-4 mb-4">
-              <h4 className="mb-2">Curation</h4>
+            <section className="mb-4">
+              <h3 className="mb-2 text-edenGreen-600">Curation</h3>
               <ul>
                 {Object.keys(product.features.curation).map(
                   (featName: string, index) => (
@@ -241,7 +285,9 @@ const SubscribePage: NextPageWithLayout = () => {
                       className="relative pl-6 pr-10 text-xs mb-2"
                     >
                       {product.features.curation[featName].value ? (
-                        <BiCheck className="absolute left-0 top-1" />
+                        <div className="absolute left-0 top-px bg-edenGreen-500 h-4 w-4 text-edenPink-300 flex items-center justify-center rounded-full pr-px">
+                          <BiCheck className="" size={"1.4rem"} />
+                        </div>
                       ) : (
                         <MdClose className="absolute left-0 top-1" />
                       )}
@@ -251,8 +297,8 @@ const SubscribePage: NextPageWithLayout = () => {
                 )}
               </ul>
             </section>
-            <section className="pl-4 mb-4">
-              <h4 className="mb-2">Exposure</h4>
+            <section className="mb-4">
+              <h3 className="mb-2 text-edenGreen-600">Exposure</h3>
               <ul>
                 {Object.keys(product.features.exposure).map(
                   (featName: string, index) => (
@@ -261,7 +307,9 @@ const SubscribePage: NextPageWithLayout = () => {
                       className="relative pl-6 pr-10 text-xs mb-2"
                     >
                       {product.features.exposure[featName].value ? (
-                        <BiCheck className="absolute left-0 top-1" />
+                        <div className="absolute left-0 top-px bg-edenGreen-500 h-4 w-4 text-edenPink-300 flex items-center justify-center rounded-full pr-px">
+                          <BiCheck className="" size={"1.4rem"} />
+                        </div>
                       ) : (
                         <MdClose className="absolute left-0 top-1" />
                       )}
@@ -292,6 +340,7 @@ SubscribePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
+  query: { slug: string };
 }) {
   const session = await getSession(ctx);
 
@@ -306,8 +355,44 @@ export async function getServerSideProps(ctx: {
     };
   }
 
+  if (session.accessLevel === 5) {
+    return {
+      props: { key: url },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userID: session.user!.id,
+        companySlug: ctx.query.slug,
+      }),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (res.status === 404) {
+    return {
+      redirect: {
+        destination: `/create-company`,
+        permanent: false,
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: { key: url },
   };
 }
 

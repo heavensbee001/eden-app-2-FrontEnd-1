@@ -1,6 +1,9 @@
 import { LeftToggleNav } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
+import { useRouter } from "next/router";
 import { useState } from "react";
+
+import { LeftNav } from "../../components/LeftNav";
 
 interface IAppUserLayoutProps {
   children: React.ReactNode;
@@ -13,18 +16,27 @@ export const AppUserLayout = ({
 }: IAppUserLayoutProps) => {
   const [unwrappedNav, setUnwrappedNav] = useState(false);
 
+  const router = useRouter();
+
   return (
-    <div className="w-full min-h-screen">
+    <div className="min-h-screen w-full">
       <div className="">
         {/* <AppHeader logoLink={logoLink} inApp /> */}
-        <LeftToggleNav
-          unwrapped={unwrappedNav}
-          onToggleNav={() => setUnwrappedNav(!unwrappedNav)}
-          logoLink={logoLink}
-        />
+        {router.pathname.includes("/jobs") ||
+        router.pathname.includes("/interview") ||
+        router.pathname.includes("/request-access") ? (
+          <LeftNav logoLink={logoLink} />
+        ) : (
+          <LeftToggleNav
+            unwrapped={unwrappedNav}
+            onToggleNav={() => setUnwrappedNav(!unwrappedNav)}
+            logoLink={logoLink}
+          />
+        )}
+
         <main
           className={classNames(
-            "relative transition-all ease-in-out transition-pl bg-bgColor min-h-screen",
+            "transition-pl bg-bgColor relative min-h-screen transition-all ease-in-out",
             unwrappedNav ? "pl-[14.5rem]" : "pl-16"
           )}
         >

@@ -1,10 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
+import { UserContext } from "@eden/package-context";
+import { EmployeeTypeInput } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -17,6 +20,7 @@ type FormData = {
 const UPDATE_COMPANY = gql`
   mutation ($fields: updateCompanyInput!) {
     updateCompany(fields: $fields) {
+      _id
       name
       type
       slug
@@ -24,25 +28,73 @@ const UPDATE_COMPANY = gql`
     }
   }
 `;
+const ADD_EMPLOYEES_COMPANY = gql`
+  mutation ($fields: addEmployeesCompanyInput!) {
+    addEmployeesCompany(fields: $fields) {
+      _id
+      name
+      slug
+      employees {
+        typeT
+        user {
+          _id
+          discordName
+        }
+      }
+    }
+  }
+`;
 const CreateCompany: NextPageWithLayout = () => {
+  // eslint-disable-next-line no-unused-vars
   const [formData, setFormData] = useState<FormData | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { currentUser } = useContext(UserContext);
 
   const router = useRouter();
 
-  const [updateCompany] = useMutation(UPDATE_COMPANY, {
-    // eslint-disable-next-line no-unused-vars
-    onCompleted({ data }) {
-      // console.log("data from onComplete", data);
-      if (formData) {
-        router.push(`/${formData.companyAbbreviation}/dashboard`);
+  const [addEmployeesCompany] = useMutation(ADD_EMPLOYEES_COMPANY, {
+    onCompleted(data) {
+      if (data.addEmployeesCompany) {
+        router.push(
+          `/${data.addEmployeesCompany.companyAbbreviation}/dashboard`
+        );
       }
     },
     onError() {
       setSubmitting(false);
     },
   });
+
+  const [updateCompany, { data: updateCompanyData }] = useMutation(
+    UPDATE_COMPANY,
+    {
+      // eslint-disable-next-line no-unused-vars
+      onCompleted({ data }) {
+        console.log("completed add company");
+      },
+      onError() {
+        toast.error("An error occurred while submitting");
+        setSubmitting(false);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (updateCompanyData)
+      addEmployeesCompany({
+        variables: {
+          fields: {
+            companyID: updateCompanyData.updateCompany._id,
+            employees: [{ userID: currentUser!._id }] as EmployeeTypeInput[],
+          },
+        },
+      });
+  }, [updateCompanyData]);
 
   const submitHandler = (data: any) => {
     setFormData(data);
@@ -62,7 +114,7 @@ const CreateCompany: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="h-screen w-full flex items-center justify-center">
+      <div className="flex h-screen w-full items-center justify-center">
         <form
           className="w-full max-w-2xl"
           onSubmit={handleSubmit(submitHandler)}
@@ -83,14 +135,25 @@ const CreateCompany: NextPageWithLayout = () => {
 
             <div className="space-y-1">
               <p className=" text-xs">Company Abbreviation</p>
-              <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
-                <input
-                  type="text"
-                  id="Abbreviation"
-                  className="h-[34px] w-full bg-transparent p-2"
-                  required
-                  {...register("companyAbbreviation")}
-                />
+              <div>
+                <div className="flex flex-col">
+                  <input
+                    type="text"
+                    id="Abbreviation"
+                    className="border-EdenGray-100 flex h-[34px] w-full items-center rounded-md  border bg-transparent bg-white p-2 text-xs"
+                    required
+                    {...register("companyAbbreviation", {
+                      pattern: /^[a-z0-9-]+$/,
+                    })}
+                  />
+                  {errors.companyAbbreviation && (
+                    <span className="ml-1 text-sm font-bold text-red-400">
+                      Invalid Input: Please ensure your input contains only
+                      lowercase letters (a-z), numbers (0-9), and the hyphen (-)
+                      character.
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -107,7 +170,7 @@ const CreateCompany: NextPageWithLayout = () => {
               </div>
             </div>
 
-            <Button type="submit" variant="secondary" className="block mx-auto">
+            <Button type="submit" variant="secondary" className="mx-auto block">
               Submit
             </Button>
           </section>
@@ -141,7 +204,7 @@ export async function getServerSideProps(ctx: {
   }
 
   return {
-    props: {},
+    props: { key: url },
   };
 }
 

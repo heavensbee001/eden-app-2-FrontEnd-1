@@ -1,6 +1,6 @@
 // Environments
-export const IS_PRODUCTION = process.env.NODE_ENV === "production";
-export const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
+export const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENV === "production";
+export const IS_DEVELOPMENT = process.env.NEXT_PUBLIC_ENV === "development";
 export const DISCORD_API_URL = "https://discord.com/api/v10";
 // VIEW_CHANNEL | SEND_MESSAGES | CREATE_PUBLIC_THREADS
 export const DISCORD_VIEW_CHANNEL_PERMISSION = 0x400;

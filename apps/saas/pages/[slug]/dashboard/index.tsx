@@ -2,7 +2,8 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext } from "@eden/package-context";
 import { Position } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
-import { GetServerSideProps } from "next";
+// import axios from "axios";
+import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
@@ -29,6 +30,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
       positions {
         _id
         name
+        status
         talentList {
           _id
           name
@@ -160,7 +162,11 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export async function getServerSideProps(ctx: {
+  req: IncomingMessage;
+  res: ServerResponse;
+  query: { slug: string };
+}) {
   const session = await getSession(ctx);
 
   const url = ctx.req.url;
@@ -174,7 +180,61 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  if (session.accessLevel === 5) {
+    return {
+      props: { key: url },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userID: session.user!.id,
+        companySlug: ctx.query.slug,
+      }),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  console.log(res.status);
+
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (res.status === 404) {
+    return {
+      redirect: {
+        destination: `/create-company`,
+        permanent: false,
+      },
+    };
+  }
+
+  const _companyAuth = await res.json();
+
+  if (
+    res.status === 200 &&
+    (!_companyAuth.company.stripe ||
+      !_companyAuth.company.stripe.product ||
+      !_companyAuth.company.stripe.product.ID)
+  ) {
+    return {
+      redirect: {
+        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+        permanent: false,
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: { key: url },
   };
-};
+}

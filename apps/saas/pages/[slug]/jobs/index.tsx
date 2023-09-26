@@ -219,7 +219,7 @@ const HomePage: NextPageWithLayout = () => {
       </div>
       <section className="absolute top-48 right-8 w-[calc(33%-4rem)] bg-edenGreen-100 p-4 rounded-md">
         {/* @TODO this link needs a better logics. It's just a placeholder */}
-        <Link href={"/subscribe"}>
+        <Link href={"/subscription"}>
           <Button variant="secondary" className="float-right">
             Post a magic job
           </Button>
