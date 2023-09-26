@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import moment from "moment";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -326,7 +327,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
 
                 <ColumnStyled textColor="text-center" extraCssClass="w-auto">
                   {candidate.dateApply && (
-                    <p className="text-sm">{candidate.dateApply}</p>
+                    <p className="text-sm">
+                      {moment(candidate.dateApply).format("MMM Do")}
+                    </p>
                   )}
                 </ColumnStyled>
               </tr>
