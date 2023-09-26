@@ -328,7 +328,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 <ColumnStyled textColor="text-center" extraCssClass="w-auto">
                   {candidate.dateApply && (
                     <p className="text-sm">
-                      {moment(candidate.dateApply).format("MMM Do")}
+                      {moment(Number(candidate.dateApply)).format("MMM Do")}
                     </p>
                   )}
                 </ColumnStyled>
