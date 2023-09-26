@@ -50,6 +50,7 @@
     "discord-api-types": "^0.37.17",
     "framer-motion": "^9.0.1",
     "html-to-text": "^9.0.5",
+    "moment": "^2.29.4",
     "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^3.4.120",
     "puppeteer": "^20.1.2",
