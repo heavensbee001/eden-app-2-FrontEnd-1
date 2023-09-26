@@ -293,18 +293,72 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     //   <div className={`mx-auto mb-2`}>
 
     <div className="">
-      <div className="mb-10">
+      {/* <div className="mb-10">
         <div className="mb-4 px-4">
           <h3 className="text-edenGreen-600">
             Seed Questions that were asked on the Interview 🙋
           </h3>
         </div>
-        <p className="text-edenGray-500 text-sm px-4">
+        <p className="text-edenGray-500 px-4 text-sm">
           Here you can find the questions that were asked on the interview
           together with the score, reason and actual answer if you click the
           cards
         </p>
+      </div> */}
+
+      <div className="flex flex-col items-start">
+        <h3>Strong Experience in Angular and React</h3>
+        <span>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto
+          nemo nulla aut provident neque earum sequi culpa! Nulla delectus nam
+          soluta! Veritatis similique quia corporis laudantium accusantium.
+          Optio, numquam blanditiis.
+        </span>
       </div>
+
+      <div className="flex flex-col">
+        <div className="border-edenGreen-300 mt-4 flex justify-between border-t">
+          <h2 className="text-edenGreen-500 mb-3 ml-1">Potential</h2>
+        </div>
+
+        <div className="ml-1 space-y-2">
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-2 w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-2 w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-2 w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-2 w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="border-edenGreen-300 mt-4 flex justify-between border-t">
+          <h2 className="text-edenGreen-500 mb-3 ml-1">Noteworthy</h2>
+        </div>
+        <div></div>
+      </div>
+
+      {/* <div className="flex items-center">
+        <span className="text-xl font-bold text-gray-800">Hello</span>
+        <span className="text-lg italic text-blue-500"> World!</span>
+      </div> */}
 
       <div>
         <ul className="list-none space-y-1">
@@ -312,7 +366,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             ? summaryQuestions.map((item, index) => (
                 <li
                   key={index}
-                  className="w-full cursor-pointer px-4 rounded-md border-b border-edenGray-100"
+                  className="border-edenGray-100 w-full cursor-pointer rounded-md border-b px-4"
                   onClick={() => {
                     setSummaryQuestionSelected(item);
                     if (document) {
@@ -326,7 +380,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 >
                   <div className="">
                     <div className="flex w-full py-4">
-                      <p className="w-3/4 text-gray-900 text-sm">
+                      <p className="w-3/4 text-sm text-gray-900">
                         {item.questionContentSmall?.replace(".", "") ||
                           item.questionContent?.replace(".", "")}
                       </p>
@@ -334,7 +388,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                         {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
                         <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
                         {item.score ? (
-                          <div className="relative px-4 -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                          <div className="border-edenGray-100 relative -my-4 flex h-8 items-center justify-center rounded-[0.25rem] border px-4">
                             <p
                               className={classNames(
                                 "text-2xs font-bold leading-tight",
@@ -360,8 +414,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                                 borderColor="#e5e7eb"
                                 padding="0.5rem"
                               >
-                                <div className="bg-edenPink-200 rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
-                                  <EdenIconExclamation className="w-full h-full" />
+                                <div className="bg-edenPink-200 absolute -right-2 -top-1 h-5 w-5 rounded-full p-1">
+                                  <EdenIconExclamation className="h-full w-full" />
                                 </div>
                               </EdenTooltip>
                             )}
