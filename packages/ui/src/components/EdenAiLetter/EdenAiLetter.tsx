@@ -31,7 +31,7 @@ export const SECOND_INTERVIEW_LETTER = gql`
   }
 `;
 
-export const UPDATE_QUERY_RESPONSE = gql`
+const UPDATE_QUERY_RESPONSE = gql`
   mutation UpdateQueryResponse($fields: updateQueryResponseInput) {
     updateQueryResponse(fields: $fields) {
       _id
