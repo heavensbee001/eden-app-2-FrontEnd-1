@@ -64,6 +64,7 @@ export interface CandidateTypeSkillMatch extends CandidateType {
     skill?: Grade;
     requirements?: Grade;
   };
+  status?: "ACCEPTED" | "REJECTED" | undefined;
 }
 
 export enum ListModeEnum {
@@ -160,6 +161,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             <th className="font-normal">Location</th>
             <th className="font-normal">Timezone</th>
             <th className="font-normal">Application date</th>
+            <th className="font-normal">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -330,6 +332,22 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     <p className="text-sm">
                       {moment(Number(candidate.dateApply)).format("MMM Do")}
                     </p>
+                  )}
+                </ColumnStyled>
+                <ColumnStyled textColor="text-center" extraCssClass="w-auto">
+                  {candidate.status === "ACCEPTED" && (
+                    <Badge
+                      text="accepted"
+                      className="!text-2xs !bg-edenGreen-400 text-white"
+                      tooltip={false}
+                    />
+                  )}
+                  {candidate.status === "REJECTED" && (
+                    <Badge
+                      text="rejected"
+                      className="!text-2xs !bg-utilityRed text-white"
+                      tooltip={false}
+                    />
                   )}
                 </ColumnStyled>
               </tr>
