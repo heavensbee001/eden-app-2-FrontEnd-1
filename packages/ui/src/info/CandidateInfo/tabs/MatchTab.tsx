@@ -113,15 +113,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   const [attributeName, setAttributeName] = useState("");
   const [reason, setReason] = useState("");
-  const [attributes, setAttributes] = useState<AttributeCandidateType[]>([
-    {
-      __typename: "attributeCandidateType",
-      attribute: "Proficient in other front-end frameworks (e.g. Vue, Ember)",
-      reason: "While Reza's primary focus has been on React and Angular...",
-      score: 7,
-    },
-    // ... other objects ...
-  ]);
+  const [attributes, setAttributes] = useState<AttributeCandidateType[]>([]);
 
   console.log("member = ", member);
 
@@ -195,13 +187,12 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       },
     },
     onCompleted: (data) => {
-      console.log("************** data from find pos: ************* ", data);
       setAttributes(data.findPosition.candidates[0].futurePotential);
       setAttributeName(
         data.findPosition.candidates[0].keyAttributes[0].attribute
       );
       setReason(data.findPosition.candidates[0].keyAttributes[0].reason);
-      console.log("****potential:****", attributes);
+      console.log("members id from FIND POS: ", member?.user?._id);
     },
   });
 
