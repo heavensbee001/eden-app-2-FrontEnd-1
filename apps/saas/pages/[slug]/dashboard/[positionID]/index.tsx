@@ -915,22 +915,37 @@ const PositionCRM: NextPageWithLayout = () => {
       .find((_list: any) => _list._id === listID)
       .talent.map((t: any) => t.user._id);
 
-    await updateUsersTalentListPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          talentListID: listID,
-          usersTalentList: [
-            ..._prevTalent,
-            ...newTalentListCandidatesIds.filter(
-              (t: any) => !_prevTalent.includes(t)
-            ),
-          ],
-        },
-      },
-    });
-
-    // toast.success("Candidate added to list!");
+    try {
+      if (selectedUserId) {
+        await updateUsersTalentListPosition({
+          variables: {
+            fields: {
+              positionID: positionID,
+              talentListID: listID,
+              usersTalentList: [..._prevTalent, selectedUserId],
+            },
+          },
+        });
+      } else {
+        await updateUsersTalentListPosition({
+          variables: {
+            fields: {
+              positionID: positionID,
+              talentListID: listID,
+              usersTalentList: [
+                ..._prevTalent,
+                ...newTalentListCandidatesIds.filter(
+                  (t: any) => !_prevTalent.includes(t)
+                ),
+              ],
+            },
+          },
+        });
+      }
+      toast.success("Candidate added to list!");
+    } catch {
+      toast.error("Server error");
+    }
   };
 
   const handleRemoveCandidatesFromList = async (listID: string) => {
@@ -1857,9 +1872,7 @@ const PositionCRM: NextPageWithLayout = () => {
             }
             handleCreateNewList={handleCreateNewList}
             talentListsAvailables={talentListsAvailables}
-            handleAddCandidatesToList={function (): Promise<void> {
-              throw new Error("Function not implemented.");
-            }}
+            handleAddCandidatesToList={handleAddCandidatesToList}
           />
           {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1934,9 +1947,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     );
                   }}
                   talentListsAvailables={talentListsAvailables}
-                  handleAddCandidatesToList={function (): Promise<void> {
-                    throw new Error("Function not implemented.");
-                  }}
+                  handleAddCandidatesToList={handleAddCandidatesToList}
                   showAskEden={false}
                 />
                 {/* ) : (

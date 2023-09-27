@@ -12,6 +12,7 @@ export interface IEdenAiLetter {
   member: Maybe<Members>;
   letterType: "rejection" | "nextInterviewInvite" | undefined;
   onClose: () => void;
+  onSubmit?: () => void;
 }
 
 export const REJECTION_LETTER = gql`
@@ -30,35 +31,41 @@ export const SECOND_INTERVIEW_LETTER = gql`
   }
 `;
 
+export const UPDATE_QUERY_RESPONSE = gql`
+  mutation UpdateQueryResponse($fields: updateQueryResponseInput) {
+    updateQueryResponse(fields: $fields) {
+      _id
+      sender {
+        positionID
+        userID
+      }
+      responder {
+        positionID
+        userID
+      }
+      phase
+      question {
+        content
+      }
+      answer {
+        content
+      }
+      category
+    }
+  }
+`;
+
 export const EdenAiLetter = ({
   isModalOpen,
   member,
   letterType,
   onClose,
+  onSubmit,
 }: IEdenAiLetter) => {
   const router = useRouter();
   const { positionID } = router.query;
   const [letterContent, setLetterContent] = useState("");
   const [copied, setCopied] = useState(false);
-
-  const handleCopyToClipboard = () => {
-    const range = document.createRange();
-    const selection = window.getSelection();
-
-    const textToCopy = document.getElementById("text-to-copy");
-
-    if (textToCopy) {
-      range.selectNodeContents(textToCopy);
-      if (selection) {
-        selection.removeAllRanges();
-        selection.addRange(range);
-        document.execCommand("copy");
-        selection.removeAllRanges();
-      }
-    }
-
-    setCopied(true);
-  };
 
   const [rejectionLetter] = useMutation(REJECTION_LETTER, {
     onCompleted({ rejectionLetter }) {
@@ -71,6 +78,70 @@ export const EdenAiLetter = ({
       setLetterContent(secondInterviewLetter.generatedLetter);
     },
   });
+
+  const [sendTgMessage] = useMutation(UPDATE_QUERY_RESPONSE, {
+    onCompleted({}) {
+      onSubmit!();
+      onClose!();
+    },
+  });
+
+  // const handleCopyToClipboard = () => {
+  //   const range = document.createRange();
+  //   const selection = window.getSelection();
+
+  //   const textToCopy = document.getElementById("text-to-copy");
+
+  //   if (textToCopy) {
+  //     range.selectNodeContents(textToCopy);
+  //     if (selection) {
+  //       selection.removeAllRanges();
+  //       selection.addRange(range);
+  //       document.execCommand("copy");
+  //       selection.removeAllRanges();
+  //     }
+  //   }
+
+  //   setCopied(true);
+  // };
+
+  const handleAccept = () => {
+    if (letterContent) {
+      console.log("Accept");
+      sendTgMessage({
+        variables: {
+          fields: {
+            phase: "QUERY",
+            senderID: positionID,
+            senderType: "POSITION",
+            responderID: member?._id,
+            responderType: "USER",
+            question: letterContent,
+            category: "ACCEPT_CANDIDATE",
+          },
+        },
+      });
+    }
+  };
+  const handleReject = () => {
+    console.log("Reject");
+    if (letterContent) {
+      console.log("Accept");
+      sendTgMessage({
+        variables: {
+          fields: {
+            phase: "QUERY",
+            senderID: positionID,
+            senderType: "POSITION",
+            responderID: member?._id,
+            responderType: "USER",
+            question: letterContent,
+            category: "REJECT_CANDIDATE",
+          },
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     if (isModalOpen) {
@@ -100,6 +171,7 @@ export const EdenAiLetter = ({
       setCopied(false);
     };
   }, [isModalOpen, letterType, member, positionID]);
+
   return (
     <>
       <Modal open={isModalOpen} onClose={onClose}>
@@ -154,16 +226,25 @@ export const EdenAiLetter = ({
             {letterContent &&
               (copied ? (
                 <div className="flex items-center gap-2">
-                  <Button disabled onClick={handleCopyToClipboard}>
-                    Copied Message To Clipboard
-                  </Button>
+                  <Button disabled>Copied Message To Clipboard</Button>
                   <span className=" text-lg text-green-600">
                     <CheckCircleIcon className="h-8 w-8" aria-hidden="true" />
                   </span>
                 </div>
               ) : (
-                <Button onClick={handleCopyToClipboard}>
-                  Copy Message To Clipboard
+                <Button
+                  onClick={() => {
+                    if (letterType === "nextInterviewInvite") {
+                      handleAccept();
+                    } else if (letterType === "rejection") {
+                      handleReject();
+                    }
+                  }}
+                  disabled={!letterContent}
+                >
+                  {letterType === "nextInterviewInvite"
+                    ? "Accept candidate"
+                    : "Reject candidate"}
                 </Button>
               ))}
           </div>

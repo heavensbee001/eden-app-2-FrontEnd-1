@@ -73,9 +73,9 @@ export const CandidateInfo = ({
   // rejectCandidateFn,
   // approveCandidateFn,
   // handleChkSelection,
-  // talentListsAvailables,
+  talentListsAvailables,
   // handleCreateNewList,
-  // handleAddCandidatesToList,
+  handleAddCandidatesToList,
   // eslint-disable-next-line no-unused-vars
   qualified = false,
   showAskEden = true,
@@ -318,6 +318,17 @@ export const CandidateInfo = ({
           letterType={letterType}
           onClose={() => {
             setIsOpen(false);
+          }}
+          onSubmit={() => {
+            handleAddCandidatesToList!(
+              (letterType === "rejection"
+                ? talentListsAvailables!.find(
+                    (list) => list.name === "Rejected"
+                  )!._id
+                : talentListsAvailables!.find(
+                    (list) => list.name === "Accepted"
+                  )!._id)!
+            );
           }}
         />
       )}
