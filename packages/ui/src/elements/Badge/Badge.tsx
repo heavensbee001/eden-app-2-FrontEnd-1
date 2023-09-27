@@ -46,7 +46,7 @@ export const Badge = ({
       <div
         data-tip={isHover}
         data-for={`badgeTip-${text}`}
-        className={`mb-1 mr-2 inline-block cursor-default rounded-sm last:mb-0 last:mr-0 ${className}`}
+        className={`mb-1 mr-2 inline-block cursor-default text-sm rounded-sm last:mb-0 last:mr-0 ${className}`}
         style={{ background: color ? color : `rgba(${colorRGB})` }}
         onMouseEnter={() => {
           setIsHover(`${text}`);
@@ -57,7 +57,7 @@ export const Badge = ({
       >
         <div className="flex h-full w-full items-center justify-between px-2 py-1">
           <>
-            <span className="mb-px whitespace-nowrap text-sm">{textShort}</span>
+            <span className="mb-px whitespace-nowrap">{textShort}</span>
             {closeButton && (
               <button className={`-mr-1 -mt-1 ml-1`} onClick={onClose}>
                 <XIcon

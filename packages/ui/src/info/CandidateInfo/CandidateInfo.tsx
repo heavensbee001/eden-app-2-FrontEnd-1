@@ -8,6 +8,7 @@ import {
   AI_INTERVIEW_SERVICES,
   AskEdenPopUp,
   Avatar,
+  Badge,
   Button,
   CandidateTypeSkillMatch,
   EdenAiLetter,
@@ -48,7 +49,7 @@ export interface ICandidateInfoProps {
   rejectCandidateFn?: (memberID: string) => void;
   // eslint-disable-next-line no-unused-vars
   approveCandidateFn?: (memberID: string) => void;
-  qualified?: boolean;
+  // qualified?: "ACCEPTED" | "REJECTED" | undefined;
   handleCreateNewList?: () => void;
   talentListsAvailables?: TalentListType[];
   // eslint-disable-next-line no-unused-vars
@@ -73,11 +74,10 @@ export const CandidateInfo = ({
   // rejectCandidateFn,
   // approveCandidateFn,
   // handleChkSelection,
-  // talentListsAvailables,
+  talentListsAvailables,
   // handleCreateNewList,
-  // handleAddCandidatesToList,
-  // eslint-disable-next-line no-unused-vars
-  qualified = false,
+  handleAddCandidatesToList,
+  // qualified = undefined,
   showAskEden = true,
 }: ICandidateInfoProps) => {
   const [index, setIndex] = useState(0);
@@ -281,22 +281,46 @@ export const CandidateInfo = ({
       {dataMember?.findMember && (
         <section className="border-edenGray-100 absolute bottom-0 right-0 flex h-20 w-full items-center gap-4 border-t-2 bg-white px-4">
           {/* ------- schedule 2nd interview button ------- */}
-          {listMode !== ListModeEnum.list && (
-            <Button variant="secondary" onClick={handleSecondInterviewLetter}>
-              Schedule 2nd interview
-            </Button>
-          )}
+          {!candidate?.status ? (
+            <>
+              {listMode !== ListModeEnum.list && (
+                <Button
+                  variant="secondary"
+                  onClick={handleSecondInterviewLetter}
+                >
+                  Schedule 2nd interview
+                </Button>
+              )}
 
-          {/* ------- schedule 2nd interview button ------- */}
-          {listMode !== ListModeEnum.list && (
-            <Button
-              variant="tertiary"
-              className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
-              onClick={handleRejectionLetter}
-              // onClick={handleRejectCandidate}
-            >
-              Reject candidate
-            </Button>
+              {/* ------- schedule 2nd interview button ------- */}
+              {listMode !== ListModeEnum.list && (
+                <Button
+                  variant="tertiary"
+                  className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
+                  onClick={handleRejectionLetter}
+                  // onClick={handleRejectCandidate}
+                >
+                  Reject candidate
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              {candidate?.status === "ACCEPTED" && (
+                <Badge
+                  text="accepted"
+                  className="!bg-edenGreen-400 text-white"
+                  tooltip={false}
+                />
+              )}
+              {candidate?.status === "REJECTED" && (
+                <Badge
+                  text="rejected"
+                  className="!bg-utilityRed text-white"
+                  tooltip={false}
+                />
+              )}
+            </>
           )}
 
           {/* ask eden chat */}
@@ -318,6 +342,17 @@ export const CandidateInfo = ({
           letterType={letterType}
           onClose={() => {
             setIsOpen(false);
+          }}
+          onSubmit={() => {
+            handleAddCandidatesToList!(
+              (letterType === "rejection"
+                ? talentListsAvailables!.find(
+                    (list) => list.name === "Rejected"
+                  )!._id
+                : talentListsAvailables!.find(
+                    (list) => list.name === "Accepted"
+                  )!._id)!
+            );
           }}
         />
       )}
