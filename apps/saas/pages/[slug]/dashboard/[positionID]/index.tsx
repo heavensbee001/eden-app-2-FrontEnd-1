@@ -98,6 +98,7 @@ interface CandidateTypeSkillMatch extends CandidateType {
     skill?: Grade;
     requirements?: Grade;
   };
+  status?: "ACCEPTED" | "REJECTED" | undefined;
 }
 
 type NodeDisplay = {
@@ -207,8 +208,13 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
+      // const talentListsNames: TalentListType[] =
+      //   data.findPosition?.talentList.map((list: TalentListType) => list);
       const talentListsNames: TalentListType[] =
-        data.findPosition?.talentList.map((list: TalentListType) => list);
+        data.findPosition?.talentList.filter(
+          (list: TalentListType) =>
+            list.name !== "Accepted" && list.name !== "Rejected"
+        );
 
       setTalentListsAvailables(talentListsNames);
 
@@ -227,6 +233,25 @@ const PositionCRM: NextPageWithLayout = () => {
             let letterAndColor = {};
 
             let flagSkill = false;
+            let status;
+
+            if (
+              data.findPosition.talentList
+                .find((list: any) => list.name === "Accepted")
+                .talent.some(
+                  (_cand: any) => _cand.user?._id === candidate.user._id
+                )
+            ) {
+              status = "ACCEPTED";
+            } else if (
+              data.findPosition.talentList
+                .find((list: any) => list.name === "Rejected")
+                .talent.some(
+                  (_cand: any) => _cand.user?._id === candidate.user._id
+                )
+            ) {
+              status = "REJECTED";
+            }
 
             if (
               candidate?.skillMatch != undefined &&
@@ -304,6 +329,7 @@ const PositionCRM: NextPageWithLayout = () => {
               totalMatchPerc,
               flagSkill: flagSkill,
               letterAndColor,
+              status,
             };
           }
         );
@@ -915,22 +941,37 @@ const PositionCRM: NextPageWithLayout = () => {
       .find((_list: any) => _list._id === listID)
       .talent.map((t: any) => t.user._id);
 
-    await updateUsersTalentListPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          talentListID: listID,
-          usersTalentList: [
-            ..._prevTalent,
-            ...newTalentListCandidatesIds.filter(
-              (t: any) => !_prevTalent.includes(t)
-            ),
-          ],
-        },
-      },
-    });
-
-    // toast.success("Candidate added to list!");
+    try {
+      if (selectedUserId) {
+        await updateUsersTalentListPosition({
+          variables: {
+            fields: {
+              positionID: positionID,
+              talentListID: listID,
+              usersTalentList: [..._prevTalent, selectedUserId],
+            },
+          },
+        });
+      } else {
+        await updateUsersTalentListPosition({
+          variables: {
+            fields: {
+              positionID: positionID,
+              talentListID: listID,
+              usersTalentList: [
+                ..._prevTalent,
+                ...newTalentListCandidatesIds.filter(
+                  (t: any) => !_prevTalent.includes(t)
+                ),
+              ],
+            },
+          },
+        });
+      }
+      toast.success("Candidate added to list!");
+    } catch {
+      toast.error("Server error");
+    }
   };
 
   const handleRemoveCandidatesFromList = async (listID: string) => {
@@ -1697,7 +1738,8 @@ const PositionCRM: NextPageWithLayout = () => {
                   )}
                 </>
               )}
-              {newTalentListCandidatesIds.length > 0 &&
+              {talentListSelected &&
+                newTalentListCandidatesIds.length > 0 &&
                 talentListSelected?._id !== "000" && (
                   <div className="relative">
                     <span
@@ -1839,27 +1881,9 @@ const PositionCRM: NextPageWithLayout = () => {
             }}
             rejectCandidateFn={handleRejectCandidate}
             approveCandidateFn={handleApproveCandidate}
-            qualified={
-              Boolean(
-                approvedTalentListCandidatesList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              ) ||
-              Boolean(
-                rejectedTalentListCandidatesList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              )
-            }
             handleCreateNewList={handleCreateNewList}
             talentListsAvailables={talentListsAvailables}
-            handleAddCandidatesToList={function (): Promise<void> {
-              throw new Error("Function not implemented.");
-            }}
+            handleAddCandidatesToList={handleAddCandidatesToList}
           />
           {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1934,9 +1958,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     );
                   }}
                   talentListsAvailables={talentListsAvailables}
-                  handleAddCandidatesToList={function (): Promise<void> {
-                    throw new Error("Function not implemented.");
-                  }}
+                  handleAddCandidatesToList={handleAddCandidatesToList}
                   showAskEden={false}
                 />
                 {/* ) : (
