@@ -111,15 +111,18 @@ export const CandidateInfo = ({
     {
       tab: "Notes",
       Content: () => (
-        <MatchTab
-          member={
-            {
-              ...candidate,
-              user: dataMember?.findMember,
-            } as CandidateTypeSkillMatch
-          }
-          summaryQuestions={summaryQuestions}
-        />
+        <>
+          <MatchTab
+            member={
+              {
+                ...candidate,
+                user: dataMember?.findMember,
+              } as CandidateTypeSkillMatch
+            }
+            summaryQuestions={summaryQuestions}
+          />
+          <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
+        </>
       ),
     },
     {

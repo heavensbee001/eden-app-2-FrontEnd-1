@@ -5,6 +5,7 @@ import {
   Card,
   EdenIconExclamation,
   EdenTooltip,
+  MeetingNotes,
   Modal,
   // PopoverScoreReason,
   // TeamAttributeChart,
@@ -183,10 +184,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const {} = useQuery(FIND_POSITION, {
     variables: {
       fields: {
-        _id: "650a0e8547550dabc2e42d24",
+        _id: "64840ca8e271840359ca7761",
       },
     },
     onCompleted: (data) => {
+      console.log("data from onPosition: ", data.findPosition.candidates);
       setAttributes(data.findPosition.candidates[0].futurePotential);
       setAttributeName(
         data.findPosition.candidates[0].keyAttributes[0].attribute
@@ -401,12 +403,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           cards
         </p>
       </div> */}
-
       <div className="flex flex-col items-start">
         <h3>{attributeName}</h3>
         <span>{reason}</span>
       </div>
-
       <div className="flex flex-col">
         <div className="border-edenGreen-300 mt-4 flex justify-between border-t">
           <h2 className="text-edenGreen-500 mb-3 ml-1">Potential</h2>
@@ -461,8 +461,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         <span className="text-xl font-bold text-gray-800">Hello</span>
         <span className="text-lg italic text-blue-500"> World!</span>
       </div> */}
-
-      <div>
+      {/* <div>
         <ul className="list-none space-y-1">
           {summaryQuestions
             ? summaryQuestions.map((item, index) => (
@@ -488,7 +487,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                       </p>
                       <div className="ml-auto flex items-center p-2">
                         {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
-                        <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
+      {/* <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
                         {item.score ? (
                           <div className="border-edenGray-100 relative -my-4 flex h-8 items-center justify-center rounded-[0.25rem] border px-4">
                             <p
@@ -601,9 +600,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 </li>
               ))
             : null}
-        </ul>
-      </div>
-
+        </ul> */}
+      {/* </div> */}
       {/* <div className="mb-8 grid grid-cols-12 border-[1px] bg-white pt-2"> */}
       {/* <div className="col-span-2"></div>
         <div className="col-span-8">
