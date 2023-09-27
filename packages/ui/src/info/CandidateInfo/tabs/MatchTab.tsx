@@ -16,6 +16,8 @@ import { FC, useEffect, useState } from "react";
 import { GoGraph } from "react-icons/go";
 import { TbViewfinderOff } from "react-icons/tb";
 
+import { SkillSlider } from "../../../elements/SkillSlider/SkillSlider";
+
 const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
   query ($fields: memberPieChartNodeCategoriesInput) {
     memberPieChartNodeCategories(fields: $fields) {
@@ -91,6 +93,13 @@ type BarChartQuestions = {
   averagePercentage: number;
 };
 
+interface AttributeCandidateType {
+  __typename: string;
+  attribute: string;
+  reason: string;
+  score: number;
+}
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -101,6 +110,18 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
     useState<SummaryQuestionType>();
+
+  const [attributeName, setAttributeName] = useState("");
+  const [reason, setReason] = useState("");
+  const [attributes, setAttributes] = useState<AttributeCandidateType[]>([
+    {
+      __typename: "attributeCandidateType",
+      attribute: "Proficient in other front-end frameworks (e.g. Vue, Ember)",
+      reason: "While Reza's primary focus has been on React and Angular...",
+      score: 7,
+    },
+    // ... other objects ...
+  ]);
 
   console.log("member = ", member);
 
@@ -167,16 +188,66 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     }
   );
 
-  const {} = useQuery(FIND_POSITION, {
+  const { data: candidateScores } = useQuery(FIND_POSITION, {
     variables: {
       fields: {
         _id: "650a0e8547550dabc2e42d24",
       },
     },
     onCompleted: (data) => {
-      console.log("data from find pos: ", data);
+      console.log("************** data from find pos: ************* ", data);
+      setAttributeName(
+        data.findPosition.candidates[0].keyAttributes[0].attribute
+      );
+      setReason(data.findPosition.candidates[0].keyAttributes[0].reason);
+      setAttributes(data.findPosition.candidates[0].futurePotential);
+
+      console.log("****potential:****", attributes);
     },
   });
+
+  //Delete later!!!!!!
+  const objectIamWorkingWithDeleteLater = {
+    __typename: "CandidateType",
+    user: {
+      __typename: "Members",
+      _id: "102785674053816073334",
+      discordName: "Miltiadis Saratzidis",
+    },
+    keyAttributes: [
+      {
+        __typename: "attributeCandidateType",
+        attribute: "Strong experience in React and Angular",
+        reason:
+          "Reza has 5+ years of front-end web development experience with Javascript frameworks, including React and Angular. He has worked on multiple projects utilizing these frameworks, showcasing his strong experience and proficiency in both. His extensive experience and expertise in React and Angular make him a highly valuable candidate for roles requiring these skills.",
+        score: 9,
+      },
+    ],
+    futurePotential: [
+      {
+        __typename: "attributeCandidateType",
+        attribute: "Proficient in other front-end frameworks (e.g. Vue, Ember)",
+        reason:
+          "While Rezas primary focus has been on React and Angular, he also mentions his proficiency in other front-end frameworks such as Vue and Ember. Although he may not have as much experience with these frameworks as he does with React and Angular, his willingness to adapt to new languages and technologies, as well as his strong learning abilities, make him a candidate who can quickly become proficient in these frameworks if required.",
+        score: 7,
+      },
+      {
+        __typename: "attributeCandidateType",
+        attribute: "Knowledge of backend technologies (e.g. Node.js, C#)",
+        reason:
+          "Rezas experience as a front-end developer has likely exposed him to backend technologies to some extent. While he doesnt explicitly mention his experience with Node.js and C#, his proficiency in JavaScript and TypeScript, which are commonly used in both front-end and backend development, suggests that he has a solid foundation in backend technologies. With his adaptability and willingness to take on new challenges, he can easily expand his knowledge and become proficient in Node.js and C# if required.",
+        score: 8,
+      },
+      {
+        __typename: "attributeCandidateType",
+        attribute:
+          "Familiarity with testing frameworks and methodologies (e.g. Jest, Test-driven development)",
+        reason:
+          "Rezas CV does not explicitly mention his familiarity with testing frameworks and methodologies. However, given his experience as a front-end developer and his focus on staying current with the latest technologies, it is likely that he has some level of familiarity with testing frameworks and methodologies. While his level of expertise in this area may not be as high as his proficiency in front-end development, his strong learning abilities and adaptability make him a candidate who can quickly acquire and apply knowledge in testing frameworks and methodologies.",
+        score: 6,
+      },
+    ],
+  };
 
   // type radiochartType = {
   //   memberInfo: {
@@ -342,13 +413,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       </div> */}
 
       <div className="flex flex-col items-start">
-        <h3>Strong Experience in Angular and React</h3>
-        <span>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto
-          nemo nulla aut provident neque earum sequi culpa! Nulla delectus nam
-          soluta! Veritatis similique quia corporis laudantium accusantium.
-          Optio, numquam blanditiis.
-        </span>
+        <h3>{attributeName}</h3>
+        <span>{reason}</span>
       </div>
 
       <div className="flex flex-col">
@@ -356,7 +422,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           <h2 className="text-edenGreen-500 mb-3 ml-1">Potential</h2>
         </div>
 
-        <div className="ml-1 space-y-2">
+        {/* <div className="ml-1 space-y-2">
           <div className="relative flex items-center space-x-2">
             <h3>Proficient in other front-end frameworks</h3>
             <div className="relative h-[5px] w-52 rounded-lg bg-gray-600">
@@ -381,6 +447,17 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
               <div className="absolute left-1/4 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
             </div>
           </div>
+        </div> */}
+        <div className="ml-1 space-y-2">
+          {attributes
+            ? attributes.map((item, index) => (
+                <SkillSlider
+                  name={item.attribute}
+                  score={item.score}
+                  key={index}
+                />
+              ))
+            : null}
         </div>
       </div>
       <div>
