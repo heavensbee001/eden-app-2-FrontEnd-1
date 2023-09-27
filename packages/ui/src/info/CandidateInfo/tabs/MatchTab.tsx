@@ -188,7 +188,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     }
   );
 
-  const { data: candidateScores } = useQuery(FIND_POSITION, {
+  const {} = useQuery(FIND_POSITION, {
     variables: {
       fields: {
         _id: "650a0e8547550dabc2e42d24",
@@ -196,12 +196,11 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     },
     onCompleted: (data) => {
       console.log("************** data from find pos: ************* ", data);
+      setAttributes(data.findPosition.candidates[0].futurePotential);
       setAttributeName(
         data.findPosition.candidates[0].keyAttributes[0].attribute
       );
       setReason(data.findPosition.candidates[0].keyAttributes[0].reason);
-      setAttributes(data.findPosition.candidates[0].futurePotential);
-
       console.log("****potential:****", attributes);
     },
   });
