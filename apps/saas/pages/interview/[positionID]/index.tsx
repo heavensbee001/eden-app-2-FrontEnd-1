@@ -219,8 +219,8 @@ const HomePage: NextPageWithLayout = () => {
                       className="mr-3"
                     />
                     <p>
-                      I acknowledge That my CV & responses will be stored and
-                      shared by Eden
+                      I acknowledge that my CV and responses can be stored and
+                      shared with hiring managers by Eden
                       <span className="mx-1 text-red-600">*</span>
                     </p>
                   </div>
