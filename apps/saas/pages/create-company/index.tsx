@@ -60,9 +60,7 @@ const CreateCompany: NextPageWithLayout = () => {
   const [addEmployeesCompany] = useMutation(ADD_EMPLOYEES_COMPANY, {
     onCompleted(data) {
       if (data.addEmployeesCompany) {
-        router.push(
-          `/${data.addEmployeesCompany.companyAbbreviation}/dashboard`
-        );
+        router.push(`/${data.addEmployeesCompany.slug}/dashboard`);
       }
     },
     onError() {
@@ -90,7 +88,9 @@ const CreateCompany: NextPageWithLayout = () => {
         variables: {
           fields: {
             companyID: updateCompanyData.updateCompany._id,
-            employees: [{ userID: currentUser!._id }] as EmployeeTypeInput[],
+            employees: [
+              { typeT: "ADMIN", status: "ACTIVE", userID: currentUser!._id },
+            ] as EmployeeTypeInput[],
           },
         },
       });
