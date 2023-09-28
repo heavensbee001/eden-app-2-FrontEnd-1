@@ -118,13 +118,6 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const [candidates, setCandidates] = useState([]);
 
   console.log("member = ", member);
-  console.log("member.keyAttributes = ", member.keyAttributes);
-
-  // if (member.user != undefined) {
-  //   console.log("member.keyAttributes[0] = ", member.keyAttributes[0]);
-
-  //   setAttributeName(member?.keyAttributes[0].attribute);
-  // }
 
   interface ChartData {
     labels: string[];
@@ -323,6 +316,13 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   // console.log("radioChart = ", radioChart);
 
   useEffect(() => {
+    if (member.keyAttributes != undefined) {
+      setAttributeName(member?.keyAttributes[0]?.attribute);
+      setReason(member?.keyAttributes[0]?.reason);
+    }
+  }, [member]);
+
+  useEffect(() => {
     const dataBarChartPr: BarChartQuestions[] = [];
     const dataBarChartMaxLength: number = 6;
 
@@ -383,10 +383,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
       <div className="flex flex-col items-start">
         {member?.user ? (
           <>
-            <h3>{JSON.stringify(attributeName)}</h3>
-            <span>
-              {/* {JSON.stringify(item.keyAttributes[0].attribute.reason)} */}
-            </span>
+            <h3>{attributeName}</h3>
+            <span>{reason}</span>
           </>
         ) : null}
       </div>
@@ -422,9 +420,15 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           </div>
         </div> */}
         <div className="ml-1 space-y-2">
-          {candidates.map((candidates, index) => (
-            <SkillSlider key={index} candidates={candidates} />
-          ))}{" "}
+          {member.futurePotential
+            ? member.futurePotential.map((item, index) => (
+                <SkillSlider
+                  key={index}
+                  name={item.attribute}
+                  score={item.score}
+                />
+              ))
+            : null}{" "}
         </div>
       </div>
       <div>
