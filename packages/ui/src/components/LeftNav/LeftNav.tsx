@@ -1,8 +1,10 @@
 import { UserContext } from "@eden/package-context";
-import { Avatar } from "@eden/package-ui";
+import { Avatar, MenuDropdown } from "@eden/package-ui";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 import { useContext } from "react";
+import { FiLogOut } from "react-icons/fi";
 
 export interface LeftNavProps {
   logoLink?: string;
@@ -41,13 +43,33 @@ export const LeftNav = ({ logoLink = "/" }: LeftNavProps) => {
 const UserButton = () => {
   const { currentUser } = useContext(UserContext);
 
+  const handleLogout = () => {
+    signOut();
+    localStorage.removeItem("eden_access_token");
+  };
+
   return currentUser ? (
     <div className="border-edenPink-500 flex h-[5.5rem] items-center  p-4">
-      <div className={"mr-auto flex w-2/3 items-center"}>
+      <div className={"relative mr-auto flex w-2/3 items-center"}>
         <div className="z-10">
-          {currentUser.discordAvatar && (
-            <Avatar size="xs" src={currentUser.discordAvatar} />
-          )}
+          <MenuDropdown
+            positionX="right"
+            positionY="top"
+            clickableElement={
+              <Avatar size="xs" src={currentUser.discordAvatar!} />
+            }
+          >
+            {[
+              <li
+                key={1}
+                className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+                onClick={handleLogout}
+              >
+                <FiLogOut className="inline pb-px" size={16} />
+                {" log out"}
+              </li>,
+            ]}
+          </MenuDropdown>
         </div>
       </div>
     </div>

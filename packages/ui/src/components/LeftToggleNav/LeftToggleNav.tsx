@@ -1,6 +1,11 @@
 import { gql, useMutation } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
-import { Avatar, Button, EdenAiProcessingModal } from "@eden/package-ui";
+import {
+  Avatar,
+  Button,
+  EdenAiProcessingModal,
+  MenuDropdown,
+} from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,8 +47,9 @@ export const LeftToggleNav = ({
 
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
-  const [unwrappedPosition, setUnwrappedPosition] =
-    useState<string | null>(null);
+  const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
+    null
+  );
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
@@ -291,11 +297,26 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
         unwrapped ? "" : "justify-center"
       )}
     >
-      <div className={"mr-auto flex w-2/3 items-center"}>
+      <div className={"relative mr-auto flex w-2/3 items-center"}>
         <div className="z-10">
-          {currentUser.discordAvatar && (
-            <Avatar size="xs" src={currentUser.discordAvatar} />
-          )}
+          <MenuDropdown
+            positionX="right"
+            positionY="top"
+            clickableElement={
+              <Avatar size="xs" src={currentUser.discordAvatar!} />
+            }
+          >
+            {[
+              <li
+                key={1}
+                className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+                onClick={handleLogout}
+              >
+                <FiLogOut className="inline pb-px" size={16} />
+                {" log out"}
+              </li>,
+            ]}
+          </MenuDropdown>
         </div>
         {unwrapped && (
           <span className="font-Moret text-edenGreen-600 ml-2 whitespace-nowrap">

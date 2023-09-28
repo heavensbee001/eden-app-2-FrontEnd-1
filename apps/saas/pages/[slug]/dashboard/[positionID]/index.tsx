@@ -7,6 +7,7 @@ import {
 } from "@eden/package-graphql";
 import {
   CandidateType,
+  PositionStatus,
   PrioritiesType,
   TalentListType,
   TalentType,
@@ -97,6 +98,7 @@ interface CandidateTypeSkillMatch extends CandidateType {
     skill?: Grade;
     requirements?: Grade;
   };
+  status?: "ACCEPTED" | "REJECTED" | undefined;
 }
 
 type NodeDisplay = {
@@ -146,8 +148,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -206,19 +209,24 @@ const PositionCRM: NextPageWithLayout = () => {
     skip: !Boolean(positionID),
     ssr: false,
     onCompleted: (data: any) => {
+      // const talentListsNames: TalentListType[] =
+      //   data.findPosition?.talentList.map((list: TalentListType) => list);
       const talentListsNames: TalentListType[] =
-        data.findPosition.talentList.map((list: TalentListType) => list);
+        data.findPosition?.talentList.filter(
+          (list: TalentListType) =>
+            list.name !== "Accepted" && list.name !== "Rejected"
+        );
 
       setTalentListsAvailables(talentListsNames);
 
       if (
-        data.findPosition.candidates.length > 0 &&
-        (data.findPosition.candidates[0]?.totalMatchPerc === undefined ||
-          (data.findPosition.candidates[0]?.flagSkill !== true &&
-            data.findPosition.candidates[0]?.skillMatch !== undefined))
+        data.findPosition?.candidates.length > 0 &&
+        (data.findPosition?.candidates[0]?.totalMatchPerc === undefined ||
+          (data.findPosition?.candidates[0]?.flagSkill !== true &&
+            data.findPosition?.candidates[0]?.skillMatch !== undefined))
       ) {
         // calculate the average score of the percentages for each candidatesList and save it on setCandidatesList
-        const candidatesListWithSkillMatch = data.findPosition.candidates.map(
+        const candidatesListWithSkillMatch = data.findPosition?.candidates.map(
           (candidate: any) => {
             let totalMatchPerc = 0;
             let totalMatchPercCount = 0;
@@ -226,6 +234,25 @@ const PositionCRM: NextPageWithLayout = () => {
             let letterAndColor = {};
 
             let flagSkill = false;
+            let status;
+
+            if (
+              data.findPosition.talentList
+                .find((list: any) => list.name === "Accepted")
+                .talent.some(
+                  (_cand: any) => _cand.user?._id === candidate.user._id
+                )
+            ) {
+              status = "ACCEPTED";
+            } else if (
+              data.findPosition.talentList
+                .find((list: any) => list.name === "Rejected")
+                .talent.some(
+                  (_cand: any) => _cand.user?._id === candidate.user._id
+                )
+            ) {
+              status = "REJECTED";
+            }
 
             if (
               candidate?.skillMatch != undefined &&
@@ -303,6 +330,7 @@ const PositionCRM: NextPageWithLayout = () => {
               totalMatchPerc,
               flagSkill: flagSkill,
               letterAndColor,
+              status,
             };
           }
         );
@@ -333,18 +361,18 @@ const PositionCRM: NextPageWithLayout = () => {
 
         setCandidatesFromTalentList(sortedCandidatesList);
 
-        // const rejectedCandidatesIDs = data.findPosition.talentList.find(
+        // const rejectedCandidatesIDs = data.findPosition?.talentList.find(
         //   (list: TalentListType) => list.name === "Rejected"
         // )?.talent.length
-        //   ? data.findPosition.talentList
+        //   ? data.findPosition?.talentList
         //       .find((list: TalentListType) => list.name === "Rejected")
         //       ?.talent.map((candidate: any) => candidate?.user?._id)
         //   : [];
 
-        // const approvedCandidatesIDs = data.findPosition.talentList.find(
+        // const approvedCandidatesIDs = data.findPosition?.talentList.find(
         //   (list: TalentListType) => list.name === "Accepted"
         // )?.talent.length
-        //   ? data.findPosition.talentList
+        //   ? data.findPosition?.talentList
         //       .find((list: TalentListType) => list.name === "Accepted")
         //       ?.talent.map((candidate: any) => candidate?.user?._id)
         //   : [];
@@ -363,25 +391,25 @@ const PositionCRM: NextPageWithLayout = () => {
 
         if (findPositionData?.findPosition?.talentList) {
           setApprovedTalentListID(
-            findPositionData.findPosition.talentList.find(
+            findPositionData?.findPosition?.talentList.find(
               (list: TalentListType) => list.name === "Accepted"
             )?._id
           );
 
           setApprovedTalentListCandidatesList(
-            findPositionData.findPosition.talentList.find(
+            findPositionData?.findPosition?.talentList.find(
               (list: TalentListType) => list.name === "Accepted"
             )?.talent
           );
 
           setRejectedTalentListID(
-            findPositionData.findPosition.talentList.find(
+            findPositionData?.findPosition?.talentList.find(
               (list: TalentListType) => list.name === "Rejected"
             )?._id
           );
 
           setRejectedTalentListCandidatesList(
-            findPositionData.findPosition.talentList.find(
+            findPositionData?.findPosition?.talentList.find(
               (list: TalentListType) => list.name === "Rejected"
             )?.talent
           );
@@ -390,7 +418,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
       const questionPrep: Question[] = [];
 
-      data.findPosition.questionsToAsk.map((question: any) => {
+      data.findPosition?.questionsToAsk.map((question: any) => {
         if (question.question == null) {
         } else {
           questionPrep.push({
@@ -910,30 +938,45 @@ const PositionCRM: NextPageWithLayout = () => {
   const handleAddCandidatesToList = async (listID: string) => {
     setAddToListOpen(false);
 
-    const _prevTalent = findPositionData?.findPosition.talentList
+    const _prevTalent = findPositionData?.findPosition?.talentList
       .find((_list: any) => _list._id === listID)
       .talent.map((t: any) => t.user._id);
 
-    await updateUsersTalentListPosition({
-      variables: {
-        fields: {
-          positionID: positionID,
-          talentListID: listID,
-          usersTalentList: [
-            ..._prevTalent,
-            ...newTalentListCandidatesIds.filter(
-              (t: any) => !_prevTalent.includes(t)
-            ),
-          ],
-        },
-      },
-    });
-
-    // toast.success("Candidate added to list!");
+    try {
+      if (selectedUserId) {
+        await updateUsersTalentListPosition({
+          variables: {
+            fields: {
+              positionID: positionID,
+              talentListID: listID,
+              usersTalentList: [..._prevTalent, selectedUserId],
+            },
+          },
+        });
+      } else {
+        await updateUsersTalentListPosition({
+          variables: {
+            fields: {
+              positionID: positionID,
+              talentListID: listID,
+              usersTalentList: [
+                ..._prevTalent,
+                ...newTalentListCandidatesIds.filter(
+                  (t: any) => !_prevTalent.includes(t)
+                ),
+              ],
+            },
+          },
+        });
+      }
+      toast.success("Candidate added to list!");
+    } catch {
+      toast.error("Server error");
+    }
   };
 
   const handleRemoveCandidatesFromList = async (listID: string) => {
-    const _prevTalent = findPositionData?.findPosition.talentList
+    const _prevTalent = findPositionData?.findPosition?.talentList
       .find((_list: any) => _list._id === listID)
       .talent.map((t: any) => t.user._id);
 
@@ -973,7 +1016,17 @@ const PositionCRM: NextPageWithLayout = () => {
       variables: {
         fields: {
           _id: positionID,
-          status: "DELETED",
+          status: PositionStatus.Deleted,
+        },
+      },
+    });
+  };
+  const handleRestore = () => {
+    updatePosition({
+      variables: {
+        fields: {
+          _id: positionID,
+          status: PositionStatus.Active,
         },
       },
     });
@@ -1036,7 +1089,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleRejectCandidate = async (candidateID: string) => {
     setQuickActionButtonUsed(true);
-    const _prevTalent = findPositionData?.findPosition.talentList
+    const _prevTalent = findPositionData?.findPosition?.talentList
       .find((_list: any) => _list._id === rejectedTalentListID)
       .talent.map((t: any) => t.user._id);
 
@@ -1059,7 +1112,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const handleApproveCandidate = async (candidateID: string) => {
     setQuickActionButtonUsed(true);
-    const _prevTalent = findPositionData?.findPosition.talentList
+    const _prevTalent = findPositionData?.findPosition?.talentList
       .find((_list: any) => _list._id === approvedTalentListID)
       .talent.map((t: any) => t.user._id);
 
@@ -1094,10 +1147,10 @@ const PositionCRM: NextPageWithLayout = () => {
         0
     ) {
       setPriorities(
-        findPositionData.findPosition.positionsRequirements.priorities
+        findPositionData?.findPosition?.positionsRequirements.priorities
       );
       setTradeOffs(
-        findPositionData.findPosition.positionsRequirements.tradeOffs
+        findPositionData?.findPosition?.positionsRequirements.tradeOffs
       );
     }
   }, [findPositionData?.findPosition]);
@@ -1152,19 +1205,21 @@ const PositionCRM: NextPageWithLayout = () => {
             <div>
               <div className="mr-6 flex items-center">
                 <h1 className="text-edenGreen-600">
-                  {findPositionData && findPositionData.findPosition.name
-                    ? findPositionData.findPosition.name
+                  {findPositionData && findPositionData?.findPosition?.name
+                    ? findPositionData?.findPosition?.name
                         .charAt(0)
                         .toUpperCase() +
-                      findPositionData.findPosition.name.slice(1)
+                      findPositionData?.findPosition?.name.slice(1)
                     : ""}
                 </h1>
-                {(findPositionData?.findPosition?.status === "DELETED" ||
+                {(findPositionData?.findPosition?.status ===
+                  PositionStatus.Deleted ||
                   findPositionData?.findPosition?.status === "ARCHIVED") && (
                   <div
                     className={classNames(
                       "ml-2 rounded-md px-2 pb-px text-xs",
-                      findPositionData?.findPosition?.status === "DELETED"
+                      findPositionData?.findPosition?.status ===
+                        PositionStatus.Deleted
                         ? "bg-utilityRed text-white"
                         : "",
                       findPositionData?.findPosition?.status === "ARCHIVED"
@@ -1207,13 +1262,33 @@ const PositionCRM: NextPageWithLayout = () => {
                 </li>
                 <li
                   className="text-utilityRed hover:bg-edenGreen-100 group cursor-pointer px-4 py-1 text-sm"
-                  onClick={handleDelete}
+                  onClick={() => {
+                    findPositionData?.findPosition?.status ===
+                    PositionStatus.Deleted
+                      ? handleRestore()
+                      : handleDelete();
+                  }}
                 >
-                  <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />
-                  Delete opportunity
-                  <span className="ml-1 hidden font-bold group-hover:inline group-hover:animate-ping">
-                    !
-                  </span>
+                  {findPositionData?.findPosition?.status ===
+                  PositionStatus.Deleted ? (
+                    <GiHeartWings
+                      size={20}
+                      className="-ml-[2px] mb-px mr-1 inline"
+                    />
+                  ) : (
+                    <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />
+                  )}
+                  {findPositionData?.findPosition?.status ===
+                  PositionStatus.Deleted ? (
+                    <span>Restore opportunity</span>
+                  ) : (
+                    <>
+                      Delete opportunity
+                      <span className="ml-1 hidden font-bold group-hover:inline group-hover:animate-ping">
+                        !
+                      </span>
+                    </>
+                  )}
                 </li>
               </MenuDropdown>
             </div>
@@ -1365,7 +1440,9 @@ const PositionCRM: NextPageWithLayout = () => {
                   <Tab.Panel>
                     <div className="text-center">
                       {findPositionData?.findPosition?.nodes && (
-                        <NodeList nodes={findPositionData.findPosition.nodes} />
+                        <NodeList
+                          nodes={findPositionData?.findPosition?.nodes}
+                        />
                       )}
                     </div>
                   </Tab.Panel>
@@ -1662,7 +1739,8 @@ const PositionCRM: NextPageWithLayout = () => {
                   )}
                 </>
               )}
-              {newTalentListCandidatesIds.length > 0 &&
+              {talentListSelected &&
+                newTalentListCandidatesIds.length > 0 &&
                 talentListSelected?._id !== "000" && (
                   <div className="relative">
                     <span
@@ -1804,27 +1882,9 @@ const PositionCRM: NextPageWithLayout = () => {
             }}
             rejectCandidateFn={handleRejectCandidate}
             approveCandidateFn={handleApproveCandidate}
-            qualified={
-              Boolean(
-                approvedTalentListCandidatesList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              ) ||
-              Boolean(
-                rejectedTalentListCandidatesList?.find(
-                  (candidate) =>
-                    candidate?.user?._id?.toString() ==
-                    selectedUserId?.toString()
-                )
-              )
-            }
             handleCreateNewList={handleCreateNewList}
             talentListsAvailables={talentListsAvailables}
-            handleAddCandidatesToList={function (): Promise<void> {
-              throw new Error("Function not implemented.");
-            }}
+            handleAddCandidatesToList={handleAddCandidatesToList}
           />
           {/* ) : (
             <div className="w-full pt-20 text-center">
@@ -1899,9 +1959,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     );
                   }}
                   talentListsAvailables={talentListsAvailables}
-                  handleAddCandidatesToList={function (): Promise<void> {
-                    throw new Error("Function not implemented.");
-                  }}
+                  handleAddCandidatesToList={handleAddCandidatesToList}
                   showAskEden={false}
                 />
                 {/* ) : (
@@ -1939,6 +1997,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
 import { BsFillGearFill } from "react-icons/bs";
+import { GiHeartWings } from "react-icons/gi";
 import { TbTrashXFilled } from "react-icons/tb";
 
 export async function getServerSideProps(ctx: {
@@ -1979,14 +2038,14 @@ export async function getServerSideProps(ctx: {
 
   console.log(res.status);
 
-  if (res.status === 401) {
-    return {
-      redirect: {
-        destination: `/request-access`,
-        permanent: false,
-      },
-    };
-  }
+  // if (res.status === 401) {
+  //   return {
+  //     redirect: {
+  //       destination: `/request-access`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   if (res.status === 404) {
     return {
