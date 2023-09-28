@@ -9,6 +9,16 @@ export const FIND_POSITION_LIGHT = gql`
       name
       status
       candidates {
+        keyAttributes {
+          attribute
+          reason
+          score
+        }
+        futurePotential {
+          attribute
+          reason
+          score
+        }
         dateApply
         overallScore
         skillScore

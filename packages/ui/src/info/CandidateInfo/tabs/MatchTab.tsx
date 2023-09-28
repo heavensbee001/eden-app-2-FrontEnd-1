@@ -28,29 +28,29 @@ const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
   }
 `;
 
-const FIND_POSITION = gql`
-  query ($fields: findPositionInput) {
-    findPosition(fields: $fields) {
-      _id
-      candidates {
-        user {
-          _id
-          discordName
-        }
-        keyAttributes {
-          attribute
-          reason
-          score
-        }
-        futurePotential {
-          attribute
-          reason
-          score
-        }
-      }
-    }
-  }
-`;
+// const FIND_POSITION = gql`
+//   query ($fields: findPositionInput) {
+//     findPosition(fields: $fields) {
+//       _id
+//       candidates {
+//         user {
+//           _id
+//           discordName
+//         }
+//         keyAttributes {
+//           attribute
+//           reason
+//           score
+//         }
+//         futurePotential {
+//           attribute
+//           reason
+//           score
+//         }
+//       }
+//     }
+//   }
+// `;
 
 // const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
 //   query ($fields: memberRadioChartCharacterAttributesInput) {
@@ -115,8 +115,16 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const [attributeName, setAttributeName] = useState("");
   const [reason, setReason] = useState("");
   const [attributes, setAttributes] = useState<AttributeCandidateType[]>([]);
+  const [candidates, setCandidates] = useState([]);
 
   console.log("member = ", member);
+  console.log("member.keyAttributes = ", member.keyAttributes);
+
+  // if (member.user != undefined) {
+  //   console.log("member.keyAttributes[0] = ", member.keyAttributes[0]);
+
+  //   setAttributeName(member?.keyAttributes[0].attribute);
+  // }
 
   interface ChartData {
     labels: string[];
@@ -181,66 +189,35 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     }
   );
 
-  const {} = useQuery(FIND_POSITION, {
-    variables: {
-      fields: {
-        _id: "64840ca8e271840359ca7761",
-      },
-    },
-    onCompleted: (data) => {
-      console.log("data from onPosition: ", data.findPosition.candidates);
-      setAttributes(data.findPosition.candidates[0].futurePotential);
-      setAttributeName(
-        data.findPosition.candidates[0].keyAttributes[0].attribute
-      );
-      setReason(data.findPosition.candidates[0].keyAttributes[0].reason);
-      console.log("members id from FIND POS: ", member?.user?._id);
-    },
-  });
+  // const {} = useQuery(FIND_POSITION, {
+  //   variables: {
+  //     fields: {
+  //       _id: "650d94b8f917d796d10bd335",
+  //     },
+  //   },
+  //   onCompleted: (data) => {
+  //     const candidatesData = data.findPosition.candidates;
+
+  //     console.log("data from onPosition: ", data.findPosition.candidates);
+  //     setCandidates(data.findPosition.candidates);
+  //     setAttributes(data.findPosition.candidates[0].futurePotential);
+  //     setAttributeName(
+  //       data.findPosition.candidates[0].keyAttributes[0].attribute
+  //     );
+  //     setReason(data.findPosition.candidates[0].keyAttributes[0].reason);
+  //   },
+  // });
 
   //Delete later!!!!!!
-  const objectIamWorkingWithDeleteLater = {
-    __typename: "CandidateType",
-    user: {
-      __typename: "Members",
-      _id: "102785674053816073334",
-      discordName: "Miltiadis Saratzidis",
+  const objectIamWorkingWithDeleteLater = [
+    {
+      __typename: "attributeCandidateType",
+      attribute: "Senior Frontend Developer",
+      reason:
+        "The candidate has 7 years of experience in the software development industry, with hands-on experience in both front-end and back-end technologies. They have a solid track record and possess a deep understanding of React, TypeScript, API GraphQL, and TailwindCSS, which are key attributes for a Senior Frontend Developer. Additionally, their experience in building, improving, and maintaining systems at Bullhu demonstrates their proficiency in product development.",
+      score: 9,
     },
-    keyAttributes: [
-      {
-        __typename: "attributeCandidateType",
-        attribute: "Strong experience in React and Angular",
-        reason:
-          "Reza has 5+ years of front-end web development experience with Javascript frameworks, including React and Angular. He has worked on multiple projects utilizing these frameworks, showcasing his strong experience and proficiency in both. His extensive experience and expertise in React and Angular make him a highly valuable candidate for roles requiring these skills.",
-        score: 9,
-      },
-    ],
-    futurePotential: [
-      {
-        __typename: "attributeCandidateType",
-        attribute: "Proficient in other front-end frameworks (e.g. Vue, Ember)",
-        reason:
-          "While Rezas primary focus has been on React and Angular, he also mentions his proficiency in other front-end frameworks such as Vue and Ember. Although he may not have as much experience with these frameworks as he does with React and Angular, his willingness to adapt to new languages and technologies, as well as his strong learning abilities, make him a candidate who can quickly become proficient in these frameworks if required.",
-        score: 7,
-      },
-      {
-        __typename: "attributeCandidateType",
-        attribute: "Knowledge of backend technologies (e.g. Node.js, C#)",
-        reason:
-          "Rezas experience as a front-end developer has likely exposed him to backend technologies to some extent. While he doesnt explicitly mention his experience with Node.js and C#, his proficiency in JavaScript and TypeScript, which are commonly used in both front-end and backend development, suggests that he has a solid foundation in backend technologies. With his adaptability and willingness to take on new challenges, he can easily expand his knowledge and become proficient in Node.js and C# if required.",
-        score: 8,
-      },
-      {
-        __typename: "attributeCandidateType",
-        attribute:
-          "Familiarity with testing frameworks and methodologies (e.g. Jest, Test-driven development)",
-        reason:
-          "Rezas CV does not explicitly mention his familiarity with testing frameworks and methodologies. However, given his experience as a front-end developer and his focus on staying current with the latest technologies, it is likely that he has some level of familiarity with testing frameworks and methodologies. While his level of expertise in this area may not be as high as his proficiency in front-end development, his strong learning abilities and adaptability make him a candidate who can quickly acquire and apply knowledge in testing frameworks and methodologies.",
-        score: 6,
-      },
-    ],
-  };
-
+  ];
   // type radiochartType = {
   //   memberInfo: {
   //     discordName: string;
@@ -404,8 +381,14 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         </p>
       </div> */}
       <div className="flex flex-col items-start">
-        <h3>{attributeName}</h3>
-        <span>{reason}</span>
+        {member?.user ? (
+          <>
+            <h3>{JSON.stringify(attributeName)}</h3>
+            <span>
+              {/* {JSON.stringify(item.keyAttributes[0].attribute.reason)} */}
+            </span>
+          </>
+        ) : null}
       </div>
       <div className="flex flex-col">
         <div className="border-edenGreen-300 mt-4 flex justify-between border-t">
@@ -439,15 +422,9 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           </div>
         </div> */}
         <div className="ml-1 space-y-2">
-          {attributes
-            ? attributes.map((item, index) => (
-                <SkillSlider
-                  name={item.attribute}
-                  score={item.score}
-                  key={index}
-                />
-              ))
-            : null}
+          {candidates.map((candidates, index) => (
+            <SkillSlider key={index} candidates={candidates} />
+          ))}{" "}
         </div>
       </div>
       <div>
