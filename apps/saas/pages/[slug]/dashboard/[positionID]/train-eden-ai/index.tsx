@@ -173,6 +173,42 @@ type Question = {
   bestAnswer: string;
 };
 
+const FLOW_TITLES = [
+  {
+    title: "Tell me about your opportunity!",
+    subtitle: "You're launching a new opportunity with Eden.",
+  },
+  {
+    title: "Some questions to make sure we're on the same page!",
+    subtitle:
+      "Think of this like the intake conversation you would have with your recruiter.",
+  },
+  {
+    title: "Just want to check with you to see if I got this right.",
+    subtitle:
+      "Please adjust as you see fit to make sure Eden's got your priorities & tradeoffs right.",
+  },
+  {
+    title:
+      "This is the score card I came up with, based on what we talked about.",
+    subtitle:
+      "This is the list of topics we'll use to benchmark all the candidates. Feel free to edit, add or delete.",
+  },
+  {
+    title: "And here’s my list of not-to-miss questions.",
+    subtitle:
+      "These questions get adapted in realtime based on the context of the candidate & rest of the interview.",
+  },
+  {
+    title: "Almost there. Just the final details.",
+    subtitle: "Some elemental stuff to add.",
+  },
+  {
+    title: "That was fun!!",
+    subtitle: "You did it!",
+  },
+];
+
 const TrainAiPage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const { company, getCompanyFunc } = useContext(CompanyContext);
@@ -513,11 +549,11 @@ const TrainAiPage: NextPageWithLayout = () => {
               <ProgressBarGeneric progress={progress} />
             </div> */}
             <h1 className="text-edenGreen-600 text-center">
-              Launch Opportunity
+              {FLOW_TITLES[step].title}
             </h1>
             <div className="h-[95%] w-full">
               <p className="text-edenGray-900 text-center">
-                {"You're launching a new opportunity with Eden."}
+                {FLOW_TITLES[step].subtitle}
               </p>
               <Wizard
                 showStepsHeader
@@ -742,11 +778,12 @@ const TrainAiPage: NextPageWithLayout = () => {
                 >
                   <div className="mx-auto max-w-3xl text-center">
                     <h2 className="text-xl font-medium">
-                      Final Important Details
+                      Final Interview Details
                     </h2>
                     <p className="text-sm text-zinc-400">
-                      All done, this is the final step. Fill in some quick
-                      information and we’re off!
+                      {
+                        "All done, this is the final step. Fill in some quick information and we're off!"
+                      }
                     </p>
                     <FinalFormContainer
                       onChange={(data) => {
