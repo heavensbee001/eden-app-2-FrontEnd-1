@@ -25,6 +25,7 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       _id
       name
       status
+      icon
       company {
         _id
         name
