@@ -94,13 +94,6 @@ type BarChartQuestions = {
   averagePercentage: number;
 };
 
-interface AttributeCandidateType {
-  __typename: string;
-  attribute: string;
-  reason: string;
-  score: number;
-}
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -112,10 +105,10 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
     useState<SummaryQuestionType>();
 
-  const [attributeName, setAttributeName] = useState("");
-  const [reason, setReason] = useState("");
-  const [attributes, setAttributes] = useState<AttributeCandidateType[]>([]);
-  const [candidates, setCandidates] = useState([]);
+  const [attributeName, setAttributeName] = useState<string | undefined | null>(
+    ""
+  );
+  const [reason, setReason] = useState<string | null>("");
 
   console.log("member = ", member);
 
@@ -201,17 +194,6 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   //   },
   // });
 
-  //Delete later!!!!!!
-  const objectIamWorkingWithDeleteLater = [
-    {
-      __typename: "attributeCandidateType",
-      attribute: "Senior Frontend Developer",
-      reason:
-        "The candidate has 7 years of experience in the software development industry, with hands-on experience in both front-end and back-end technologies. They have a solid track record and possess a deep understanding of React, TypeScript, API GraphQL, and TailwindCSS, which are key attributes for a Senior Frontend Developer. Additionally, their experience in building, improving, and maintaining systems at Bullhu demonstrates their proficiency in product development.",
-      score: 9,
-    },
-  ];
-  // type radiochartType = {
   //   memberInfo: {
   //     discordName: string;
   //     attributes: {
@@ -316,9 +298,9 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   // console.log("radioChart = ", radioChart);
 
   useEffect(() => {
-    if (member.keyAttributes != undefined) {
-      setAttributeName(member?.keyAttributes[0]?.attribute);
-      setReason(member?.keyAttributes[0]?.reason);
+    if (member?.keyAttributes != undefined) {
+      setAttributeName(member?.keyAttributes[0]?.attribute ?? null);
+      setReason(member?.keyAttributes[0]?.reason ?? null);
     }
   }, [member]);
 
@@ -420,8 +402,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           </div>
         </div> */}
         <div className="ml-1 space-y-2">
-          {member.futurePotential
-            ? member.futurePotential.map((item, index) => (
+          {member?.futurePotential
+            ? member?.futurePotential.map((item: any, index: number) => (
                 <SkillSlider
                   key={index}
                   name={item.attribute}
