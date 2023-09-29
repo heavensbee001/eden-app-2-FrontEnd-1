@@ -1,3 +1,4 @@
+import { gql, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
@@ -17,6 +18,20 @@ import { useContext } from "react";
 import { IconPickerItem } from "react-fa-icon-picker";
 
 import type { NextPageWithLayout } from "../../_app";
+
+export const FIND_POSITIONS_OF_COMMUNITY = gql`
+  query Query($fields: findPositionsOfCommunityInput) {
+    findPositionsOfCommunity(fields: $fields) {
+      _id
+      name
+      status
+      company {
+        _id
+        name
+      }
+    }
+  }
+`;
 
 const FAKE_MATCHSTIMATES = [
   {
@@ -38,6 +53,17 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { company } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
+  const { data: findPositionsOfCommunityData } = useQuery(
+    FIND_POSITIONS_OF_COMMUNITY,
+    {
+      variables: {
+        fields: {
+          communityID: company?._id,
+        },
+      },
+      skip: !company,
+    }
+  );
 
   return (
     <>
@@ -104,13 +130,13 @@ const HomePage: NextPageWithLayout = () => {
         <section className="">
           <h3 className="mb-2">Open opportunities</h3>
           <div className="w-full -m-2">
-            {company
-              ?.positions!.filter(
-                (_position) =>
+            {findPositionsOfCommunityData
+              ?.findPositionsOfCommunity!.filter(
+                (_position: Position) =>
                   _position?.status !== "ARCHIVED" &&
                   _position?.status !== "DELETED"
               )
-              ?.map((position: Maybe<Position>, index) => {
+              ?.map((position: Maybe<Position>, index: number) => {
                 const randMatchstimate =
                   FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
 
@@ -153,7 +179,7 @@ const HomePage: NextPageWithLayout = () => {
                             ) : (
                               <>
                                 <p className="mb-4">
-                                  {`Sign up to the ${company.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
+                                  {`Sign up to the ${position?.company?.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
                                 </p>
                                 <Button
                                   onClick={() => {
@@ -277,11 +303,7 @@ const HomePage: NextPageWithLayout = () => {
                 className="border border-edenGray-500 text-edenGreen-600"
               />
             ))}
-          {company?.positions!.filter(
-            (_position) =>
-              _position?.status !== "ARCHIVED" &&
-              _position?.status !== "DELETED"
-          ) &&
+          {company?.positions &&
             company?.positions!.filter(
               (_position) =>
                 _position?.status !== "ARCHIVED" &&
