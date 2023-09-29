@@ -1,3 +1,4 @@
+import { gql, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
@@ -17,6 +18,20 @@ import { useContext } from "react";
 import { IconPickerItem } from "react-fa-icon-picker";
 
 import type { NextPageWithLayout } from "../../_app";
+
+export const FIND_POSITIONS_OF_COMMUNITY = gql`
+  query Query($fields: findPositionsOfCommunityInput) {
+    findPositionsOfCommunity(fields: $fields) {
+      _id
+      name
+      status
+      company {
+        _id
+        name
+      }
+    }
+  }
+`;
 
 const FAKE_MATCHSTIMATES = [
   {
@@ -38,6 +53,17 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { company } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
+  const { data: findPositionsOfCommunityData } = useQuery(
+    FIND_POSITIONS_OF_COMMUNITY,
+    {
+      variables: {
+        fields: {
+          communityID: company?._id,
+        },
+      },
+      skip: !company,
+    }
+  );
 
   return (
     <>
@@ -71,9 +97,9 @@ const HomePage: NextPageWithLayout = () => {
           </p>
         </section>
       </div>
-      <section className="w-full mb-4">
+      <section className="mb-4 w-full">
         <div
-          className="bg-edenGreen-600 w-full h-48 bg-cover bg-center"
+          className="bg-edenGreen-600 h-48 w-full bg-cover bg-center"
           style={{
             backgroundImage:
               company?.slug === "D_D" || company?.slug === "tesla10"
@@ -84,11 +110,11 @@ const HomePage: NextPageWithLayout = () => {
       </section>
       <div className="w-[67%] px-8">
         {!currentUser && (
-          <section className="bg-edenPink-100 rounded-md p-4 mb-4">
+          <section className="bg-edenPink-100 mb-4 rounded-md p-4">
             <h2 className="text-edenGreen-600 mb-2">
               Login to chat with Eden!
             </h2>
-            <p className="mb-4 text-sm text-edenGray-900">
+            <p className="text-edenGray-900 mb-4 text-sm">
               Login to unleash the power of Eden - she can understand you and
               become your no1 companion in helping you find your dream job
             </p>
@@ -103,21 +129,21 @@ const HomePage: NextPageWithLayout = () => {
         )}
         <section className="">
           <h3 className="mb-2">Open opportunities</h3>
-          <div className="w-full -m-2">
-            {company
-              ?.positions!.filter(
-                (_position) =>
+          <div className="-m-2 w-full">
+            {findPositionsOfCommunityData
+              ?.findPositionsOfCommunity!.filter(
+                (_position: Position) =>
                   _position?.status !== "ARCHIVED" &&
                   _position?.status !== "DELETED"
               )
-              ?.map((position: Maybe<Position>, index) => {
+              ?.map((position: Maybe<Position>, index: number) => {
                 const randMatchstimate =
                   FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
 
                 return (
                   <div
                     key={index}
-                    className="bg-white relative cursor-pointer transition-all w-[calc(50%-2rem)] min-w-[20rem] inline-block m-2 p-4 border border-edenGray-100 rounded-md align-top"
+                    className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white p-4 align-top transition-all"
                     onClick={() => {
                       if (currentUser)
                         router.push(`/interview/${position?._id}`);
@@ -132,7 +158,7 @@ const HomePage: NextPageWithLayout = () => {
                           <div className="w-60 pt-2">
                             <div
                               className={classNames(
-                                "absolute top-2 right-2 border rounded-sm px-2",
+                                "absolute right-2 top-2 rounded-sm border px-2",
                                 currentUser
                                   ? "border-edenGreen-500"
                                   : "border-edenGray-500"
@@ -142,7 +168,7 @@ const HomePage: NextPageWithLayout = () => {
                                 className={classNames(
                                   currentUser
                                     ? "text-edenGreen-600"
-                                    : "text-edenGray-500 font-Unica font-normal px-2"
+                                    : "text-edenGray-500 font-Unica px-2 font-normal"
                                 )}
                               >
                                 {currentUser ? randMatchstimate.grade : "?"}
@@ -153,7 +179,7 @@ const HomePage: NextPageWithLayout = () => {
                             ) : (
                               <>
                                 <p className="mb-4">
-                                  {`Sign up to the ${company.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
+                                  {`Sign up to the ${position?.company?.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
                                 </p>
                                 <Button
                                   onClick={() => {
@@ -162,7 +188,7 @@ const HomePage: NextPageWithLayout = () => {
                                     });
                                   }}
                                   variant="secondary"
-                                  className="h-6 !py-0 px-2 flex justify-center items-center"
+                                  className="flex h-6 items-center justify-center !py-0 px-2"
                                 >
                                   Sign up
                                 </Button>
@@ -179,12 +205,12 @@ const HomePage: NextPageWithLayout = () => {
                         padding="0.5rem"
                         containerClassName="w-full"
                       >
-                        <div className="shadow bg-edenPink-200 rounded-full p-1 w-5 h-5">
-                          <EdenIconExclamation className="w-full h-full" />
+                        <div className="bg-edenPink-200 h-5 w-5 rounded-full p-1 shadow">
+                          <EdenIconExclamation className="h-full w-full" />
                         </div>
                       </EdenTooltip>
                     </div>
-                    <div className="absolute left-4 top-4 rounded-md h-12 w-12 bg-edenPink-400 flex items-center justify-center pl-px mr-4">
+                    <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
                       <IconPickerItem
                         icon={position?.icon || "FaCode"}
                         size={"2rem"}
@@ -192,13 +218,13 @@ const HomePage: NextPageWithLayout = () => {
                       />
                     </div>
                     <div className="pl-16">
-                      <p className="font-medium text-edenGray-900">
+                      <p className="text-edenGray-900 font-medium">
                         {position?.name}
                       </p>
                       <p className="text-edenGray-900">
                         {position?.company?.name}
                       </p>
-                      <p className="text-sm text-edenGray-900">
+                      <p className="text-edenGray-900 text-sm">
                         {position?.generalDetails?.officePolicy &&
                           position?.generalDetails?.officePolicy}
                         {position?.generalDetails?.contractType &&
@@ -206,7 +232,7 @@ const HomePage: NextPageWithLayout = () => {
                       </p>
                       {(!!position?.generalDetails?.yearlySalary ||
                         position?.generalDetails?.yearlySalary === 0) && (
-                        <p className="text-xs text-edenGray-500">
+                        <p className="text-edenGray-500 text-xs">
                           ${position?.generalDetails?.yearlySalary}
                         </p>
                       )}
@@ -217,14 +243,14 @@ const HomePage: NextPageWithLayout = () => {
           </div>
         </section>
       </div>
-      <section className="absolute top-48 right-8 w-[calc(33%-4rem)] bg-edenGreen-100 p-4 rounded-md">
+      <section className="bg-edenGreen-100 absolute right-8 top-48 w-[calc(33%-4rem)] rounded-md p-4">
         {/* @TODO this link needs a better logics. It's just a placeholder */}
         <Link href={"/subscription"}>
           <Button variant="secondary" className="float-right">
             Post a magic job
           </Button>
         </Link>
-        <div className="pt-16 pb-4">
+        <div className="pb-4 pt-16">
           <div className="mb-4">
             {company?.name ? (
               <h2 className="text-edenGreen-600 mb-2">{`${company?.name}`}</h2>
@@ -234,19 +260,19 @@ const HomePage: NextPageWithLayout = () => {
               </h2>
             )}
             {!!company?.description && (
-              <p className="text-xs mb-4 whitespace-pre-wrap">
+              <p className="mb-4 whitespace-pre-wrap text-xs">
                 {company?.description}
               </p>
             )}
-            <div className="bg-white rounded-md px-3 py-2 mr-2 inline-block leading-none text-edenGray-700">
+            <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
               <p className="text-xs">Pre-vetted Candidates</p>
-              <span className="font-medium text-sm leading-none text-edenGray-900">
+              <span className="text-edenGray-900 text-sm font-medium leading-none">
                 {company?.candidatesNum}
               </span>
             </div>
-            <div className="bg-white rounded-md px-3 py-2 mr-2 inline-block leading-none text-edenGray-700">
+            <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
               <p className="text-xs">Combined Skills</p>
-              <span className="font-medium text-sm leading-none text-edenGray-900">
+              <span className="text-edenGray-900 text-sm font-medium leading-none">
                 {company?.skillsNum}
               </span>
             </div>
@@ -274,14 +300,10 @@ const HomePage: NextPageWithLayout = () => {
                 key={index}
                 text={position?.name || ""}
                 cutText={22}
-                className="border border-edenGray-500 text-edenGreen-600"
+                className="border-edenGray-500 text-edenGreen-600 border"
               />
             ))}
-          {company?.positions!.filter(
-            (_position) =>
-              _position?.status !== "ARCHIVED" &&
-              _position?.status !== "DELETED"
-          ) &&
+          {company?.positions &&
             company?.positions!.filter(
               (_position) =>
                 _position?.status !== "ARCHIVED" &&
