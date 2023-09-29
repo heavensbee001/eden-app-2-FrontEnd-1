@@ -362,14 +362,23 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
           cards
         </p>
       </div> */}
-      <div className="flex flex-col items-start">
-        {member?.user ? (
-          <>
-            <h3>{attributeName}</h3>
-            <span>{reason}</span>
-          </>
-        ) : null}
+
+      <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
+        <div className="mb-2 flex items-center">
+          <EdenIconExclamation className="mr-1 h-5 w-5  " />
+          <h2 className="text-edenGreen-600 mr-2">Eden&apos;s</h2>{" "}
+          <p>summary of the candidate</p>
+        </div>
+        <div className="flex flex-col items-start">
+          {member?.user ? (
+            <>
+              <h3>{attributeName}</h3>
+              <span>{reason}</span>
+            </>
+          ) : null}
+        </div>
       </div>
+
       <div className="flex flex-col">
         <div className="border-edenGreen-300 mt-4 flex justify-between border-t pt-4">
           <h2 className="text-edenGreen-500  ml-1">Potential</h2>
@@ -414,7 +423,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         </div>
       </div>
       <div>
-        <div className="border-edenGreen-300 mt-4 flex justify-between border-t pt-4">
+        <div className="border-edenGreen-300  flex justify-between border-t pt-4">
           <h2 className="text-edenGreen-500 mb-3 ml-1 ">Noteworthy</h2>
         </div>
         <div></div>
