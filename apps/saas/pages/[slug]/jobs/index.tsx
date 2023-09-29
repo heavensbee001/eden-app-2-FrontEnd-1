@@ -25,6 +25,7 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       _id
       name
       status
+      icon
       company {
         _id
         name
@@ -120,7 +121,8 @@ const HomePage: NextPageWithLayout = () => {
             </p>
             <Button
               onClick={() => {
-                signIn("google", { callbackUrl: router.asPath });
+                // signIn("google", { callbackUrl: router.asPath });
+                router.push("/signup");
               }}
             >
               Sign up
