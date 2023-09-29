@@ -2,6 +2,7 @@
 import {
   Badge,
   CandidateTypeSkillMatch,
+  EdenIconExclamation,
   // LongText,
   NodeList,
   // SocialMediaComp,
@@ -48,12 +49,16 @@ export const InfoTab: FC<Props> = ({
           </div> */}
           {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
             <div className="">
-              <h2 className="text-edenGreen-600 mb-3">
-                Eden&apos;s{"  "}
-                <span className="font-Unica text-edenGray-900 text-md font-normal">
-                  first impression
-                </span>
-              </h2>
+              <div className="mb-3 flex items-center">
+                <EdenIconExclamation className="mr-1 h-5 w-5  " />
+
+                <h2 className="text-edenGreen-600 ">
+                  Eden&apos;s{"  "}
+                  <span className="font-Unica text-edenGray-900 text-md font-normal">
+                    first impression
+                  </span>
+                </h2>
+              </div>
 
               {candidate?.analysisCandidateEdenAI?.background?.content}
             </div>
