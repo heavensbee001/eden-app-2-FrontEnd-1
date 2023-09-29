@@ -694,12 +694,12 @@ const TrainAiPage: NextPageWithLayout = () => {
                   }
                 >
                   <div className="mx-auto h-full max-w-2xl">
-                    <h2 className="mb-4">Complete Checks & Balances List</h2>
+                    {/* <h2 className="mb-4">Complete Checks & Balances List</h2>
                     <p className="text-edenGray-500 mb-8 text-sm">
                       {
                         "Here’s a list of all the must & nice to have. Feel free to edit any line "
                       }
-                    </p>
+                    </p> */}
                     <ProfileQuestionsContainer
                       onChange={(val) => {
                         setValue("position.positionsRequirements.content", val);
@@ -735,14 +735,14 @@ const TrainAiPage: NextPageWithLayout = () => {
                   }
                 >
                   <div className="relative mx-auto h-full max-w-2xl">
-                    <h2 className="mb-4 text-xl font-medium">
+                    {/* <h2 className="mb-4 text-xl font-medium">
                       {"Eden's Seed Interview Questions"}
                     </h2>
                     <p className="mb-8 text-sm leading-tight text-gray-500">
                       {
                         "Here’s a list of all the must & nice to have. Feel free to edit any line"
                       }
-                    </p>
+                    </p> */}
                     <CreateQuestions
                       onChange={(data: QuestionType[]) => {
                         setValue("position.questionsToAsk", data);
@@ -776,11 +776,11 @@ const TrainAiPage: NextPageWithLayout = () => {
                     </Button>
                   }
                 >
-                  <div className="mx-auto max-w-3xl text-center">
-                    <h2 className="text-xl font-medium">
+                  <div className="mx-auto max-w-[40rem]">
+                    <h2 className="text-xl font-medium px-8">
                       Final Interview Details
                     </h2>
-                    <p className="text-sm text-zinc-400">
+                    <p className="text-sm text-zinc-400 px-8">
                       {
                         "All done, this is the final step. Fill in some quick information and we're off!"
                       }
