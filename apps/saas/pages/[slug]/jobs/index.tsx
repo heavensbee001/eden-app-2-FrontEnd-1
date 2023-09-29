@@ -121,7 +121,8 @@ const HomePage: NextPageWithLayout = () => {
             </p>
             <Button
               onClick={() => {
-                signIn("google", { callbackUrl: router.asPath });
+                // signIn("google", { callbackUrl: router.asPath });
+                router.push("/signup");
               }}
             >
               Sign up
