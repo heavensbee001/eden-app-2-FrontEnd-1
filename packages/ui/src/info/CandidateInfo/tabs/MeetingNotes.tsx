@@ -57,16 +57,16 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
       {meetingNotesData
         ? meetingNotesData?.map((d, i) => (
             <div className="mb-10" key={i}>
-              <div className="border-edenGreen-300 flex justify-between border-b px-4">
+              <div className="border-edenGreen-300 flex justify-between border-b px-1">
                 <h3 className="text-edenGreen-500 mb-3">{d.categoryName}</h3>
               </div>
               <ul className="list-none space-y-1">
                 {d.reason.map((r, j) => (
                   <li
                     key={j}
-                    className="border-edenGray-100 w-full rounded-md border-b px-4"
+                    className="border-edenGray-100 w-full rounded-md border-b px-1"
                   >
-                    <div className="flex w-full columns-2 items-center justify-between py-4">
+                    <div className="flex w-full columns-2 items-center justify-between py-1">
                       <p className="w-full pr-4 text-sm">
                         {r.replace("- ", "")}
                       </p>

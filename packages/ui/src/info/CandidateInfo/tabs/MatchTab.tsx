@@ -371,8 +371,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         ) : null}
       </div>
       <div className="flex flex-col">
-        <div className="border-edenGreen-300 mt-4 flex justify-between border-t">
-          <h2 className="text-edenGreen-500 mb-3 ml-1">Potential</h2>
+        <div className="border-edenGreen-300 mt-4 flex justify-between border-t pt-4">
+          <h2 className="text-edenGreen-500  ml-1">Potential</h2>
         </div>
 
         {/* <div className="ml-1 space-y-2">
@@ -401,7 +401,7 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
             </div>
           </div>
         </div> */}
-        <div className="ml-1 space-y-2">
+        <div className="ml-1 mt-2 space-y-4 ">
           {member?.futurePotential
             ? member?.futurePotential.map((item: any, index: number) => (
                 <SkillSlider
@@ -414,8 +414,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
         </div>
       </div>
       <div>
-        <div className="border-edenGreen-300 mt-4 flex justify-between border-t">
-          <h2 className="text-edenGreen-500 mb-3 ml-1">Noteworthy</h2>
+        <div className="border-edenGreen-300 mt-4 flex justify-between border-t pt-4">
+          <h2 className="text-edenGreen-500 mb-3 ml-1 ">Noteworthy</h2>
         </div>
         <div></div>
       </div>
