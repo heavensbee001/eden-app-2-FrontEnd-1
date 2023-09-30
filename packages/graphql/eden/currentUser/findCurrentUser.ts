@@ -13,6 +13,13 @@ export const FIND_CURRENTUSER = gql`
       interest
       timeZone
       location
+      companies {
+        company {
+          _id
+          name
+          slug
+        }
+      }
       conduct {
         telegramChatID
       }
