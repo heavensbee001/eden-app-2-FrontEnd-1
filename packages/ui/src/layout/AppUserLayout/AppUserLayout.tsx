@@ -23,6 +23,7 @@ export const AppUserLayout = ({
       <div className="">
         {/* <AppHeader logoLink={logoLink} inApp /> */}
         {router.pathname.includes("/jobs") ||
+        router.pathname.includes("/pricing") ||
         router.pathname.includes("/signup") ||
         router.pathname.includes("/interview") ||
         router.pathname.includes("/request-access") ? (
