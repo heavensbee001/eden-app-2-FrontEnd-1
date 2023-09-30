@@ -11,7 +11,6 @@ import {
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useContext } from "react";
@@ -65,6 +64,22 @@ const HomePage: NextPageWithLayout = () => {
       skip: !company,
     }
   );
+
+  const handlePostJobClick = () => {
+    if (!currentUser) {
+      signIn("google", {
+        callbackUrl: router.asPath,
+      });
+    } else if (
+      currentUser?.companies &&
+      currentUser?.companies[0] &&
+      currentUser?.companies[0].company?.slug
+    ) {
+      router.push(`/${currentUser?.companies[0].company?.slug}/dashboard`);
+    } else {
+      router.push(`/pricing?community=${company?._id}`);
+    }
+  };
 
   return (
     <>
@@ -246,12 +261,13 @@ const HomePage: NextPageWithLayout = () => {
         </section>
       </div>
       <section className="absolute top-48 right-8 w-[calc(33%-4rem)] bg-edenGreen-100 p-4 rounded-md">
-        {/* @TODO this link needs a better logics. It's just a placeholder */}
-        <Link href={"/subscription"}>
-          <Button variant="secondary" className="float-right">
-            Post a magic job
-          </Button>
-        </Link>
+        <Button
+          variant="secondary"
+          className="float-right"
+          onClick={handlePostJobClick}
+        >
+          Post a magic job
+        </Button>
         <div className="pt-16 pb-4">
           <div className="mb-4">
             {company?.name ? (

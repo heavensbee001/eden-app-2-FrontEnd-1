@@ -146,6 +146,7 @@ export type Company = {
   __typename?: "Company";
   _id?: Maybe<Scalars["ID"]>;
   candidatesNum?: Maybe<Scalars["Int"]>;
+  communitiesSubscribed?: Maybe<Array<Maybe<Company>>>;
   communitySubscribers?: Maybe<Array<Maybe<CommunitySubscribersType>>>;
   companySubscribersCommunity?: Maybe<Array<Maybe<Company>>>;
   description?: Maybe<Scalars["String"]>;
@@ -513,6 +514,7 @@ export type Mutation = {
   secondInterviewLetter?: Maybe<SecondInterviewLetterOutput>;
   storeLongTermMemory?: Maybe<StoreLongTermMemoryOutput>;
   storeLongTermMemorySummary?: Maybe<StoreLongTermMemorySummaryOutput>;
+  subscribeToCommunity?: Maybe<Company>;
   updateAnalysisEdenAICandidates?: Maybe<Array<Maybe<Position>>>;
   updateChatReply?: Maybe<Chats>;
   updateChatResult?: Maybe<Chats>;
@@ -919,6 +921,10 @@ export type MutationStoreLongTermMemorySummaryArgs = {
   fields?: InputMaybe<StoreLongTermMemorySummaryInput>;
 };
 
+export type MutationSubscribeToCommunityArgs = {
+  fields?: InputMaybe<SubscribeToCommunityInput>;
+};
+
 export type MutationUpdateAnalysisEdenAiCandidatesArgs = {
   fields?: InputMaybe<UpdateAnalysisEdenAiCandidatesInput>;
 };
@@ -1255,6 +1261,7 @@ export type Query = {
   findOneMemberToMembersGraph?: Maybe<Graph>;
   findPosition?: Maybe<Position>;
   findPositions?: Maybe<Array<Maybe<Position>>>;
+  findPositionsOfCommunity?: Maybe<Array<Maybe<Position>>>;
   findPrioritiesTrainEdenAI?: Maybe<FindPrioritiesTrainEdenAiOutput>;
   findProject?: Maybe<Project>;
   findProjectGraph?: Maybe<Graph>;
@@ -1537,6 +1544,10 @@ export type QueryFindPositionArgs = {
 
 export type QueryFindPositionsArgs = {
   fields?: InputMaybe<FindPositionsInput>;
+};
+
+export type QueryFindPositionsOfCommunityArgs = {
+  fields?: InputMaybe<FindPositionsOfCommunityInput>;
 };
 
 export type QueryFindPrioritiesTrainEdenAiArgs = {
@@ -3534,6 +3545,10 @@ export type FindPositionsInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
+export type FindPositionsOfCommunityInput = {
+  communityID?: InputMaybe<Scalars["String"]>;
+};
+
 export type FindPrioritiesTrainEdenAiInput = {
   positionID?: InputMaybe<Scalars["ID"]>;
 };
@@ -4762,6 +4777,11 @@ export type StyleEdgeIn = {
   color?: InputMaybe<Scalars["String"]>;
   distance?: InputMaybe<Scalars["Float"]>;
   strength?: InputMaybe<Scalars["Float"]>;
+};
+
+export type SubscribeToCommunityInput = {
+  communityID?: InputMaybe<Scalars["ID"]>;
+  companyID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type SummaryType = {
