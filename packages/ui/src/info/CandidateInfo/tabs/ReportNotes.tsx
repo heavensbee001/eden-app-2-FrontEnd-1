@@ -1,4 +1,8 @@
-import { CandidateTypeSkillMatch, EdenTooltipAsk } from "@eden/package-ui";
+import {
+  CandidateTypeSkillMatch,
+  EdenIconExclamation,
+  EdenTooltipAsk,
+} from "@eden/package-ui";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 
@@ -122,12 +126,15 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
           </div>
           {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
             <div className="">
-              <h2 className="text-edenGreen-600 mb-3">
-                Eden&apos;s{"  "}
-                <span className="font-Unica text-edenGray-900 text-md font-normal">
-                  thoughts on fit
-                </span>
-              </h2>
+              <div className="mb-3 flex items-center">
+                <EdenIconExclamation className="mr-1 h-5 w-5  " />
+                <h2 className="text-edenGreen-600 ">
+                  Eden&apos;s{"  "}
+                  <span className="font-Unica text-edenGray-900 text-md font-normal">
+                    thoughts on fit
+                  </span>
+                </h2>
+              </div>
 
               {candidate?.analysisCandidateEdenAI?.fitRequirements?.content}
             </div>
@@ -186,7 +193,7 @@ export const ReportNotes: FC<Props> = ({ member, candidate }) => {
                                   ? "..."
                                   : "")}
                             </p>
-                            <div className="relative border-edenGray-100 -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
+                            <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                               <span className={color}>{letter}</span>
                               <EdenTooltipAsk
                                 item={item}

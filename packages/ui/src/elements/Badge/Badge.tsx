@@ -46,7 +46,7 @@ export const Badge = ({
       <div
         data-tip={isHover}
         data-for={`badgeTip-${text}`}
-        className={`mb-1 mr-2 inline-block cursor-default text-sm rounded-sm last:mb-0 last:mr-0 ${className}`}
+        className={`mb-1 mr-2 inline-block cursor-default rounded-sm text-sm last:mb-0 last:mr-0 ${className}`}
         style={{ background: color ? color : `rgba(${colorRGB})` }}
         onMouseEnter={() => {
           setIsHover(`${text}`);

@@ -1,6 +1,7 @@
 import {
   CandidateTypeSkillMatch,
   DynamicSearchMemberGraph,
+  EdenIconExclamation,
 } from "@eden/package-ui";
 
 interface Props {
@@ -38,13 +39,15 @@ export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
           )}
           {candidate?.analysisCandidateEdenAI?.skills?.content && (
             <div className="">
-              <h2 className="text-edenGreen-600 mb-3">
-                Eden&apos;s{"  "}
-                <span className="font-Unica text-edenGray-900 text-md font-normal">
-                  thoughts on skills
-                </span>
-              </h2>
-
+              <div className="mb-3 flex items-center">
+                <EdenIconExclamation className="mr-1 h-5 w-5  " />
+                <h2 className="text-edenGreen-600">
+                  Eden&apos;s{"  "}
+                  <span className="font-Unica text-edenGray-900 text-md font-normal">
+                    thoughts on skills
+                  </span>
+                </h2>
+              </div>
               {candidate?.analysisCandidateEdenAI?.skills?.content}
             </div>
           )}

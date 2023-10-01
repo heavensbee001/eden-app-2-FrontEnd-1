@@ -148,8 +148,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1272,7 +1273,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   PositionStatus.Deleted ? (
                     <GiHeartWings
                       size={20}
-                      className="mb-px mr-1 -ml-[2px] inline"
+                      className="-ml-[2px] mb-px mr-1 inline"
                     />
                   ) : (
                     <TbTrashXFilled size={16} className="mb-1 mr-1 inline" />

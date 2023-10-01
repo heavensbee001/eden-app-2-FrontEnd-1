@@ -5,6 +5,7 @@ import {
   Card,
   EdenIconExclamation,
   EdenTooltip,
+  MeetingNotes,
   Modal,
   // PopoverScoreReason,
   // TeamAttributeChart,
@@ -16,6 +17,8 @@ import { FC, useEffect, useState } from "react";
 import { GoGraph } from "react-icons/go";
 import { TbViewfinderOff } from "react-icons/tb";
 
+import { SkillSlider } from "../../../elements/SkillSlider/SkillSlider";
+
 const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
   query ($fields: memberPieChartNodeCategoriesInput) {
     memberPieChartNodeCategories(fields: $fields) {
@@ -24,6 +27,30 @@ const MEMBER_PIE_CHART_NODE_CATEGORY = gql`
     }
   }
 `;
+
+// const FIND_POSITION = gql`
+//   query ($fields: findPositionInput) {
+//     findPosition(fields: $fields) {
+//       _id
+//       candidates {
+//         user {
+//           _id
+//           discordName
+//         }
+//         keyAttributes {
+//           attribute
+//           reason
+//           score
+//         }
+//         futurePotential {
+//           attribute
+//           reason
+//           score
+//         }
+//       }
+//     }
+//   }
+// `;
 
 // const MEMBER_RADIO_CHART_CHARACTER_ATTRIBUTES = gql`
 //   query ($fields: memberRadioChartCharacterAttributesInput) {
@@ -77,6 +104,15 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
 
   const [summaryQuestionSelected, setSummaryQuestionSelected] =
     useState<SummaryQuestionType>();
+
+  const [attributeName, setAttributeName] = useState<string | undefined | null>(
+    ""
+  );
+  const [reason, setReason] = useState<string | null>("");
+
+  const [reasonForPotential, setReasonForPotential] = useState<string | null>(
+    ""
+  );
 
   console.log("member = ", member);
 
@@ -143,7 +179,25 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     }
   );
 
-  // type radiochartType = {
+  // const {} = useQuery(FIND_POSITION, {
+  //   variables: {
+  //     fields: {
+  //       _id: "650d94b8f917d796d10bd335",
+  //     },
+  //   },
+  //   onCompleted: (data) => {
+  //     const candidatesData = data.findPosition.candidates;
+
+  //     console.log("data from onPosition: ", data.findPosition.candidates);
+  //     setCandidates(data.findPosition.candidates);
+  //     setAttributes(data.findPosition.candidates[0].futurePotential);
+  //     setAttributeName(
+  //       data.findPosition.candidates[0].keyAttributes[0].attribute
+  //     );
+  //     setReason(data.findPosition.candidates[0].keyAttributes[0].reason);
+  //   },
+  // });
+
   //   memberInfo: {
   //     discordName: string;
   //     attributes: {
@@ -248,6 +302,13 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   // console.log("radioChart = ", radioChart);
 
   useEffect(() => {
+    if (member?.keyAttributes != undefined) {
+      setAttributeName(member?.keyAttributes[0]?.attribute ?? null);
+      setReason(member?.keyAttributes[0]?.reason ?? null);
+    }
+  }, [member]);
+
+  useEffect(() => {
     const dataBarChartPr: BarChartQuestions[] = [];
     const dataBarChartMaxLength: number = 6;
 
@@ -293,26 +354,97 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
     //   <div className={`mx-auto mb-2`}>
 
     <div className="">
-      <div className="mb-10">
+      {/* <div className="mb-10">
         <div className="mb-4 px-4">
           <h3 className="text-edenGreen-600">
             Seed Questions that were asked on the Interview 🙋
           </h3>
         </div>
-        <p className="text-edenGray-500 text-sm px-4">
+        <p className="text-edenGray-500 px-4 text-sm">
           Here you can find the questions that were asked on the interview
           together with the score, reason and actual answer if you click the
           cards
         </p>
-      </div>
+      </div> */}
+      {member?.futurePotential?.length ? (
+        <>
+          <div className="bg-edenPink-100 mb-8 min-h-[3rem] rounded-md p-4">
+            <div className="mb-2 flex items-center">
+              <EdenIconExclamation className="mr-1 h-5 w-5  " />
+              <h2 className="text-edenGreen-600 mr-2">Eden&apos;s</h2>{" "}
+              <p>summary of the candidate</p>
+            </div>
+            <div className="flex flex-col items-start">
+              <>
+                <h3>{attributeName}</h3>
+                <span>{reason}</span>
+              </>
+            </div>
+          </div>
 
-      <div>
+          <div className="flex flex-col">
+            <div className="border-edenGreen-300 mt-4 flex justify-between border-t pt-4">
+              <h2 className="text-edenGreen-500  ml-1">Potential</h2>
+            </div>
+
+            {/* <div className="ml-1 space-y-2">
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-[5px] w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-[5px] w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-[5px] w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+          <div className="relative flex items-center space-x-2">
+            <h3>Proficient in other front-end frameworks</h3>
+            <div className="relative h-[5px] w-52 rounded-lg bg-gray-600">
+              <div className="absolute left-1/4 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500"></div>
+            </div>
+          </div>
+        </div> */}
+
+            <div className="ml-1 mt-2  ">
+              {member?.futurePotential.map((item: any, index: number) => (
+                <SkillSlider
+                  key={index}
+                  name={item.attribute}
+                  score={item.score}
+                  reasonForPotential={item.reason}
+                  index={index}
+                />
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="border-edenGreen-300  flex justify-between border-t pt-4">
+              <h2 className="text-edenGreen-500 mb-3 ml-1 ">Noteworthy</h2>
+            </div>
+          </div>
+        </>
+      ) : null}
+
+      {/* <div className="flex items-center">
+        <span className="text-xl font-bold text-gray-800">Hello</span>
+        <span className="text-lg italic text-blue-500"> World!</span>
+      </div> */}
+      {/* <div>
         <ul className="list-none space-y-1">
           {summaryQuestions
             ? summaryQuestions.map((item, index) => (
                 <li
                   key={index}
-                  className="w-full cursor-pointer px-4 rounded-md border-b border-edenGray-100"
+                  className="border-edenGray-100 w-full cursor-pointer rounded-md border-b px-4"
                   onClick={() => {
                     setSummaryQuestionSelected(item);
                     if (document) {
@@ -326,15 +458,15 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 >
                   <div className="">
                     <div className="flex w-full py-4">
-                      <p className="w-3/4 text-gray-900 text-sm">
+                      <p className="w-3/4 text-sm text-gray-900">
                         {item.questionContentSmall?.replace(".", "") ||
                           item.questionContent?.replace(".", "")}
                       </p>
                       <div className="ml-auto flex items-center p-2">
                         {/* <div className="hidden text-[#12A321] text-[#8CE136] text-[#E40000] text-[#FF6847] text-[#FFCF25]"></div> */}
-                        <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
+      {/* <div className="hidden text-[#00462C] text-[#19563F] text-[#7FA294] text-[#B2C7BF] text-[#F5C7DE]"></div>
                         {item.score ? (
-                          <div className="relative px-4 -my-4 h-8 rounded-[0.25rem] flex items-center justify-center border border-edenGray-100">
+                          <div className="border-edenGray-100 relative -my-4 flex h-8 items-center justify-center rounded-[0.25rem] border px-4">
                             <p
                               className={classNames(
                                 "text-2xs font-bold leading-tight",
@@ -360,8 +492,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                                 borderColor="#e5e7eb"
                                 padding="0.5rem"
                               >
-                                <div className="bg-edenPink-200 rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
-                                  <EdenIconExclamation className="w-full h-full" />
+                                <div className="bg-edenPink-200 absolute -right-2 -top-1 h-5 w-5 rounded-full p-1">
+                                  <EdenIconExclamation className="h-full w-full" />
                                 </div>
                               </EdenTooltip>
                             )}
@@ -445,9 +577,8 @@ export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
                 </li>
               ))
             : null}
-        </ul>
-      </div>
-
+        </ul> */}
+      {/* </div> */}
       {/* <div className="mb-8 grid grid-cols-12 border-[1px] bg-white pt-2"> */}
       {/* <div className="col-span-2"></div>
         <div className="col-span-8">
