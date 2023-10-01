@@ -54,35 +54,29 @@ export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
 
   return (
     <>
-      <div className="">
-        <div className="">
-          {meetingNotesData
-            ? meetingNotesData?.map((d, i) => (
-                <div className="mb-10" key={i}>
-                  <div className="flex justify-between px-4 border-b border-edenGreen-300">
-                    <h3 className="mb-3 text-edenGreen-500">
-                      {d.categoryName}
-                    </h3>
-                  </div>
-                  <ul className="list-none space-y-1">
-                    {d.reason.map((r, j) => (
-                      <li
-                        key={j}
-                        className="w-full px-4 rounded-md border-b border-edenGray-100"
-                      >
-                        <div className="flex w-full py-4 columns-2 items-center justify-between">
-                          <p className="text-sm pr-4 w-full">
-                            {r.replace("- ", "")}
-                          </p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))
-            : null}
-        </div>
-      </div>
+      {meetingNotesData
+        ? meetingNotesData?.map((d, i) => (
+            <div className="mb-10" key={i}>
+              <div className="border-edenGreen-300 flex justify-between border-b px-1">
+                <h3 className="text-edenGreen-500 mb-3">{d.categoryName}</h3>
+              </div>
+              <ul className="list-none space-y-1">
+                {d.reason.map((r, j) => (
+                  <li
+                    key={j}
+                    className="border-edenGray-100 w-full rounded-md border-b px-1"
+                  >
+                    <div className="flex w-full columns-2 items-center justify-between py-1">
+                      <p className="w-full pr-4 text-sm">
+                        {r.replace("- ", "")}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        : null}
     </>
   );
 };

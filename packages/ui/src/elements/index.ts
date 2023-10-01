@@ -28,6 +28,7 @@ export * from "./SelectBoxNode";
 export * from "./SelectList";
 export * from "./SelectNodes";
 export * from "./SelectNodesBox";
+export * from "./SkillSlider";
 export * from "./SwitchButton";
 export * from "./TextArea";
 export * from "./TextField";

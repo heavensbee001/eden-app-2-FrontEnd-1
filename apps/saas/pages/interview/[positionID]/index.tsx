@@ -562,11 +562,11 @@ const ApplicationStepContainer = ({
             <h1 className="text-edenGreen-600">
               Before you dive into the interview
             </h1>
-            <p className="text-edenGray-900 text-sm mb-10">
+            <p className="text-edenGray-900 mb-10 text-sm">
               A couple of quick notes to set you up for success
             </p>
             <section
-              className="bg-edenPink-100 relative mb-2 rounded-sm p-4 cursor-pointer"
+              className="bg-edenPink-100 relative mb-2 cursor-pointer rounded-sm p-4"
               onClick={() =>
                 setOpenSections({
                   ...openSections,
@@ -602,7 +602,7 @@ const ApplicationStepContainer = ({
               </p>
             </section>
             <section
-              className="border-edenGreen-100 relative mb-2 border-b p-4 cursor-pointer"
+              className="border-edenGreen-100 relative mb-2 cursor-pointer border-b p-4"
               onClick={() =>
                 setOpenSections({
                   ...openSections,
@@ -638,7 +638,7 @@ const ApplicationStepContainer = ({
               </p>
             </section>
             <section
-              className="border-edenGreen-100 relative mb-2 border-b p-4 cursor-pointer"
+              className="border-edenGreen-100 relative mb-2 cursor-pointer border-b p-4"
               onClick={() =>
                 setOpenSections({
                   ...openSections,

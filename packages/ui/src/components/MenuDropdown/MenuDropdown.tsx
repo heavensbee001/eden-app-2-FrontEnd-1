@@ -22,7 +22,7 @@ export const MenuDropdown = ({
     <>
       <div>
         <div
-          className="hover:bg-edenGray-100 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+          className="hover:bg-edenGray-100 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full"
           onClick={() => setOpen(!open)}
         >
           {clickableElement}
@@ -30,7 +30,7 @@ export const MenuDropdown = ({
 
         <ul
           className={classNames(
-            "z-40 rounded-sm style-none border-box bg-white border-edenGray-100 w-[50vh] absolute right-0 overflow-hidden transition-all duration-200 ease-in-out",
+            "style-none border-box border-edenGray-100 absolute right-0 z-40 w-[50vh] overflow-hidden rounded-sm bg-white transition-all duration-200 ease-in-out",
             open ? "max-h-[50vh] border" : "max-h-0",
             positionY === "top" ? "bottom-8" : "top-8",
             positionX === "right" ? "!left-0" : ""
@@ -43,7 +43,7 @@ export const MenuDropdown = ({
       </div>
       {open && (
         <div
-          className="z-30 fixed w-screen h-screen top-0 left-0"
+          className="fixed left-0 top-0 z-30 h-screen w-screen"
           onClick={(e) => {
             e.stopPropagation();
             setOpen(false);

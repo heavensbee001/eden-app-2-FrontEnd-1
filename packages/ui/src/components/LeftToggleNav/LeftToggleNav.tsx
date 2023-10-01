@@ -47,8 +47,9 @@ export const LeftToggleNav = ({
 
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
-  const [unwrappedPosition, setUnwrappedPosition] =
-    useState<string | null>(null);
+  const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
+    null
+  );
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
