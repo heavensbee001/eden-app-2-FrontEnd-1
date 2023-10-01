@@ -2,7 +2,6 @@ import { AppUserLayout } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -46,9 +45,14 @@ const SignupCommunity: NextPageWithLayout = () => {
   return (
     <>
       <div className="min-h-screen flex items-center justify-center flex-col">
-        <div className="mb-8">
-          <h2 className="text-edenGreen-600">Join D_D as a:</h2>
-          <select name="" id="" onChange={handleSelect}>
+        <div className="mb-8 bg-edenPink-300 max-w-[40rem] w-full p-8 flex justify-center">
+          <h2 className="text-edenGreen-600 mr-4">Join D_D as a:</h2>
+          <select
+            name=""
+            id=""
+            onChange={handleSelect}
+            className="bg-white rounded-md px-2 outline-none"
+          >
             <option value="" className="text-edenGray-500" disabled selected>
               Select your position...
             </option>
@@ -63,7 +67,7 @@ const SignupCommunity: NextPageWithLayout = () => {
           <p>
             If you are a hiring manager login{" "}
             <Link
-              href={"/create-company"}
+              href={"/D_D/jobs"}
               className="underline hover:text-edenGray-500"
             >
               here
@@ -83,18 +87,7 @@ export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
-
   const url = ctx.req.url;
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/?redirect=/signup`,
-        permanent: false,
-      },
-    };
-  }
 
   return {
     props: { key: url },

@@ -261,13 +261,15 @@ const HomePage: NextPageWithLayout = () => {
         </section>
       </div>
       <section className="absolute top-48 right-8 w-[calc(33%-4rem)] bg-edenGreen-100 p-4 rounded-md">
-        <Button
-          variant="secondary"
-          className="float-right"
-          onClick={handlePostJobClick}
-        >
-          Post a magic job
-        </Button>
+        {company && (
+          <Button
+            variant="secondary"
+            className="float-right"
+            onClick={handlePostJobClick}
+          >
+            {!currentUser ? "Login to post a job" : "Post a magic job"}
+          </Button>
+        )}
         <div className="pt-16 pb-4">
           <div className="mb-4">
             {company?.name ? (
