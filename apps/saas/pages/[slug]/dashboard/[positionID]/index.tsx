@@ -117,7 +117,7 @@ type relevantNodeObj = {
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
   // eslint-disable-next-line no-unused-vars
-  const { positionID, slug, listID } = router.query;
+  const { positionID, slug, listID, panda } = router.query;
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
 
@@ -1302,30 +1302,34 @@ const PositionCRM: NextPageWithLayout = () => {
               <HiOutlineLink className="mr-1" />
               interview link
             </Button> */}
-            <Button
-              size="sm"
-              className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white opacity-0 hover:border-[#7A98E5] hover:bg-[#7A98E5] hover:opacity-10"
-              variant="default"
-              onClick={handleCalculateSkillScore}
-            >
-              Calculate Skill Score
-            </Button>
-            <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] opacity-0 duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:opacity-10 hover:shadow-md hover:shadow-red-200"
-              radius="pill"
-              variant="secondary"
-              onClick={handleTrainButtonClick}
-            >
-              Align with Eden
-            </Button>
-            <Button
-              className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] opacity-0 duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:opacity-10 hover:shadow-md hover:shadow-red-200"
-              radius="pill"
-              variant="secondary"
-              onClick={handleFindBestTalentClick}
-            >
-              Recruit Similar Candidates
-            </Button>
+            {panda && (
+              <>
+                <Button
+                  size="sm"
+                  className="bg-soilBlue border-soilBlue mr-2 flex items-center !px-1 !py-0 !text-sm text-white hover:border-[#7A98E5] hover:bg-[#7A98E5]"
+                  variant="default"
+                  onClick={handleCalculateSkillScore}
+                >
+                  Calculate Skill Score
+                </Button>
+                <Button
+                  className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#ff5656] pl-[16px] pr-[40px] font-bold !text-[#ff5656] duration-200 ease-in-out hover:!bg-[#ff5656] hover:!text-white hover:shadow-md hover:shadow-red-200"
+                  radius="pill"
+                  variant="secondary"
+                  onClick={handleTrainButtonClick}
+                >
+                  Align with Eden
+                </Button>
+                <Button
+                  className="transition-bg relative ml-auto h-[36px] whitespace-nowrap !border-[#007bff] pl-[16px] pr-[40px] font-bold !text-[#007bff] duration-200 ease-in-out hover:!bg-[#007bff] hover:!text-white hover:shadow-md hover:shadow-red-200"
+                  radius="pill"
+                  variant="secondary"
+                  onClick={handleFindBestTalentClick}
+                >
+                  Recruit Similar Candidates
+                </Button>
+              </>
+            )}
           </div>
 
           <section

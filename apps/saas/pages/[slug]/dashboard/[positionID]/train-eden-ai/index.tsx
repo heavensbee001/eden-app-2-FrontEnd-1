@@ -213,7 +213,7 @@ const TrainAiPage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const router = useRouter();
-  const { positionID } = router.query;
+  const { positionID, panda } = router.query;
 
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
@@ -568,7 +568,7 @@ const TrainAiPage: NextPageWithLayout = () => {
               >
                 <WizardStep
                   label={"Description"}
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   nextDisabled
                   nextButton={
                     <Button
@@ -616,10 +616,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </WizardStep>
 
                 {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-                <WizardStep
-                  label={"Eden Convo"}
-                  // navigationDisabled
-                >
+                <WizardStep label={"Eden Convo"} navigationDisabled={!panda}>
                   <div className="relative mx-auto h-full max-w-2xl">
                     <div className="relative mx-auto mb-4 h-[calc(100%-4rem)] w-full">
                       <InterviewEdenAIContainer
@@ -639,7 +636,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Priorities & TradeOffs"}
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   nextButton={
                     <Button
                       variant="secondary"
@@ -675,7 +672,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Alignment"}
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   nextButton={
                     <Button
                       variant="secondary"
@@ -722,7 +719,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                 <WizardStep
                   label={"Eden Suggestions"}
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   nextButton={
                     <Button
                       variant={"primary"}
@@ -764,7 +761,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </WizardStep>
                 <WizardStep
                   label={"Final Details"}
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   nextButton={
                     <Button
                       variant={"primary"}
@@ -823,10 +820,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                     />
                   </div>
                 </WizardStep>
-                <WizardStep
-                  label={"Share Link"}
-                  // navigationDisabled
-                >
+                <WizardStep label={"Share Link"} navigationDisabled={!panda}>
                   <div className="flex h-full flex-col items-center justify-center pb-28">
                     <div className="max-w-3xl">
                       <h1 className="text-edenGreen-600 mb-4 text-center">
@@ -882,17 +876,17 @@ const TrainAiPage: NextPageWithLayout = () => {
                 </div>
               </div>
             )} */}
-            {/* {!IS_PRODUCTION && ( */}
-            <Button
-              className="absolute bottom-0 left-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
-              variant="secondary"
-              onClick={() => {
-                setStep(step + 1);
-              }}
-            >
-              Next
-            </Button>
-            {/* )} */}
+            {panda && (
+              <Button
+                className="absolute bottom-0 left-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+                variant="secondary"
+                onClick={() => {
+                  setStep(step + 1);
+                }}
+              >
+                Next
+              </Button>
+            )}
             {step === 6 && (
               <div
                 className={`pointer-events-none fixed left-0 top-0 z-20 h-screen w-screen	`}
