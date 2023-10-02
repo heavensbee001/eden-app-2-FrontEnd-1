@@ -34,7 +34,7 @@ import type { NextPageWithLayout } from "../../_app";
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
-  const { positionID } = router.query;
+  const { positionID, panda } = router.query;
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -187,7 +187,7 @@ const HomePage: NextPageWithLayout = () => {
                 animate
               >
                 <WizardStep
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   nextDisabled={!cvEnded}
                   label={"CV UPLOAD"}
                 >
@@ -200,7 +200,7 @@ const HomePage: NextPageWithLayout = () => {
                   />
                 </WizardStep>
                 <WizardStep
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   label={"EDEN INSIGHTS"}
                   nextDisabled={!insightsChecked}
                 >
@@ -227,7 +227,7 @@ const HomePage: NextPageWithLayout = () => {
                 </WizardStep>
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
                 <WizardStep
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   label={"INTERVIEW"}
                   nextButton={
                     <Button
@@ -274,7 +274,7 @@ const HomePage: NextPageWithLayout = () => {
                 </WizardStep>
 
                 <WizardStep
-                  // navigationDisabled
+                  navigationDisabled={!panda}
                   label={"FINAL DETAILS"}
                   nextButton={
                     <Button
@@ -318,7 +318,7 @@ const HomePage: NextPageWithLayout = () => {
                     />
                   )}
                 </WizardStep>
-                <WizardStep label={"ALL DONE"}>
+                <WizardStep navigationDisabled={!panda} label={"ALL DONE"}>
                   {/* <FinalContainer /> */}
                   <ConnectTelegramContainer
                     candidateTelegramID={
@@ -333,17 +333,17 @@ const HomePage: NextPageWithLayout = () => {
               </section>
             </WizardStep> */}
               </Wizard>
-              {/* {!IS_PRODUCTION && ( */}
-              <Button
-                className="absolute bottom-0 left-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
-                variant="secondary"
-                onClick={() => {
-                  setStep(step + 1);
-                }}
-              >
-                Next
-              </Button>
-              {/* )} */}
+              {panda && (
+                <Button
+                  className="absolute bottom-0 left-0 !border-white !bg-white text-gray-300 hover:!text-gray-200"
+                  variant="secondary"
+                  onClick={() => {
+                    setStep(step + 1);
+                  }}
+                >
+                  Next
+                </Button>
+              )}
             </div>
           </div>
         )}
