@@ -283,12 +283,21 @@ export interface UserButtonProps {
 }
 
 const UserButton = ({ unwrapped }: UserButtonProps) => {
+  const router = useRouter();
   const { currentUser } = useContext(UserContext);
+  const { company } = useContext(CompanyContext);
 
   const handleLogout = () => {
     signOut();
     localStorage.removeItem("eden_access_token");
   };
+
+  const userIsAdmin =
+    company?.employees &&
+    company?.employees!.some(
+      (_empl) =>
+        _empl?.user?._id === currentUser?._id && _empl?.typeT === "ADMIN"
+    );
 
   return currentUser ? (
     <div
@@ -307,6 +316,19 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
             }
           >
             {[
+              userIsAdmin ? (
+                <li
+                  key={0}
+                  className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+                  onClick={() => {
+                    router.push(`/${company.slug}/dashboard/pending-requests`);
+                  }}
+                >
+                  user access requests
+                </li>
+              ) : (
+                <></>
+              ),
               <li
                 key={1}
                 className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"

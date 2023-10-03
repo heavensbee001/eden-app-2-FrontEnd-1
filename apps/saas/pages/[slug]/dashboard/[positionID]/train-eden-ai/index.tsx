@@ -949,14 +949,14 @@ export async function getServerSideProps(ctx: {
 
   console.log(res.status);
 
-  // if (res.status === 401) {
-  //   return {
-  //     redirect: {
-  //       destination: `/request-access`,
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access?company=${ctx.query.slug}`,
+        permanent: false,
+      },
+    };
+  }
 
   if (res.status === 404) {
     return {
