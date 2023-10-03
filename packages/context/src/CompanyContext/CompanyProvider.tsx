@@ -31,6 +31,15 @@ const FIND_COMPANY_FROM_SLUG = gql`
           contractType
         }
       }
+      employees {
+        status
+        typeT
+        user {
+          _id
+          discordName
+          discordAvatar
+        }
+      }
       candidatesNum
       skillsNum
     }
