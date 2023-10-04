@@ -6,12 +6,20 @@ import { CompanyProvider, UserProvider } from "@eden/package-context";
 import { apolloClient } from "@eden/package-graphql";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
+import dynamic from "next/dynamic";
 import { SessionProvider } from "next-auth/react";
 import type { ReactElement, ReactNode } from "react";
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 
 // import { IS_DEVELOPMENT } from "../constants";
+
+const AppDeviceLayout = dynamic(
+  () => import(`@eden/package-ui/src/layout/AppDeviceLayout/AppDeviceLayout`),
+  {
+    ssr: false,
+  }
+);
 
 export { reportWebVitals } from "next-axiom";
 
@@ -33,16 +41,20 @@ const App = ({
   // console.log(IS_DEVELOPMENT ? "development" : "production");
 
   return (
-    <SessionProvider session={session}>
-      <ApolloProvider client={apolloClient}>
-        <UserProvider>
-          <CompanyProvider>
-            {getLayout(<Component {...pageProps} />)}
-          </CompanyProvider>
-        </UserProvider>
-        <ToastContainer />
-      </ApolloProvider>
-    </SessionProvider>
+    <>
+      <SessionProvider session={session}>
+        <ApolloProvider client={apolloClient}>
+          <UserProvider>
+            <CompanyProvider>
+              <AppDeviceLayout>
+                {getLayout(<Component {...pageProps} />)}
+              </AppDeviceLayout>
+            </CompanyProvider>
+          </UserProvider>
+          <ToastContainer />
+        </ApolloProvider>
+      </SessionProvider>
+    </>
   );
 };
 
