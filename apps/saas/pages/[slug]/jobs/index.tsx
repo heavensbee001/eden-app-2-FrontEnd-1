@@ -5,12 +5,13 @@ import {
   AppUserLayout,
   Badge,
   Button,
-  EdenIconExclamation,
-  EdenTooltip,
+  // EdenIconExclamation,
+  // EdenTooltip,
   SEO,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+// import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useContext } from "react";
@@ -33,6 +34,7 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
   }
 `;
 
+// eslint-disable-next-line no-unused-vars
 const FAKE_MATCHSTIMATES = [
   {
     grade: "HIGH",
@@ -118,7 +120,7 @@ const HomePage: NextPageWithLayout = () => {
           className="bg-edenGreen-600 h-48 w-full bg-cover bg-center"
           style={{
             backgroundImage:
-              company?.slug === "D_D" || company?.slug === "tesla10"
+              company?.slug === "developer-dao" || company?.slug === "tesla10"
                 ? "url(/d_d_banner.jpg)"
                 : "",
           }}
@@ -128,11 +130,20 @@ const HomePage: NextPageWithLayout = () => {
         {!currentUser && (
           <section className="bg-edenPink-100 mb-4 rounded-md p-4">
             <h2 className="text-edenGreen-600 mb-2">
-              Login to chat with Eden!
+              Get your personal talent agent
             </h2>
             <p className="text-edenGray-900 mb-4 text-sm">
-              Login to unleash the power of Eden - she can understand you and
-              become your no1 companion in helping you find your dream job
+              By signing up for the D_D talent oasis, you&apos;ll get access to
+              curated web3 opportunities by D_D while enjoying the full-force of
+              Eden, your personal talent agent helping you get hired for your
+              fav opportunities, faster. (see the demo{" "}
+              <Link
+                href={"https://www.youtube.com/watch?v=S_vJBkCDYNs"}
+                className="underline"
+              >
+                here
+              </Link>
+              )
             </p>
             <Button
               onClick={() => {
@@ -154,8 +165,8 @@ const HomePage: NextPageWithLayout = () => {
                   _position?.status !== "DELETED"
               )
               ?.map((position: Maybe<Position>, index: number) => {
-                const randMatchstimate =
-                  FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
+                // const randMatchstimate =
+                //   FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
 
                 return (
                   <div
@@ -166,7 +177,7 @@ const HomePage: NextPageWithLayout = () => {
                         router.push(`/interview/${position?._id}`);
                     }}
                   >
-                    <div className="absolute -right-2 -top-1">
+                    {/* <div className="absolute -right-2 -top-1">
                       <EdenTooltip
                         id={`tradeoff-${index}`}
                         delayHide={currentUser ? 0 : 300}
@@ -226,7 +237,7 @@ const HomePage: NextPageWithLayout = () => {
                           <EdenIconExclamation className="h-full w-full" />
                         </div>
                       </EdenTooltip>
-                    </div>
+                    </div> */}
                     <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
                       <IconPickerItem
                         icon={position?.icon || "FaCode"}
@@ -273,7 +284,7 @@ const HomePage: NextPageWithLayout = () => {
         <div className="pt-16 pb-4">
           <div className="mb-4">
             {company?.name ? (
-              <h2 className="text-edenGreen-600 mb-2">{`${company?.name}`}</h2>
+              <h2 className="text-edenGreen-600 mb-2">{`Curated by ${company?.name} & Eden`}</h2>
             ) : (
               <h2 className="text-edenGreen-600 mb-2">
                 Community talent oasis
@@ -288,12 +299,6 @@ const HomePage: NextPageWithLayout = () => {
               <p className="text-xs">Pre-vetted Candidates</p>
               <span className="text-edenGray-900 text-sm font-medium leading-none">
                 {company?.candidatesNum}
-              </span>
-            </div>
-            <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
-              <p className="text-xs">Combined Skills</p>
-              <span className="text-edenGray-900 text-sm font-medium leading-none">
-                {company?.skillsNum}
               </span>
             </div>
           </div>

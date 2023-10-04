@@ -162,10 +162,10 @@ const HomePage: NextPageWithLayout = () => {
             {step === 0 && (
               <div className="pt-8">
                 <h1 className="text-edenGreen-600 text-center">
-                  Hey {currentUser.discordName}!
+                  {`Let's get you onboarded to the ${findPositionData?.findPosition?.name} Talent Oasis, ${currentUser.discordName}!`}
                 </h1>
                 <p className="text-edenGray-900 text-center">
-                  {`Congrats! You’ve been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
+                  {`You’re a bout to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}. `}
                 </p>
               </div>
             )}
@@ -203,6 +203,17 @@ const HomePage: NextPageWithLayout = () => {
                   navigationDisabled={!panda}
                   label={"EDEN INSIGHTS"}
                   nextDisabled={!insightsChecked}
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      className="mx-auto"
+                      onClick={() => {
+                        setStep(step + 1);
+                      }}
+                    >
+                      Start Interview
+                    </Button>
+                  }
                 >
                   <ApplicationStepContainer
                     topSkills={topSkills}
@@ -420,7 +431,7 @@ const UploadCVContainer = ({
       <section className="grid grid-cols-3 gap-6">
         <div className="bg-edenPink-100 col-span-1 h-full rounded-md p-4">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
-            Role Description
+            Min Requirements
           </h3>
           <ul className="text-edenGray-900 list-disc pl-4 text-sm">
             {position?.positionsRequirements?.roleDescription
@@ -448,19 +459,12 @@ const UploadCVContainer = ({
         </div>
         <div className="bg-edenPink-300 col-span-1 h-full rounded-md p-4">
           <h3 className="text-edenGreen-600 text-center text-2xl font-semibold">
-            You x {position?.company?.name}
+            Upload Resume to get instant feedback
           </h3>
-          <p className="text-edenGray-700 mb-4 text-center text-sm">
-            Upload your CV for personalized feedback
-          </p>
           <ul className="text-edenGray-900 list-disc pl-4 text-sm">
             <li className="mb-2">Probability of landing this job</li>
-            <li className="mb-2">What to improve to maximize your chances</li>
-            <li className="mb-2">
-              Ask specific questions about company, opportunity & culture in
-              real time chat
-            </li>
-            <li className="mb-2">Salary range + equity benefits</li>
+            <li className="mb-2">What to not miss to maximize your chances</li>
+            <li className="mb-2">Strong suit about your profile</li>
           </ul>
         </div>
       </section>
@@ -510,22 +514,23 @@ const ApplicationStepContainer = ({
 }: ApplicationStepContainerProps) => {
   // const router = useRouter();
   // const { currentUser } = useContext(UserContext);
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
-  const today = new Date();
+  // const monthNames = [
+  //   "January",
+  //   "February",
+  //   "March",
+  //   "April",
+  //   "May",
+  //   "June",
+  //   "July",
+  //   "August",
+  //   "September",
+  //   "October",
+  //   "November",
+  //   "December",
+  // ];
+
+  // const today = new Date();
 
   const getMatchText = () => {
     if (content.matchPercentage! >= 80) {
@@ -695,7 +700,7 @@ const ApplicationStepContainer = ({
                 </p>
               </section>
             )}
-            <section className="mb-2 p-4">
+            {/* <section className="mb-2 p-4">
               <h3 className="text-edenGreen-600 mb-2">
                 <BiCalendarExclamation
                   color="#00462C"
@@ -748,7 +753,7 @@ const ApplicationStepContainer = ({
                   </div>
                 </div>
               </div>
-            </section>
+            </section> */}
             <section className="mb-2 w-full p-4">
               <h3 className="text-edenGreen-600 mb-2">
                 <FaStar
@@ -1110,12 +1115,7 @@ import { locations } from "@eden/package-ui/utils/locations";
 import Head from "next/head";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
-import {
-  BiCalendarExclamation,
-  BiChevronDown,
-  BiChevronRight,
-  BiChevronUp,
-} from "react-icons/bi";
+import { BiChevronDown, BiChevronRight, BiChevronUp } from "react-icons/bi";
 import {
   BsFillFileEarmarkBarGraphFill,
   BsFillFileEarmarkMinusFill,
