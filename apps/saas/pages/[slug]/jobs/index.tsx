@@ -301,12 +301,6 @@ const HomePage: NextPageWithLayout = () => {
                 {company?.candidatesNum}
               </span>
             </div>
-            <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
-              <p className="text-xs">Combined Skills</p>
-              <span className="text-edenGray-900 text-sm font-medium leading-none">
-                {company?.skillsNum}
-              </span>
-            </div>
           </div>
 
           {/* {company?.description && (
