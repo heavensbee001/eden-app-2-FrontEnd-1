@@ -129,11 +129,13 @@ const HomePage: NextPageWithLayout = () => {
         {!currentUser && (
           <section className="bg-edenPink-100 mb-4 rounded-md p-4">
             <h2 className="text-edenGreen-600 mb-2">
-              Login to chat with Eden!
+              Get your personal talent agent
             </h2>
             <p className="text-edenGray-900 mb-4 text-sm">
-              Login to unleash the power of Eden - she can understand you and
-              become your no1 companion in helping you find your dream job
+              By signing up for the D_D talent oasis, you&apos;ll get access to
+              curated web3 opportunities by D_D while enjoying the full-force of
+              Eden, your personal talent agent helping you get hired for your
+              fav opportunities, faster. (see the demo here)
             </p>
             <Button
               onClick={() => {
