@@ -5,11 +5,11 @@ import {
   AppUserLayout,
   Badge,
   Button,
-  EdenIconExclamation,
-  EdenTooltip,
+  // EdenIconExclamation,
+  // EdenTooltip,
   SEO,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+// import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
@@ -33,6 +33,7 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
   }
 `;
 
+// eslint-disable-next-line no-unused-vars
 const FAKE_MATCHSTIMATES = [
   {
     grade: "HIGH",
@@ -154,8 +155,8 @@ const HomePage: NextPageWithLayout = () => {
                   _position?.status !== "DELETED"
               )
               ?.map((position: Maybe<Position>, index: number) => {
-                const randMatchstimate =
-                  FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
+                // const randMatchstimate =
+                //   FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
 
                 return (
                   <div
@@ -166,7 +167,7 @@ const HomePage: NextPageWithLayout = () => {
                         router.push(`/interview/${position?._id}`);
                     }}
                   >
-                    <div className="absolute -right-2 -top-1">
+                    {/* <div className="absolute -right-2 -top-1">
                       <EdenTooltip
                         id={`tradeoff-${index}`}
                         delayHide={currentUser ? 0 : 300}
@@ -226,7 +227,7 @@ const HomePage: NextPageWithLayout = () => {
                           <EdenIconExclamation className="h-full w-full" />
                         </div>
                       </EdenTooltip>
-                    </div>
+                    </div> */}
                     <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
                       <IconPickerItem
                         icon={position?.icon || "FaCode"}
