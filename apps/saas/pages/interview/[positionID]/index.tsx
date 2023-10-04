@@ -41,6 +41,8 @@ const HomePage: NextPageWithLayout = () => {
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
   const [insightsChecked, setInsightsChecked] = useState<Boolean>(false);
   const [step, setStep] = useState<number>(0);
+  const [showStartInterviewModal, setShowStartInterviewModal] =
+    useState<boolean>(false);
   const [showInterviewModal, setShowInterviewModal] = useState<boolean>(false);
   const [titleRole, setTitleRole] = useState<string>("");
   const [topSkills, setTopSkills] = useState<any[]>([]);
@@ -132,6 +134,10 @@ const HomePage: NextPageWithLayout = () => {
     });
   };
 
+  function handleStartInterviewStep() {
+    setShowStartInterviewModal(true);
+  }
+
   function handleFinishInterviewStep() {
     setShowInterviewModal(true);
   }
@@ -205,11 +211,10 @@ const HomePage: NextPageWithLayout = () => {
                   nextDisabled={!insightsChecked}
                   nextButton={
                     <Button
+                      disabled={!insightsChecked}
                       variant="secondary"
                       className="mx-auto"
-                      onClick={() => {
-                        setStep(step + 1);
-                      }}
+                      onClick={handleStartInterviewStep}
                     >
                       Start Interview
                     </Button>
@@ -235,6 +240,39 @@ const HomePage: NextPageWithLayout = () => {
                       <span className="mx-1 text-red-600">*</span>
                     </p>
                   </div>
+                  <Modal open={showStartInterviewModal} closeOnEsc={false}>
+                    <div className="px-4 py-8">
+                      <h2 className="text-center text-edenGreen-600">
+                        {"You're about to head into your interview with Eden."}
+                      </h2>
+                      <p className="text-center">
+                        {"This will take around 10-15 minutes."}
+                      </p>
+                      <p className="text-center text-sm mb-12">
+                        {"Just be your smashing self. You look great btw ;)"}
+                      </p>
+                      <div className="flex justify-evenly">
+                        <Button
+                          onClick={() => {
+                            setShowStartInterviewModal(false);
+                          }}
+                          variant="tertiary"
+                          className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
+                        >
+                          {"Let me put on pants 1st"}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            setShowStartInterviewModal(false);
+                            setStep(step + 1);
+                          }}
+                        >
+                          {"Let's do this!"}
+                        </Button>
+                      </div>
+                    </div>
+                  </Modal>
                 </WizardStep>
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
                 <WizardStep
