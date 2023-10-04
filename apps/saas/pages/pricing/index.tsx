@@ -432,11 +432,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
   // eslint-disable-next-line no-unused-vars
   const [formData, setFormData] = useState<FormData | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
   const { currentUser } = useContext(UserContext);
 
   const [addEmployeesCompany] = useMutation(ADD_EMPLOYEES_COMPANY, {
@@ -486,7 +482,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
       variables: {
         fields: {
           name: data.companyName,
-          slug: data.companyAbbreviation,
+          slug: toKebabCase(data.companyName),
           type: "COMPANY",
           description: data.companyDescription,
           communitiesSubscribedID: communityIDs,
@@ -516,7 +512,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
               </div>
             </div>
 
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <p className=" text-xs">Company Abbreviation</p>
               <div>
                 <div className="flex flex-col">
@@ -538,7 +534,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
                   )}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className="space-y-1">
               <p className="text-xs">Description of the Company</p>
@@ -567,3 +563,11 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
     </>
   );
 };
+
+function toKebabCase(inputString: string): string {
+  // Replace all non-alphanumeric characters with hyphens
+  const kebabCaseString = inputString.replace(/[^a-zA-Z0-9]/g, "-");
+
+  // Convert the string to lowercase
+  return kebabCaseString.toLowerCase();
+}
