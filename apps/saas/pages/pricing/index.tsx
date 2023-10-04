@@ -499,6 +499,14 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
           onSubmit={handleSubmit(submitHandler)}
         >
           <section className="mb-4 inline-block w-full space-y-6 p-4 pr-12">
+            <h2 className="text-edenGreen-600">
+              {"Let's get your company profile set up!"}
+            </h2>
+            <p>
+              {
+                "This will give you access to your magic job-board's dashboard, where all your candidates will show up."
+              }
+            </p>
             <div className="space-y-1">
               <p className="text-xs">Company Name</p>
               <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
