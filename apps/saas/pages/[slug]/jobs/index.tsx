@@ -11,6 +11,7 @@ import {
 } from "@eden/package-ui";
 // import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useContext } from "react";
@@ -135,7 +136,14 @@ const HomePage: NextPageWithLayout = () => {
               By signing up for the D_D talent oasis, you&apos;ll get access to
               curated web3 opportunities by D_D while enjoying the full-force of
               Eden, your personal talent agent helping you get hired for your
-              fav opportunities, faster. (see the demo here)
+              fav opportunities, faster. (see the demo{" "}
+              <Link
+                href={"https://www.youtube.com/watch?v=S_vJBkCDYNs"}
+                className="underline"
+              >
+                here
+              </Link>
+              )
             </p>
             <Button
               onClick={() => {
