@@ -39,9 +39,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Startup",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 500,
+    monthlyPrice: 249,
     priceID: IS_PRODUCTION
-      ? "price_1NreSZBxX85c6z0CXzCngNS2"
+      ? "price_1NxUDfBxX85c6z0CTCpGb31x"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
     featured: false,
     icon: <HiOutlineBuildingStorefront />,
@@ -84,9 +84,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Scaleup",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 2000,
+    monthlyPrice: 499,
     priceID: IS_PRODUCTION
-      ? "price_1Np77EBxX85c6z0C0DPou3hC"
+      ? "price_1NxUBRBxX85c6z0CgmukMjft"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
     featured: true,
     icon: <HiOutlineBuildingOffice />,
@@ -129,9 +129,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Head of platform @ VC",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 5000,
+    monthlyPrice: 999,
     priceID: IS_PRODUCTION
-      ? "price_1Np7AsBxX85c6z0CsMSl5VnB"
+      ? "price_1NxUAHBxX85c6z0CwonUgMF5"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
     featured: false,
     icon: <HiOutlineBuildingOffice2 />,
