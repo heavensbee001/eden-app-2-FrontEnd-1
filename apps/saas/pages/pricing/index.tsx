@@ -79,9 +79,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Startup",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 500,
+    monthlyPrice: 249,
     priceID: IS_PRODUCTION
-      ? "price_1NreSZBxX85c6z0CXzCngNS2"
+      ? "price_1NxUDfBxX85c6z0CTCpGb31x"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
     featured: false,
     icon: <HiOutlineBuildingStorefront />,
@@ -124,9 +124,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Scaleup",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 2000,
+    monthlyPrice: 499,
     priceID: IS_PRODUCTION
-      ? "price_1Np77EBxX85c6z0C0DPou3hC"
+      ? "price_1NxUBRBxX85c6z0CgmukMjft"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
     featured: true,
     icon: <HiOutlineBuildingOffice />,
@@ -169,9 +169,9 @@ const PRODUCTS: PRODUCTS_TYPE = [
     name: "Head of platform @ VC",
     description:
       "For those looking to build the future with likeminded people.",
-    monthlyPrice: 5000,
+    monthlyPrice: 999,
     priceID: IS_PRODUCTION
-      ? "price_1Np7AsBxX85c6z0CsMSl5VnB"
+      ? "price_1NxUAHBxX85c6z0CwonUgMF5"
       : "price_1NnKzqBxX85c6z0CuUKA0uku",
     featured: false,
     icon: <HiOutlineBuildingOffice2 />,
@@ -432,11 +432,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
   // eslint-disable-next-line no-unused-vars
   const [formData, setFormData] = useState<FormData | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
   const { currentUser } = useContext(UserContext);
 
   const [addEmployeesCompany] = useMutation(ADD_EMPLOYEES_COMPANY, {
@@ -486,7 +482,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
       variables: {
         fields: {
           name: data.companyName,
-          slug: data.companyAbbreviation,
+          slug: toKebabCase(data.companyName),
           type: "COMPANY",
           description: data.companyDescription,
           communitiesSubscribedID: communityIDs,
@@ -503,6 +499,14 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
           onSubmit={handleSubmit(submitHandler)}
         >
           <section className="mb-4 inline-block w-full space-y-6 p-4 pr-12">
+            <h2 className="text-edenGreen-600">
+              {"Let's get your company profile set up!"}
+            </h2>
+            <p>
+              {
+                "This will give you access to your magic job-board's dashboard, where all your candidates will show up."
+              }
+            </p>
             <div className="space-y-1">
               <p className="text-xs">Company Name</p>
               <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
@@ -516,7 +520,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
               </div>
             </div>
 
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <p className=" text-xs">Company Abbreviation</p>
               <div>
                 <div className="flex flex-col">
@@ -538,7 +542,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
                   )}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className="space-y-1">
               <p className="text-xs">Description of the Company</p>
@@ -567,3 +571,11 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
     </>
   );
 };
+
+function toKebabCase(inputString: string): string {
+  // Replace all non-alphanumeric characters with hyphens
+  const kebabCaseString = inputString.replace(/[^a-zA-Z0-9]/g, "-");
+
+  // Convert the string to lowercase
+  return kebabCaseString.toLowerCase();
+}
