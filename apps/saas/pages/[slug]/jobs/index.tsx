@@ -120,7 +120,7 @@ const HomePage: NextPageWithLayout = () => {
           className="bg-edenGreen-600 h-48 w-full bg-cover bg-center"
           style={{
             backgroundImage:
-              company?.slug === "D_D" || company?.slug === "tesla10"
+              company?.slug === "developer-dao" || company?.slug === "tesla10"
                 ? "url(/d_d_banner.jpg)"
                 : "",
           }}
@@ -284,7 +284,7 @@ const HomePage: NextPageWithLayout = () => {
         <div className="pt-16 pb-4">
           <div className="mb-4">
             {company?.name ? (
-              <h2 className="text-edenGreen-600 mb-2">{`${company?.name}`}</h2>
+              <h2 className="text-edenGreen-600 mb-2">{`Curated by ${company?.name} & Eden`}</h2>
             ) : (
               <h2 className="text-edenGreen-600 mb-2">
                 Community talent oasis

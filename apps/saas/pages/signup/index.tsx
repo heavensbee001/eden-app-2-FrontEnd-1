@@ -67,7 +67,7 @@ const SignupCommunity: NextPageWithLayout = () => {
           <p>
             If you are a hiring manager login{" "}
             <Link
-              href={"/D_D/jobs"}
+              href={"/developer-dao/jobs"}
               className="underline hover:text-edenGray-500"
             >
               here
