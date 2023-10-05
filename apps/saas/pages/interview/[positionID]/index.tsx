@@ -355,11 +355,11 @@ const HomePage: NextPageWithLayout = () => {
                     </Button>
                   }
                 >
-                  <p className="mb-8 text-center text-sm">
+                  <h3 className="text-edenGreen-600 w-full text-center mt-4 mb-12">
                     {
                       "All done, this is the final step. Fill in some quick information and we’re off!"
                     }
-                  </p>
+                  </h3>
                   <ProfileQuestionsContainer
                     onChange={(data) => {
                       setGeneralDetails(data);
