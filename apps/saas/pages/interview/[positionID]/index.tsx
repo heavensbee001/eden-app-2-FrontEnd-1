@@ -27,6 +27,7 @@ import {
   useState,
 } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../_app";
@@ -168,10 +169,14 @@ const HomePage: NextPageWithLayout = () => {
             {step === 0 && (
               <div className="pt-8">
                 <h1 className="text-edenGreen-600 text-center">
-                  {`Let's get you onboarded to the ${findPositionData?.findPosition?.name} Talent Oasis, ${currentUser.discordName}!`}
+                  {findPositionData?.findPosition?.company.type === "COMMUNITY"
+                    ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
+                    : `Hey ${currentUser.discordName}!`}
                 </h1>
                 <p className="text-edenGray-900 text-center">
-                  {`You’re a bout to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}. `}
+                  {findPositionData?.findPosition?.company.type === "COMMUNITY"
+                    ? `You're a bout to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
+                    : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
                 </p>
               </div>
             )}
@@ -467,7 +472,7 @@ const UploadCVContainer = ({
   return (
     <div className="pt-8">
       <section className="grid grid-cols-3 gap-6">
-        <div className="bg-edenPink-100 col-span-1 h-full rounded-md p-4">
+        <div className="bg-edenPink-100 col-span-1 h-full rounded-md py-4 px-8">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Min Requirements
           </h3>
@@ -481,7 +486,7 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="bg-edenPink-100 col-span-1 h-full rounded-md p-4">
+        <div className="bg-edenPink-100 col-span-1 h-full rounded-md py-4 px-8">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
@@ -495,12 +500,16 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="bg-edenPink-300 col-span-1 h-full rounded-md p-4">
-          <h3 className="text-edenGreen-600 text-center text-2xl font-semibold">
-            Upload Resume to get instant feedback
+        <div className="bg-edenPink-300 col-span-1 h-full rounded-md py-4 px-8">
+          <div className="h-8 w-8 rounded-md bg-edenPink-100 text-edenGray-900 flex items-center justify-center mx-auto">
+            <AiOutlineEyeInvisible size={"1.4rem"} />
+          </div>
+          <h3 className="text-edenGreen-600 text-center text-2xl font-semibold mb-4">
+            Upload Resume to
+            <br /> get instant feedback
           </h3>
           <ul className="text-edenGray-900 list-disc pl-4 text-sm">
-            <li className="mb-2">Probability of landing this job</li>
+            <li className="mb-2">Probability of landing this opportunity</li>
             <li className="mb-2">What to not miss to maximize your chances</li>
             <li className="mb-2">Strong suit about your profile</li>
           </ul>
@@ -593,8 +602,8 @@ const ApplicationStepContainer = ({
     strongSuit: boolean;
   }>({
     areasToImprove: true,
-    growth: false,
-    strongSuit: false,
+    growth: true,
+    strongSuit: true,
   });
 
   return (
@@ -922,6 +931,7 @@ const FIND_POSITION = gql`
       name
       company {
         name
+        type
       }
       questionsToAsk {
         bestAnswer
