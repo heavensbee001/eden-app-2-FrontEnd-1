@@ -55,7 +55,7 @@ export enum AI_REPLY_SERVICES {
   // eslint-disable-next-line no-unused-vars
   EDEN_AI_TAL_SEARCH_EXPIRIENCE = "EDEN_AI_TAL_SEARCH_EXPIRIENCE",
 }
-export type ChatMessage = Array<{ user: string; message: string }>;
+type ChatMessage = Array<{ user: string; message: string }>;
 
 export interface IEdenAiChatProps {
   aiReplyService: AI_REPLY_SERVICES;

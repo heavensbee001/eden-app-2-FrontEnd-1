@@ -5,9 +5,11 @@ export const FIND_CONVERSATIONS = gql`
     findConversations(fields: $fields) {
       _id
       userID
+      positionID
       conversation {
         role
         content
+        date
       }
     }
   }

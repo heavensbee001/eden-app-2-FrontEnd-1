@@ -9,8 +9,11 @@ import {
   EdenIconExclamationAndQuestion,
   EdenIconQuestion,
 } from "../../elements";
-import { ChatMessage } from "../EdenAiChat";
-import { AI_INTERVIEW_SERVICES, InterviewEdenAI } from "../InterviewEdenAI";
+import {
+  AI_INTERVIEW_SERVICES,
+  ChatMessage,
+  InterviewEdenAI,
+} from "../InterviewEdenAI";
 
 const FIND_POSITION = gql`
   query ($fields: findPositionInput) {

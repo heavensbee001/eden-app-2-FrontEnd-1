@@ -27,6 +27,7 @@ import {
   useState,
 } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 // import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../_app";
@@ -168,10 +169,14 @@ const HomePage: NextPageWithLayout = () => {
             {step === 0 && (
               <div className="pt-8">
                 <h1 className="text-edenGreen-600 text-center">
-                  {`Let's get you onboarded to the ${findPositionData?.findPosition?.name} Talent Oasis, ${currentUser.discordName}!`}
+                  {findPositionData?.findPosition?.company.type === "COMMUNITY"
+                    ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
+                    : `Hey ${currentUser.discordName}!`}
                 </h1>
                 <p className="text-edenGray-900 text-center">
-                  {`You’re a bout to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}. `}
+                  {findPositionData?.findPosition?.company.type === "COMMUNITY"
+                    ? `You're about to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
+                    : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
                 </p>
               </div>
             )}
@@ -350,11 +355,11 @@ const HomePage: NextPageWithLayout = () => {
                     </Button>
                   }
                 >
-                  <p className="mb-8 text-center text-sm">
+                  <h3 className="text-edenGreen-600 w-full text-center mt-4 mb-12">
                     {
                       "All done, this is the final step. Fill in some quick information and we’re off!"
                     }
-                  </p>
+                  </h3>
                   <ProfileQuestionsContainer
                     onChange={(data) => {
                       setGeneralDetails(data);
@@ -467,7 +472,7 @@ const UploadCVContainer = ({
   return (
     <div className="pt-8">
       <section className="grid grid-cols-3 gap-6">
-        <div className="bg-edenPink-100 col-span-1 h-full rounded-md p-4">
+        <div className="bg-edenPink-100 col-span-1 h-full rounded-md py-4 px-8">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Min Requirements
           </h3>
@@ -481,7 +486,7 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="bg-edenPink-100 col-span-1 h-full rounded-md p-4">
+        <div className="bg-edenPink-100 col-span-1 h-full rounded-md py-4 px-8">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Benefits & Perks
           </h3>
@@ -495,12 +500,16 @@ const UploadCVContainer = ({
               ))}
           </ul>
         </div>
-        <div className="bg-edenPink-300 col-span-1 h-full rounded-md p-4">
-          <h3 className="text-edenGreen-600 text-center text-2xl font-semibold">
-            Upload Resume to get instant feedback
+        <div className="bg-edenPink-300 col-span-1 h-full rounded-md py-4 px-8">
+          <div className="h-8 w-8 rounded-md bg-edenPink-100 text-edenGray-900 flex items-center justify-center mx-auto">
+            <AiOutlineEyeInvisible size={"1.4rem"} />
+          </div>
+          <h3 className="text-edenGreen-600 text-center text-2xl font-semibold mb-4">
+            Upload Resume to
+            <br /> get instant feedback
           </h3>
           <ul className="text-edenGray-900 list-disc pl-4 text-sm">
-            <li className="mb-2">Probability of landing this job</li>
+            <li className="mb-2">Probability of landing this opportunity</li>
             <li className="mb-2">What to not miss to maximize your chances</li>
             <li className="mb-2">Strong suit about your profile</li>
           </ul>
@@ -593,8 +602,8 @@ const ApplicationStepContainer = ({
     strongSuit: boolean;
   }>({
     areasToImprove: true,
-    growth: false,
-    strongSuit: false,
+    growth: true,
+    strongSuit: true,
   });
 
   return (
@@ -922,6 +931,7 @@ const FIND_POSITION = gql`
       name
       company {
         name
+        type
       }
       questionsToAsk {
         bestAnswer
@@ -1045,6 +1055,9 @@ const InterviewEdenAIContainer = ({
   const [addCandidateFlag, setAddCandidateFlag] = useState<boolean>(false);
 
   const [conversationID, setConversationID] = useState<String>("");
+  const [chatN, setChatN] = useState<ChatMessage>([]);
+
+  console.log("CHAT N", chatN);
 
   // SOS 🆘 -> the candidate is not been added to the position // return back before publish code
   useEffect(() => {
@@ -1071,15 +1084,33 @@ const InterviewEdenAIContainer = ({
     }
   }, [positionID, currentUser?._id, conversationID]);
 
-  // console.log("positionID = ", positionID);
-
   const [experienceTypeID] = useState<string>("");
-
-  // const [chatN, setChatN] = useState<ChatMessage>([]);
 
   // console.log("chatN = ", chatN);
 
   // console.log("conversationID = ", conversationID);
+
+  const { loading: findConversationsLoading } = useQuery(FIND_CONVERSATIONS, {
+    variables: {
+      fields: {
+        // _id: [conversationID],
+        positionID: positionID,
+        userID: [currentUser?._id],
+      },
+    },
+    onCompleted: (_data) => {
+      setChatN(
+        _data.findConversations[
+          _data.findConversations.length - 1
+        ].conversation.map((_mess: ConversationType) => ({
+          user: _mess.role === "assistant" ? "01" : "02",
+          message: _mess.content,
+          date: _mess.date,
+        }))
+      );
+    },
+    ssr: false,
+  });
 
   return (
     <div className="h-full w-full">
@@ -1095,7 +1126,7 @@ const InterviewEdenAIContainer = ({
             }
           />
         </div> */}
-        {
+        {!findConversationsLoading && (
           <InterviewEdenAI
             key={experienceTypeID}
             // aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
@@ -1105,6 +1136,7 @@ const InterviewEdenAIContainer = ({
             handleChangeChat={(_chat: any) => {
               // setChatN(_chat);
             }}
+            changeChatN={chatN}
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
@@ -1124,7 +1156,7 @@ const InterviewEdenAIContainer = ({
             }}
             headerText={`Interview with Eden AI`}
           />
-        }
+        )}
       </div>
       {/* <CountdownTimer /> */}
       {/* <div className="absolute right-0 top-32 pr-6">
@@ -1140,13 +1172,15 @@ const InterviewEdenAIContainer = ({
   );
 };
 
-import { UPDATE_MEMBER } from "@eden/package-graphql";
+import { FIND_CONVERSATIONS, UPDATE_MEMBER } from "@eden/package-graphql";
 import {
+  ConversationType,
   Members,
   Mutation,
   Position,
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
+import { ChatMessage } from "@eden/package-ui/src/components/InterviewEdenAI/InterviewEdenAI";
 import { classNames } from "@eden/package-ui/utils";
 // import { classNames } from "@eden/package-ui/utils";
 import { locations } from "@eden/package-ui/utils/locations";
