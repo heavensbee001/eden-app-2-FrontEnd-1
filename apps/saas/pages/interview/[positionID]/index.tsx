@@ -1045,6 +1045,9 @@ const InterviewEdenAIContainer = ({
   const [addCandidateFlag, setAddCandidateFlag] = useState<boolean>(false);
 
   const [conversationID, setConversationID] = useState<String>("");
+  const [chatN, setChatN] = useState<ChatMessage>([]);
+
+  console.log("CHAT N", chatN);
 
   // SOS 🆘 -> the candidate is not been added to the position // return back before publish code
   useEffect(() => {
@@ -1071,15 +1074,33 @@ const InterviewEdenAIContainer = ({
     }
   }, [positionID, currentUser?._id, conversationID]);
 
-  // console.log("positionID = ", positionID);
-
   const [experienceTypeID] = useState<string>("");
-
-  // const [chatN, setChatN] = useState<ChatMessage>([]);
 
   // console.log("chatN = ", chatN);
 
   // console.log("conversationID = ", conversationID);
+
+  const { loading: findConversationsLoading } = useQuery(FIND_CONVERSATIONS, {
+    variables: {
+      fields: {
+        // _id: [conversationID],
+        positionID: positionID,
+        userID: [currentUser?._id],
+      },
+    },
+    onCompleted: (_data) => {
+      setChatN(
+        _data.findConversations[
+          _data.findConversations.length - 1
+        ].conversation.map((_mess: ConversationType) => ({
+          user: _mess.role === "assistant" ? "01" : "02",
+          message: _mess.content,
+          date: _mess.date,
+        }))
+      );
+    },
+    ssr: false,
+  });
 
   return (
     <div className="h-full w-full">
@@ -1095,7 +1116,7 @@ const InterviewEdenAIContainer = ({
             }
           />
         </div> */}
-        {
+        {!findConversationsLoading && (
           <InterviewEdenAI
             key={experienceTypeID}
             // aiReplyService={AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI}
@@ -1105,6 +1126,7 @@ const InterviewEdenAIContainer = ({
             handleChangeChat={(_chat: any) => {
               // setChatN(_chat);
             }}
+            changeChatN={chatN}
             sentMessageToEdenAIobj={sentMessageToEdenAIobj}
             setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
@@ -1124,7 +1146,7 @@ const InterviewEdenAIContainer = ({
             }}
             headerText={`Interview with Eden AI`}
           />
-        }
+        )}
       </div>
       {/* <CountdownTimer /> */}
       {/* <div className="absolute right-0 top-32 pr-6">
@@ -1140,13 +1162,15 @@ const InterviewEdenAIContainer = ({
   );
 };
 
-import { UPDATE_MEMBER } from "@eden/package-graphql";
+import { FIND_CONVERSATIONS, UPDATE_MEMBER } from "@eden/package-graphql";
 import {
+  ConversationType,
   Members,
   Mutation,
   Position,
   UpdateMemberInput,
 } from "@eden/package-graphql/generated";
+import { ChatMessage } from "@eden/package-ui/src/components/InterviewEdenAI/InterviewEdenAI";
 import { classNames } from "@eden/package-ui/utils";
 // import { classNames } from "@eden/package-ui/utils";
 import { locations } from "@eden/package-ui/utils/locations";
