@@ -48,7 +48,7 @@ export enum AI_INTERVIEW_SERVICES {
   // eslint-disable-next-line no-unused-vars
   ASK_EDEN_GPT4_ONLY = "ASK_EDEN_GPT4_ONLY",
 }
-type ChatMessage = Array<{ user: string; message: string; date: Date }>;
+export type ChatMessage = Array<{ user: string; message: string; date: Date }>;
 
 export interface IInterviewEdenAIProps {
   aiReplyService: AI_INTERVIEW_SERVICES;
@@ -109,7 +109,9 @@ export const InterviewEdenAI = ({
 }: IInterviewEdenAIProps) => {
   // const { currentUser } = useContext(UserContext);
 
-  const [chatN, setChatN] = useState<ChatMessage>([] as ChatMessage); // all chat messages
+  const [chatN, setChatN] = useState<ChatMessage>(
+    changeChatN || ([] as ChatMessage)
+  ); // all chat messages
 
   // const [conversationN, setConversationN] = useState<ChatMessage>([] as ChatMessage); // all chat messages
 

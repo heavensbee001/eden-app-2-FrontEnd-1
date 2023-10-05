@@ -777,11 +777,11 @@ const TrainAiPage: NextPageWithLayout = () => {
                     <h2 className="text-xl font-medium px-8">
                       Final Interview Details
                     </h2>
-                    <p className="text-sm text-zinc-400 px-8">
+                    <h3 className="text-edenGreen-600 w-full text-center">
                       {
                         "All done, this is the final step. Fill in some quick information and we're off!"
                       }
-                    </p>
+                    </h3>
                     <FinalFormContainer
                       onChange={(data) => {
                         setValue(
