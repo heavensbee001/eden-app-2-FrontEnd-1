@@ -157,7 +157,7 @@ const ConnectTelegramContainer = ({
                     {telegramAuthCode}
                   </h2>
 
-                  <div>Hi!</div>
+                  {/* <div>Hi!</div> */}
 
                   <Button
                     variant="primary"
