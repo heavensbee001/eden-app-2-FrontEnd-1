@@ -26,6 +26,7 @@ export const AppUserLayout = ({
         router.pathname.includes("/pricing") ||
         router.pathname.includes("/signup") ||
         router.pathname.includes("/interview") ||
+        router.pathname.includes("/connect-telegram") ||
         router.pathname.includes("/request-access") ? (
           <LeftNav logoLink={logoLink} />
         ) : (
