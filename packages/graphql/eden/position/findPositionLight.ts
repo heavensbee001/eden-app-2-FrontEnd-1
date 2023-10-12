@@ -9,6 +9,15 @@ export const FIND_POSITION_LIGHT = gql`
       name
       status
       candidates {
+        scoreCardTotal {
+          score
+        }
+        scoreCardCategoryMemories {
+          category
+          score
+          reason
+          priority
+        }
         keyAttributes {
           attribute
           reason

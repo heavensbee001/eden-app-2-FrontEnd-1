@@ -25,6 +25,8 @@ import { Tab } from "@headlessui/react";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 
+import { ScorecardTab } from "./tabs/ScorecardTab";
+
 type NodeDisplay = {
   nameRelevantNode: string;
   nameOriginalNode: string;
@@ -83,9 +85,8 @@ export const CandidateInfo = ({
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [letterType, setLetterType] = useState<
-    "rejection" | "nextInterviewInvite" | undefined
-  >(undefined);
+  const [letterType, setLetterType] =
+    useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -139,6 +140,10 @@ export const CandidateInfo = ({
           candidate={candidate}
         />
       ),
+    },
+    {
+      tab: "Scorecard",
+      Content: () => <ScorecardTab candidate={candidate} />,
     },
     {
       tab: "Fit",
