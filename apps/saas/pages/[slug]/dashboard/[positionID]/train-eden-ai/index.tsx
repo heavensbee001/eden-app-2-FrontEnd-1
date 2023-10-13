@@ -971,6 +971,7 @@ export async function getServerSideProps(ctx: {
 
   if (
     res.status === 200 &&
+    _companyAuth.company.type !== "COMMUNITY" &&
     (!_companyAuth.company.stripe ||
       !_companyAuth.company.stripe.product ||
       !_companyAuth.company.stripe.product.ID)

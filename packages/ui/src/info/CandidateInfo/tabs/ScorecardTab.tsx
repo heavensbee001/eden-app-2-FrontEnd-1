@@ -187,7 +187,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                   return (
                                     <div
                                       key={_index}
-                                      className="relative flex w-full items-center justify-between mb-4 border border-edenGray-100 rounded-md p-2"
+                                      className="relative flex w-full items-center justify-between mb-4 border border-edenGray-100 rounded-md p-2 w-[95%]"
                                     >
                                       <p className="text-edenGray-700 text-xs">
                                         {_card?.card?.content}
