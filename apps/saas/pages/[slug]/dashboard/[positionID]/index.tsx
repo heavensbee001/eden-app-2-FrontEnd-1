@@ -148,9 +148,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -2064,6 +2063,7 @@ export async function getServerSideProps(ctx: {
 
   if (
     res.status === 200 &&
+    _companyAuth.company.type !== "COMMUNITY" &&
     (!_companyAuth.company.stripe ||
       !_companyAuth.company.stripe.product ||
       !_companyAuth.company.stripe.product.ID)
