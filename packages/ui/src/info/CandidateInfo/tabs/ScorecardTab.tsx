@@ -51,6 +51,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
     variables: {
       fields: {
         positionID: positionID,
+        userID: candidate?.user?._id,
       },
     },
     skip: !positionID,
