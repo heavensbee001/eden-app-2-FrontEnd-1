@@ -1221,6 +1221,7 @@ export type Query = {
   activeUsersQueryStats?: Maybe<Array<Maybe<ResultCount2>>>;
   adminFindAllSkillsEveryState?: Maybe<Array<Maybe<Skills>>>;
   askEdenUserPosition?: Maybe<AskEdenUserPositionOutput>;
+  askEdenUserPositionGPTFunc?: Maybe<AskEdenUserPositionGptFuncOutput>;
   candidateNotesComparePositionEdenAI?: Maybe<
     Array<Maybe<CandidateNotesComparePositionEdenAiOutput>>
   >;
@@ -1274,6 +1275,7 @@ export type Query = {
   findNodes?: Maybe<Array<Maybe<Node>>>;
   findOneMemberToMembersGraph?: Maybe<Graph>;
   findPosition?: Maybe<Position>;
+  findPositionCandidate?: Maybe<CandidateType>;
   findPositions?: Maybe<Array<Maybe<Position>>>;
   findPositionsOfCommunity?: Maybe<Array<Maybe<Position>>>;
   findPrioritiesTrainEdenAI?: Maybe<FindPrioritiesTrainEdenAiOutput>;
@@ -1362,6 +1364,10 @@ export type QueryAdminFindAllSkillsEveryStateArgs = {
 
 export type QueryAskEdenUserPositionArgs = {
   fields?: InputMaybe<AskEdenUserPositionInput>;
+};
+
+export type QueryAskEdenUserPositionGptFuncArgs = {
+  fields?: InputMaybe<AskEdenUserPositionGptFuncInput>;
 };
 
 export type QueryCandidateNotesComparePositionEdenAiArgs = {
@@ -1558,6 +1564,10 @@ export type QueryFindOneMemberToMembersGraphArgs = {
 
 export type QueryFindPositionArgs = {
   fields?: InputMaybe<FindPositionInput>;
+};
+
+export type QueryFindPositionCandidateArgs = {
+  fields?: InputMaybe<FindPositionCandidateInput>;
 };
 
 export type QueryFindPositionsArgs = {
@@ -2349,6 +2359,18 @@ export enum ApprovedSkillEnum {
   Waiting = "waiting",
 }
 
+export type AskEdenUserPositionGptFuncInput = {
+  conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+  whatToAsk?: InputMaybe<WhatToAskEnum>;
+};
+
+export type AskEdenUserPositionGptFuncOutput = {
+  __typename?: "askEdenUserPositionGPTFuncOutput";
+  reply?: Maybe<Scalars["String"]>;
+};
+
 export type AskEdenUserPositionInput = {
   conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
   positionID?: InputMaybe<Scalars["ID"]>;
@@ -2660,6 +2682,10 @@ export type Conn_Node_WhType = {
   numPath?: Maybe<Scalars["Float"]>;
   wh_sum?: Maybe<Scalars["Float"]>;
 };
+
+export enum ConnectCardTypeEnum {
+  FilterUser = "filterUser",
+}
 
 export type ConnectedCards = {
   __typename?: "connectedCards";
@@ -3409,6 +3435,7 @@ export type FindAllProjectsTeamsAnouncmentsOutput = {
 export type FindCardMemoriesInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   companyID?: InputMaybe<Scalars["ID"]>;
+  connectCardType?: InputMaybe<ConnectCardTypeEnum>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
 };
@@ -3584,6 +3611,11 @@ export type FindOneMemberToMembersGraphInput = {
   memberID?: InputMaybe<Scalars["ID"]>;
   nodeSettings?: InputMaybe<Array<InputMaybe<NodeSetting>>>;
   showAvatar?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type FindPositionCandidateInput = {
+  positionID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type FindPositionInput = {
@@ -4663,10 +4695,12 @@ export type SaveDailyLoginInput = {
 
 export type ScoreCardCategoryMemoryType = {
   __typename?: "scoreCardCategoryMemoryType";
+  _id?: Maybe<Scalars["ID"]>;
   category?: Maybe<TypeCardMemoryEnum>;
   priority?: Maybe<Scalars["Float"]>;
   reason?: Maybe<Scalars["String"]>;
   score?: Maybe<Scalars["Float"]>;
+  scoreCardsPosition?: Maybe<Array<Maybe<ScoreCardsPositionType>>>;
 };
 
 export type ScoreCardMemory = {
@@ -4685,6 +4719,20 @@ export type ScoreCardMemoryInput = {
 export type ScoreCardTotalType = {
   __typename?: "scoreCardTotalType";
   score?: Maybe<Scalars["Float"]>;
+  scoreCardsCalculated?: Maybe<Scalars["Boolean"]>;
+};
+
+export type ScoreCardsCandidateType = {
+  __typename?: "scoreCardsCandidateType";
+  card?: Maybe<CardMemory>;
+};
+
+export type ScoreCardsPositionType = {
+  __typename?: "scoreCardsPositionType";
+  card?: Maybe<CardMemory>;
+  reason?: Maybe<Scalars["String"]>;
+  score?: Maybe<Scalars["Float"]>;
+  scoreCardsCandidate?: Maybe<Array<Maybe<ScoreCardsCandidateType>>>;
 };
 
 export type SecondInterviewLetterInput = {
