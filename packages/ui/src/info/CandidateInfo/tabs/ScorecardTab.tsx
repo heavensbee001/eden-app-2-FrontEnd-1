@@ -8,6 +8,7 @@ import {
   CandidateTypeSkillMatch,
   EdenIconExclamation,
   EdenTooltip,
+  Loading,
 } from "@eden/package-ui";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
@@ -60,23 +61,24 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
   const router = useRouter();
   const { positionID } = router.query;
 
-  const { data: findPositionCandidateData } = useQuery(
-    FIND_POSITION_CANDIDATE,
-    {
-      variables: {
-        fields: {
-          positionID: positionID,
-          userID: candidate?.user?._id,
-        },
+  const {
+    data: findPositionCandidateData,
+    loading: findPositionCandidateDataLoading,
+  } = useQuery(FIND_POSITION_CANDIDATE, {
+    variables: {
+      fields: {
+        positionID: positionID,
+        userID: candidate?.user?._id,
       },
-      skip: !positionID,
-    }
-  );
+    },
+    skip: !positionID,
+  });
 
   const [expandID, setExpandID] = useState<null | string>(null);
 
   return (
     <>
+      {findPositionCandidateDataLoading && <Loading title="Loading scores" />}
       {findPositionCandidateData?.findPositionCandidate &&
       !!findPositionCandidateData?.findPositionCandidate
         .scoreCardCategoryMemories.length
