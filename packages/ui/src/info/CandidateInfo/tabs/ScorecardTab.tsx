@@ -1,8 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import {
-  CardMemory,
   Maybe,
   ScoreCardCategoryMemoryType,
+  ScoreCardsPositionType,
 } from "@eden/package-graphql/generated";
 import {
   CandidateTypeSkillMatch,
@@ -13,26 +13,39 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 
-const FIND_CARD_MEMORIES = gql`
-  query FindCardMemories($fields: findCardMemoriesInput) {
-    findCardMemories(fields: $fields) {
-      _id
-      content
-      type
-      score {
-        overall
-        reason
+import { classNames } from "../../../../utils";
+
+const FIND_POSITION_CANDIDATE = gql`
+  query FindPositionCandidate($fields: findPositionCandidateInput) {
+    findPositionCandidate(fields: $fields) {
+      user {
+        _id
+        discordName
       }
-      connectedCards {
+      scoreCardTotal {
+        score
+        scoreCardsCalculated
+      }
+      scoreCardCategoryMemories {
+        category
         score
         reason
-        card {
-          _id
-          content
-        }
-        card {
-          _id
-          content
+        scoreCardsPosition {
+          score
+          reason
+          card {
+            _id
+            content
+          }
+          scoreCardsCandidate {
+            card {
+              score {
+                overall
+              }
+              _id
+              content
+            }
+          }
         }
       }
     }
@@ -47,141 +60,137 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
   const router = useRouter();
   const { positionID } = router.query;
 
-  const { data: findCardMemoriesData } = useQuery(FIND_CARD_MEMORIES, {
-    variables: {
-      fields: {
-        positionID: positionID,
-        userID: candidate?.user?._id,
+  const { data: findPositionCandidateData } = useQuery(
+    FIND_POSITION_CANDIDATE,
+    {
+      variables: {
+        fields: {
+          positionID: positionID,
+          userID: candidate?.user?._id,
+        },
       },
-    },
-    skip: !positionID,
-  });
+      skip: !positionID,
+    }
+  );
 
   const [expandID, setExpandID] = useState<null | string>(null);
 
   return (
     <>
-      {candidate?.scoreCardCategoryMemories &&
-      candidate?.scoreCardCategoryMemories.length
-        ? candidate?.scoreCardCategoryMemories.map(
+      {findPositionCandidateData?.findPositionCandidate &&
+      !!findPositionCandidateData?.findPositionCandidate
+        .scoreCardCategoryMemories.length
+        ? findPositionCandidateData?.findPositionCandidate.scoreCardCategoryMemories.map(
             (_category: Maybe<ScoreCardCategoryMemoryType>, index: number) => (
               <div className="mb-10" key={index}>
                 <div className="border-edenGreen-300 flex justify-between border-b px-4">
                   <h3 className="text-edenGreen-500 mb-3">
                     {_category!.category?.replace("_", " ")}
                   </h3>
-                  {/* <div className="text-edenGray-700 flex items-center text-sm">
+                  <div className="text-edenGray-700 flex items-center text-sm">
                     Average:
-                    <div className="bg-edenPink-300 ml-2 flex h-6 w-6 items-center justify-center rounded-full pb-px">
+                    <div className="bg-edenPink-300 ml-2 -mr-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
                       <span
                         className={classNames(
-                          getGradeFromLetter(
-                            reportNotesData[categoryName].average
-                          ).color,
+                          getGrade(_category!.score! * 100).color,
                           "text-md"
                         )}
                       >
-                        {reportNotesData[categoryName].average}
+                        {getGrade(_category!.score! * 100).letter}
                       </span>
                     </div>
-                  </div> */}
+                  </div>
                 </div>
 
-                {findCardMemoriesData?.findCardMemories && (
-                  <ul className="list-none space-y-1">
-                    {findCardMemoriesData.findCardMemories
-                      .filter(
-                        (_mem: Maybe<CardMemory>) =>
-                          _mem!.type === _category!.category
-                      )
-                      .map((item: Maybe<CardMemory>, index: number) => {
-                        const score =
-                          item!.score?.overall || item!.score?.overall === 0
-                            ? item!.score?.overall * 100
-                            : null;
+                <ul className="list-none space-y-1">
+                  {_category?.scoreCardsPosition!.map(
+                    (item: Maybe<ScoreCardsPositionType>, index: number) => {
+                      const score =
+                        item!.score || item!.score === 0
+                          ? item!.score * 100
+                          : null;
 
-                        const { letter, color } = getGrade(score);
+                      const { letter, color } = getGrade(score);
 
-                        return (
-                          <li
-                            key={index}
-                            className="border-edenGray-100 w-full border-b px-4"
-                          >
-                            <div className="relative flex w-full columns-2 items-center justify-between py-4">
-                              <div className="absolute top-5 -left-6 cursor-pointer">
-                                {expandID ===
-                                _category!.category?.replace("_", " ")! +
-                                  index ? (
-                                  <ChevronUpIcon
-                                    width={16}
-                                    className=""
-                                    onClick={() => {
-                                      setExpandID(null);
-                                    }}
-                                  />
-                                ) : (
-                                  <ChevronDownIcon
-                                    width={16}
-                                    className=""
-                                    onClick={() => {
-                                      setExpandID(
-                                        _category!.category?.replace(
-                                          "_",
-                                          " "
-                                        )! + index
-                                      );
-                                    }}
-                                  />
-                                )}
-                              </div>
-                              <p className="w-full pr-4 text-sm">
-                                {item?.content!.trim()}
-                              </p>
-                              <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
-                                <span className={color}>{letter}</span>
-                                <EdenTooltip
-                                  id={
-                                    _category!.category?.replace("_", " ")! +
-                                    index
-                                  }
-                                  innerTsx={
-                                    <div className="w-60">
-                                      {letter === "?" ? (
-                                        <div>
-                                          <p className="text-gray-600 mb-4 text-sm leading-tight">
-                                            {
-                                              "The candidate hasn't provided information on this. Do you want me to reach out & find out for you?"
-                                            }
-                                          </p>
-                                        </div>
-                                      ) : (
-                                        <p className="text-gray-600 text-sm leading-tight">
-                                          {item?.score?.reason}
-                                        </p>
-                                      )}
-                                    </div>
-                                  }
-                                  place="top"
-                                  effect="solid"
-                                  backgroundColor="white"
-                                  border
-                                  borderColor="#e5e7eb"
-                                  padding="0.5rem"
-                                >
-                                  <div className="bg-edenPink-200 cursor-pointer rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
-                                    <EdenIconExclamation className="w-full h-full" />
-                                  </div>
-                                </EdenTooltip>
-                              </div>
-                            </div>
-                            {expandID ===
+                      return (
+                        <li
+                          key={index}
+                          className="border-edenGray-100 w-full border-b px-4"
+                        >
+                          <div className="relative flex w-full columns-2 items-center justify-between py-4">
+                            <div className="absolute top-5 -left-6 cursor-pointer">
+                              {expandID ===
                               _category!.category?.replace("_", " ")! +
-                                index && (
-                              <div>
-                                {item?.connectedCards?.map((_card, _index) => {
+                                index ? (
+                                <ChevronUpIcon
+                                  width={16}
+                                  className=""
+                                  onClick={() => {
+                                    setExpandID(null);
+                                  }}
+                                />
+                              ) : (
+                                <ChevronDownIcon
+                                  width={16}
+                                  className=""
+                                  onClick={() => {
+                                    setExpandID(
+                                      _category!.category?.replace("_", " ")! +
+                                        index
+                                    );
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <p className="w-full pr-4 text-sm">
+                              {item?.card?.content!.trim()}
+                            </p>
+                            <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
+                              <span className={color}>{letter}</span>
+                              <EdenTooltip
+                                id={
+                                  _category!.category?.replace("_", " ")! +
+                                  index
+                                }
+                                innerTsx={
+                                  <div className="w-60">
+                                    {letter === "?" ? (
+                                      <div>
+                                        <p className="text-gray-600 mb-4 text-sm leading-tight">
+                                          {
+                                            "The candidate hasn't provided information on this. Do you want me to reach out & find out for you?"
+                                          }
+                                        </p>
+                                      </div>
+                                    ) : (
+                                      <p className="text-gray-600 text-sm leading-tight">
+                                        {item?.reason}
+                                      </p>
+                                    )}
+                                  </div>
+                                }
+                                place="top"
+                                effect="solid"
+                                backgroundColor="white"
+                                border
+                                borderColor="#e5e7eb"
+                                padding="0.5rem"
+                              >
+                                <div className="bg-edenPink-200 cursor-pointer rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
+                                  <EdenIconExclamation className="w-full h-full" />
+                                </div>
+                              </EdenTooltip>
+                            </div>
+                          </div>
+                          {expandID ===
+                            _category!.category?.replace("_", " ")! + index && (
+                            <div>
+                              {item?.scoreCardsCandidate?.map(
+                                (_card, _index) => {
                                   const { color, letter } = getGrade(
-                                    _card?.score || _card?.score === 0
-                                      ? _card?.score * 100
+                                    !!_card?.card?.score?.overall ||
+                                      _card?.card?.score?.overall === 0
+                                      ? _card?.card?.score?.overall * 100
                                       : null
                                   );
 
@@ -198,14 +207,15 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                       </div>
                                     </div>
                                   );
-                                })}
-                              </div>
-                            )}
-                          </li>
-                        );
-                      })}
-                  </ul>
-                )}
+                                }
+                              )}
+                            </div>
+                          )}
+                        </li>
+                      );
+                    }
+                  )}
+                </ul>
               </div>
             )
           )
@@ -227,18 +237,20 @@ const getGrade = (percentage: number | null | undefined): Grade => {
     return grade;
   }
 
-  if (percentage >= 70) {
+  if (percentage >= 90) {
+    grade = { letter: "A+", color: "text-utilityGreen" };
+  } else if (percentage >= 80) {
     grade = { letter: "A", color: "text-utilityGreen" };
-  } else if (percentage >= 50) {
+  } else if (percentage >= 70) {
+    grade = { letter: "B+", color: "text-utilityYellow" };
+  } else if (percentage >= 60) {
     grade = { letter: "B", color: "text-utilityYellow" };
-  } else if (percentage >= 30) {
+  } else if (percentage >= 50) {
+    grade = { letter: "C+", color: "text-utilityOrange" };
+  } else if (percentage >= 40) {
     grade = { letter: "C", color: "text-utilityOrange" };
-    // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
-    // else grade = { letter: "C", color: "text-black" };
   } else {
     grade = { letter: "D", color: "text-utilityRed" };
-    // if (mainColumn) grade = { letter: "D", color: "text-red-300" };
-    // else grade = { letter: "D", color: "text-black" };
   }
 
   return grade;
