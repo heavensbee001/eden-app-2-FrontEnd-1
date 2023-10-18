@@ -2,6 +2,7 @@
 import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
+import { input } from "@testing-library/user-event/dist/types/event";
 import { useContext, useEffect, useRef, useState } from "react";
 
 // import { AiOutlineSend } from "react-icons/ai";
@@ -70,6 +71,8 @@ export const ChatSimple = ({
   };
 
   const [inputMessage, setInputMessage] = useState("");
+  const [ctrlKeyDown, setCtrlKeyDown] = useState(false);
+  const [numberOfLines, setNumberOfLines] = useState(1);
 
   useEffect(() => {
     // Keep the scroll position at the bottom of the component
@@ -89,6 +92,34 @@ export const ChatSimple = ({
       lastMessage.scrollIntoView({ behavior: "smooth", inline: "end" });
     }
   }, [chatN]);
+
+  useEffect(() => {
+    setNumberOfLines(inputMessage.split("\n").length);
+  }, [inputMessage]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    console.log(e.code, ctrlKeyDown);
+    if (e.code == "ControlRight" || e.code == "ControlLeft")
+      setCtrlKeyDown(true);
+    else if (e.code == "Enter" && ctrlKeyDown) {
+      if (inputMessage.length > 0) {
+        handleSentMessage(inputMessage, "02");
+        e.preventDefault();
+        setInputMessage("");
+        setNumberOfLines(1);
+      }
+    }
+    //  else if (e.code == "Enter" && !ctrlKeyDown) {
+    //   setNumberOfLines(inputMessage.split("\n").length);
+    // }
+  };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    console.log(ctrlKeyDown);
+    if (e.code == "ControlRight" || e.code == "ControlLeft") {
+      setCtrlKeyDown(false);
+    }
+  };
 
   // const currentTime = () => {
   //   // Get current date
@@ -133,14 +164,14 @@ export const ChatSimple = ({
             )}
             <section
               className={classNames(
-                "scrollbar-hide overflow-y-scroll border-b border-edenGray-100 transition-height ease-in-out",
+                "scrollbar-hide border-edenGray-100 transition-height overflow-y-scroll border-b ease-in-out",
                 headerText
-                  ? inputMessage.length < 50
-                    ? "h-[calc(100%-7.75rem)]"
-                    : "h-[calc(100%-12.75rem)]"
-                  : inputMessage.length < 50
-                  ? "h-[calc(100%-5rem)]"
-                  : "h-[calc(100%-10rem)]"
+                  ? inputMessage.length > 56 || numberOfLines > 1
+                    ? "h-[calc(100%-12.75rem)]"
+                    : "h-[calc(100%-7.75rem)]"
+                  : inputMessage.length > 56 || numberOfLines > 1
+                  ? "h-[calc(100%-10rem)]"
+                  : "h-[calc(100%-5rem)]"
               )}
             >
               <div
@@ -241,25 +272,22 @@ export const ChatSimple = ({
 
             <section
               className={classNames(
-                "flex w-full items-center justify-between px-3 gap-3 transition-height ease-in-out",
-                inputMessage.length < 50 ? "h-20" : "h-40"
+                "transition-height flex w-full items-center justify-between gap-3 px-3 ease-in-out",
+                inputMessage.length > 56 || numberOfLines > 1 ? "h-40" : "h-20"
               )}
             >
               <textarea
                 className={classNames(
-                  "rounded-md border transition-height ease-in-out border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none bg-transparent py-4 px-4 focus:outline-none",
-                  inputMessage.length < 50 ? "h-[3.6rem]" : "h-[8.6rem]"
+                  "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",
+                  inputMessage.length > 56 || numberOfLines > 1
+                    ? "h-[8.6rem]"
+                    : "h-[3.6rem]"
                 )}
                 placeholder="Type your message here..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (inputMessage.length > 0 && e.code == "Enter") {
-                    handleSentMessage(inputMessage, "02");
-                    e.preventDefault();
-                    setInputMessage("");
-                  }
-                }}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handleKeyUp}
               />
               <button
                 className={classNames(
