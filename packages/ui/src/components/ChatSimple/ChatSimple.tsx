@@ -101,7 +101,7 @@ export const ChatSimple = ({
       e.code == "ControlRight" ||
       e.code == "ControlLeft" ||
       e.code == "MetaLeft" ||
-      e.code === "MetaRight"
+      e.code == "MetaRight"
     )
       setCtrlKeyDown(true);
     else if (e.code == "Enter" && ctrlKeyDown) {
@@ -122,7 +122,7 @@ export const ChatSimple = ({
       e.code == "ControlRight" ||
       e.code == "ControlLeft" ||
       e.code == "MetaLeft" ||
-      e.code === "MetaRight"
+      e.code == "MetaRight"
     ) {
       setCtrlKeyDown(false);
     }
