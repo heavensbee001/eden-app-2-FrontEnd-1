@@ -2,7 +2,6 @@
 import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
-import { input } from "@testing-library/user-event/dist/types/event";
 import { useContext, useEffect, useRef, useState } from "react";
 
 // import { AiOutlineSend } from "react-icons/ai";
