@@ -97,7 +97,12 @@ export const ChatSimple = ({
   }, [inputMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.code == "ControlRight" || e.code == "ControlLeft")
+    if (
+      e.code == "ControlRight" ||
+      e.code == "ControlLeft" ||
+      e.code == "MetaLeft" ||
+      e.code === "MetaRight"
+    )
       setCtrlKeyDown(true);
     else if (e.code == "Enter" && ctrlKeyDown) {
       if (inputMessage.length > 0) {
@@ -113,7 +118,12 @@ export const ChatSimple = ({
   };
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.code == "ControlRight" || e.code == "ControlLeft") {
+    if (
+      e.code == "ControlRight" ||
+      e.code == "ControlLeft" ||
+      e.code == "MetaLeft" ||
+      e.code === "MetaRight"
+    ) {
       setCtrlKeyDown(false);
     }
   };
