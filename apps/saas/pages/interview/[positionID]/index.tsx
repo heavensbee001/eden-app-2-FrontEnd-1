@@ -242,13 +242,13 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
                   <Modal open={showStartInterviewModal} closeOnEsc={false}>
                     <div className="px-4 py-8">
-                      <h2 className="text-center text-edenGreen-600">
+                      <h2 className="text-edenGreen-600 text-center">
                         {"You're about to head into your interview with Eden."}
                       </h2>
                       <p className="text-center">
                         {"This will take around 10-15 minutes."}
                       </p>
-                      <p className="text-center text-sm mb-12">
+                      <p className="mb-12 text-center text-sm">
                         {"Just be your smashing self. You look great btw ;)"}
                       </p>
                       <div className="flex justify-evenly">
@@ -280,7 +280,7 @@ const HomePage: NextPageWithLayout = () => {
                   label={"INTERVIEW"}
                   nextButton={
                     <Button
-                      variant="secondary"
+                      variant="primary"
                       className="mx-auto"
                       onClick={() => {
                         handleFinishInterviewStep();
@@ -352,7 +352,7 @@ const HomePage: NextPageWithLayout = () => {
                     </Button>
                   }
                 >
-                  <h3 className="text-edenGreen-600 w-full text-center mt-4 mb-12">
+                  <h3 className="text-edenGreen-600 mb-12 mt-4 w-full text-center">
                     {
                       "All done, this is the final step. Fill in some quick information and we’re off!"
                     }
