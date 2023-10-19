@@ -118,6 +118,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID, panda } = router.query;
+
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
 
@@ -148,8 +149,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
