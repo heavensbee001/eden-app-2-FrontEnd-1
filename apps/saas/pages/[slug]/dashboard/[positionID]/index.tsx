@@ -119,7 +119,6 @@ const PositionCRM: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID, panda } = router.query;
 
-  console.log("positionID", positionID);
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
 
