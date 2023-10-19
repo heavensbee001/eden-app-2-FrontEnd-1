@@ -22,6 +22,7 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import moment from "moment";
+import Column from "../../components/DragDrop/Column";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -122,6 +123,33 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
     }
   };
 
+  const getGrade = (percentage: number | null | undefined): Grade => {
+    let grade: Grade = { letter: "", color: "" };
+
+    if (!percentage && percentage !== 0) {
+      grade = { letter: "?", color: "text-edenGray-500" };
+      return grade;
+    }
+
+    if (percentage >= 90) {
+      grade = { letter: "A+", color: "text-utilityGreen" };
+    } else if (percentage >= 80) {
+      grade = { letter: "A", color: "text-utilityGreen" };
+    } else if (percentage >= 70) {
+      grade = { letter: "B+", color: "text-utilityYellow" };
+    } else if (percentage >= 60) {
+      grade = { letter: "B", color: "text-utilityYellow" };
+    } else if (percentage >= 50) {
+      grade = { letter: "C+", color: "text-utilityOrange" };
+    } else if (percentage >= 40) {
+      grade = { letter: "C", color: "text-utilityOrange" };
+    } else {
+      grade = { letter: "D", color: "text-utilityRed" };
+    }
+
+    return grade;
+  };
+
   const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
 
   return (
@@ -132,7 +160,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             {listMode !== ListModeEnum.list ? <th>{/* Select */}</th> : null}
             <th className="min-w-min pl-2 text-start font-normal">Name</th>
             <th className="font-normal">
-              Fit Score
+              Technical Skills
               {/* {showMatchDetails ? (
                 <AiOutlineEyeInvisible
                   size={24}
@@ -152,8 +180,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 Requir.
               </th>
             )} */}
-            <th className="font-normal">Culture Fit</th>
-            <th className="font-normal">Skills</th>
+            <th className="font-normal">Experience</th>
+            <th className="font-normal">Soft Skills</th>
+            <th className="font-normal">Core Values</th>
             {/* <th className="py-2 pr-2 text-right font-medium">
               $/hour
             </th> */}
@@ -208,17 +237,137 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     <span className="ml-2">{candidate.user?.discordName!}</span>
                   </div>
                 </ColumnStyled>
+
                 <ColumnStyled textColor="text-fuchsia-600 text-center">
-                  {candidate.totalMatchPerc &&
-                  candidate.letterAndColor?.totalMatchPerc ? (
-                    <div className="border-edenGray-100 -my-4 mx-auto flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
-                      <p
-                        className={`${candidate.letterAndColor.totalMatchPerc.color}`}
-                      >
-                        {`${candidate.letterAndColor.totalMatchPerc.letter}`}
-                      </p>
-                    </div>
-                  ) : null}
+                  {candidate.scoreCardCategoryMemories &&
+                    candidate.scoreCardCategoryMemories.filter(
+                      (_category, index) =>
+                        _category && _category.category === "TECHNICAL_SKILLS"
+                    ).length > 0 && (
+                      // <div className='p-auto'>
+                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                        <span
+                          className={classNames(
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "TECHNICAL_SKILLS"
+                              )[0]?.score! * 100
+                            ).color,
+                            "text-md"
+                          )}
+                        >
+                          {
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "TECHNICAL_SKILLS"
+                              )[0]?.score! * 100
+                            ).letter
+                          }
+                        </span>
+                      </div>
+                      // </div>
+                    )}
+                </ColumnStyled>
+
+                <ColumnStyled textColor="text-fuchsia-600 text-center">
+                  {candidate.scoreCardCategoryMemories &&
+                    candidate.scoreCardCategoryMemories.filter(
+                      (_category, index) =>
+                        _category && _category.category === "EXPERIENCE"
+                    ).length > 0 && (
+                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                        <span
+                          className={classNames(
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "EXPERIENCE"
+                              )[0]?.score! * 100
+                            ).color,
+                            "text-md"
+                          )}
+                        >
+                          {
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "EXPERIENCE"
+                              )[0]?.score! * 100
+                            ).letter
+                          }
+                        </span>
+                      </div>
+                    )}
+                </ColumnStyled>
+                <ColumnStyled textColor="text-fuchsia-600 text-center">
+                  {candidate.scoreCardCategoryMemories &&
+                    candidate.scoreCardCategoryMemories.filter(
+                      (_category, index) =>
+                        _category && _category.category === "SOFT_SKILLS"
+                    ).length > 0 && (
+                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                        <span
+                          className={classNames(
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "SOFT_SKILLS"
+                              )[0]?.score! * 100
+                            ).color,
+                            "text-md"
+                          )}
+                        >
+                          {
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "SOFT_SKILLS"
+                              )[0]?.score! * 100
+                            ).letter
+                          }
+                        </span>
+                      </div>
+                    )}
+                </ColumnStyled>
+                <ColumnStyled textColor="text-fuchsia-600 text-center">
+                  {candidate.scoreCardCategoryMemories &&
+                    candidate.scoreCardCategoryMemories.filter(
+                      (_category, index) =>
+                        _category && _category.category === "CORE_VALUES"
+                    ).length > 0 && (
+                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                        <span
+                          className={classNames(
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "CORE_VALUES"
+                              )[0]?.score! * 100
+                            ).color,
+                            "text-md"
+                          )}
+                        >
+                          {
+                            getGrade(
+                              candidate.scoreCardCategoryMemories.filter(
+                                (_category, index) =>
+                                  _category &&
+                                  _category.category === "CORE_VALUES"
+                              )[0]?.score! * 100
+                            ).letter
+                          }
+                        </span>
+                      </div>
+                    )}
                 </ColumnStyled>
 
                 {/* {showMatchDetails && (
@@ -243,10 +392,10 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     )}
                   </ColumnStyled>
                 )} */}
-                <ColumnStyled textColor="text-[#86C8BC] text-center">
+                {/* <ColumnStyled textColor='text-[#86C8BC] text-center'>
                   {candidate?.letterAndColor &&
                   candidate?.letterAndColor?.requirements ? (
-                    <div className="border-edenGray-100 -my-4 mx-auto mx-auto flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
+                    <div className='border-edenGray-100 -my-4 mx-auto mx-auto flex h-8 w-12 items-center justify-center rounded-[0.25rem] border'>
                       <p
                         className={classNames(
                           candidate?.letterAndColor?.requirements?.color
@@ -262,7 +411,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   )}
                 </ColumnStyled>
 
-                <ColumnStyled textColor="text-[#86C8BCaaa] text-center">
+                <ColumnStyled textColor='text-[#86C8BCaaa] text-center'>
                   {candidate.skillMatch || candidate.skillScore ? (
                     <p
                       className={classNames(
@@ -279,7 +428,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   ) : (
                     <div></div>
                   )}
-                </ColumnStyled>
+                </ColumnStyled> */}
 
                 {/* <ColumnStyled extraCssClass="pr-2 text-right">
                   {candidate.user?.budget?.perHour ? (
