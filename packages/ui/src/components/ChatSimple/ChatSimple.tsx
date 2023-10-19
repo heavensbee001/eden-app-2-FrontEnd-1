@@ -8,6 +8,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 // import { CiLocationArrow1 } from "react-icons/ci";
 // import { Card } from "../..";
 
+//some text
+
 export interface IChatSimple {
   chatN?: any;
   handleSentMessage?: any;
