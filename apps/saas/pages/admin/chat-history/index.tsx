@@ -11,7 +11,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../_app";
 
 const ChatHistory: NextPageWithLayout = () => {
   const [selectedMember, setSelectedMember] = useState<MemberData>();
