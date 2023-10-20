@@ -5,7 +5,7 @@ import {
 } from "@eden/package-graphql";
 import { ChatExternalApp, MemberData } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, Loading } from "@eden/package-ui";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -20,6 +20,8 @@ const ChatHistory: NextPageWithLayout = () => {
   const [chatExternalAppData, setChatExternalAppData] = useState<
     ChatExternalApp[]
   >([]);
+
+  const messageEndRef = useRef<any>();
 
   const { data: memberData, loading: memberDataIsLoading } = useQuery(
     FIND_AVAILABLE_MEMBERS,
@@ -102,10 +104,15 @@ const ChatHistory: NextPageWithLayout = () => {
     setMembers(filteredMembers);
   }, [search, memberData]);
 
+  useEffect(() => {
+    if (messageEndRef.current)
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [chatExternalAppData]);
+
   return (
     <>
-      <div className="flex h-screen flex-row justify-around gap-5 overflow-hidden p-10">
-        <div className="flex h-screen flex-col justify-around gap-2">
+      <div className="flex h-screen flex-row justify-around gap-5 p-10">
+        <div className="flex h-full flex-col justify-around gap-2">
           <input
             className="h-10 w-80 rounded-md border-2 p-2"
             placeholder="Search for the users..."
@@ -214,6 +221,7 @@ const ChatHistory: NextPageWithLayout = () => {
                           </div>
                         </div>
                       ))}
+                    <div ref={messageEndRef} />
                   </>
                 ) : null}
               </div>
