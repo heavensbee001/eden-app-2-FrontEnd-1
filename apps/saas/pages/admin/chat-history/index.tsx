@@ -3,7 +3,7 @@ import {
   FIND_AVAILABLE_MEMBERS,
   FIND_CHAT_HISTORY,
 } from "@eden/package-graphql";
-import { ChatExternalApp, MemberData } from "@eden/package-graphql/generated";
+import { ChatExternalApp, Members } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button } from "@eden/package-ui";
 import React, { useMemo, useState } from "react";
 
@@ -14,9 +14,9 @@ function classNames(...classes: string[]) {
 import { NextPageWithLayout } from "../../_app";
 
 const ChatHistory: NextPageWithLayout = () => {
-  const [selectedMember, setSelectedMember] = useState<MemberData>();
+  const [selectedMember, setSelectedMember] = useState<Members>();
   const [search, setSearch] = useState<string>("");
-  const [members, setMembers] = useState<MemberData[]>([]);
+  const [members, setMembers] = useState<Members[]>([]);
   const [chatExternalAppData, setChatExternalAppData] = useState<
     ChatExternalApp[]
   >([]);
@@ -31,7 +31,7 @@ const ChatHistory: NextPageWithLayout = () => {
       },
       ssr: false,
       onCompleted: (data: any) => {
-        const filteredMembers = data.findMembers.filter((member: MemberData) =>
+        const filteredMembers = data.findMembers.filter((member: Members) =>
           member.discordName?.toLowerCase().includes(search)
         );
 
@@ -55,7 +55,7 @@ const ChatHistory: NextPageWithLayout = () => {
     },
   });
 
-  const handleMemberClick = (member: MemberData) => {
+  const handleMemberClick = (member: Members) => {
     setSelectedMember(member);
   };
 
@@ -64,8 +64,8 @@ const ChatHistory: NextPageWithLayout = () => {
   };
 
   useMemo(() => {
-    const filteredMembers = memberData?.findMembers?.filter(
-      (member: MemberData) => member.discordName?.toLowerCase().includes(search)
+    const filteredMembers = memberData?.findMembers?.filter((member: Members) =>
+      member.discordName?.toLowerCase().includes(search)
     );
 
     setMembers(filteredMembers);
@@ -83,7 +83,7 @@ const ChatHistory: NextPageWithLayout = () => {
           <div className="scrollbar-hide mb-10 mt-5 flex h-[calc(100%-150px)] w-96 flex-col overflow-y-auto pb-20">
             {!memberDataIsLoading &&
               members.length > 0 &&
-              members.map((member: MemberData) => (
+              members.map((member: Members) => (
                 <Button
                   key={member._id}
                   onClick={() => handleMemberClick(member)}
