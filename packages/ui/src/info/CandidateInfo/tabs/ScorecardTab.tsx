@@ -25,7 +25,7 @@ const FIND_POSITION_CANDIDATE = gql`
       }
       scoreCardTotal {
         score
-        scoreCardsCalculated
+        scoreCardCalculated
       }
       scoreCardCategoryMemories {
         category
@@ -91,7 +91,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                   </h3>
                   <div className="text-edenGray-700 flex items-center text-sm">
                     Average:
-                    <div className="bg-edenPink-300 ml-2 -mr-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                    <div className="bg-edenPink-300 -mr-2 ml-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
                       <span
                         className={classNames(
                           getGrade(_category!.score! * 100).color,
@@ -120,7 +120,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                           className="border-edenGray-100 w-full border-b px-4"
                         >
                           <div className="relative flex w-full columns-2 items-center justify-between py-4">
-                            <div className="absolute top-5 -left-6 cursor-pointer">
+                            <div className="absolute -left-6 top-5 cursor-pointer">
                               {expandID ===
                               _category!.category?.replace("_", " ")! +
                                 index ? (
@@ -158,14 +158,14 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                   <div className="w-60">
                                     {letter === "?" ? (
                                       <div>
-                                        <p className="text-gray-600 mb-4 text-sm leading-tight">
+                                        <p className="mb-4 text-sm leading-tight text-gray-600">
                                           {
                                             "The candidate hasn't provided information on this. Do you want me to reach out & find out for you?"
                                           }
                                         </p>
                                       </div>
                                     ) : (
-                                      <p className="text-gray-600 text-sm leading-tight">
+                                      <p className="text-sm leading-tight text-gray-600">
                                         {item?.reason}
                                       </p>
                                     )}
@@ -178,8 +178,8 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                 borderColor="#e5e7eb"
                                 padding="0.5rem"
                               >
-                                <div className="bg-edenPink-200 cursor-pointer rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
-                                  <EdenIconExclamation className="w-full h-full" />
+                                <div className="bg-edenPink-200 absolute -right-2 -top-1 h-5 w-5 cursor-pointer rounded-full p-1">
+                                  <EdenIconExclamation className="h-full w-full" />
                                 </div>
                               </EdenTooltip>
                             </div>
@@ -199,7 +199,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                   return (
                                     <div
                                       key={_index}
-                                      className="relative flex w-full items-center justify-between mb-4 border border-edenGray-100 rounded-md p-2 w-[95%]"
+                                      className="border-edenGray-100 relative mb-4 flex w-[95%] w-full items-center justify-between rounded-md border p-2"
                                     >
                                       <p className="text-edenGray-700 text-xs">
                                         {_card?.card?.content}
