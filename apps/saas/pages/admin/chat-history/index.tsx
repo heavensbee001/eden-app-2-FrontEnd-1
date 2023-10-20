@@ -52,7 +52,6 @@ const ChatHistory: NextPageWithLayout = () => {
     },
     ssr: false,
     onCompleted: (data: any) => {
-      data?.findLast;
       setChatExternalAppData(data?.findLastNumMessagesChatExternalApp);
     },
   });
@@ -62,7 +61,7 @@ const ChatHistory: NextPageWithLayout = () => {
     const timeStr = timestamp.split("T")[1].split("Z")[0];
 
     const [year, month, day] = dateStr.split("-").map(Number);
-    const [hour, minute, second] = timeStr.split(":").map(Number);
+    const [hour, minute] = timeStr.split(":").map(Number);
 
     const ampm = hour < 12 ? "AM" : "PM";
     const twelveHourFormat = hour % 12 || 12;
