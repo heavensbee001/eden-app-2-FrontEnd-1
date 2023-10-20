@@ -1,3 +1,5 @@
+import "react-datepicker/dist/react-datepicker.css";
+
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { UPDATE_MEMBER } from "@eden/package-graphql";
@@ -17,6 +19,7 @@ import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
+import DatePicker from "react-datepicker";
 import { toast } from "react-toastify";
 
 import ApplicationStepContainer from "@/components/interview/ApplicationContainer";
@@ -56,6 +59,7 @@ const HomePage: NextPageWithLayout = () => {
     experienceAreas: null,
   });
   const [generalDetails, setGeneralDetails] = useState<any>({});
+  const [startDate, setStartDate] = useState(new Date());
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -173,6 +177,14 @@ const HomePage: NextPageWithLayout = () => {
                     ? `You're about to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
                     : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
                 </p>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  timeInputLabel="Time:"
+                  dateFormat="MM/dd/yyyy h:mm aa"
+                  showTimeSelect
+                  timeIntervals={15}
+                />
               </div>
             )}
             <div
