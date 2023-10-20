@@ -4,7 +4,7 @@ import {
   FIND_CHAT_HISTORY,
 } from "@eden/package-graphql";
 import { ChatExternalApp, MemberData } from "@eden/package-graphql/generated";
-import { AppUserLayout, Button } from "@eden/package-ui";
+import { AppUserLayout, Button, Loading } from "@eden/package-ui";
 import React, { useMemo, useState } from "react";
 
 function classNames(...classes: string[]) {
@@ -40,7 +40,7 @@ const ChatHistory: NextPageWithLayout = () => {
     }
   );
 
-  const {} = useQuery(FIND_CHAT_HISTORY, {
+  const { loading: chatHistoryLoading } = useQuery(FIND_CHAT_HISTORY, {
     variables: {
       fields: {
         userID: selectedMember?._id,
@@ -50,10 +50,41 @@ const ChatHistory: NextPageWithLayout = () => {
     },
     ssr: false,
     onCompleted: (data: any) => {
-      console.log(data);
+      data?.findLast;
       setChatExternalAppData(data?.findLastNumMessagesChatExternalApp);
     },
   });
+
+  const formatTime = (timestamp: string) => {
+    const dateStr = timestamp.split("T")[0];
+    const timeStr = timestamp.split("T")[1].split("Z")[0];
+
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const [hour, minute, second] = timeStr.split(":").map(Number);
+
+    const ampm = hour < 12 ? "AM" : "PM";
+    const twelveHourFormat = hour % 12 || 12;
+
+    const pastTime = new Date(timestamp);
+    const currentTime = Date.now();
+
+    const daysToDateBack = Math.floor(
+      (currentTime - pastTime.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    return (
+      (daysToDateBack > 1
+        ? month + "/" + day + "/" + year
+        : daysToDateBack === 1
+        ? "Yesterday"
+        : "Today") +
+      " at " +
+      twelveHourFormat +
+      ":" +
+      (minute < 10 ? "0" + minute : minute) +
+      ampm
+    );
+  };
 
   const handleMemberClick = (member: MemberData) => {
     setSelectedMember(member);
@@ -76,23 +107,29 @@ const ChatHistory: NextPageWithLayout = () => {
       <div className="flex h-screen flex-row justify-around gap-5 overflow-hidden p-10">
         <div className="flex h-screen flex-col justify-around gap-2">
           <input
-            className="h-10 w-80 rounded-md border-2"
+            className="h-10 w-80 rounded-md border-2 p-2"
             placeholder="Search for the users..."
             onChange={(e) => handleInputChange(e)}
           ></input>
           <div className="scrollbar-hide mb-10 mt-5 flex h-[calc(100%-150px)] w-96 flex-col overflow-y-auto pb-20">
-            {!memberDataIsLoading &&
+            {memberDataIsLoading ? (
+              <Loading />
+            ) : (
+              !memberDataIsLoading &&
               members.length > 0 &&
               members.map((member: MemberData) => (
                 <Button
                   key={member._id}
                   onClick={() => handleMemberClick(member)}
                   className="mt-1"
-                  variant="primary"
+                  variant={
+                    member._id === selectedMember?._id ? "secondary" : "primary"
+                  }
                 >
                   {member.discordName}
                 </Button>
-              ))}
+              ))
+            )}
           </div>
         </div>
         <div className="border-edenGray-100 mr-20 flex w-[640px] flex-col rounded-md border">
@@ -104,68 +141,79 @@ const ChatHistory: NextPageWithLayout = () => {
           <section className="scrollbar-hide border-edenGray-100 transition-height overflow-y-scroll border-b ease-in-out">
             <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex h-full flex-col px-6 py-4">
               <div className="">
-                {chatExternalAppData && chatExternalAppData.length ? (
+                {chatHistoryLoading ? (
+                  <Loading />
+                ) : chatExternalAppData && chatExternalAppData.length ? (
                   <>
-                    {chatExternalAppData.map((chat: ChatExternalApp) => (
-                      <div className="chat-message mb-4" key={chat._id}>
-                        <div
-                          className={classNames(
-                            chat.senderRole === "assistant"
-                              ? ""
-                              : "justify-end",
-                            "flex items-start"
-                          )}
-                        >
+                    {chatExternalAppData
+                      .slice()
+                      .reverse()
+                      .map((chat: ChatExternalApp) => (
+                        <div className="chat-message mb-4" key={chat._id}>
                           <div
                             className={classNames(
                               chat.senderRole === "assistant"
-                                ? "order-2"
-                                : "order-1",
-                              "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                                ? ""
+                                : "justify-end",
+                              "flex items-start"
                             )}
                           >
-                            <div className="relative">
-                              <div>
-                                {chat.senderRole !== "assistant" && (
-                                  <>
-                                    <span className="text-edenGray-700 float-right text-xs font-semibold">
-                                      {selectedMember?.discordName}
-                                    </span>
-                                  </>
-                                )}
+                            <div
+                              className={classNames(
+                                chat.senderRole === "assistant"
+                                  ? "order-2"
+                                  : "order-1",
+                                "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
+                              )}
+                            >
+                              <div className="relative">
+                                <div>
+                                  {chat.senderRole !== "assistant" && (
+                                    <>
+                                      <span className="text-edenGray-700 float-right text-xs font-semibold">
+                                        {selectedMember?.discordName}
+                                        &nbsp;{formatTime(chat.timeStamp)}
+                                      </span>
+                                    </>
+                                  )}
 
-                                {chat.senderRole !== "user" && (
-                                  <>
-                                    <span className="font-Moret text-edenGreen-600 text-sm font-semibold">
-                                      Eden
-                                    </span>
-                                  </>
-                                )}
+                                  {chat.senderRole !== "user" && (
+                                    <>
+                                      <div className="flex flex-row items-center gap-1">
+                                        <span className="text-xs">
+                                          {formatTime(chat.timeStamp)}
+                                        </span>
+                                        <span className="text-edenGreen-600 text-sm font-semibold">
+                                          Eden
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+
+                                <span
+                                  className={classNames(
+                                    chat.senderRole === "assistant"
+                                      ? "bg-edenPink-300"
+                                      : "bg-edenGray-100",
+                                    "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
+                                  )}
+                                >
+                                  {chat.message}
+                                </span>
+                                <div
+                                  className={classNames(
+                                    "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
+                                    chat.senderRole === "assistant"
+                                      ? "bg-edenPink-300 -left-[0.3rem]"
+                                      : "bg-edenGray-100 -right-[0.3rem]"
+                                  )}
+                                ></div>
                               </div>
-
-                              <span
-                                className={classNames(
-                                  chat.senderRole === "assistant"
-                                    ? "bg-edenPink-300"
-                                    : "bg-edenGray-100",
-                                  "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
-                                )}
-                              >
-                                {chat.message}
-                              </span>
-                              <div
-                                className={classNames(
-                                  "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
-                                  chat.senderRole === "assistant"
-                                    ? "bg-edenPink-300 -left-[0.3rem]"
-                                    : "bg-edenGray-100 -right-[0.3rem]"
-                                )}
-                              ></div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </>
                 ) : null}
               </div>
