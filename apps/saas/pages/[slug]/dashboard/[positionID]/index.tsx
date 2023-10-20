@@ -341,13 +341,18 @@ const PositionCRM: NextPageWithLayout = () => {
           candidatesListWithSkillMatch
         );
 
+        console.log(
+          "candidatesListWithSkillMatch = ",
+          candidatesListWithSkillMatch
+        );
+
         // sort the candidatesList by the totalMatchPerc
         const sortedCandidatesList = candidatesListWithSkillMatch.sort(
           (a: any, b: any) => {
-            if (a.totalMatchPerc > b.totalMatchPerc) {
+            if (a.scoreCardTotal.score > b.scoreCardTotal.score) {
               return -1;
             }
-            if (a.totalMatchPerc < b.totalMatchPerc) {
+            if (a.scoreCardTotal.score < b.scoreCardTotal.score) {
               return 1;
             }
             return 0;
