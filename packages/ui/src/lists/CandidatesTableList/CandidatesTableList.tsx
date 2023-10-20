@@ -102,7 +102,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
   };
   const router = useRouter();
   const { positionID } = router.query;
-  // const [showMatchDetails, setShowMatchDetails] = useState(true);
+  const [showMatchDetails, setShowMatchDetails] = useState(false);
 
   // console.log("candidatesList 00 0 = ", candidatesList);
 
@@ -161,7 +161,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             <th className="min-w-min pl-2 text-start font-normal">Name</th>
             <th className="font-normal">
               Fit Score
-              {/* {showMatchDetails ? (
+              {showMatchDetails ? (
                 <AiOutlineEyeInvisible
                   size={24}
                   className="ml-2 inline cursor-pointer text-gray-600 hover:text-gray-400"
@@ -173,17 +173,20 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   className="ml-2 inline cursor-pointer text-gray-600 hover:text-gray-400"
                   onClick={() => setShowMatchDetails(true)}
                 />
-              )} */}
+              )}
             </th>
-            {/* {showMatchDetails && (
-              <th className={"py-2 font-medium"}>
-                Requir.
-              </th>
-            )} */}
-            <th className="font-normal">Technical Skills</th>
+            {showMatchDetails && (
+              <>
+                <th className="font-normal">Technical Skills</th>
+                <th className="font-normal">Experience</th>
+                <th className="font-normal">Behavior</th>
+                <th className="font-normal">Core Values</th>
+              </>
+            )}
+            {/* <th className="font-normal">Technical Skills</th>
             <th className="font-normal">Experience</th>
             <th className="font-normal">Behavior</th>
-            <th className="font-normal">Core Values</th>
+            <th className="font-normal">Core Values</th> */}
             {/* <th className="py-2 pr-2 text-right font-medium">
               $/hour
             </th> */}
@@ -261,135 +264,142 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     )}
                 </ColumnStyled>
 
-                <ColumnStyled textColor="text-fuchsia-600 text-center">
-                  {candidate.scoreCardCategoryMemories &&
-                    candidate.scoreCardCategoryMemories.filter(
-                      (_category, index) =>
-                        _category && _category.category === "TECHNICAL_SKILLS"
-                    ).length > 0 && (
-                      // <div className='p-auto'>
-                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
-                        <span
-                          className={classNames(
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category &&
-                                  _category.category === "TECHNICAL_SKILLS"
-                              )[0]?.score! * 100
-                            ).color,
-                            "text-md"
-                          )}
-                        >
-                          {
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category &&
-                                  _category.category === "TECHNICAL_SKILLS"
-                              )[0]?.score! * 100
-                            ).letter
-                          }
-                        </span>
-                      </div>
-                      // </div>
-                    )}
-                </ColumnStyled>
+                {showMatchDetails && (
+                  <>
+                    <ColumnStyled textColor="text-fuchsia-600 text-center">
+                      {candidate.scoreCardCategoryMemories &&
+                        candidate.scoreCardCategoryMemories.filter(
+                          (_category, index) =>
+                            _category &&
+                            _category.category === "TECHNICAL_SKILLS"
+                        ).length > 0 && (
+                          // <div className='p-auto'>
+                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                            <span
+                              className={classNames(
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "TECHNICAL_SKILLS"
+                                  )[0]?.score! * 100
+                                ).color,
+                                "text-md"
+                              )}
+                            >
+                              {
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "TECHNICAL_SKILLS"
+                                  )[0]?.score! * 100
+                                ).letter
+                              }
+                            </span>
+                          </div>
+                          // </div>
+                        )}
+                    </ColumnStyled>
 
-                <ColumnStyled textColor="text-fuchsia-600 text-center">
-                  {candidate.scoreCardCategoryMemories &&
-                    candidate.scoreCardCategoryMemories.filter(
-                      (_category, index) =>
-                        _category && _category.category === "EXPERIENCE"
-                    ).length > 0 && (
-                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
-                        <span
-                          className={classNames(
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category &&
-                                  _category.category === "EXPERIENCE"
-                              )[0]?.score! * 100
-                            ).color,
-                            "text-md"
-                          )}
-                        >
-                          {
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category &&
-                                  _category.category === "EXPERIENCE"
-                              )[0]?.score! * 100
-                            ).letter
-                          }
-                        </span>
-                      </div>
-                    )}
-                </ColumnStyled>
-                <ColumnStyled textColor="text-fuchsia-600 text-center">
-                  {candidate.scoreCardCategoryMemories &&
-                    candidate.scoreCardCategoryMemories.filter(
-                      (_category, index) =>
-                        _category && _category.category === "BEHAVIOR"
-                    ).length > 0 && (
-                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
-                        <span
-                          className={classNames(
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category && _category.category === "BEHAVIOR"
-                              )[0]?.score! * 100
-                            ).color,
-                            "text-md"
-                          )}
-                        >
-                          {
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category && _category.category === "BEHAVIOR"
-                              )[0]?.score! * 100
-                            ).letter
-                          }
-                        </span>
-                      </div>
-                    )}
-                </ColumnStyled>
-                <ColumnStyled textColor="text-fuchsia-600 text-center">
-                  {candidate.scoreCardCategoryMemories &&
-                    candidate.scoreCardCategoryMemories.filter(
-                      (_category, index) =>
-                        _category && _category.category === "CORE_VALUES"
-                    ).length > 0 && (
-                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
-                        <span
-                          className={classNames(
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category &&
-                                  _category.category === "CORE_VALUES"
-                              )[0]?.score! * 100
-                            ).color,
-                            "text-md"
-                          )}
-                        >
-                          {
-                            getGrade(
-                              candidate.scoreCardCategoryMemories.filter(
-                                (_category, index) =>
-                                  _category &&
-                                  _category.category === "CORE_VALUES"
-                              )[0]?.score! * 100
-                            ).letter
-                          }
-                        </span>
-                      </div>
-                    )}
-                </ColumnStyled>
+                    <ColumnStyled textColor="text-fuchsia-600 text-center">
+                      {candidate.scoreCardCategoryMemories &&
+                        candidate.scoreCardCategoryMemories.filter(
+                          (_category, index) =>
+                            _category && _category.category === "EXPERIENCE"
+                        ).length > 0 && (
+                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                            <span
+                              className={classNames(
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "EXPERIENCE"
+                                  )[0]?.score! * 100
+                                ).color,
+                                "text-md"
+                              )}
+                            >
+                              {
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "EXPERIENCE"
+                                  )[0]?.score! * 100
+                                ).letter
+                              }
+                            </span>
+                          </div>
+                        )}
+                    </ColumnStyled>
+                    <ColumnStyled textColor="text-fuchsia-600 text-center">
+                      {candidate.scoreCardCategoryMemories &&
+                        candidate.scoreCardCategoryMemories.filter(
+                          (_category, index) =>
+                            _category && _category.category === "BEHAVIOR"
+                        ).length > 0 && (
+                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                            <span
+                              className={classNames(
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "BEHAVIOR"
+                                  )[0]?.score! * 100
+                                ).color,
+                                "text-md"
+                              )}
+                            >
+                              {
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "BEHAVIOR"
+                                  )[0]?.score! * 100
+                                ).letter
+                              }
+                            </span>
+                          </div>
+                        )}
+                    </ColumnStyled>
+                    <ColumnStyled textColor="text-fuchsia-600 text-center">
+                      {candidate.scoreCardCategoryMemories &&
+                        candidate.scoreCardCategoryMemories.filter(
+                          (_category, index) =>
+                            _category && _category.category === "CORE_VALUES"
+                        ).length > 0 && (
+                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                            <span
+                              className={classNames(
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "CORE_VALUES"
+                                  )[0]?.score! * 100
+                                ).color,
+                                "text-md"
+                              )}
+                            >
+                              {
+                                getGrade(
+                                  candidate.scoreCardCategoryMemories.filter(
+                                    (_category, index) =>
+                                      _category &&
+                                      _category.category === "CORE_VALUES"
+                                  )[0]?.score! * 100
+                                ).letter
+                              }
+                            </span>
+                          </div>
+                        )}
+                    </ColumnStyled>
+                  </>
+                )}
 
                 {/* {showMatchDetails && (
                   <ColumnStyled textColor="text-[#EDBFB7] text-center">
