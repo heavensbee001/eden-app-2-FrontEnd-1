@@ -99,6 +99,7 @@ export type CardMemory = {
   content?: Maybe<Scalars["String"]>;
   futurePotential?: Maybe<Scalars["Boolean"]>;
   keyPriority?: Maybe<Scalars["Boolean"]>;
+  pineconeDB?: Maybe<PineconeDbType>;
   priority?: Maybe<Scalars["Int"]>;
   score?: Maybe<ScoreCardMemory>;
   tradeOffBoost?: Maybe<Scalars["Int"]>;
@@ -2361,6 +2362,7 @@ export enum ApprovedSkillEnum {
 
 export type AskEdenUserPositionGptFuncInput = {
   conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
+  memoriesType?: InputMaybe<MemoriesTypeEnum>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
   whatToAsk?: InputMaybe<WhatToAskEnum>;
@@ -4108,6 +4110,11 @@ export type Members_AutocompleteInput = {
   search?: InputMaybe<Scalars["String"]>;
 };
 
+export enum MemoriesTypeEnum {
+  New = "NEW",
+  Old = "OLD",
+}
+
 export type MessageChat = {
   content?: InputMaybe<Scalars["String"]>;
   date?: InputMaybe<Scalars["Date"]>;
@@ -4178,6 +4185,14 @@ export type MessageToGptInput = {
 export type MessageToGptOutput = {
   __typename?: "messageToGPTOutput";
   message?: Maybe<Scalars["String"]>;
+};
+
+export type MetadataType = {
+  __typename?: "metadataType";
+  database?: Maybe<Scalars["String"]>;
+  label?: Maybe<Scalars["String"]>;
+  positionID?: Maybe<Scalars["String"]>;
+  userID?: Maybe<Scalars["String"]>;
 };
 
 export type MostRelevantMemberNodeType = {
@@ -4306,6 +4321,13 @@ export enum PhaseType {
   Rejected = "rejected",
   Shortlisted = "shortlisted",
 }
+
+export type PineconeDbType = {
+  __typename?: "pineconeDBType";
+  metadata?: Maybe<MetadataType>;
+  pineconeID?: Maybe<Scalars["String"]>;
+  text?: Maybe<Scalars["String"]>;
+};
 
 export type PitchPositionToCandidateInput = {
   positionID?: InputMaybe<Scalars["ID"]>;
@@ -4988,7 +5010,9 @@ export type TweetsType = {
 };
 
 export enum TypeCardMemoryEnum {
+  Behavior = "BEHAVIOR",
   CoreValues = "CORE_VALUES",
+  DomainExpertise = "DOMAIN_EXPERTISE",
   Education = "EDUCATION",
   Experience = "EXPERIENCE",
   Goals = "GOALS",

@@ -1,5 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
+import axios from "axios";
 import {
   ChangeEvent,
   // FormEvent,
@@ -11,6 +12,7 @@ import {
 import { AiOutlineFile } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 import { EdenAiProcessingModal } from "../../elements";
 // export const CV_TO_SUMMARY = gql`
@@ -108,6 +110,12 @@ export const CVUploadGPT = ({
     if (file) {
       setUploading(true);
 
+      if (file.size > 1000000) {
+        setSizeErr(true);
+        setUploading(false);
+        return;
+      }
+
       const reader = new FileReader();
 
       reader.onloadend = async () => {
@@ -123,7 +131,28 @@ export const CVUploadGPT = ({
         if (response.ok) {
           const { text } = await response.json();
 
-          console.log("text.split", text.split(" ").length > 10);
+          // console.log("text.split", text.split(" ").length > 10);
+
+          const postid = uuidv4();
+          const blob = file.slice(0, file.size, "application/pdf");
+
+          const newFile = new File([blob], `${postid}_cv.pdf`, {
+            type: "application/pdf",
+          });
+
+          const formData = new FormData();
+
+          formData.append("pdffile", newFile);
+
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_AUTH_URL}/storage/store-cv` as string,
+            formData,
+            {
+              headers: {
+                "Access-Control-Allow-Origin": `*`,
+              },
+            }
+          );
 
           if (text.split(" ").length > 10) {
             SaveCVtoUser({
@@ -132,6 +161,7 @@ export const CVUploadGPT = ({
                   // cvString: text
                   userID: currentUser?._id,
                   cvContent: text,
+                  cvFilename: `${postid}_cv.pdf`,
                   positionID: positionID,
                 },
               },
@@ -141,13 +171,12 @@ export const CVUploadGPT = ({
             }
             setFile(null);
           } else {
-            // console.log(file);
             if (file.size > 1000000) {
               setSizeErr(true);
               setUploading(false);
               return;
             }
-            uploadOCRService(file);
+            uploadOCRService(file, `${postid}_cv.pdf`);
             return;
           }
 
@@ -163,7 +192,7 @@ export const CVUploadGPT = ({
     }
   }, [file, uploadCounter]);
 
-  const uploadOCRService = async (_file: any) => {
+  const uploadOCRService = async (_file: any, filename: string) => {
     var formData = new FormData();
 
     // formData.append("base64Image", "data:application/pdf;base64," + _file);
@@ -193,6 +222,7 @@ export const CVUploadGPT = ({
               // cvString: text
               userID: currentUser?._id,
               cvContent: data.ParsedResults[0].ParsedText,
+              cvFilename: filename,
               positionID: positionID,
             },
           },

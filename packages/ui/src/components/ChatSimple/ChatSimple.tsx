@@ -8,8 +8,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 // import { CiLocationArrow1 } from "react-icons/ci";
 // import { Card } from "../..";
 
-//some text
-
 export interface IChatSimple {
   chatN?: any;
   handleSentMessage?: any;
@@ -60,16 +58,16 @@ export const ChatSimple = ({
   const { currentUser } = useContext(UserContext);
 
   const componentRef = useRef<any>(null);
-  const Users: any = {
-    "01": {
-      name: "EdenAI",
-      img: "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg",
-    },
-    "02": {
-      name: "User",
-      img: currentUser?.discordAvatar,
-    },
-  };
+  // const Users: any = {
+  //   "01": {
+  //     name: "EdenAI",
+  //     img: "https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg",
+  //   },
+  //   "02": {
+  //     name: "User",
+  //     img: currentUser?.discordAvatar,
+  //   },
+  // };
 
   const [inputMessage, setInputMessage] = useState("");
 
