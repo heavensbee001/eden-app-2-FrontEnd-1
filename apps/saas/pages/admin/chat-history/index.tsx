@@ -144,7 +144,7 @@ const ChatHistory: NextPageWithLayout = () => {
               Interview with Eden AI
             </h3>
           </section>
-          <section className="scrollbar-hide border-edenGray-100 transition-height overflow-y-scroll border-b ease-in-out">
+          <section className="scrollbar-hide border-edenGray-100 transition-height h-full overflow-y-scroll border-b ease-in-out">
             <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-hide scrolling-touch flex h-full flex-col px-6 py-4">
               <div className="">
                 {chatHistoryLoading ? (
