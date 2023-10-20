@@ -172,27 +172,21 @@ const ChatHistory: NextPageWithLayout = () => {
                                 "mx-2 flex max-w-[78%] flex-col items-start space-y-2 text-xs"
                               )}
                             >
-                              <div className="relative">
+                              <div className="relative flex flex-col">
                                 <div>
                                   {chat.senderRole !== "assistant" && (
                                     <>
                                       <span className="text-edenGray-700 float-right text-xs font-semibold">
                                         {selectedMember?.discordName}
-                                        &nbsp;{formatTime(chat.timeStamp)}
                                       </span>
                                     </>
                                   )}
 
                                   {chat.senderRole !== "user" && (
                                     <>
-                                      <div className="flex flex-row items-end gap-1">
-                                        <span className="text-xs font-semibold">
-                                          {formatTime(chat.timeStamp)}
-                                        </span>
-                                        <span className="text-edenGreen-600 text-sm font-semibold">
-                                          Eden
-                                        </span>
-                                      </div>
+                                      <span className="text-edenGreen-600 text-sm font-semibold">
+                                        Eden
+                                      </span>
                                     </>
                                   )}
                                 </div>
@@ -209,12 +203,26 @@ const ChatHistory: NextPageWithLayout = () => {
                                 </span>
                                 <div
                                   className={classNames(
-                                    "absolute bottom-2 h-4 w-4 -rotate-45 rounded-sm",
+                                    "absolute bottom-6 h-4 w-4 -rotate-45 rounded-sm",
                                     chat.senderRole === "assistant"
                                       ? "bg-edenPink-300 -left-[0.3rem]"
                                       : "bg-edenGray-100 -right-[0.3rem]"
                                   )}
                                 ></div>
+                                {chat.senderRole !== "assistant" && (
+                                  <>
+                                    <span className="self-end text-[10px] opacity-50">
+                                      {formatTime(chat.timeStamp)}
+                                    </span>
+                                  </>
+                                )}
+                                {chat.senderRole !== "user" && (
+                                  <>
+                                    <span className="text-[10px] opacity-50">
+                                      {formatTime(chat.timeStamp)}
+                                    </span>
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>
