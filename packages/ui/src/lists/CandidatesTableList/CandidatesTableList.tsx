@@ -160,7 +160,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             {listMode !== ListModeEnum.list ? <th>{/* Select */}</th> : null}
             <th className="min-w-min pl-2 text-start font-normal">Name</th>
             <th className="font-normal">
-              Technical Skills
+              Fit Score
               {/* {showMatchDetails ? (
                 <AiOutlineEyeInvisible
                   size={24}
@@ -180,8 +180,9 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                 Requir.
               </th>
             )} */}
+            <th className="font-normal">Technical Skills</th>
             <th className="font-normal">Experience</th>
-            <th className="font-normal">Soft Skills</th>
+            <th className="font-normal">Behavior</th>
             <th className="font-normal">Core Values</th>
             {/* <th className="py-2 pr-2 text-right font-medium">
               $/hour
@@ -236,6 +237,28 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                     />
                     <span className="ml-2">{candidate.user?.discordName!}</span>
                   </div>
+                </ColumnStyled>
+
+                <ColumnStyled textColor="text-fuchsia-600 text-center">
+                  {candidate.scoreCardTotal &&
+                    candidate.scoreCardTotal.score != null && (
+                      // <div className='p-auto'>
+                      <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                        <span
+                          className={classNames(
+                            getGrade(candidate.scoreCardTotal.score * 100)
+                              .color,
+                            "text-md"
+                          )}
+                        >
+                          {
+                            getGrade(candidate.scoreCardTotal.score * 100)
+                              .letter
+                          }
+                        </span>
+                      </div>
+                      // </div>
+                    )}
                 </ColumnStyled>
 
                 <ColumnStyled textColor="text-fuchsia-600 text-center">
@@ -309,7 +332,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                   {candidate.scoreCardCategoryMemories &&
                     candidate.scoreCardCategoryMemories.filter(
                       (_category, index) =>
-                        _category && _category.category === "SOFT_SKILLS"
+                        _category && _category.category === "BEHAVIOR"
                     ).length > 0 && (
                       <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
                         <span
@@ -317,8 +340,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                             getGrade(
                               candidate.scoreCardCategoryMemories.filter(
                                 (_category, index) =>
-                                  _category &&
-                                  _category.category === "SOFT_SKILLS"
+                                  _category && _category.category === "BEHAVIOR"
                               )[0]?.score! * 100
                             ).color,
                             "text-md"
@@ -328,8 +350,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                             getGrade(
                               candidate.scoreCardCategoryMemories.filter(
                                 (_category, index) =>
-                                  _category &&
-                                  _category.category === "SOFT_SKILLS"
+                                  _category && _category.category === "BEHAVIOR"
                               )[0]?.score! * 100
                             ).letter
                           }
