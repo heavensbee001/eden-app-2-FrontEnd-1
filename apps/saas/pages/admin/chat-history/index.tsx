@@ -185,7 +185,7 @@ const ChatHistory: NextPageWithLayout = () => {
 
                                   {chat.senderRole !== "user" && (
                                     <>
-                                      <div className="flex flex-row items-center gap-1">
+                                      <div className="flex flex-row items-end gap-1">
                                         <span className="text-xs font-semibold">
                                           {formatTime(chat.timeStamp)}
                                         </span>
