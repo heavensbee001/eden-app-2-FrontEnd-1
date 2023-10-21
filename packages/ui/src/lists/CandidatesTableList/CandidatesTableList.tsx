@@ -177,10 +177,46 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
             </th>
             {showMatchDetails && (
               <>
-                <th className="font-normal">Technical Skills</th>
-                <th className="font-normal">Experience</th>
-                <th className="font-normal">Behavior</th>
-                <th className="font-normal">Core Values</th>
+                <th className="font-normal">
+                  Skills (
+                  {
+                    candidatesList[0]?.scoreCardCategoryMemories?.filter(
+                      (_category) =>
+                        _category && _category.category === "TECHNICAL_SKILLS"
+                    )[0]?.priority
+                  }
+                  )
+                </th>
+                <th className="font-normal">
+                  Experience (
+                  {
+                    candidatesList[0]?.scoreCardCategoryMemories?.filter(
+                      (_category) =>
+                        _category && _category.category === "EXPERIENCE"
+                    )[0]?.priority
+                  }
+                  )
+                </th>
+                <th className="font-normal">
+                  Behavior (
+                  {
+                    candidatesList[0]?.scoreCardCategoryMemories?.filter(
+                      (_category) =>
+                        _category && _category.category === "BEHAVIOR"
+                    )[0]?.priority
+                  }
+                  )
+                </th>
+                <th className="font-normal">
+                  Values (
+                  {
+                    candidatesList[0]?.scoreCardCategoryMemories?.filter(
+                      (_category) =>
+                        _category && _category.category === "CORE_VALUES"
+                    )[0]?.priority
+                  }
+                  )
+                </th>
               </>
             )}
             {/* <th className="font-normal">Technical Skills</th>
