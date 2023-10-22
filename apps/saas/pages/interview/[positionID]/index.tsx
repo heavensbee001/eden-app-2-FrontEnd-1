@@ -60,6 +60,7 @@ const HomePage: NextPageWithLayout = () => {
   });
   const [generalDetails, setGeneralDetails] = useState<any>({});
   const [startDate, setStartDate] = useState(new Date());
+  const [schedule, setSchedule] = useState(false);
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -142,6 +143,26 @@ const HomePage: NextPageWithLayout = () => {
     setShowInterviewModal(true);
   }
 
+  // const handleCreateEvent = () => {
+  //   console.log("startDate", startDate);
+  //   fetch("/api/createCalendarEvent/createCalendarEvent", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       startDate,
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("Event Created", data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
+
   return (
     <>
       <Head>
@@ -177,14 +198,8 @@ const HomePage: NextPageWithLayout = () => {
                     ? `You're about to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
                     : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
                 </p>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  timeInputLabel="Time:"
-                  dateFormat="MM/dd/yyyy h:mm aa"
-                  showTimeSelect
-                  timeIntervals={15}
-                />
+
+                {/* <Button onClick={handleCreateEvent}></Button> */}
               </div>
             )}
             <div
@@ -282,7 +297,25 @@ const HomePage: NextPageWithLayout = () => {
                         >
                           {"Let's do this!"}
                         </Button>
+                        <Button
+                          variant="primary"
+                          onClick={() => setSchedule(!schedule)}
+                        >
+                          Schedule The Interview
+                        </Button>
                       </div>
+                      {schedule ? (
+                        <div className="mt-4 flex justify-center ">
+                          <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            timeInputLabel="Time:"
+                            dateFormat="MM/dd/yyyy h:mm aa"
+                            showTimeSelect
+                            timeIntervals={15}
+                          />
+                        </div>
+                      ) : null}
                     </div>
                   </Modal>
                 </WizardStep>

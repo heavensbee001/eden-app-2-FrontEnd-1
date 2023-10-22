@@ -28,9 +28,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   })
     .then((res) => res.json())
     .then((data) => {
-      // console.log("FETCH TOKEN API DATA", data);
+      console.log("FETCH TOKEN API DATA", data);
       if (data.edenToken) {
         edenToken = data.edenToken;
+        console.log("edenToken", edenToken);
       }
       if (data.error) {
         error = data.error;
