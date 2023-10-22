@@ -199,6 +199,14 @@ const HomePage: NextPageWithLayout = () => {
                     : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
                 </p>
 
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  timeInputLabel="Time:"
+                  dateFormat="MM/dd/yyyy h:mm aa"
+                  showTimeSelect
+                  timeIntervals={15}
+                />
                 {/* <Button onClick={handleCreateEvent}></Button> */}
               </div>
             )}
