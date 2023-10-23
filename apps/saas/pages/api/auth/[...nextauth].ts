@@ -29,6 +29,8 @@ async function getEdenToken(accessToken: string) {
 
     const data = await res.json();
 
+    // console.log("data from Auth", data);
+
     return data;
   } catch {
     // TODO: if the server is down, user still gets a session token but should be rejected
@@ -42,6 +44,13 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          scope:
+            "openid email profile https://www.googleapis.com/auth/calendar",
+        },
+      },
+
       // authorization: { params: { scope: "identify guilds" } },
     }),
   ],
@@ -74,13 +83,28 @@ export default NextAuth({
     },
     jwt: async ({ user, token, account }) => {
       // Initial sign in
-      console.log("---------", user, token, account);
-
+      // console.log("--------->>", user, token, account);
+      // console.log("user", user);
+      // console.log("token=====>", token);
+      console.log("account", account);
       if (account && user) {
         const _edenToken = await getEdenToken(account.id_token as string);
 
-        // console.log("----->", _edenToken);
+        console.log("eden token----->", _edenToken);
+        console.log("account ======================>>>>>>>>>>>>", account);
+        const updatedToken = {
+          test: account.accessToken,
+          uid: user.id,
+          accessToken: account.id_token as string,
+          accessTokenExpires:
+            account.expires_at && ((account.expires_at * 1000) as number),
+          edenToken: _edenToken,
+        };
+
+        console.log("updatedToken=====>", updatedToken); // <-- log updated token here
+
         return {
+          test: account.accessToken,
           uid: user.id,
           accessToken: account.id_token as string,
           accessTokenExpires:
@@ -88,6 +112,7 @@ export default NextAuth({
           edenToken: _edenToken,
         };
       }
+
       const accessTokenExpires = token.accessTokenExpires as number;
 
       // Discord and Eden tokens expire after 7 days, this will help force the user to re-authenticate within the getServerSideProps

@@ -143,25 +143,25 @@ const HomePage: NextPageWithLayout = () => {
     setShowInterviewModal(true);
   }
 
-  // const handleCreateEvent = () => {
-  //   console.log("startDate", startDate);
-  //   fetch("/api/createCalendarEvent/createCalendarEvent", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       startDate,
-  //     }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log("Event Created", data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // };
+  const handleCreateEvent = () => {
+    console.log("startDate", startDate);
+    fetch("/api/createCalendarEvent/createCalendarEvent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        startDate,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Event Created", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   return (
     <>
@@ -207,7 +207,7 @@ const HomePage: NextPageWithLayout = () => {
                   showTimeSelect
                   timeIntervals={15}
                 />
-                {/* <Button onClick={handleCreateEvent}></Button> */}
+                <Button onClick={handleCreateEvent}></Button>
               </div>
             )}
             <div
@@ -276,7 +276,7 @@ const HomePage: NextPageWithLayout = () => {
                     </p>
                   </div>
                   <Modal open={showStartInterviewModal} closeOnEsc={false}>
-                    <div className="px-4 py-8">
+                    <div className="  px-4 py-8">
                       <h2 className="text-edenGreen-600 text-center">
                         {"You're about to head into your interview with Eden."}
                       </h2>
@@ -313,15 +313,29 @@ const HomePage: NextPageWithLayout = () => {
                         </Button>
                       </div>
                       {schedule ? (
-                        <div className="mt-4 flex justify-center ">
+                        <div className="mt-7 flex flex-col items-center justify-center  ">
+                          <div className="mb-2 flex flex-col items-center">
+                            <p className=" font-bold">
+                              Pick the date in time for your interview
+                            </p>
+                            <p className="text-sm text-gray-400">
+                              This event will appear in your Google Calendar
+                            </p>
+                          </div>
+
                           <DatePicker
+                            className="rounded-md border border-black pl-2"
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
                             timeInputLabel="Time:"
                             dateFormat="MM/dd/yyyy h:mm aa"
                             showTimeSelect
                             timeIntervals={15}
+                            popperPlacement="top-start"
                           />
+                          <Button className="mt-3" variant="secondary">
+                            Schedule
+                          </Button>
                         </div>
                       ) : null}
                     </div>
