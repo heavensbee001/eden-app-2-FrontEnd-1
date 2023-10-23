@@ -332,7 +332,7 @@ export const CVUploadGPT = ({
     <div className="w-full">
       <form
         // onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center space-y-2 w-full"
+        className="flex w-full flex-col items-center justify-center space-y-2"
       >
         {/* <label>Resume(CV)</label> */}
         {/* <label htmlFor="input" className="text-center text-sm">
@@ -340,10 +340,10 @@ export const CVUploadGPT = ({
         </label> */}
         <label
           htmlFor="file-upload"
-          className="relative border border-dashed border-edenGreen-300 hover:bg-edenGreen-100 w-full max-w-2xl h-40 rounded-md"
+          className="border-edenGreen-300 hover:bg-edenGreen-100 relative h-40 w-full max-w-2xl rounded-md border border-dashed"
         >
           <div
-            className="flex flex-col items-center justify-center h-full w-full cursor-pointer"
+            className="flex h-full w-full cursor-pointer flex-col items-center justify-center"
             id="drop_zone"
             onDrop={(e) => {
               e.preventDefault();
@@ -353,7 +353,7 @@ export const CVUploadGPT = ({
               e.preventDefault();
             }}
           >
-            <div className="pb-px pl-px mb-2 bg-edenGreen-600 w-8 h-8 text-edenPink-200 flex items-center justify-center rounded-full">
+            <div className="bg-edenGreen-600 text-edenPink-200 mb-2 flex h-8 w-8 items-center justify-center rounded-full pb-px pl-px">
               <AiOutlineFile size={"1.2rem"} />
             </div>
             <p>Upload Your CV</p>
@@ -397,7 +397,7 @@ export const CVUploadGPT = ({
         </button> */}
       </form>
       {sizeErr && (
-        <p className="mt-6 max-w-2xl text-red-400 mx-auto text-xs">
+        <p className="mx-auto mt-6 max-w-2xl text-xs text-red-400">
           File size is exceeding the limit and you that your CV could not be
           processed. Please attempt again using a file of 1MB or smaller.
           <br />
