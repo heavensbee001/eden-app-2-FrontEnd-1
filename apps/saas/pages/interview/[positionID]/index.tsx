@@ -144,7 +144,6 @@ const HomePage: NextPageWithLayout = () => {
   }
 
   const handleCreateEvent = () => {
-    console.log("startDate", startDate);
     fetch("/api/createCalendarEvent/createCalendarEvent", {
       method: "POST",
       headers: {
@@ -154,7 +153,12 @@ const HomePage: NextPageWithLayout = () => {
         startDate,
       }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          toast.success("Google Calendar Event Created");
+          return response;
+        }
+      })
       .then((data) => {
         console.log("Event Created", data);
       })
@@ -198,16 +202,6 @@ const HomePage: NextPageWithLayout = () => {
                     ? `You're about to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
                     : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
                 </p>
-
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  timeInputLabel="Time:"
-                  dateFormat="MM/dd/yyyy h:mm aa"
-                  showTimeSelect
-                  timeIntervals={15}
-                />
-                <Button onClick={handleCreateEvent}></Button>
               </div>
             )}
             <div
@@ -316,7 +310,7 @@ const HomePage: NextPageWithLayout = () => {
                         <div className="mt-7 flex flex-col items-center justify-center  ">
                           <div className="mb-2 flex flex-col items-center">
                             <p className=" font-bold">
-                              Pick the date in time for your interview
+                              Pick the date and time for your interview
                             </p>
                             <p className="text-sm text-gray-400">
                               This event will appear in your Google Calendar
@@ -324,7 +318,7 @@ const HomePage: NextPageWithLayout = () => {
                           </div>
 
                           <DatePicker
-                            className="rounded-md border border-black pl-2"
+                            className="rounded-md border border-black pl-3 "
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
                             timeInputLabel="Time:"
@@ -333,7 +327,11 @@ const HomePage: NextPageWithLayout = () => {
                             timeIntervals={15}
                             popperPlacement="top-start"
                           />
-                          <Button className="mt-3" variant="secondary">
+                          <Button
+                            className="mt-3"
+                            variant="secondary"
+                            onClick={handleCreateEvent}
+                          >
                             Schedule
                           </Button>
                         </div>
