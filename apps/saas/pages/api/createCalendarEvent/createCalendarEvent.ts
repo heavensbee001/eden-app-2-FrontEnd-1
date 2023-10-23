@@ -14,7 +14,7 @@ const createCalendarEvent = async (
   const googleAccessToken = token?.googleAccessToken;
 
   // console.log("accessToken", test);
-  console.log("token from calendar", token);
+  // console.log("token from calendar", token);
   const { startDate } = req.body;
   const parsedDate = new Date(startDate);
   const event = {
@@ -40,7 +40,6 @@ const createCalendarEvent = async (
     {
       method: "POST",
       headers: {
-        // Authorization: `Bearer ${accessToken}`,
         Authorization: `Bearer ${googleAccessToken}`,
 
         "Content-Type": "application/json",

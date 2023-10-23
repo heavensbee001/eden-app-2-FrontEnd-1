@@ -57,7 +57,7 @@ export default NextAuth({
   secret: process.env.NEXT_PUBLIC_SECRET,
   callbacks: {
     session: async ({ session, token }) => {
-      console.log("token:", token);
+      // console.log("token:", token);
 
       if (session?.user) {
         session.user.id = token.uid as string;
@@ -81,7 +81,7 @@ export default NextAuth({
       return session;
     },
     jwt: async ({ user, token, account }) => {
-      console.log("account", account);
+      // console.log("account", account);
 
       if (account && user) {
         const _edenToken = await getEdenToken(account.id_token as string);
