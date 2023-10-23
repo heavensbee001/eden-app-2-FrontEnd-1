@@ -57,8 +57,7 @@ export default NextAuth({
   secret: process.env.NEXT_PUBLIC_SECRET,
   callbacks: {
     session: async ({ session, token }) => {
-      console.log("session:", session);
-      // console.log("token:", token);
+      console.log("token:", token);
 
       if (session?.user) {
         session.user.id = token.uid as string;
@@ -82,35 +81,23 @@ export default NextAuth({
       return session;
     },
     jwt: async ({ user, token, account }) => {
-      // Initial sign in
-      // console.log("--------->>", user, token, account);
-      // console.log("user", user);
-      // console.log("token=====>", token);
       console.log("account", account);
+
       if (account && user) {
         const _edenToken = await getEdenToken(account.id_token as string);
-
-        console.log("eden token----->", _edenToken);
-        console.log("account ======================>>>>>>>>>>>>", account);
-        const updatedToken = {
-          test: account.accessToken,
+        //Every time a user logs in a newToken is created (to update newToken log out and log back in)
+        const newToken = {
           uid: user.id,
+          //googleAccessToken is used for Google Calendar API
+          googleAccessToken: account.access_token,
+          //This accessToken is actually id_token not access_token. To get the actual access token use googleAccessToken
           accessToken: account.id_token as string,
           accessTokenExpires:
             account.expires_at && ((account.expires_at * 1000) as number),
           edenToken: _edenToken,
         };
 
-        console.log("updatedToken=====>", updatedToken); // <-- log updated token here
-
-        return {
-          test: account.accessToken,
-          uid: user.id,
-          accessToken: account.id_token as string,
-          accessTokenExpires:
-            account.expires_at && ((account.expires_at * 1000) as number),
-          edenToken: _edenToken,
-        };
+        return newToken;
       }
 
       const accessTokenExpires = token.accessTokenExpires as number;
