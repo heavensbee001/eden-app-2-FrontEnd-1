@@ -37,6 +37,8 @@ const FIND_POSITION_CANDIDATE = gql`
           card {
             _id
             content
+            futurePotential
+            keyPriority
           }
           scoreCardsCandidate {
             card {
@@ -145,9 +147,25 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                 />
                               )}
                             </div>
-                            <p className="w-full pr-4 text-sm">
-                              {item?.card?.content!.trim()}
-                            </p>
+                            <div className="flex">
+                              <p className="w-full pr-4 text-sm">
+                                {item?.card?.content!.trim()}
+                              </p>
+                              {item &&
+                                item?.card &&
+                                item?.card.futurePotential == true && (
+                                  <span className="ml-1 rounded-full bg-blue-200 px-1 py-0.5 text-xs text-blue-800">
+                                    Show Future Potential
+                                  </span>
+                                )}
+                              {item &&
+                                item?.card &&
+                                item?.card.keyPriority == true && (
+                                  <span className="ml-1 rounded-full bg-blue-200 px-1 py-0.5 text-xs text-blue-800">
+                                    Key Priority
+                                  </span>
+                                )}
+                            </div>
                             <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                               <span className={color}>{letter}</span>
                               <EdenTooltip
@@ -212,7 +230,11 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                         {_card?.card?.content}
                                       </p>
                                       <div className="border-edenGray-100 relative ml-4 flex h-6 w-8 items-center justify-center rounded-[0.25rem] border">
-                                        <span className={color}>{letter}</span>
+                                        <span className={color}>
+                                          {_card?.scoreAlignment != null
+                                            ? _card.scoreAlignment * 10
+                                            : ""}
+                                        </span>
                                       </div>
                                     </div>
                                   );
