@@ -12,7 +12,6 @@ import {
 import { AiOutlineFile } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import { toast } from "react-toastify";
-import { v4 as uuidv4 } from "uuid";
 
 import { EdenAiProcessingModal } from "../../elements";
 // export const CV_TO_SUMMARY = gql`
@@ -131,9 +130,9 @@ export const CVUploadGPT = ({
         if (response.ok) {
           const { text } = await response.json();
 
-          // console.log("text.split", text.split(" ").length > 10);
-
-          const postid = uuidv4();
+          const postid = `${currentUser?._id}_${Math.floor(
+            100000 + Math.random() * 900000
+          )}`;
           const blob = file.slice(0, file.size, "application/pdf");
 
           const newFile = new File([blob], `${postid}_cv.pdf`, {
