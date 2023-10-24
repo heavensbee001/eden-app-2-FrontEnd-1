@@ -4746,12 +4746,13 @@ export type ScoreCardMemoryInput = {
 export type ScoreCardTotalType = {
   __typename?: "scoreCardTotalType";
   score?: Maybe<Scalars["Float"]>;
-  scoreCardsCalculated?: Maybe<Scalars["Boolean"]>;
+  scoreCardCalculated?: Maybe<Scalars["Boolean"]>;
 };
 
 export type ScoreCardsCandidateType = {
   __typename?: "scoreCardsCandidateType";
   card?: Maybe<CardMemory>;
+  scoreAlignment?: Maybe<Scalars["Float"]>;
 };
 
 export type ScoreCardsPositionType = {
