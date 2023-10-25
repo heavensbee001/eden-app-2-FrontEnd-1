@@ -13,6 +13,9 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
+import { BsFillStarFill } from "react-icons/bs";
+import { FaThumbsUp } from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 import { classNames } from "../../../../utils";
 
@@ -25,7 +28,7 @@ const FIND_POSITION_CANDIDATE = gql`
       }
       scoreCardTotal {
         score
-        scoreCardsCalculated
+        scoreCardCalculated
       }
       scoreCardCategoryMemories {
         category
@@ -37,6 +40,8 @@ const FIND_POSITION_CANDIDATE = gql`
           card {
             _id
             content
+            futurePotential
+            keyPriority
           }
           scoreCardsCandidate {
             card {
@@ -46,6 +51,7 @@ const FIND_POSITION_CANDIDATE = gql`
               _id
               content
             }
+            scoreAlignment
           }
         }
       }
@@ -91,7 +97,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                   </h3>
                   <div className="text-edenGray-700 flex items-center text-sm">
                     Average:
-                    <div className="bg-edenPink-300 ml-2 -mr-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                    <div className="bg-edenPink-300 -mr-2 ml-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
                       <span
                         className={classNames(
                           getGrade(_category!.score! * 100).color,
@@ -120,7 +126,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                           className="border-edenGray-100 w-full border-b px-4"
                         >
                           <div className="relative flex w-full columns-2 items-center justify-between py-4">
-                            <div className="absolute top-5 -left-6 cursor-pointer">
+                            <div className="absolute -left-6 top-5 cursor-pointer">
                               {expandID ===
                               _category!.category?.replace("_", " ")! +
                                 index ? (
@@ -144,9 +150,55 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                 />
                               )}
                             </div>
-                            <p className="w-full pr-4 text-sm">
-                              {item?.card?.content!.trim()}
-                            </p>
+                            <div className="flex">
+                              <p className="w-full pr-4 text-sm">
+                                {item?.card?.content!.trim()}
+                              </p>
+                              {item &&
+                                item?.card &&
+                                item?.card.futurePotential == true && (
+                                  <>
+                                    <div
+                                      data-tip={"Show Future Potential"}
+                                      data-for={`badgeTip-potential-${item.card._id}`}
+                                      className={`mr-4 mt-0.5 inline-block cursor-default rounded-sm text-sm last:mb-0 last:mr-0`}
+                                    >
+                                      <FaThumbsUp color="#FF9843" />
+                                    </div>
+                                    <ReactTooltip
+                                      id={`badgeTip-potential-${item.card._id}`}
+                                      place="top"
+                                      effect="solid"
+                                    >
+                                      {
+                                        "The candidate has future potential in the company"
+                                      }
+                                    </ReactTooltip>
+                                  </>
+                                )}
+                              {item &&
+                                item?.card &&
+                                item?.card.keyPriority == true && (
+                                  <>
+                                    <div
+                                      data-tip={"Key Priority"}
+                                      data-for={`badgeTip-priority-${item.card._id}`}
+                                      className={`mr-4 mt-0.5 inline-block cursor-default rounded-sm text-sm last:mb-0 last:mr-0`}
+                                    >
+                                      <BsFillStarFill color="#FF9843" />
+                                    </div>
+                                    <ReactTooltip
+                                      id={`badgeTip-priority-${item.card._id}`}
+                                      place="top"
+                                      effect="solid"
+                                    >
+                                      {
+                                        "The most relevant point based on the alignment with Hiring Manager"
+                                      }
+                                    </ReactTooltip>
+                                  </>
+                                )}
+                            </div>
                             <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                               <span className={color}>{letter}</span>
                               <EdenTooltip
@@ -158,14 +210,14 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                   <div className="w-60">
                                     {letter === "?" ? (
                                       <div>
-                                        <p className="text-gray-600 mb-4 text-sm leading-tight">
+                                        <p className="mb-4 text-sm leading-tight text-gray-600">
                                           {
                                             "The candidate hasn't provided information on this. Do you want me to reach out & find out for you?"
                                           }
                                         </p>
                                       </div>
                                     ) : (
-                                      <p className="text-gray-600 text-sm leading-tight">
+                                      <p className="text-sm leading-tight text-gray-600">
                                         {item?.reason}
                                       </p>
                                     )}
@@ -178,8 +230,8 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                 borderColor="#e5e7eb"
                                 padding="0.5rem"
                               >
-                                <div className="bg-edenPink-200 cursor-pointer rounded-full p-1 w-5 h-5 absolute -right-2 -top-1">
-                                  <EdenIconExclamation className="w-full h-full" />
+                                <div className="bg-edenPink-200 absolute -right-2 -top-1 h-5 w-5 cursor-pointer rounded-full p-1">
+                                  <EdenIconExclamation className="h-full w-full" />
                                 </div>
                               </EdenTooltip>
                             </div>
@@ -189,23 +241,33 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                             <div>
                               {item?.scoreCardsCandidate?.map(
                                 (_card, _index) => {
-                                  const { color, letter } = getGrade(
-                                    !!_card?.card?.score?.overall ||
-                                      _card?.card?.score?.overall === 0
-                                      ? _card?.card?.score?.overall * 100
+                                  // const { color, letter } = getGrade(
+                                  //   !!_card?.card?.score?.overall ||
+                                  //     _card?.card?.score?.overall === 0
+                                  //     ? _card?.card?.score?.overall * 100
+                                  //     : null
+                                  // );
+                                  const { color } = getGrade(
+                                    !!_card?.scoreAlignment ||
+                                      _card?.scoreAlignment === 0
+                                      ? _card?.scoreAlignment * 100
                                       : null
                                   );
 
                                   return (
                                     <div
                                       key={_index}
-                                      className="relative flex w-full items-center justify-between mb-4 border border-edenGray-100 rounded-md p-2 w-[95%]"
+                                      className="border-edenGray-100 relative mb-4 flex w-[95%] w-full items-center justify-between rounded-md border p-2"
                                     >
                                       <p className="text-edenGray-700 text-xs">
                                         {_card?.card?.content}
                                       </p>
                                       <div className="border-edenGray-100 relative ml-4 flex h-6 w-8 items-center justify-center rounded-[0.25rem] border">
-                                        <span className={color}>{letter}</span>
+                                        <span className={color}>
+                                          {_card?.scoreAlignment != null
+                                            ? _card.scoreAlignment * 10
+                                            : ""}
+                                        </span>
                                       </div>
                                     </div>
                                   );

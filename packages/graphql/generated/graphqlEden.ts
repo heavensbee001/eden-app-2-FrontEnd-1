@@ -19,11 +19,6 @@ export type Scalars = {
   Date: any;
 };
 
-export type MemberData = {
-  _id?: Maybe<Scalars["ID"]>;
-  discordName?: Maybe<Scalars["String"]>;
-};
-
 export type Ai = {
   __typename?: "AI";
   _id?: Maybe<Scalars["ID"]>;
@@ -78,6 +73,7 @@ export type CandidateType = {
   compareCandidatePosition?: Maybe<CompareCandidatePositionType>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
   conversationID?: Maybe<Scalars["ID"]>;
+  cvID?: Maybe<Scalars["String"]>;
   dateApply?: Maybe<Scalars["String"]>;
   futurePotential?: Maybe<Array<Maybe<AttributeCandidateType>>>;
   interviewQuestionsForCandidate?: Maybe<
@@ -106,6 +102,7 @@ export type CardMemory = {
   content?: Maybe<Scalars["String"]>;
   futurePotential?: Maybe<Scalars["Boolean"]>;
   keyPriority?: Maybe<Scalars["Boolean"]>;
+  pineconeDB?: Maybe<PineconeDbType>;
   priority?: Maybe<Scalars["Int"]>;
   score?: Maybe<ScoreCardMemory>;
   tradeOffBoost?: Maybe<Scalars["Int"]>;
@@ -2368,6 +2365,7 @@ export enum ApprovedSkillEnum {
 
 export type AskEdenUserPositionGptFuncInput = {
   conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
+  memoriesType?: InputMaybe<MemoriesTypeEnum>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
   whatToAsk?: InputMaybe<WhatToAskEnum>;
@@ -2979,6 +2977,7 @@ export type CreateTalentListPositionInput = {
 export type CvInfoType = {
   __typename?: "cvInfoType";
   cvContent?: Maybe<Scalars["String"]>;
+  cvFilename?: Maybe<Scalars["String"]>;
   cvMemory?: Maybe<Array<Maybe<CvMemoryType>>>;
   cvNotes?: Maybe<Scalars["String"]>;
   cvPreparationBio?: Maybe<Scalars["Boolean"]>;
@@ -4115,6 +4114,11 @@ export type Members_AutocompleteInput = {
   search?: InputMaybe<Scalars["String"]>;
 };
 
+export enum MemoriesTypeEnum {
+  New = "NEW",
+  Old = "OLD",
+}
+
 export type MessageChat = {
   content?: InputMaybe<Scalars["String"]>;
   date?: InputMaybe<Scalars["Date"]>;
@@ -4185,6 +4189,14 @@ export type MessageToGptInput = {
 export type MessageToGptOutput = {
   __typename?: "messageToGPTOutput";
   message?: Maybe<Scalars["String"]>;
+};
+
+export type MetadataType = {
+  __typename?: "metadataType";
+  database?: Maybe<Scalars["String"]>;
+  label?: Maybe<Scalars["String"]>;
+  positionID?: Maybe<Scalars["String"]>;
+  userID?: Maybe<Scalars["String"]>;
 };
 
 export type MostRelevantMemberNodeType = {
@@ -4313,6 +4325,13 @@ export enum PhaseType {
   Rejected = "rejected",
   Shortlisted = "shortlisted",
 }
+
+export type PineconeDbType = {
+  __typename?: "pineconeDBType";
+  metadata?: Maybe<MetadataType>;
+  pineconeID?: Maybe<Scalars["String"]>;
+  text?: Maybe<Scalars["String"]>;
+};
 
 export type PitchPositionToCandidateInput = {
   positionID?: InputMaybe<Scalars["ID"]>;
@@ -4675,6 +4694,7 @@ export type SaveActionsPerformedInput = {
 
 export type SaveCVtoUserInput = {
   cvContent?: InputMaybe<Scalars["String"]>;
+  cvFilename?: InputMaybe<Scalars["String"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
 };
@@ -4726,12 +4746,13 @@ export type ScoreCardMemoryInput = {
 export type ScoreCardTotalType = {
   __typename?: "scoreCardTotalType";
   score?: Maybe<Scalars["Float"]>;
-  scoreCardsCalculated?: Maybe<Scalars["Boolean"]>;
+  scoreCardCalculated?: Maybe<Scalars["Boolean"]>;
 };
 
 export type ScoreCardsCandidateType = {
   __typename?: "scoreCardsCandidateType";
   card?: Maybe<CardMemory>;
+  scoreAlignment?: Maybe<Scalars["Float"]>;
 };
 
 export type ScoreCardsPositionType = {
@@ -4995,7 +5016,9 @@ export type TweetsType = {
 };
 
 export enum TypeCardMemoryEnum {
+  Behavior = "BEHAVIOR",
   CoreValues = "CORE_VALUES",
+  DomainExpertise = "DOMAIN_EXPERTISE",
   Education = "EDUCATION",
   Experience = "EXPERIENCE",
   Goals = "GOALS",
