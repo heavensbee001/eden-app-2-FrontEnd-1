@@ -16,13 +16,12 @@ const createCalendarEvent = async (
   const googleAccessToken = token?.googleAccessToken;
 
   console.log("googleAccessToken ====>>> ", googleAccessToken);
-  const { startDate } = req.body;
+  const { startDate, interviewLink } = req.body;
   const parsedDate = new Date(startDate);
 
   const event = {
     summary: "Interview with Eden",
-    //How to get this link here with useRouter?
-    description: `A 30 min interview with Eden AI. Join via <a href="">this link</a>.`,
+    description: `A 30 min interview with Eden AI. Join via this link: ${interviewLink}`,
     start: {
       dateTime: parsedDate.toISOString(),
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,

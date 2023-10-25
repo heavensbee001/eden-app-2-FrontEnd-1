@@ -159,6 +159,8 @@ const HomePage: NextPageWithLayout = () => {
   }
 
   const handleCreateEvent = () => {
+    const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
+
     fetch("/api/createCalendarEvent/createCalendarEvent", {
       method: "POST",
       headers: {
@@ -166,6 +168,7 @@ const HomePage: NextPageWithLayout = () => {
       },
       body: JSON.stringify({
         startDate,
+        interviewLink: interviewLink,
       }),
     })
       .then((response) => {
@@ -210,10 +213,12 @@ const HomePage: NextPageWithLayout = () => {
 
         setGoogleEventInfo((prevState) => {
           console.log("Updating state...");
+
           return {
             ...prevState,
             eventName: data.summary,
             //TO DO: Create Description for the event
+
             eventDescription: data.description,
             eventCreator: data.creator.email,
             eventStart: {
@@ -262,7 +267,7 @@ const HomePage: NextPageWithLayout = () => {
           <div className="relative h-full w-full">
             {step === 0 && (
               <div className="pt-8">
-                {scheduleState === "first" && (
+                {/* {scheduleState === "first" && (
                   <div className="  px-4 py-8">
                     <h2 className="text-edenGreen-600 text-center">
                       {"You're about to head into your interview with Eden."}
@@ -323,24 +328,44 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
                 )}
                 {scheduleState === "third" && (
-                  <div>
-                    <p>Event Created!</p>
-                    <p>Event name: {googleEventInfo.eventName}</p>
-                    <p>Event Description: {googleEventInfo.eventDescription}</p>
-                    <p>Creator of the Event : {googleEventInfo.eventCreator}</p>
-                    <div className="flex space-x-1 ">
+                  <div className="">
+                    <h1 className=" text-edenGreen-500 mb-4 text-2xl font-bold">
+                      Event Created in your Google Calendar!
+                    </h1>
+
+                    <p className="text-edenGray-900 mb-2 text-lg">
+                      <strong>Event name:</strong> {googleEventInfo.eventName}
+                    </p>
+                    <p className="text-edenGray-900 mb-2">
+                      <strong>Event Description:</strong>{" "}
+                      {googleEventInfo.eventDescription}
+                    </p>
+                    <p className="text-edenGray-900 mb-4">
+                      <strong>Creator of the Event:</strong>{" "}
+                      {googleEventInfo.eventCreator}
+                    </p>
+
+                    <div className="mb-2 flex space-x-2" text-edenGray-900>
                       <p>
-                        Event Start Time: {googleEventInfo.eventStart.dateTime}{" "}
+                        <strong>Event Start Time:</strong>{" "}
+                        {googleEventInfo.eventStart.dateTime}
                       </p>
-                      <p>(Timezone: {googleEventInfo.eventStart.timeZone})</p>
+                      <p className="text-gray-600">
+                        (Timezone: {googleEventInfo.eventStart.timeZone})
+                      </p>
                     </div>
-                    <div className="flex space-x-1">
-                      <p>Event End Time: {googleEventInfo.eventEnd.dateTime}</p>
-                      <p>(Timezone: {googleEventInfo.eventEnd.timeZone})</p>
-                    </div>{" "}
-                    <p>Link to the Event: {googleEventInfo.eventLink}</p>
+
+                    <div className="text-edenGray-900 flex space-x-2">
+                      <p>
+                        <strong>Event End Time:</strong>{" "}
+                        {googleEventInfo.eventEnd.dateTime}
+                      </p>
+                      <p className="text-gray-600">
+                        (Timezone: {googleEventInfo.eventEnd.timeZone})
+                      </p>
+                    </div>
                   </div>
-                )}
+                )} */}
                 <h1 className="text-edenGreen-600 text-center">
                   {findPositionData?.findPosition?.company.type === "COMMUNITY"
                     ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
@@ -482,16 +507,43 @@ const HomePage: NextPageWithLayout = () => {
                       </div>
                     )}
                     {scheduleState === "third" && (
-                      <div>
-                        <p>Event Created!</p>
-                        <p>Event name: {googleEventInfo.eventCreator}</p>
-                        <p>Event Description: {googleEventInfo.eventCreator}</p>
-                        <p>
-                          Creator of the Event : {googleEventInfo.eventCreator}
+                      <div className="text-edenGray-900">
+                        <h1 className="text-edenGreen-600 mb-4 text-2xl font-bold">
+                          Event Created in your Google Calendar!
+                        </h1>
+
+                        <p className="mb-2 text-lg">
+                          <strong>Event name:</strong>{" "}
+                          {googleEventInfo.eventName}
                         </p>
-                        <p>Event Start Time: {googleEventInfo.eventCreator}</p>
-                        <p>Event End Time: {googleEventInfo.eventCreator}</p>
-                        <p>Link to the Event: {googleEventInfo.eventCreator}</p>
+                        <p className="mb-2">
+                          <strong>Event Description:</strong>{" "}
+                          {googleEventInfo.eventDescription}
+                        </p>
+                        <p className="mb-4">
+                          <strong>Creator of the Event:</strong>{" "}
+                          {googleEventInfo.eventCreator}
+                        </p>
+
+                        <div className="mb-2 flex space-x-2">
+                          <p>
+                            <strong>Event Start Time:</strong>{" "}
+                            {googleEventInfo.eventStart.dateTime}
+                          </p>
+                          <p className="text-gray-600">
+                            (Timezone: {googleEventInfo.eventStart.timeZone})
+                          </p>
+                        </div>
+
+                        <div className="flex space-x-2">
+                          <p>
+                            <strong>Event End Time:</strong>{" "}
+                            {googleEventInfo.eventEnd.dateTime}
+                          </p>
+                          <p className="text-gray-600">
+                            (Timezone: {googleEventInfo.eventEnd.timeZone})
+                          </p>
+                        </div>
                       </div>
                     )}
                   </Modal>

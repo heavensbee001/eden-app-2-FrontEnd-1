@@ -29,7 +29,7 @@ async function getEdenToken(accessToken: string) {
 
     const data = await res.json();
 
-    // console.log("data from Auth", data);
+    console.log("data from Auth", data);
 
     return data;
   } catch {
@@ -86,7 +86,7 @@ export default NextAuth({
           scope:
             "openid email profile https://www.googleapis.com/auth/calendar",
           // eslint-disable-next-line camelcase
-          access_type: "offline", // <-- Add this line
+          access_type: "offline",
         },
       },
 
@@ -96,7 +96,8 @@ export default NextAuth({
   secret: process.env.NEXT_PUBLIC_SECRET,
   callbacks: {
     session: async ({ session, token }) => {
-      // console.log("token:", token);
+      console.log("session", session);
+      console.log("token:", token);
 
       if (session?.user) {
         session.user.id = token.uid as string;
@@ -120,7 +121,7 @@ export default NextAuth({
       return session;
     },
     jwt: async ({ user, token, account }) => {
-      // console.log("account", account);
+      console.log("account", account);
 
       if (account && user) {
         const _edenToken = await getEdenToken(account.id_token as string);
@@ -137,7 +138,7 @@ export default NextAuth({
           edenToken: _edenToken,
         };
 
-        // console.log("newToken:  ====>>>", newToken);
+        console.log("newToken:  ====>>>", newToken);
 
         return newToken;
       }
@@ -145,21 +146,13 @@ export default NextAuth({
       const accessTokenExpires = token.accessTokenExpires as number;
 
       // Discord and Eden tokens expire after 7 days, this will help force the user to re-authenticate within the getServerSideProps
-      // if (accessTokenExpires && Date.now() < accessTokenExpires - 60 * 1000) {
       if (accessTokenExpires && Date.now() > accessTokenExpires - 60 * 1000) {
         try {
           const refreshed = await refreshGoogleToken(
             token.refreshToken as string
           );
 
-          console.log("refreshed", refreshed);
-
           token.googleAccessToken = refreshed.accessToken;
-          console.log("token.googleAccessToken", token.googleAccessToken);
-
-          console.log(
-            "====================== Token refreshed!!!!!!!!!!!!! ======================"
-          );
 
           token.accessTokenExpires = Date.now() + refreshed.expiresIn * 1000;
           console.log("token.googleAccessToken", token.googleAccessToken);
