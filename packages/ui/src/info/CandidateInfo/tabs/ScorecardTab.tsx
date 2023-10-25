@@ -13,6 +13,9 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
+import { BsFillStarFill } from "react-icons/bs";
+import { FaThumbsUp } from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 import { classNames } from "../../../../utils";
 
@@ -154,16 +157,46 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                               {item &&
                                 item?.card &&
                                 item?.card.futurePotential == true && (
-                                  <span className="ml-1 rounded-full bg-blue-200 px-1 py-0.5 text-xs text-blue-800">
-                                    Show Future Potential
-                                  </span>
+                                  <>
+                                    <div
+                                      data-tip={"Show Future Potential"}
+                                      data-for={`badgeTip-potential-${item.card._id}`}
+                                      className={`mr-4 mt-0.5 inline-block cursor-default rounded-sm text-sm last:mb-0 last:mr-0`}
+                                    >
+                                      <FaThumbsUp color="#FF9843" />
+                                    </div>
+                                    <ReactTooltip
+                                      id={`badgeTip-potential-${item.card._id}`}
+                                      place="top"
+                                      effect="solid"
+                                    >
+                                      {
+                                        "The candidate has future potential in the company"
+                                      }
+                                    </ReactTooltip>
+                                  </>
                                 )}
                               {item &&
                                 item?.card &&
                                 item?.card.keyPriority == true && (
-                                  <span className="ml-1 rounded-full bg-blue-200 px-1 py-0.5 text-xs text-blue-800">
-                                    Key Priority
-                                  </span>
+                                  <>
+                                    <div
+                                      data-tip={"Key Priority"}
+                                      data-for={`badgeTip-priority-${item.card._id}`}
+                                      className={`mr-4 mt-0.5 inline-block cursor-default rounded-sm text-sm last:mb-0 last:mr-0`}
+                                    >
+                                      <BsFillStarFill color="#FF9843" />
+                                    </div>
+                                    <ReactTooltip
+                                      id={`badgeTip-priority-${item.card._id}`}
+                                      place="top"
+                                      effect="solid"
+                                    >
+                                      {
+                                        "The most relevant point based on the alignment with Hiring Manager"
+                                      }
+                                    </ReactTooltip>
+                                  </>
                                 )}
                             </div>
                             <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
@@ -214,7 +247,7 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                                   //     ? _card?.card?.score?.overall * 100
                                   //     : null
                                   // );
-                                  const { color, letter } = getGrade(
+                                  const { color } = getGrade(
                                     !!_card?.scoreAlignment ||
                                       _card?.scoreAlignment === 0
                                       ? _card?.scoreAlignment * 100
