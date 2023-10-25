@@ -310,7 +310,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                             _category.category === "TECHNICAL_SKILLS"
                         ).length > 0 && (
                           // <div className='p-auto'>
-                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                          <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                             <span
                               className={classNames(
                                 getGrade(
@@ -344,7 +344,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                           (_category, index) =>
                             _category && _category.category === "EXPERIENCE"
                         ).length > 0 && (
-                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                          <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                             <span
                               className={classNames(
                                 getGrade(
@@ -376,7 +376,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                           (_category, index) =>
                             _category && _category.category === "BEHAVIOR"
                         ).length > 0 && (
-                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                          <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                             <span
                               className={classNames(
                                 getGrade(
@@ -408,7 +408,7 @@ export const CandidatesTableList: FC<CandidatesTableListProps> = ({
                           (_category, index) =>
                             _category && _category.category === "CORE_VALUES"
                         ).length > 0 && (
-                          <div className="bg-edenPink-300 m-auto flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                          <div className="border-edenGray-100 relative -my-4 flex h-8 w-12 items-center justify-center rounded-[0.25rem] border">
                             <span
                               className={classNames(
                                 getGrade(
