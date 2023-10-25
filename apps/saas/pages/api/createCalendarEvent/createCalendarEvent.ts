@@ -11,10 +11,11 @@ const createCalendarEvent = async (
     secret: process.env.NEXT_PUBLIC_SECRET,
   });
 
-  const googleAccessToken = token?.googleAccessToken;
-
   // console.log("accessToken", test);
   // console.log("token from calendar", token);
+  const googleAccessToken = token?.googleAccessToken;
+
+  console.log("googleAccessToken ====>>> ", googleAccessToken);
   const { startDate } = req.body;
   const parsedDate = new Date(startDate);
   const event = {
@@ -47,24 +48,32 @@ const createCalendarEvent = async (
       body: JSON.stringify(event),
     }
   )
+    .then((response) => response.json())
     .then((data) => {
-      if (!data.ok) {
-        return data.json().then((errorData) => {
-          console.error("API Error:", errorData);
-        });
-      }
-      return data.json();
-    })
-    .then((data) => {
+      console.log("Event Details", data);
       if (data.error) {
+        console.error("API Error:", data.error);
         res.status(400).json({ error: data.error.message });
       } else {
-        res.status(200).json({ eventId: data.id });
+        const eventName = data.summary;
+        const eventDescription = data.description || "No Description provided ";
+        const organizerEmail = data.organizer?.email || "No email provided";
+        const eventUrl = data.htmlLink;
+
+        res.status(200).json({
+          data: data,
+          eventId: data.id,
+          eventName,
+          eventDescription,
+          organizerEmail,
+          eventUrl,
+        });
       }
     })
 
     .catch((error) => {
       console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     });
 };
 

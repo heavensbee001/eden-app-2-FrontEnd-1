@@ -39,6 +39,43 @@ async function getEdenToken(accessToken: string) {
   }
 }
 
+async function refreshGoogleToken(refreshToken: string) {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    throw new Error("Google client ID or client secret is not set");
+  }
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      // eslint-disable-next-line camelcase
+      client_id: clientId,
+      // eslint-disable-next-line camelcase
+      client_secret: clientSecret,
+      // eslint-disable-next-line camelcase
+      refresh_token: refreshToken,
+      // eslint-disable-next-line camelcase
+      grant_type: "refresh_token",
+    }),
+  });
+
+  const data = await response.json();
+
+  console.log(" from refreshGoogleToken ", data);
+
+  console.log("refreshToken!!!!!", refreshToken);
+
+  if (data.error) {
+    throw new Error(`Failed to refresh token: ${data.error_description}`);
+  }
+
+  return { accessToken: data.access_token, expiresIn: data.expires_in };
+}
+
 export default NextAuth({
   providers: [
     GoogleProvider({
@@ -48,6 +85,8 @@ export default NextAuth({
         params: {
           scope:
             "openid email profile https://www.googleapis.com/auth/calendar",
+          // eslint-disable-next-line camelcase
+          access_type: "offline", // <-- Add this line
         },
       },
 
@@ -88,6 +127,7 @@ export default NextAuth({
         //Every time a user logs in a newToken is created (to update newToken log out and log back in)
         const newToken = {
           uid: user.id,
+          refreshToken: account.refresh_token,
           //googleAccessToken is used for Google Calendar API
           googleAccessToken: account.access_token,
           //This accessToken is actually id_token not access_token. To get the actual access token use googleAccessToken
@@ -97,23 +137,41 @@ export default NextAuth({
           edenToken: _edenToken,
         };
 
+        // console.log("newToken:  ====>>>", newToken);
+
         return newToken;
       }
 
       const accessTokenExpires = token.accessTokenExpires as number;
 
       // Discord and Eden tokens expire after 7 days, this will help force the user to re-authenticate within the getServerSideProps
-      if (accessTokenExpires && Date.now() < accessTokenExpires) {
-        return {
-          ...token,
-          error: null,
-        };
-      } else {
-        return {
-          ...token,
-          error: "RefreshAccessTokenError",
-        };
+      // if (accessTokenExpires && Date.now() < accessTokenExpires - 60 * 1000) {
+      if (accessTokenExpires && Date.now() > accessTokenExpires - 60 * 1000) {
+        try {
+          const refreshed = await refreshGoogleToken(
+            token.refreshToken as string
+          );
+
+          console.log("refreshed", refreshed);
+
+          token.googleAccessToken = refreshed.accessToken;
+          console.log("token.googleAccessToken", token.googleAccessToken);
+
+          console.log(
+            "====================== Token refreshed!!!!!!!!!!!!! ======================"
+          );
+
+          token.accessTokenExpires = Date.now() + refreshed.expiresIn * 1000;
+          console.log("token.googleAccessToken", token.googleAccessToken);
+        } catch (err) {
+          console.error("Failed to refresh Google access token", err);
+          return {
+            ...token,
+            error: "RefreshAccessTokenError",
+          };
+        }
       }
+      return token;
     },
   },
   session: {

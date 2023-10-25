@@ -60,7 +60,22 @@ const HomePage: NextPageWithLayout = () => {
   });
   const [generalDetails, setGeneralDetails] = useState<any>({});
   const [startDate, setStartDate] = useState(new Date());
-  const [schedule, setSchedule] = useState(false);
+  //remove later
+  const [scheduleState, setScheduleState] = useState("first");
+  const [googleEventInfo, setGoogleEventInfo] = useState({
+    eventName: "",
+    eventDescription: "",
+    eventCreator: "",
+    eventStart: {
+      dateTime: "",
+      timeZone: "",
+    },
+    eventEnd: {
+      dateTime: "",
+      timeZone: "",
+    },
+    eventLink: "",
+  });
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -154,13 +169,68 @@ const HomePage: NextPageWithLayout = () => {
       }),
     })
       .then((response) => {
-        if (response.ok) {
-          toast.success("Google Calendar Event Created");
-          return response;
+        if (!response.ok) {
+          toast.error("Failed to create and event...");
+          throw new Error(`HTTP error: ${response.status}`);
         }
+        return response.json();
       })
       .then((data) => {
+        toast.success("Google Calendar Event Created");
+        setScheduleState("third");
         console.log("Event Created", data);
+        const startDate = new Date(data.data.start.dateTime);
+        const endDate = new Date(data.data.end.dateTime);
+
+        const formattedDateStartDate = startDate.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        const formattedStartTime = startDate.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZoneName: "short",
+        });
+        const formattedDateEndDate = endDate.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        const formattedEndTime = endDate.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZoneName: "short",
+        });
+
+        setGoogleEventInfo((prevState) => {
+          console.log("Updating state...");
+          return {
+            ...prevState,
+            eventName: data.data.summary,
+            //TO DO: Create Description for the event
+            // eventDescription:data.description,
+            eventCreator: data.data.creator.email,
+            eventStart: {
+              dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,
+              timeZone: ` ${data.data.start.timeZone}`,
+            },
+
+            eventEnd: {
+              dateTime: `${formattedDateEndDate} - ${formattedEndTime}`,
+              timeZone: ` ${data.data.end.timeZone}`,
+            },
+            //To Do: Get the link
+            // eventLink: someLink
+          };
+        });
+        console.log("googleEventInfo", googleEventInfo);
+        console.log("ahahahahahah", data.data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -192,6 +262,85 @@ const HomePage: NextPageWithLayout = () => {
           <div className="relative h-full w-full">
             {step === 0 && (
               <div className="pt-8">
+                {scheduleState === "first" && (
+                  <div className="  px-4 py-8">
+                    <h2 className="text-edenGreen-600 text-center">
+                      {"You're about to head into your interview with Eden."}
+                    </h2>
+                    <p className="text-center">
+                      {"This will take around 10-15 minutes."}
+                    </p>
+                    <p className="mb-12 text-center text-sm">
+                      {"Just be your smashing self. You look great btw ;)"}
+                    </p>
+                    <div className="flex justify-evenly">
+                      <Button
+                        variant="tertiary"
+                        onClick={() => setScheduleState("second")}
+                      >
+                        Schedule The Interview
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          setShowStartInterviewModal(false);
+                          setStep(step + 1);
+                        }}
+                      >
+                        {"Let's do this now!"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                {scheduleState === "second" && (
+                  <div className="mt-7 flex flex-col items-center justify-center py-48  ">
+                    <div className="mb-4 flex flex-col items-center">
+                      <p className=" text-edenGreen-600 m text-xl font-bold">
+                        Pick the date and time for your interview
+                      </p>
+                      <p className="text-sm ">
+                        This event will appear in your Google Calendar
+                      </p>
+                    </div>
+
+                    <DatePicker
+                      className=" rounded-md border border-black pl-3"
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      timeInputLabel="Time:"
+                      dateFormat="MM/dd/yyyy h:mm aa"
+                      showTimeSelect
+                      timeIntervals={15}
+                      popperPlacement="top-start"
+                    />
+                    <Button
+                      className="mt-3"
+                      variant="secondary"
+                      onClick={handleCreateEvent}
+                    >
+                      Schedule
+                    </Button>
+                  </div>
+                )}
+                {scheduleState === "third" && (
+                  <div>
+                    <p>Event Created!</p>
+                    <p>Event name: {googleEventInfo.eventName}</p>
+                    <p>Event Description: {googleEventInfo.eventDescription}</p>
+                    <p>Creator of the Event : {googleEventInfo.eventCreator}</p>
+                    <div className="flex space-x-1 ">
+                      <p>
+                        Event Start Time: {googleEventInfo.eventStart.dateTime}{" "}
+                      </p>
+                      <p>(Timezone: {googleEventInfo.eventStart.timeZone})</p>
+                    </div>
+                    <div className="flex space-x-1">
+                      <p>Event End Time: {googleEventInfo.eventEnd.dateTime}</p>
+                      <p>(Timezone: {googleEventInfo.eventEnd.timeZone})</p>
+                    </div>{" "}
+                    <p>Link to the Event: {googleEventInfo.eventLink}</p>
+                  </div>
+                )}
                 <h1 className="text-edenGreen-600 text-center">
                   {findPositionData?.findPosition?.company.type === "COMMUNITY"
                     ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
@@ -269,74 +418,82 @@ const HomePage: NextPageWithLayout = () => {
                       <span className="mx-1 text-red-600">*</span>
                     </p>
                   </div>
-                  <Modal open={showStartInterviewModal} closeOnEsc={false}>
-                    <div className="  px-4 py-8">
-                      <h2 className="text-edenGreen-600 text-center">
-                        {"You're about to head into your interview with Eden."}
-                      </h2>
-                      <p className="text-center">
-                        {"This will take around 10-15 minutes."}
-                      </p>
-                      <p className="mb-12 text-center text-sm">
-                        {"Just be your smashing self. You look great btw ;)"}
-                      </p>
-                      <div className="flex justify-evenly">
-                        <Button
-                          onClick={() => {
-                            setShowStartInterviewModal(false);
-                          }}
-                          variant="tertiary"
-                          className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
-                        >
-                          {"Let me put on pants 1st"}
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          onClick={() => {
-                            setShowStartInterviewModal(false);
-                            setStep(step + 1);
-                          }}
-                        >
-                          {"Let's do this!"}
-                        </Button>
-                        <Button
-                          variant="primary"
-                          onClick={() => setSchedule(!schedule)}
-                        >
-                          Schedule The Interview
-                        </Button>
-                      </div>
-                      {schedule ? (
-                        <div className="mt-7 flex flex-col items-center justify-center  ">
-                          <div className="mb-2 flex flex-col items-center">
-                            <p className=" font-bold">
-                              Pick the date and time for your interview
-                            </p>
-                            <p className="text-sm text-gray-400">
-                              This event will appear in your Google Calendar
-                            </p>
-                          </div>
-
-                          <DatePicker
-                            className="rounded-md border border-black pl-3 "
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            timeInputLabel="Time:"
-                            dateFormat="MM/dd/yyyy h:mm aa"
-                            showTimeSelect
-                            timeIntervals={15}
-                            popperPlacement="top-start"
-                          />
+                  <Modal open={showStartInterviewModal}>
+                    {scheduleState === "first" && (
+                      <div className="  px-4 py-8">
+                        <h2 className="text-edenGreen-600 text-center">
+                          {
+                            "You're about to head into your interview with Eden."
+                          }
+                        </h2>
+                        <p className="text-center">
+                          {"This will take around 10-15 minutes."}
+                        </p>
+                        <p className="mb-12 text-center text-sm">
+                          {"Just be your smashing self. You look great btw ;)"}
+                        </p>
+                        <div className="flex justify-evenly">
                           <Button
-                            className="mt-3"
-                            variant="secondary"
-                            onClick={handleCreateEvent}
+                            variant="tertiary"
+                            onClick={() => setScheduleState("second")}
                           >
-                            Schedule
+                            Schedule The Interview
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={() => {
+                              setShowStartInterviewModal(false);
+                              setStep(step + 1);
+                            }}
+                          >
+                            {"Let's do this now!"}
                           </Button>
                         </div>
-                      ) : null}
-                    </div>
+                      </div>
+                    )}
+                    {scheduleState === "second" && (
+                      <div className="mt-7 flex flex-col items-center justify-center py-48  ">
+                        <div className="mb-4 flex flex-col items-center">
+                          <p className=" text-edenGreen-600 m text-xl font-bold">
+                            Pick the date and time for your interview
+                          </p>
+                          <p className="text-sm ">
+                            This event will appear in your Google Calendar
+                          </p>
+                        </div>
+
+                        <DatePicker
+                          className=" rounded-md border border-black pl-3"
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          timeInputLabel="Time:"
+                          dateFormat="MM/dd/yyyy h:mm aa"
+                          showTimeSelect
+                          timeIntervals={15}
+                          popperPlacement="top-start"
+                        />
+                        <Button
+                          className="mt-3"
+                          variant="secondary"
+                          onClick={handleCreateEvent}
+                        >
+                          Schedule
+                        </Button>
+                      </div>
+                    )}
+                    {scheduleState === "third" && (
+                      <div>
+                        <p>Event Created!</p>
+                        <p>Event name: {googleEventInfo.eventCreator}</p>
+                        <p>Event Description: {googleEventInfo.eventCreator}</p>
+                        <p>
+                          Creator of the Event : {googleEventInfo.eventCreator}
+                        </p>
+                        <p>Event Start Time: {googleEventInfo.eventCreator}</p>
+                        <p>Event End Time: {googleEventInfo.eventCreator}</p>
+                        <p>Link to the Event: {googleEventInfo.eventCreator}</p>
+                      </div>
+                    )}
                   </Modal>
                 </WizardStep>
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
