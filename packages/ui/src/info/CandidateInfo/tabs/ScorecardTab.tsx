@@ -46,6 +46,7 @@ const FIND_POSITION_CANDIDATE = gql`
               _id
               content
             }
+            scoreAlignment
           }
         }
       }
@@ -189,10 +190,16 @@ export const ScorecardTab: FC<Props> = ({ candidate }) => {
                             <div>
                               {item?.scoreCardsCandidate?.map(
                                 (_card, _index) => {
+                                  // const { color, letter } = getGrade(
+                                  //   !!_card?.card?.score?.overall ||
+                                  //     _card?.card?.score?.overall === 0
+                                  //     ? _card?.card?.score?.overall * 100
+                                  //     : null
+                                  // );
                                   const { color, letter } = getGrade(
-                                    !!_card?.card?.score?.overall ||
-                                      _card?.card?.score?.overall === 0
-                                      ? _card?.card?.score?.overall * 100
+                                    !!_card?.scoreAlignment ||
+                                      _card?.scoreAlignment === 0
+                                      ? _card?.scoreAlignment * 100
                                       : null
                                   );
 
