@@ -179,8 +179,8 @@ const HomePage: NextPageWithLayout = () => {
         toast.success("Google Calendar Event Created");
         setScheduleState("third");
         console.log("Event Created", data);
-        const startDate = new Date(data.data.start.dateTime);
-        const endDate = new Date(data.data.end.dateTime);
+        const startDate = new Date(data.start.dateTime);
+        const endDate = new Date(data.end.dateTime);
 
         const formattedDateStartDate = startDate.toLocaleDateString("en-US", {
           weekday: "long",
@@ -212,25 +212,25 @@ const HomePage: NextPageWithLayout = () => {
           console.log("Updating state...");
           return {
             ...prevState,
-            eventName: data.data.summary,
+            eventName: data.summary,
             //TO DO: Create Description for the event
             // eventDescription:data.description,
-            eventCreator: data.data.creator.email,
+            eventCreator: data.creator.email,
             eventStart: {
               dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,
-              timeZone: ` ${data.data.start.timeZone}`,
+              timeZone: ` ${data.start.timeZone}`,
             },
 
             eventEnd: {
               dateTime: `${formattedDateEndDate} - ${formattedEndTime}`,
-              timeZone: ` ${data.data.end.timeZone}`,
+              timeZone: ` ${data.end.timeZone}`,
             },
             //To Do: Get the link
             // eventLink: someLink
           };
         });
         console.log("googleEventInfo", googleEventInfo);
-        console.log("ahahahahahah", data.data);
+        console.log("ahahahahahah", data);
       })
       .catch((error) => {
         console.error("Error:", error);

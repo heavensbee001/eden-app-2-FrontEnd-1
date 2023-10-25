@@ -55,19 +55,12 @@ const createCalendarEvent = async (
         console.error("API Error:", data.error);
         res.status(400).json({ error: data.error.message });
       } else {
-        const eventName = data.summary;
-        const eventDescription = data.description || "No Description provided ";
-        const organizerEmail = data.organizer?.email || "No email provided";
-        const eventUrl = data.htmlLink;
+        // const eventName = data.summary;
+        // const eventDescription = data.description || "No Description provided ";
+        // const organizerEmail = data.organizer?.email || "No email provided";
+        // const eventUrl = data.htmlLink;
 
-        res.status(200).json({
-          data: data,
-          eventId: data.id,
-          eventName,
-          eventDescription,
-          organizerEmail,
-          eventUrl,
-        });
+        res.status(200).json(data);
       }
     })
 
