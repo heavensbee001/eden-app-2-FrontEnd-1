@@ -214,7 +214,7 @@ const HomePage: NextPageWithLayout = () => {
             ...prevState,
             eventName: data.summary,
             //TO DO: Create Description for the event
-            // eventDescription:data.description,
+            eventDescription: data.description,
             eventCreator: data.creator.email,
             eventStart: {
               dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,

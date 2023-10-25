@@ -18,8 +18,11 @@ const createCalendarEvent = async (
   console.log("googleAccessToken ====>>> ", googleAccessToken);
   const { startDate } = req.body;
   const parsedDate = new Date(startDate);
+
   const event = {
     summary: "Interview with Eden",
+    //How to get this link here with useRouter?
+    description: `A 30 min interview with Eden AI. Join via <a href="">this link</a>.`,
     start: {
       dateTime: parsedDate.toISOString(),
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -55,11 +58,6 @@ const createCalendarEvent = async (
         console.error("API Error:", data.error);
         res.status(400).json({ error: data.error.message });
       } else {
-        // const eventName = data.summary;
-        // const eventDescription = data.description || "No Description provided ";
-        // const organizerEmail = data.organizer?.email || "No email provided";
-        // const eventUrl = data.htmlLink;
-
         res.status(200).json(data);
       }
     })
