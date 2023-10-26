@@ -149,9 +149,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1011,11 +1010,14 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("Link copied!");
   };
 
-  const [updatePosition] = useMutation(UPDATE_POSITION, {
-    onCompleted() {
-      getCompanyFunc();
-    },
-  });
+  const [updatePosition, { loading: updatePositionLoading }] = useMutation(
+    UPDATE_POSITION,
+    {
+      onCompleted() {
+        getCompanyFunc();
+      },
+    }
+  );
 
   const handleDelete = () => {
     updatePosition({
@@ -1161,6 +1163,17 @@ const PositionCRM: NextPageWithLayout = () => {
     }
   }, [findPositionData?.findPosition]);
 
+  const handlePublish = (publish: boolean) => {
+    updatePosition({
+      variables: {
+        fields: {
+          _id: positionID,
+          status: publish ? PositionStatus.Active : "UNPUBLISHED",
+        },
+      },
+    });
+  };
+
   return (
     <>
       <Head>
@@ -1235,6 +1248,30 @@ const PositionCRM: NextPageWithLayout = () => {
                   >
                     {findPositionData?.findPosition?.status}
                   </div>
+                )}
+                {findPositionData?.findPosition?.status === "UNPUBLISHED" && (
+                  <Button
+                    className="bg-utilityOrange h-6 !text-sm !py-0 ml-4"
+                    onClick={() => {
+                      handlePublish(true);
+                    }}
+                    disabled={updatePositionLoading}
+                    loading={updatePositionLoading}
+                  >
+                    Publish
+                  </Button>
+                )}
+                {findPositionData?.findPosition?.status === "ACTIVE" && (
+                  <Button
+                    className="bg-utilityOrange h-6 !text-sm !py-0 ml-4"
+                    onClick={() => {
+                      handlePublish(false);
+                    }}
+                    disabled={updatePositionLoading}
+                    loading={updatePositionLoading}
+                  >
+                    Unpublish
+                  </Button>
                 )}
               </div>
               <p>{company?.name}</p>
