@@ -810,7 +810,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                         );
                       }}
                     />
-                    <div className="w-full absolute -bottom-20 flex justify-evenly mt-4">
+                    <div className="w-full absolute -bottom-20 left-0 flex justify-evenly mt-4">
                       <Button
                         variant={"primary"}
                         className="mx-auto"
