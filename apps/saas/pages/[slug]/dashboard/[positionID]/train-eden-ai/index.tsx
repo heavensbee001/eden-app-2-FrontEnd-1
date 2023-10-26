@@ -435,12 +435,13 @@ const TrainAiPage: NextPageWithLayout = () => {
   ] = useMutation(UPDATE_POSITION_GENERAL_DETAILS);
 
   // handle question suggestions submit
-  const handleSaveGeneralDetails = () => {
+  const handleSaveGeneralDetails = (publish = false) => {
     if (positionID) {
       updatePositionGeneralDetails({
         variables: {
           fields: {
             _id: typeof positionID === "string" ? positionID : positionID[0],
+            status: publish ? "ACTIVE" : "UNPUBLISHED",
             ...getValues("position.generalDetails"),
           },
         },
@@ -762,16 +763,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 <WizardStep
                   label={"Final Details"}
                   navigationDisabled={!panda}
-                  nextButton={
-                    <Button
-                      variant={"primary"}
-                      className="mx-auto"
-                      loading={loadingUpdatePositionGeneralDetails}
-                      onClick={() => handleSaveGeneralDetails()}
-                    >
-                      Save & Continue
-                    </Button>
-                  }
+                  hideNext
                 >
                   <div className="mx-auto max-w-[40rem]">
                     <h2 className="text-xl font-medium px-8">
@@ -818,6 +810,24 @@ const TrainAiPage: NextPageWithLayout = () => {
                         );
                       }}
                     />
+                    <div className="w-full absolute -bottom-20 flex justify-evenly mt-4">
+                      <Button
+                        variant={"primary"}
+                        className="mx-auto"
+                        loading={loadingUpdatePositionGeneralDetails}
+                        onClick={() => handleSaveGeneralDetails(false)}
+                      >
+                        Save without publishing
+                      </Button>
+                      <Button
+                        variant={"primary"}
+                        className="mx-auto"
+                        loading={loadingUpdatePositionGeneralDetails}
+                        onClick={() => handleSaveGeneralDetails(true)}
+                      >
+                        Save & Publish to Job Board
+                      </Button>
+                    </div>
                   </div>
                 </WizardStep>
                 <WizardStep label={"Share Link"} navigationDisabled={!panda}>
