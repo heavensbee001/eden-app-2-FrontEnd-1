@@ -20,7 +20,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
     // return res.status(404).end();
   }
-
+  console.log(
+    "From Fetch Token",
+    JSON.stringify({ accessToken: token.accessToken })
+  );
   await fetch(`${NEXT_PUBLIC_AUTH_URL}/auth/token`, {
     method: "POST",
     body: JSON.stringify({ accessToken: token.accessToken }),
