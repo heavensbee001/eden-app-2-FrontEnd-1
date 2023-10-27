@@ -47,7 +47,7 @@ export const InfoTab: FC<Props> = ({
               {`${member?.letterAndColor?.totalMatchPerc?.letter}`}
             </span>
           </div> */}
-          {candidate?.analysisCandidateEdenAI?.fitRequirements?.content && (
+          {candidate?.analysisCandidateEdenAI?.background?.content && (
             <div className="">
               <div className="mb-3 flex items-center">
                 <EdenIconExclamation className="mr-1 h-5 w-5  " />
