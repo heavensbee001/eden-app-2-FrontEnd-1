@@ -9,6 +9,7 @@ import {
   ASK_EDEN_GPT4_ONLY,
   ASK_EDEN_USER_POSITION,
   ASK_EDEN_USER_POSITION_AFTER_INTERVIEW,
+  ASK_EDEN_USER_POSITION_GPT_FUNC_V2,
   INTERVIEW_EDEN_AI,
   // MESSAGE_MAP_KG_V4,
 } from "./gqlFunctions";
@@ -47,6 +48,8 @@ export enum AI_INTERVIEW_SERVICES {
   ASK_EDEN_USER_POSITION_AFTER_INTERVIEW = "ASK_EDEN_USER_POSITION_AFTER_INTERVIEW",
   // eslint-disable-next-line no-unused-vars
   ASK_EDEN_GPT4_ONLY = "ASK_EDEN_GPT4_ONLY",
+  // eslint-disable-next-line no-unused-vars
+  ASK_EDEN_USER_POSITION_GPT_FUNC_V2 = "ASK_EDEN_USER_POSITION_GPT_FUNC_V2",
 }
 export type ChatMessage = Array<{ user: string; message: string; date: Date }>;
 
@@ -455,6 +458,45 @@ export const InterviewEdenAI = ({
     },
   });
 
+  const { data: dataAskEdenUSerPositionGPTFuncV2 } = useQuery(
+    ASK_EDEN_USER_POSITION_GPT_FUNC_V2,
+    {
+      variables: {
+        fields: {
+          conversation: chatN.map((obj) => {
+            if (obj.user === "01") {
+              return {
+                role: "assistant",
+                content: obj.message,
+                date: obj.date,
+              };
+            } else {
+              return { role: "user", content: obj.message, date: obj.date };
+            }
+          }),
+          positionID: positionID,
+          userID: userID,
+        },
+      },
+      skip:
+        // chatN.length == 0 ||
+        aiReplyService !=
+          AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_GPT_FUNC_V2 ||
+        chatN[chatN.length - 1]?.user == "01" ||
+        userID == "",
+      onCompleted: (data) => {
+        console.log(data);
+        // toraFunc();
+        // setElapsedTime(0);
+        // setStartTime(Date.now());
+        // console.log("setnmessae = ");
+
+        setStartTime(0);
+        setElapsedTime(0);
+      },
+    }
+  );
+
   console.log("chatN = ", chatN, questions);
 
   // ---------- When GPT Reply, Store all convo messages and GPT friendly formated messages ------------
@@ -577,6 +619,49 @@ export const InterviewEdenAI = ({
   }, [dataAskEdenGPT4only]);
 
   useEffect(() => {
+    if (dataAskEdenUSerPositionGPTFuncV2 && edenAIsentMessage == true) {
+      const chatT: ChatMessage = [...chatN];
+
+      const resN =
+        dataAskEdenUSerPositionGPTFuncV2?.askEdenUserPositionGPTFunc_V2;
+
+      let replyT = "";
+
+      if (resN?.reply) replyT = resN?.reply;
+
+      const conversationID = dataAskEdenUSerPositionGPTFuncV2
+        ?.AskEdenUserPositionGPTFunc_V2?.conversationID as string;
+
+      if (setConversationID && conversationID != undefined) {
+        setConversationID(conversationID);
+      }
+
+      chatT.push({
+        user: "01",
+        message: replyT,
+        date: new Date(),
+      });
+
+      setChatN(chatT);
+
+      // from chatT that is an array of objects, translate it to a string
+      let chatNprepareGPTP = "";
+
+      for (let i = 0; i < chatT.length; i++) {
+        if (chatT[i].user == "01")
+          chatNprepareGPTP += "Eden AI: " + chatT[i].message + "\n";
+        else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
+      }
+
+      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+
+      // setChatNprepareGPT(chatNprepareGPTP);
+      setEdenAIsentMessage(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataAskEdenUSerPositionGPTFuncV2]);
+
+  useEffect(() => {
     const _data =
       dataAskEdenUserPosition || dataAskEdenUserPositionAfterInterview;
 
@@ -584,6 +669,8 @@ export const InterviewEdenAI = ({
       const chatT: ChatMessage = [...chatN];
 
       const reply = _data?.askEdenUserPosition?.reply;
+
+      console.log("reply 22 =", reply);
 
       chatT.push({
         user: "01",
@@ -683,7 +770,7 @@ export const InterviewEdenAI = ({
       {/* <div className="mb-4 text-4xl font-bold text-gray-800">
           {formatTime(elapsedTime)}
         </div> */}
-      {elapsedTime > 15000 && (
+      {elapsedTime > 45000 && (
         <div className="flex flex-col items-center p-4">
           <div className="rounded-md bg-pink-400 p-2">
             <h3 className="text-center font-bold text-white">
