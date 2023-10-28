@@ -1,12 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 
-const AudioRecorder: React.FC = () => {
+const EdenVoice: React.FC = () => {
   const [recording, setRecording] = useState<boolean>(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
 
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
       mediaRecorder.current = new MediaRecorder(stream);
       mediaRecorder.current.start();
       setRecording(true);
@@ -50,4 +51,4 @@ const AudioRecorder: React.FC = () => {
   );
 };
 
-export default AudioRecorder;
+export default EdenVoice;

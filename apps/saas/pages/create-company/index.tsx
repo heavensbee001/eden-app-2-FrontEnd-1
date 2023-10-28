@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { EmployeeTypeInput } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
+import EdenVoice from "@eden/package-ui/src/components/EdenVoice";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
@@ -179,6 +180,7 @@ const CreateCompany: NextPageWithLayout = () => {
           title="Creating your company"
           open={submitting}
         />
+        <EdenVoice />
       </div>
     </>
   );
