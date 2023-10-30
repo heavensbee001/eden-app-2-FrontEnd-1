@@ -18,12 +18,18 @@ const EdenVoice: React.FC = () => {
 
   const stopRecording = () => {
     if (mediaRecorder.current) {
-      mediaRecorder.current.onstop = async () => {
-        const audioBlob = new Blob(mediaRecorder.current.requestData, {
-          type: "audio/webm",
-        });
+      mediaRecorder.current.ondataavailable = async () => {
+        const audioBlob = event.data;
+        // Create a URL representing the audio blob
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        //Create a new Audio object
+        const audio = new Audio(audioUrl);
+
+        audio.play();
+
         // Transcribe the audio blob using Whisper API
-        const transcription = await transcribeAudio(audioBlob);
+        // const transcription = await transcribeAudio(audioBlob);
         // Display the transcription in your chat interface
         // ...
       };
