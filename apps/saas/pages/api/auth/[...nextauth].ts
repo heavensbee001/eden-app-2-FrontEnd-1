@@ -84,7 +84,7 @@ export default NextAuth({
       authorization: {
         params: {
           scope:
-            "openid email profile https://www.googleapis.com/auth/calendar",
+            "openid email profile https://www.googleapis.com/auth/calendar.events",
           // eslint-disable-next-line camelcase
           access_type: "offline",
         },
