@@ -97,6 +97,7 @@ export const InterviewEdenAI = ({
   userID,
   useMemory = true,
   positionTrainEdenAI,
+  conversationID,
   positionID,
   handleChangeNodes,
   handleChangeChat,
@@ -463,17 +464,19 @@ export const InterviewEdenAI = ({
     {
       variables: {
         fields: {
-          conversation: chatN.map((obj) => {
-            if (obj.user === "01") {
-              return {
-                role: "assistant",
-                content: obj.message,
-                date: obj.date,
-              };
-            } else {
-              return { role: "user", content: obj.message, date: obj.date };
-            }
-          }),
+          conversationID: conversationID,
+          newMessage: chatN.length > 0 ? chatN[chatN.length - 1]?.message : "",
+          // conversation: chatN.map((obj) => {
+          //   if (obj.user === "01") {
+          //     return {
+          //       role: "assistant",
+          //       content: obj.message,
+          //       date: obj.date,
+          //     };
+          //   } else {
+          //     return { role: "user", content: obj.message, date: obj.date };
+          //   }
+          // }),
           positionID: positionID,
           userID: userID,
         },

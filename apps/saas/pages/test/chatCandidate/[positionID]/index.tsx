@@ -1,11 +1,11 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
-import { UPDATE_MEMBER } from "@eden/package-graphql";
-import { Mutation, UpdateMemberInput } from "@eden/package-graphql/generated";
+// import { UPDATE_MEMBER } from "@eden/package-graphql";
+// import { Mutation } from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
   Button,
-  EdenAiProcessingModal,
+  // EdenAiProcessingModal,
   Modal,
   // ProgressBarGeneric,
   // RawDataGraph,
@@ -17,15 +17,15 @@ import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { toast } from "react-toastify";
 
-import ApplicationStepContainer from "@/components/interview/ApplicationContainer";
+// import { toast } from "react-toastify";
+// import ApplicationStepContainer from "@/components/interview/ApplicationContainer";
 import InterviewEdenAIStepContainer from "@/components/interview/ChatCandidateContainer";
 import ConnectTelegramContainer from "@/components/interview/ConnectTelegramContainer";
-import ProfileQuestionsContainer from "@/components/interview/ProfileQuestions";
-import UploadCVContainer from "@/components/interview/UploadCVContainer";
 
-import type { NextPageWithLayout } from "../../_app";
+// import ProfileQuestionsContainer from "@/components/interview/ProfileQuestions";
+// import UploadCVContainer from "@/components/interview/UploadCVContainer";
+import type { NextPageWithLayout } from "../../../_app";
 
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
@@ -35,27 +35,27 @@ const HomePage: NextPageWithLayout = () => {
   const [interviewEnded, setInterviewEnded] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [cvEnded, setCvEnded] = useState<Boolean>(false);
-  const [insightsChecked, setInsightsChecked] = useState<Boolean>(false);
+  // const [insightsChecked, setInsightsChecked] = useState<Boolean>(false);
   const [step, setStep] = useState<number>(0);
-  const [showStartInterviewModal, setShowStartInterviewModal] =
-    useState<boolean>(false);
+  // const [showStartInterviewModal, setShowStartInterviewModal] =
+  //   useState<boolean>(false);
   const [showInterviewModal, setShowInterviewModal] = useState<boolean>(false);
-  const [titleRole, setTitleRole] = useState<string>("");
-  const [topSkills, setTopSkills] = useState<any[]>([]);
-  const [content, setContent] = useState<{
-    matchPercentage: number | null;
-    improvementPoints: string | null;
-    strongFit: string | null;
-    growthAreas: string | null;
-    experienceAreas: string | null;
-  }>({
-    matchPercentage: null,
-    improvementPoints: null,
-    strongFit: null,
-    growthAreas: null,
-    experienceAreas: null,
-  });
-  const [generalDetails, setGeneralDetails] = useState<any>({});
+  // const [titleRole, setTitleRole] = useState<string>("");
+  // const [topSkills, setTopSkills] = useState<any[]>([]);
+  // const [content, setContent] = useState<{
+  //   matchPercentage: number | null;
+  //   improvementPoints: string | null;
+  //   strongFit: string | null;
+  //   growthAreas: string | null;
+  //   experienceAreas: string | null;
+  // }>({
+  //   matchPercentage: null,
+  //   improvementPoints: null,
+  //   strongFit: null,
+  //   growthAreas: null,
+  //   experienceAreas: null,
+  // });
+  // const [generalDetails] = useState<any>({});
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -70,69 +70,69 @@ const HomePage: NextPageWithLayout = () => {
     skip: !positionID,
   });
 
-  const handleCvEnd = () => {
-    // console.log("cv end");
-    setCvEnded(true);
-    setStep(1);
-  };
+  // const handleCvEnd = () => {
+  //   // console.log("cv end");
+  //   setCvEnded(true);
+  //   setStep(1);
+  // };
 
   const handleInterviewEnd = () => {
     // console.log("interview end");
     setInterviewEnded(true);
   };
 
-  const [updateMember, { loading: submittingGeneralDetails }] = useMutation(
-    UPDATE_MEMBER,
-    {
-      onCompleted({ updateMember }: Mutation) {
-        if (!updateMember) console.log("updateMember is null");
-        setStep(step + 1);
-      },
-      onError: () => {
-        toast.error("Server error");
-      },
-    }
-  );
+  // const [updateMember] = useMutation(
+  //   UPDATE_MEMBER,
+  //   {
+  //     onCompleted({ updateMember }: Mutation) {
+  //       if (!updateMember) console.log("updateMember is null");
+  //       setStep(step + 1);
+  //     },
+  //     onError: () => {
+  //       toast.error("Server error");
+  //     },
+  //   }
+  // );
 
-  const handleGeneralDetailsSubmit = () => {
-    const fields: UpdateMemberInput = {};
+  // const handleGeneralDetailsSubmit = () => {
+  //   const fields: UpdateMemberInput = {};
 
-    if (generalDetails?._id) fields._id = generalDetails?._id;
-    if (generalDetails?.budget?.perHour)
-      fields.budget = { perHour: Number(generalDetails?.budget?.perHour || 0) };
-    if (generalDetails?.hoursPerWeek)
-      fields.hoursPerWeek = Number(generalDetails?.hoursPerWeek || 0);
-    if (generalDetails?.location) fields.location = generalDetails?.location;
-    if (generalDetails?.timeZone) fields.timeZone = generalDetails?.timeZone;
-    if (generalDetails?.experienceLevel?.total)
-      fields.experienceLevel = fields.experienceLevel
-        ? {
-            ...fields.experienceLevel,
-            total: +generalDetails?.experienceLevel?.total,
-          }
-        : {
-            total: +generalDetails?.experienceLevel?.total,
-          };
-    if (generalDetails?.experienceLevel?.years)
-      fields.experienceLevel = fields.experienceLevel
-        ? {
-            ...fields.experienceLevel,
-            years: +generalDetails?.experienceLevel?.years,
-          }
-        : {
-            years: +generalDetails?.experienceLevel?.years,
-          };
+  //   if (generalDetails?._id) fields._id = generalDetails?._id;
+  //   if (generalDetails?.budget?.perHour)
+  //     fields.budget = { perHour: Number(generalDetails?.budget?.perHour || 0) };
+  //   if (generalDetails?.hoursPerWeek)
+  //     fields.hoursPerWeek = Number(generalDetails?.hoursPerWeek || 0);
+  //   if (generalDetails?.location) fields.location = generalDetails?.location;
+  //   if (generalDetails?.timeZone) fields.timeZone = generalDetails?.timeZone;
+  //   if (generalDetails?.experienceLevel?.total)
+  //     fields.experienceLevel = fields.experienceLevel
+  //       ? {
+  //         ...fields.experienceLevel,
+  //         total: +generalDetails?.experienceLevel?.total,
+  //       }
+  //       : {
+  //         total: +generalDetails?.experienceLevel?.total,
+  //       };
+  //   if (generalDetails?.experienceLevel?.years)
+  //     fields.experienceLevel = fields.experienceLevel
+  //       ? {
+  //         ...fields.experienceLevel,
+  //         years: +generalDetails?.experienceLevel?.years,
+  //       }
+  //       : {
+  //         years: +generalDetails?.experienceLevel?.years,
+  //       };
 
-    updateMember({
-      variables: {
-        fields: fields,
-      },
-    });
-  };
+  //   updateMember({
+  //     variables: {
+  //       fields: fields,
+  //     },
+  //   });
+  // };
 
-  function handleStartInterviewStep() {
-    setShowStartInterviewModal(true);
-  }
+  // function handleStartInterviewStep() {
+  //   setShowStartInterviewModal(true);
+  // }
 
   function handleFinishInterviewStep() {
     setShowInterviewModal(true);

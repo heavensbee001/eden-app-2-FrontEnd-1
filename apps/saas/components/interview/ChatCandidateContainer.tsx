@@ -126,7 +126,9 @@ const InterviewEdenAIStepContainer = ({
 
   const [addCandidateFlag, setAddCandidateFlag] = useState<boolean>(false);
 
-  const [conversationID, setConversationID] = useState<String>("");
+  const [conversationID, setConversationID] = useState<String>(
+    "653edff87b6f081610076d11"
+  );
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
   console.log("CHAT N", chatN);
@@ -166,7 +168,8 @@ const InterviewEdenAIStepContainer = ({
     variables: {
       fields: {
         // _id: [conversationID],
-        _id: "653a4a744f6649e825a91b14",
+        // _id: "653a4a744f6649e825a91b14",
+        _id: conversationID,
         // positionID: positionID,
         // userID: [currentUser?._id],
       },
@@ -221,7 +224,7 @@ const InterviewEdenAIStepContainer = ({
             }
             questions={questions}
             setQuestions={setQuestions}
-            userID={currentUser?._id}
+            userID={"108867786318229498302"}
             positionID={positionID}
             positionTrainEdenAI={false}
             conversationID={conversationID}
