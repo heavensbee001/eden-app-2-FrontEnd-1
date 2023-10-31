@@ -1,4 +1,4 @@
-import { AppUserLayout } from "@eden/package-ui";
+import { SaasUserLayout } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -8,27 +8,27 @@ import { NextPageWithLayout } from "../_app";
 const HARDCODED_POOLS = [
   {
     title: "Frontend Developer",
-    deform: "https://devdao.deform.cc/frontend",
+    url: "/interview/64e311bf3c477e32522fd57b",
   },
   {
     title: "Backend Developer",
-    deform: "https://devdao.deform.cc/backend",
+    url: "/interview/64dde2a36dee65306b6eb62d",
   },
   {
     title: "Blockchain Developer",
-    deform: "https://devdao.deform.cc/blockchain",
+    url: "/interview/64dc91572d77394577b12925",
   },
   {
     title: "Full Stack Developer",
-    deform: "https://devdao.deform.cc/fullstack",
+    url: "/interview/64e3686c083f8b472997d451",
   },
   {
     title: "DevRel",
-    deform: "https://devdao.deform.cc/devrel",
+    url: "/interview/64dcd423966c1c455f0966bc",
   },
   {
     title: "Designer",
-    deform: "https://devdao.deform.cc/designer",
+    url: "/interview/64dcb0fd2d7739565ab13152",
   },
 ];
 
@@ -57,7 +57,7 @@ const SignupCommunity: NextPageWithLayout = () => {
               Select your position...
             </option>
             {HARDCODED_POOLS.map((pool, index) => (
-              <option value={pool.deform} key={index}>
+              <option value={pool.url} key={index}>
                 {pool.title}
               </option>
             ))}
@@ -80,7 +80,7 @@ const SignupCommunity: NextPageWithLayout = () => {
 };
 
 SignupCommunity.getLayout = (page: any) => (
-  <AppUserLayout>{page}</AppUserLayout>
+  <SaasUserLayout>{page}</SaasUserLayout>
 );
 
 export async function getServerSideProps(ctx: {

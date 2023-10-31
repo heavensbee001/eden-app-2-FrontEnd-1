@@ -1,9 +1,9 @@
 import {
-  AppUserLayout,
   Card,
   GridItemEight,
   GridItemTwo,
   GridLayout,
+  SaasUserLayout,
   SEO,
 } from "@eden/package-ui";
 
@@ -35,6 +35,6 @@ const FillProfilePage: NextPageWithLayout = () => {
   );
 };
 
-FillProfilePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+FillProfilePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default FillProfilePage;

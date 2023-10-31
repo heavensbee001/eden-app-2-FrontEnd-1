@@ -4,7 +4,7 @@ import {
   EmployeeType,
   EmployeeTypeInput,
 } from "@eden/package-graphql/generated";
-import { AppUserLayout, Button } from "@eden/package-ui";
+import { Button, SaasUserLayout } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -150,6 +150,8 @@ export async function getServerSideProps(ctx: {
   };
 }
 
-RequestAccess.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
+RequestAccess.getLayout = (page: any) => (
+  <SaasUserLayout>{page}</SaasUserLayout>
+);
 
 export default RequestAccess;

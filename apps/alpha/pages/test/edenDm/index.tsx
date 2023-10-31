@@ -1,4 +1,4 @@
-import { AppUserLayout, SEO } from "@eden/package-ui";
+import { SaasUserLayout, SEO } from "@eden/package-ui";
 import React, { useState } from "react";
 import { BsArrowRight, BsCloudFill, BsDiscord } from "react-icons/bs";
 import { FaDiscord, FaLeaf } from "react-icons/fa";
@@ -225,6 +225,6 @@ const EdenDm: NextPageWithLayout = () => {
   );
 };
 
-EdenDm.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+EdenDm.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default EdenDm;
