@@ -63,18 +63,18 @@ const HomePage: NextPageWithLayout = () => {
   //remove later
   const [scheduleState, setScheduleState] = useState("first");
   const [eventLink, setEventLink] = useState("");
-  const [googleEventInfo, setGoogleEventInfo] = useState({
-    eventName: "",
-    eventDescription: "",
-    eventCreator: "",
-    eventStart: {
-      dateTime: "",
-    },
-    eventEnd: {
-      dateTime: "",
-    },
-    eventLink: "",
-  });
+  // const [googleEventInfo, setGoogleEventInfo] = useState({
+  //   eventName: "",
+  //   eventDescription: "",
+  //   eventCreator: "",
+  //   eventStart: {
+  //     dateTime: "",
+  //   },
+  //   eventEnd: {
+  //     dateTime: "",
+  //   },
+  //   eventLink: "",
+  // });
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -251,10 +251,6 @@ const HomePage: NextPageWithLayout = () => {
     return newEndDate;
   };
   const constructLink = () => {
-    // const newEndDate = new Date(startDate);
-
-    // newEndDate.setMinutes(startDate.getMinutes() + 30);
-
     const startDateFormat =
       startDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
 
@@ -264,27 +260,6 @@ const HomePage: NextPageWithLayout = () => {
 
     const endDateFormat =
       newEndDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
-
-    // setGoogleEventInfo((prevState) => {
-    //   console.log("Updating state...");
-
-    //   return {
-    //     ...prevState,
-    //     //TO DO: Create Description for the event
-
-    //     eventStart: {
-    //       dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,
-    //       timeZone: ` ${data.start.timeZone}`,
-    //     },
-
-    //     eventEnd: {
-    //       dateTime: `${formattedDateEndDate} - ${formattedEndTime}`,
-    //       timeZone: ` ${data.end.timeZone}`,
-    //     },
-    //     //To Do: Get the link
-    //     // eventLink: someLink
-    //   };
-    // });
 
     const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
 
@@ -548,7 +523,7 @@ const HomePage: NextPageWithLayout = () => {
                         <DatePicker
                           className=" rounded-md border border-black pl-3"
                           selected={startDate}
-                          onChange={(date) => setStartDate(date)}
+                          onChange={(date: any) => setStartDate(date)}
                           timeInputLabel="Time:"
                           dateFormat="MM/dd/yyyy h:mm aa"
                           showTimeSelect
