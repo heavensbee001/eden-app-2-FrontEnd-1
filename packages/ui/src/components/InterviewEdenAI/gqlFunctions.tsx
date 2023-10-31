@@ -64,3 +64,13 @@ export const ASK_EDEN_GPT4_ONLY = gql`
     }
   }
 `;
+
+export const ASK_EDEN_USER_POSITION_GPT_FUNC_V2 = gql`
+  query AskEdenUserPositionGPTFunc_V2(
+    $fields: askEdenUserPositionGPTFunc_V2Input
+  ) {
+    askEdenUserPositionGPTFunc_V2(fields: $fields) {
+      reply
+    }
+  }
+`;

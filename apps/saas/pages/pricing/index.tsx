@@ -3,10 +3,10 @@ import { gql, useMutation } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { EmployeeTypeInput } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Button,
   EdenAiProcessingModal,
   Modal,
+  SaasUserLayout,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
@@ -385,7 +385,7 @@ const SubscribePage: NextPageWithLayout = () => {
   );
 };
 
-SubscribePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+SubscribePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;

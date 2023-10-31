@@ -10,10 +10,10 @@ import {
   UpdatePrioritiesTradeOffsInput,
 } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Button,
   EdenAiProcessingModal,
   EdenIconQuestion,
+  SaasUserLayout,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -810,7 +810,8 @@ const TrainAiPage: NextPageWithLayout = () => {
                         );
                       }}
                     />
-                    <div className="absolute -bottom-20 mt-4 flex w-full justify-evenly">
+
+                    <div className="w-full absolute -bottom-20 left-0 flex justify-evenly mt-4">
                       <Button
                         variant={"primary"}
                         className="mx-auto"
@@ -825,7 +826,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                         loading={loadingUpdatePositionGeneralDetails}
                         onClick={() => handleSaveGeneralDetails(true)}
                       >
-                        Save & Publish to Job Board
+                        Save & Publish to Developer DAO
                       </Button>
                     </div>
                   </div>
@@ -917,7 +918,7 @@ const TrainAiPage: NextPageWithLayout = () => {
   );
 };
 
-TrainAiPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+TrainAiPage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default TrainAiPage;
 

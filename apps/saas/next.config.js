@@ -7,7 +7,11 @@ module.exports = {
     "@eden/package-mock",
   ],
   images: {
-    domains: ["pbs.twimg.com", "app.lottiefiles.com"],
+    domains: [
+      "pbs.twimg.com",
+      "app.lottiefiles.com",
+      "storage.cloud.google.com",
+    ],
     formats: ["image/avif"],
   },
 };

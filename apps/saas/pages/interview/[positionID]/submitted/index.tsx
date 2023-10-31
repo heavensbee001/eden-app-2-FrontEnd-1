@@ -1,7 +1,7 @@
 import {
   AI_INTERVIEW_SERVICES,
-  AppUserLayout,
   InterviewEdenAI,
+  SaasUserLayout,
 } from "@eden/package-ui";
 
 import type { NextPageWithLayout } from "../../../_app";
@@ -54,7 +54,7 @@ const ThanksPage: NextPageWithLayout = () => {
   );
 };
 
-ThanksPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+ThanksPage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default ThanksPage;
 

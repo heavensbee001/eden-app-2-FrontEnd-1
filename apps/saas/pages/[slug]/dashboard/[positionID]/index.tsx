@@ -15,7 +15,6 @@ import {
 } from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
-  AppUserLayout,
   AskEdenPopUp,
   Avatar,
   Button,
@@ -28,6 +27,7 @@ import {
   MenuDropdown,
   Modal,
   NodeList,
+  SaasUserLayout,
   SelectList,
   TextField,
   TrainQuestionsEdenAI,
@@ -1259,7 +1259,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     disabled={updatePositionLoading}
                     loading={updatePositionLoading}
                   >
-                    Publish
+                    Publish to Developer DAO
                   </Button>
                 )}
                 {findPositionData?.findPosition?.status === "ACTIVE" && (
@@ -1271,7 +1271,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     disabled={updatePositionLoading}
                     loading={updatePositionLoading}
                   >
-                    Unpublish
+                    Unpublish from Developer DAO
                   </Button>
                 )}
               </div>
@@ -2035,7 +2035,7 @@ const PositionCRM: NextPageWithLayout = () => {
   );
 };
 
-PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
+PositionCRM.getLayout = (page: any) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default PositionCRM;
 

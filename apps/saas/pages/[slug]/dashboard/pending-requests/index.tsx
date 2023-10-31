@@ -2,7 +2,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { CompanyContext } from "@eden/package-context";
 import { EmployeeTypeInput } from "@eden/package-graphql/generated";
-import { AppUserLayout, Avatar, Button } from "@eden/package-ui";
+import { Avatar, Button, SaasUserLayout } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
 import { useContext } from "react";
@@ -101,7 +101,9 @@ const PendingRequestsPage: NextPageWithLayout = () => {
   );
 };
 
-PendingRequestsPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+PendingRequestsPage.getLayout = (page) => (
+  <SaasUserLayout>{page}</SaasUserLayout>
+);
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
