@@ -29,12 +29,10 @@ async function getEdenToken(accessToken: string) {
 
     const data = await res.json();
 
-    console.log("data from Auth", data);
+    // console.log("data from Auth", data);
 
     return data;
   } catch {
-    // TODO: if the server is down, user still gets a session token but should be rejected
-
     return null;
   }
 }
@@ -65,9 +63,9 @@ async function refreshGoogleToken(refreshToken: string) {
 
   const data = await response.json();
 
-  console.log(" from refreshGoogleToken ", data);
+  // console.log(" from refreshGoogleToken ", data);
 
-  console.log("refreshToken!!!!!", refreshToken);
+  // console.log("refreshToken!!!!!", refreshToken);
 
   if (data.error) {
     throw new Error(`Failed to refresh token: ${data.error_description}`);
@@ -81,14 +79,14 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      authorization: {
-        params: {
-          scope:
-            "openid email profile https://www.googleapis.com/auth/calendar.events",
-          // eslint-disable-next-line camelcase
-          access_type: "offline",
-        },
-      },
+      // authorization: {
+      //   params: {
+      //     scope:
+      //       "openid email profile https://www.googleapis.com/auth/calendar.events",
+      //     // eslint-disable-next-line camelcase
+      //     access_type: "offline",
+      //   },
+      // },
 
       // authorization: { params: { scope: "identify guilds" } },
     }),
@@ -96,8 +94,8 @@ export default NextAuth({
   secret: process.env.NEXT_PUBLIC_SECRET,
   callbacks: {
     session: async ({ session, token }) => {
-      console.log("session", session);
-      console.log("token:", token);
+      // console.log("session", session);
+      // console.log("token:", token);
 
       if (session?.user) {
         session.user.id = token.uid as string;
@@ -130,7 +128,7 @@ export default NextAuth({
           uid: user.id,
           refreshToken: account.refresh_token,
           //googleAccessToken is used for Google Calendar API
-          googleAccessToken: account.access_token,
+          // googleAccessToken: account.access_token,
           //This accessToken is actually id_token not access_token. To get the actual access token use googleAccessToken
           accessToken: account.id_token as string,
           accessTokenExpires:
@@ -138,7 +136,7 @@ export default NextAuth({
           edenToken: _edenToken,
         };
 
-        console.log("newToken:  ====>>>", newToken);
+        // console.log("newToken:  ====>>>", newToken);
 
         return newToken;
       }
@@ -147,22 +145,18 @@ export default NextAuth({
 
       // Discord and Eden tokens expire after 7 days, this will help force the user to re-authenticate within the getServerSideProps
       if (accessTokenExpires && Date.now() > accessTokenExpires - 60 * 1000) {
-        try {
-          const refreshed = await refreshGoogleToken(
-            token.refreshToken as string
-          );
+        const refreshed = await refreshGoogleToken(
+          token.refreshToken as string
+        );
 
-          token.googleAccessToken = refreshed.accessToken;
+        // token.googleAccessToken = refreshed.accessToken;
 
-          token.accessTokenExpires = Date.now() + refreshed.expiresIn * 1000;
-          console.log("token.googleAccessToken", token.googleAccessToken);
-        } catch (err) {
-          console.error("Failed to refresh Google access token", err);
-          return {
-            ...token,
-            error: "RefreshAccessTokenError",
-          };
-        }
+        token.accessTokenExpires = Date.now() + refreshed.expiresIn * 1000;
+        // console.log("token.googleAccessToken", token.googleAccessToken);
+        return {
+          ...token,
+          error: "RefreshAccessTokenError",
+        };
       }
       return token;
     },
