@@ -246,6 +246,8 @@ const HomePage: NextPageWithLayout = () => {
 
     newEndDate.setMinutes(startDate.getMinutes() + 30);
 
+    console.log("newEndDate", newEndDate);
+
     return newEndDate;
   };
   const constructLink = () => {
@@ -318,7 +320,7 @@ const HomePage: NextPageWithLayout = () => {
           <div className="relative h-full w-full">
             {step === 0 && (
               <div className="pt-8">
-                {scheduleState === "first" && (
+                {/* {scheduleState === "first" && (
                   <div className="  px-4 py-8">
                     <h2 className="text-edenGreen-600 text-center">
                       {"You're about to head into your interview with Eden."}
@@ -385,34 +387,43 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
                 )}
                 {scheduleState === "third" && (
-                  <div className="">
-                    <h1 className=" text-edenGreen-500 mb-4 text-2xl font-bold">
-                      Event Created in your Google Calendar!
-                    </h1>
+                  <div className="flex flex-col items-center">
+                    <div className="mb-4">
+                      <h1 className=" text-edenGreen-500 mb-4 text-2xl font-bold">
+                        Event Created in your Google Calendar!
+                      </h1>
 
-                    <p className="text-edenGray-900 mb-2 text-lg">
-                      <strong>Event name:</strong> Interview with Eden
-                    </p>
-                    <p className="text-edenGray-900 mb-2">
-                      <strong>Event Description:</strong> A 30 min interview
-                      with Eden AI.
-                    </p>
-
-                    <div className="mb-2 flex space-x-2" text-edenGray-900>
-                      <p>
-                        <strong>Event Start Time:</strong>
-                        {startDate.toISOString()}
+                      <p className="text-edenGray-900 mb-2 text-lg">
+                        <strong>Event name:</strong> Interview with Eden
                       </p>
+                      <p className="text-edenGray-900 mb-2">
+                        <strong>Event Description:</strong> A 30 min interview
+                        with Eden AI.
+                      </p>
+
+                      <div className="mb-2 flex space-x-2" text-edenGray-900>
+                        <p>
+                          <strong>Event Start Time:</strong>
+                          {startDate.toString()}
+                        </p>
+                      </div>
+
+                      <div className="text-edenGray-900 flex space-x-2">
+                        <p>
+                          <strong>Event End Time: </strong>
+                          {newEndDateHandler().toString()}
+                        </p>
+                      </div>
                     </div>
-
-                    <div className="text-edenGray-900 flex space-x-2">
-                      <p>
-                        <strong>Event End Time: </strong>
-                        {newEndDateHandler().toString()}
-                      </p>
+                    <div>
+                      <a href={eventLink} target="_blank" rel="noreferrer">
+                        <Button variant="secondary">
+                          Schedule in your Google Calendar
+                        </Button>
+                      </a>
                     </div>
                   </div>
-                )}
+                )} */}
                 <h1 className="text-edenGreen-600 text-center">
                   {findPositionData?.findPosition?.company.type === "COMMUNITY"
                     ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
@@ -491,7 +502,7 @@ const HomePage: NextPageWithLayout = () => {
                     </p>
                   </div>
                   <Modal open={showStartInterviewModal}>
-                    {/* {scheduleState === "first" && (
+                    {scheduleState === "first" && (
                       <div className="  px-4 py-8">
                         <h2 className="text-edenGreen-600 text-center">
                           {
@@ -547,52 +558,59 @@ const HomePage: NextPageWithLayout = () => {
                         <Button
                           className="mt-3"
                           variant="secondary"
-                          onClick={handleCreateEvent}
+                          onClick={constructLink}
                         >
                           Schedule
                         </Button>
+                        {eventLink && (
+                          <a href={eventLink} target="_blank" rel="noreferrer">
+                            {" "}
+                            Click Here
+                          </a>
+                        )}
                       </div>
                     )}
                     {scheduleState === "third" && (
-                      <div className="text-edenGray-900">
-                        <h1 className="text-edenGreen-600 mb-4 text-2xl font-bold">
-                          Event Created in your Google Calendar!
-                        </h1>
+                      <div className="flex flex-col items-center">
+                        <div className="mb-4">
+                          <h1 className=" text-edenGreen-500 mb-4 text-2xl font-bold">
+                            Event Created in your Google Calendar!
+                          </h1>
 
-                        <p className="mb-2 text-lg">
-                          <strong>Event name:</strong>{" "}
-                          {googleEventInfo.eventName}
-                        </p>
-                        <p className="mb-2">
-                          <strong>Event Description:</strong>{" "}
-                          {googleEventInfo.eventDescription}
-                        </p>
-                        <p className="mb-4">
-                          <strong>Creator of the Event:</strong>{" "}
-                          {googleEventInfo.eventCreator}
-                        </p>
+                          <p className="text-edenGray-900 mb-2 text-lg">
+                            <strong>Event name:</strong> Interview with Eden
+                          </p>
+                          <p className="text-edenGray-900 mb-2">
+                            <strong>Event Description:</strong> A 30 min
+                            interview with Eden AI.
+                          </p>
 
-                        <div className="mb-2 flex space-x-2">
-                          <p>
-                            <strong>Event Start Time:</strong>{" "}
-                            {googleEventInfo.eventStart.dateTime}
-                          </p>
-                          <p className="text-gray-600">
-                            (Timezone: {googleEventInfo.eventStart.timeZone})
-                          </p>
+                          <div
+                            className="mb-2 flex space-x-2"
+                            text-edenGray-900
+                          >
+                            <p>
+                              <strong>Event Start Time:</strong>
+                              {startDate.toString()}
+                            </p>
+                          </div>
+
+                          <div className="text-edenGray-900 flex space-x-2">
+                            <p>
+                              <strong>Event End Time: </strong>
+                              {newEndDateHandler().toString()}
+                            </p>
+                          </div>
                         </div>
-
-                        <div className="flex space-x-2">
-                          <p>
-                            <strong>Event End Time:</strong>{" "}
-                            {googleEventInfo.eventEnd.dateTime}
-                          </p>
-                          <p className="text-gray-600">
-                            (Timezone: {googleEventInfo.eventEnd.timeZone})
-                          </p>
+                        <div>
+                          <a href={eventLink} target="_blank" rel="noreferrer">
+                            <Button variant="secondary">
+                              Schedule in your Google Calendar
+                            </Button>
+                          </a>
                         </div>
                       </div>
-                    )} */}
+                    )}
                   </Modal>
                 </WizardStep>
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
