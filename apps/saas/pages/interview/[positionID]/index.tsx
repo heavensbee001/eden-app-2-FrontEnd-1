@@ -62,17 +62,16 @@ const HomePage: NextPageWithLayout = () => {
   const [startDate, setStartDate] = useState(new Date());
   //remove later
   const [scheduleState, setScheduleState] = useState("first");
+  const [eventLink, setEventLink] = useState("");
   const [googleEventInfo, setGoogleEventInfo] = useState({
     eventName: "",
     eventDescription: "",
     eventCreator: "",
     eventStart: {
       dateTime: "",
-      timeZone: "",
     },
     eventEnd: {
       dateTime: "",
-      timeZone: "",
     },
     eventLink: "",
   });
@@ -158,88 +157,140 @@ const HomePage: NextPageWithLayout = () => {
     setShowInterviewModal(true);
   }
 
-  const handleCreateEvent = () => {
+  // const handleCreateEvent = () => {
+  //   const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
+
+  //   fetch("/api/createCalendarEvent/createCalendarEvent", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       startDate,
+  //       interviewLink: interviewLink,
+  //     }),
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         toast.error("Failed to create and event...");
+  //         throw new Error(`HTTP error: ${response.status}`);
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       toast.success("Google Calendar Event Created");
+  //       setScheduleState("third");
+  //       console.log("Event Created", data);
+  //       const startDate = new Date(data.start.dateTime);
+  //       const endDate = new Date(data.end.dateTime);
+
+  //       const formattedDateStartDate = startDate.toLocaleDateString("en-US", {
+  //         weekday: "long",
+  //         year: "numeric",
+  //         month: "long",
+  //         day: "numeric",
+  //       });
+
+  //       const formattedStartTime = startDate.toLocaleTimeString("en-US", {
+  //         hour: "2-digit",
+  //         minute: "2-digit",
+  //         second: "2-digit",
+  //         timeZoneName: "short",
+  //       });
+  //       const formattedDateEndDate = endDate.toLocaleDateString("en-US", {
+  //         weekday: "long",
+  //         year: "numeric",
+  //         month: "long",
+  //         day: "numeric",
+  //       });
+  //       const formattedEndTime = endDate.toLocaleTimeString("en-US", {
+  //         hour: "2-digit",
+  //         minute: "2-digit",
+  //         second: "2-digit",
+  //         timeZoneName: "short",
+  //       });
+
+  //       setGoogleEventInfo((prevState) => {
+  //         console.log("Updating state...");
+
+  //         return {
+  //           ...prevState,
+  //           eventName: data.summary,
+  //           //TO DO: Create Description for the event
+
+  //           eventDescription: data.description,
+  //           eventCreator: data.creator.email,
+  //           eventStart: {
+  //             dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,
+  //             timeZone: ` ${data.start.timeZone}`,
+  //           },
+
+  //           eventEnd: {
+  //             dateTime: `${formattedDateEndDate} - ${formattedEndTime}`,
+  //             timeZone: ` ${data.end.timeZone}`,
+  //           },
+  //           //To Do: Get the link
+  //           // eventLink: someLink
+  //         };
+  //       });
+  //       console.log("googleEventInfo", googleEventInfo);
+  //       console.log("ahahahahahah", data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
+
+  const newEndDateHandler = () => {
+    const newEndDate = new Date(startDate);
+
+    newEndDate.setMinutes(startDate.getMinutes() + 30);
+
+    return newEndDate;
+  };
+  const constructLink = () => {
+    // const newEndDate = new Date(startDate);
+
+    // newEndDate.setMinutes(startDate.getMinutes() + 30);
+
+    const startDateFormat =
+      startDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+
+    console.log(startDate);
+
+    const newEndDate = newEndDateHandler();
+
+    const endDateFormat =
+      newEndDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+
+    // setGoogleEventInfo((prevState) => {
+    //   console.log("Updating state...");
+
+    //   return {
+    //     ...prevState,
+    //     //TO DO: Create Description for the event
+
+    //     eventStart: {
+    //       dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,
+    //       timeZone: ` ${data.start.timeZone}`,
+    //     },
+
+    //     eventEnd: {
+    //       dateTime: `${formattedDateEndDate} - ${formattedEndTime}`,
+    //       timeZone: ` ${data.end.timeZone}`,
+    //     },
+    //     //To Do: Get the link
+    //     // eventLink: someLink
+    //   };
+    // });
+
     const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
 
-    fetch("/api/createCalendarEvent/createCalendarEvent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        startDate,
-        interviewLink: interviewLink,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          toast.error("Failed to create and event...");
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        toast.success("Google Calendar Event Created");
-        setScheduleState("third");
-        console.log("Event Created", data);
-        const startDate = new Date(data.start.dateTime);
-        const endDate = new Date(data.end.dateTime);
+    const link = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Interview+with+Eden&dates=${startDateFormat}/${endDateFormat}&details=A+30+min+interview+with+Eden+AI.+Join+via+this+link:+<a href="${interviewLink}">Click Here!</a>&location=${interviewLink}&recur=RRULE:FREQ=WEEKLY;UNTIL=20231231T000000Z`;
 
-        const formattedDateStartDate = startDate.toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
+    setEventLink(link);
 
-        const formattedStartTime = startDate.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZoneName: "short",
-        });
-        const formattedDateEndDate = endDate.toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-        const formattedEndTime = endDate.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZoneName: "short",
-        });
-
-        setGoogleEventInfo((prevState) => {
-          console.log("Updating state...");
-
-          return {
-            ...prevState,
-            eventName: data.summary,
-            //TO DO: Create Description for the event
-
-            eventDescription: data.description,
-            eventCreator: data.creator.email,
-            eventStart: {
-              dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,
-              timeZone: ` ${data.start.timeZone}`,
-            },
-
-            eventEnd: {
-              dateTime: `${formattedDateEndDate} - ${formattedEndTime}`,
-              timeZone: ` ${data.end.timeZone}`,
-            },
-            //To Do: Get the link
-            // eventLink: someLink
-          };
-        });
-        console.log("googleEventInfo", googleEventInfo);
-        console.log("ahahahahahah", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    setScheduleState("third");
   };
 
   return (
@@ -267,7 +318,7 @@ const HomePage: NextPageWithLayout = () => {
           <div className="relative h-full w-full">
             {step === 0 && (
               <div className="pt-8">
-                {/* {scheduleState === "first" && (
+                {scheduleState === "first" && (
                   <div className="  px-4 py-8">
                     <h2 className="text-edenGreen-600 text-center">
                       {"You're about to head into your interview with Eden."}
@@ -321,10 +372,16 @@ const HomePage: NextPageWithLayout = () => {
                     <Button
                       className="mt-3"
                       variant="secondary"
-                      onClick={handleCreateEvent}
+                      onClick={constructLink}
                     >
                       Schedule
                     </Button>
+                    {eventLink && (
+                      <a href={eventLink} target="_blank" rel="noreferrer">
+                        {" "}
+                        Click Here
+                      </a>
+                    )}
                   </div>
                 )}
                 {scheduleState === "third" && (
@@ -334,38 +391,28 @@ const HomePage: NextPageWithLayout = () => {
                     </h1>
 
                     <p className="text-edenGray-900 mb-2 text-lg">
-                      <strong>Event name:</strong> {googleEventInfo.eventName}
+                      <strong>Event name:</strong> Interview with Eden
                     </p>
                     <p className="text-edenGray-900 mb-2">
-                      <strong>Event Description:</strong>{" "}
-                      {googleEventInfo.eventDescription}
-                    </p>
-                    <p className="text-edenGray-900 mb-4">
-                      <strong>Creator of the Event:</strong>{" "}
-                      {googleEventInfo.eventCreator}
+                      <strong>Event Description:</strong> A 30 min interview
+                      with Eden AI.
                     </p>
 
                     <div className="mb-2 flex space-x-2" text-edenGray-900>
                       <p>
-                        <strong>Event Start Time:</strong>{" "}
-                        {googleEventInfo.eventStart.dateTime}
-                      </p>
-                      <p className="text-gray-600">
-                        (Timezone: {googleEventInfo.eventStart.timeZone})
+                        <strong>Event Start Time:</strong>
+                        {startDate.toISOString()}
                       </p>
                     </div>
 
                     <div className="text-edenGray-900 flex space-x-2">
                       <p>
-                        <strong>Event End Time:</strong>{" "}
-                        {googleEventInfo.eventEnd.dateTime}
-                      </p>
-                      <p className="text-gray-600">
-                        (Timezone: {googleEventInfo.eventEnd.timeZone})
+                        <strong>Event End Time: </strong>
+                        {newEndDateHandler().toString()}
                       </p>
                     </div>
                   </div>
-                )} */}
+                )}
                 <h1 className="text-edenGreen-600 text-center">
                   {findPositionData?.findPosition?.company.type === "COMMUNITY"
                     ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
@@ -444,7 +491,7 @@ const HomePage: NextPageWithLayout = () => {
                     </p>
                   </div>
                   <Modal open={showStartInterviewModal}>
-                    {scheduleState === "first" && (
+                    {/* {scheduleState === "first" && (
                       <div className="  px-4 py-8">
                         <h2 className="text-edenGreen-600 text-center">
                           {
@@ -545,7 +592,7 @@ const HomePage: NextPageWithLayout = () => {
                           </p>
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </Modal>
                 </WizardStep>
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
