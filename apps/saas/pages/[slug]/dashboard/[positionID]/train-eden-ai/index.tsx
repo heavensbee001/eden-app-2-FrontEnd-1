@@ -825,7 +825,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                         loading={loadingUpdatePositionGeneralDetails}
                         onClick={() => handleSaveGeneralDetails(true)}
                       >
-                        Save & Publish to Job Board
+                        Save & Publish to Developer DAO
                       </Button>
                     </div>
                   </div>
