@@ -21,14 +21,14 @@ export const AppUserLayout = ({
 
   return (
     <div className="">
-      <nav className="w-screen h-20 fixed left-0 top-0 bg-white">
-        <div className="h-20 w-full max-w-5xl flex items-center px-4 mx-auto">
+      <nav className="fixed left-0 top-0 h-20 w-screen bg-white">
+        <div className="mx-auto flex h-20 w-full max-w-5xl items-center px-4">
           <Image
             src="/eden-logo.png"
             alt=""
             width={30}
             height={30}
-            className="cursor-pointer mr-2"
+            className="mr-2 cursor-pointer"
             onClick={() => {
               router.push(logoLink);
             }}
@@ -62,10 +62,10 @@ const UserButton = () => {
           positionY="bottom"
           clickableElement={
             <div className="flex items-center">
-              <div className="inline-block mr-2">
+              <div className="mr-2 inline-block">
                 <Avatar size="xs" src={currentUser.discordAvatar!} />
               </div>
-              <span className="whitespace-nowrap font-Moret font-bold">
+              <span className="font-Moret whitespace-nowrap font-bold">
                 {currentUser.discordName}
               </span>
             </div>

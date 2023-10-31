@@ -766,7 +766,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   hideNext
                 >
                   <div className="mx-auto max-w-[40rem]">
-                    <h2 className="text-xl font-medium px-8">
+                    <h2 className="px-8 text-xl font-medium">
                       Final Interview Details
                     </h2>
                     <h3 className="text-edenGreen-600 w-full text-center">
@@ -810,7 +810,8 @@ const TrainAiPage: NextPageWithLayout = () => {
                         );
                       }}
                     />
-                    <div className="w-full absolute -bottom-20 left-0 flex justify-evenly mt-4">
+
+                    <div className="absolute -bottom-20 left-0 mt-4 flex w-full justify-evenly">
                       <Button
                         variant={"primary"}
                         className="mx-auto"

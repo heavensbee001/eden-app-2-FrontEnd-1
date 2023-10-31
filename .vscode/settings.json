@@ -20,7 +20,8 @@
     "titleBar.activeBackground": "#1a231d",
     "titleBar.activeForeground": "#e7e7e7",
     "titleBar.inactiveBackground": "#1a231d99",
-    "titleBar.inactiveForeground": "#e7e7e799"
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "terminal.integrated.fontFamily": "MesloLGS NF"
   },
   "peacock.color": "#1A231D",
   "cSpell.words": ["Perc"]

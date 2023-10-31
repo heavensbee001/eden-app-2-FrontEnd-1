@@ -44,14 +44,14 @@ const SignupCommunity: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center flex-col">
-        <div className="mb-8 bg-edenPink-300 max-w-[40rem] w-full p-8 flex justify-center">
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <div className="bg-edenPink-300 mb-8 flex w-full max-w-[40rem] justify-center p-8">
           <h2 className="text-edenGreen-600 mr-4">Join D_D as a:</h2>
           <select
             name=""
             id=""
             onChange={handleSelect}
-            className="bg-white rounded-md px-2 outline-none"
+            className="rounded-md bg-white px-2 outline-none"
           >
             <option value="" className="text-edenGray-500" disabled selected>
               Select your position...
@@ -68,7 +68,7 @@ const SignupCommunity: NextPageWithLayout = () => {
             If you are a hiring manager login{" "}
             <Link
               href={"/developer-dao/jobs"}
-              className="underline hover:text-edenGray-500"
+              className="hover:text-edenGray-500 underline"
             >
               here
             </Link>

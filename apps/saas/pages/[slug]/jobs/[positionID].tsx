@@ -94,14 +94,14 @@ const PositionPage: NextPageWithLayout = () => {
   return (
     <div>
       <section
-        className="py-24 w-full flex justify-center"
+        className="flex w-full justify-center py-24"
         style={{
           backgroundImage: "url(/banner.png)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        <div className="w-4/5 max-w-4xl bg-white rounded-md p-10 grid grid-cols-12">
+        <div className="grid w-4/5 max-w-4xl grid-cols-12 rounded-md bg-white p-10">
           <div className="col-span-5">
             <h1 className="text-edenGreen-600 mb-10">
               {`${position?.name}, ${position?.company?.name}`}
@@ -109,18 +109,18 @@ const PositionPage: NextPageWithLayout = () => {
             <div className="mb-4">
               <TbMoneybag
                 size={24}
-                className="inline-block mr-3 text-edenGreen-600"
+                className="text-edenGreen-600 mr-3 inline-block"
               />
-              <div className="inline-block bg-edenGreen-600 text-edenPink-300 rounded-xl font-Moret px-3 py-0.5 font-bold">
+              <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
                 {`$ ${position?.generalDetails?.yearlySalary}`}
               </div>
             </div>
-            <div className="flex items-center mb-4">
+            <div className="mb-4 flex items-center">
               <BsStar
                 size={24}
-                className="inline-block mr-3 text-edenGreen-600"
+                className="text-edenGreen-600 mr-3 inline-block"
               />
-              <div className="text-edenGray-600 px-6 py-1.5 flex items-center justify-center border border-edenGray-300 rounded-md mr-3 ml-1">
+              <div className="text-edenGray-600 border-edenGray-300 ml-1 mr-3 flex items-center justify-center rounded-md border px-6 py-1.5">
                 <h4 className="text-lg">?</h4>
               </div>
               <div>
@@ -131,17 +131,17 @@ const PositionPage: NextPageWithLayout = () => {
             <div className="mb-4">
               <SlLocationPin
                 size={24}
-                className="inline-block mr-3 text-edenGreen-600"
+                className="text-edenGreen-600 mr-3 inline-block"
               />
-              <div className="inline-block bg-edenGreen-600 text-edenPink-300 rounded-xl font-Moret px-3 py-0.5 font-bold mr-2">
+              <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
                 {position?.generalDetails?.officePolicy}
               </div>
-              <div className="inline-block bg-edenGreen-600 text-edenPink-300 rounded-xl font-Moret px-3 py-0.5 font-bold mr-2">
+              <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
                 {position?.generalDetails?.officeLocation}
               </div>
             </div>
           </div>
-          <div className="col-span-7 border-l-2 border-edenGreen-300 pl-4">
+          <div className="border-edenGreen-300 col-span-7 border-l-2 pl-4">
             <img
               src={
                 "https://storage.cloud.google.com/eden_companies_images/Tesla_logo.png"
@@ -149,33 +149,33 @@ const PositionPage: NextPageWithLayout = () => {
               className="h-20"
               alt={position?.company?.name || ""}
             />
-            <p className="text-edenGray-900 text-sm mb-2">
+            <p className="text-edenGray-900 mb-2 text-sm">
               {position?.company?.description}
             </p>
-            <p className="text-edenGray-900 text-sm mb-2">
+            <p className="text-edenGray-900 mb-2 text-sm">
               <HiOutlineUsers
                 size={20}
-                className="inline-block mr-2 text-edenGreen-600"
+                className="text-edenGreen-600 mr-2 inline-block"
               />
               {position?.company?.employeesNumber} employees
             </p>
-            <p className="text-sm mb-2">
+            <p className="mb-2 text-sm">
               <GoTag
                 size={24}
-                className="inline-block mr-2 text-edenGreen-600"
+                className="text-edenGreen-600 mr-2 inline-block"
               />
               {position?.company?.tags?.map((tag, index) => (
                 <div
                   key={index}
-                  className="px-2 mr-2 bg-edenGray-100 rounded-md inline pb-1"
+                  className="bg-edenGray-100 mr-2 inline rounded-md px-2 pb-1"
                 >
                   {tag}
                 </div>
               ))}
             </p>
-            <div className="text-sm p-4 bg-edenPink-100 rounded-md">
-              <div className="flex mb-2">
-                <div className="bg-edenGreen-300 mr-2 rounded-full h-6 w-6 flex items-center justify-center">
+            <div className="bg-edenPink-100 rounded-md p-4 text-sm">
+              <div className="mb-2 flex">
+                <div className="bg-edenGreen-300 mr-2 flex h-6 w-6 items-center justify-center rounded-full">
                   <HiOutlineHeart size={16} className="text-edenGreen-600" />
                 </div>
                 <h3 className="text-edenGreen-600">What&apos;s to love?</h3>
@@ -187,22 +187,22 @@ const PositionPage: NextPageWithLayout = () => {
           </div>
         </div>
       </section>
-      <div className="grid grid-cols-12 w-4/5 max-w-4xl gap-x-8 py-16 px-8 mx-auto">
+      <div className="mx-auto grid w-4/5 max-w-4xl grid-cols-12 gap-x-8 px-8 py-16">
         {/* ---- POSITION DETAILS ---- */}
         <div className="col-span-12 md:col-span-6">
-          <section className="bg-edenPink-100 rounded-md overflow-hidden mb-8">
+          <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
             <div className="bg-edenPink-300 px-6 py-4">
               <h2 className="text-edenGreen-600">Role</h2>
             </div>
-            <div className="px-6 py-4 border-edenGreen-300">
-              <div className="border-b-2 border-edenGreen-300 mb-4">
-                <h3 className="text-edenGreen-600 font-semibold mb-2">
+            <div className="border-edenGreen-300 px-6 py-4">
+              <div className="border-edenGreen-300 mb-4 border-b-2">
+                <h3 className="text-edenGreen-600 mb-2 font-semibold">
                   Who you are
                 </h3>
-                <p className="text-xs mb-4">{position.whoYouAre}</p>
+                <p className="mb-4 text-xs">{position.whoYouAre}</p>
               </div>
               <div className="">
-                <h3 className="text-edenGreen-600 font-semibold mb-2">
+                <h3 className="text-edenGreen-600 mb-2 font-semibold">
                   What the job involves
                 </h3>
                 <p className="text-xs">{position.whatTheJobInvolves}</p>
@@ -211,9 +211,9 @@ const PositionPage: NextPageWithLayout = () => {
           </section>
 
           {/* ---- SHARE & REPORT ---- */}
-          <section className="bg-edenPink-100 rounded-md overflow-hidden px-6 py-4 mb-8">
+          <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md px-6 py-4">
             <div
-              className="flex items-center group cursor-pointer w-fit"
+              className="group flex w-fit cursor-pointer items-center"
               onClick={() => {
                 navigator.clipboard.writeText(
                   `https://edenprotocol.app/${position.company?.slug}/jobs/${position._id}`
@@ -223,7 +223,7 @@ const PositionPage: NextPageWithLayout = () => {
             >
               <HiOutlineShare
                 size={24}
-                className="mr-2 text-edenGreen-600 group-hover:text-edenGreen-400 inline"
+                className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
               />
               <span className="group-hover:text-edenGray-500 group-hover:underline">
                 Share this job
@@ -234,15 +234,15 @@ const PositionPage: NextPageWithLayout = () => {
 
         <div className="col-span-12 md:col-span-6">
           {/* ---- YOU & THE ROLE ---- */}
-          <section className="bg-edenPink-100 rounded-md overflow-hidden mb-8">
+          <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
             <div className="bg-edenPink-300 px-6 py-4">
               <h2 className="text-edenGreen-600">You & the role</h2>
             </div>
             <div className="px-6 py-4">
-              <div className="h-8 w-8 rounded-md bg-edenPink-300 flex items-center justify-center mx-auto">
+              <div className="bg-edenPink-300 mx-auto flex h-8 w-8 items-center justify-center rounded-md">
                 <AiOutlineEyeInvisible size={"1.4rem"} />
               </div>
-              <h3 className="text-edenGreen-600 text-center font-semibold mb-4">
+              <h3 className="text-edenGreen-600 mb-4 text-center font-semibold">
                 Upload your resume to unlock:
               </h3>
               <ul className="text-edenGray-900 list-disc pl-4 text-sm">
@@ -255,7 +255,7 @@ const PositionPage: NextPageWithLayout = () => {
                 </li>
               </ul>
 
-              <div className="flex justify-center mt-4">
+              <div className="mt-4 flex justify-center">
                 <Link href={`/interview/${position._id}`}>
                   <Button
                     variant="secondary"
@@ -271,14 +271,14 @@ const PositionPage: NextPageWithLayout = () => {
           </section>
 
           {/* ---- COMPANY DETAILS ---- */}
-          <section className="bg-edenPink-100 rounded-md overflow-hidden mb-8">
+          <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
             <div className="bg-edenPink-300 px-6 py-4">
               <h2 className="text-edenGreen-600">Company</h2>
             </div>
             <div className="px-6">
               {/* ---- MISSION ---- */}
               {position?.company?.mission && (
-                <div className="border-b-2 border-edenGreen-300 last:!border-0 py-4">
+                <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                   <h3 className="text-edenGreen-600">Company Mission</h3>
                   <p className="text-xs">{position.company.mission}</p>
                 </div>
@@ -287,13 +287,13 @@ const PositionPage: NextPageWithLayout = () => {
               {/* ---- INSIGHTS ---- */}
               {position?.company?.insights &&
                 position?.company?.insights.length > 0 && (
-                  <div className="border-b-2 border-edenGreen-300 last:!border-0 py-4">
+                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">Insights</h3>
-                    <div className="relative w-full flex flex-wrap">
+                    <div className="relative flex w-full flex-wrap">
                       {position?.company?.insights.map((insight, index) => (
                         <div
                           key={index}
-                          className="min-w-[50%] flex items-center mt-2"
+                          className="mt-2 flex min-w-[50%] items-center"
                         >
                           <div className="bg-edenPink-300 mr-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
                             <span
@@ -316,14 +316,14 @@ const PositionPage: NextPageWithLayout = () => {
 
               {/* ---- EDEN'S TAKE ---- */}
               {position?.company?.edenTake && (
-                <div className="border-b-2 border-edenGreen-300 last:!border-0 py-4">
+                <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                   <h3 className="text-edenGreen-600">Eden&apos;s Take</h3>
                   <p className="text-xs">{position.company.edenTake}</p>
                 </div>
               )}
 
               {/* ---- WIDGETS ---- */}
-              <div className="border-b-2 border-edenGreen-300 last:!border-0 py-4">
+              <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                 <h3 className="text-edenGreen-600 mb-4">Widgets</h3>
 
                 {/* ---- FUNDING ---- */}
@@ -334,12 +334,12 @@ const PositionPage: NextPageWithLayout = () => {
                       {position.company.funding.map((item, index) => (
                         <div
                           key={index}
-                          className="flex justify-between items-center mb-2 last:mb-0"
+                          className="mb-2 flex items-center justify-between last:mb-0"
                         >
                           <span className="text-white">{item?.date}</span>
-                          <div className="h-2 w-2 bg-edenPink-400 rounded-full"></div>
+                          <div className="bg-edenPink-400 h-2 w-2 rounded-full"></div>
                           <span className="text-white">{item?.amount}</span>
-                          <div className="inline-block bg-edenGreen-600 text-edenPink-400 rounded-xl font-Moret px-3 py-0.5 font-bold">
+                          <div className="bg-edenGreen-600 text-edenPink-400 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
                             {`$ ${position?.generalDetails?.yearlySalary}`}
                           </div>
                         </div>
@@ -354,12 +354,12 @@ const PositionPage: NextPageWithLayout = () => {
                       AI culture summary
                     </h3>
                     <div className="bg-edenGreen-300 rounded-md p-4">
-                      <div className="text-center mb-2">
+                      <div className="mb-2 text-center">
                         {position?.company?.culture.tags &&
                           position?.company?.culture.tags?.map((tag, index) => (
                             <div
                               key={index}
-                              className="inline px-4 mr-2 last:mr-0 bg-edenGreen-600 text-edenPink-400 rounded-md inline py-1 font-Moret"
+                              className="bg-edenGreen-600 text-edenPink-400 font-Moret mr-2 inline inline rounded-md px-4 py-1 last:mr-0"
                             >
                               {tag}
                             </div>
@@ -375,7 +375,7 @@ const PositionPage: NextPageWithLayout = () => {
 
               {/* ---- BENEFITS ---- */}
               {position?.company?.edenTake && (
-                <div className="border-b-2 border-edenGreen-300 last:!border-0 py-4">
+                <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                   <h3 className="text-edenGreen-600">Benefits & perks</h3>
                   <p className="text-xs">{position.company.benefits}</p>
                 </div>
@@ -383,7 +383,7 @@ const PositionPage: NextPageWithLayout = () => {
 
               {/* ---- COMPANY VALUES ---- */}
               {position?.company?.values && (
-                <div className="border-b-2 border-edenGreen-300 last:!border-0 py-4">
+                <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                   <h3 className="text-edenGreen-600">Company Values</h3>
                   <p className="text-xs">{position.company.values}</p>
                 </div>
@@ -391,7 +391,7 @@ const PositionPage: NextPageWithLayout = () => {
 
               {/* ---- FOUNDERS ---- */}
               {position?.company?.founders && (
-                <div className="border-b-2 border-edenGreen-300 last:!border-0 py-4">
+                <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                   <h3 className="text-edenGreen-600">Founders</h3>
                   <p className="text-xs">{position.company.founders}</p>
                 </div>
@@ -402,7 +402,7 @@ const PositionPage: NextPageWithLayout = () => {
       </div>
 
       {/* ---- FOOTER APPLY ---- */}
-      <footer className="bg-edenGreen-600 h-16 w-full fixed bottom-0 left-0 flex items-center justify-center">
+      <footer className="bg-edenGreen-600 fixed bottom-0 left-0 flex h-16 w-full items-center justify-center">
         <Link href={`/interview/${position._id}`}>
           <Button className="border-edenPink-400 !text-edenPink-400">
             Apply with AI
