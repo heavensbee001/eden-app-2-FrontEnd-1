@@ -4,7 +4,7 @@ import {
   FIND_CHAT_HISTORY,
 } from "@eden/package-graphql";
 import { ChatExternalApp, Members } from "@eden/package-graphql/generated";
-import { AppUserLayout, Button, Loading } from "@eden/package-ui";
+import { Button, Loading, SaasUserLayout } from "@eden/package-ui";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 function classNames(...classes: string[]) {
@@ -240,6 +240,6 @@ const ChatHistory: NextPageWithLayout = () => {
   );
 };
 
-ChatHistory.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
+ChatHistory.getLayout = (page: any) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default ChatHistory;

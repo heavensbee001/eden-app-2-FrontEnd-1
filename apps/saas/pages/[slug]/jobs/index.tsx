@@ -2,9 +2,9 @@ import { gql, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Badge,
   Button,
+  SaasUserLayout,
   // EdenIconExclamation,
   // EdenTooltip,
   SEO,
@@ -151,7 +151,7 @@ const HomePage: NextPageWithLayout = () => {
                 router.push("/signup");
               }}
             >
-              Sign up
+              Join {company?.name}&rsquo;s talent pool
             </Button>
           </section>
         )}
@@ -173,8 +173,7 @@ const HomePage: NextPageWithLayout = () => {
                     key={index}
                     className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white p-4 align-top transition-all"
                     onClick={() => {
-                      if (currentUser)
-                        router.push(`/interview/${position?._id}`);
+                      router.push(`/interview/${position?._id}`);
                     }}
                   >
                     {/* <div className="absolute -right-2 -top-1">
@@ -342,6 +341,6 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default HomePage;

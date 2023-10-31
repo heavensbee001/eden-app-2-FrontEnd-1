@@ -10,10 +10,10 @@ import {
   UpdatePrioritiesTradeOffsInput,
 } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Button,
   EdenAiProcessingModal,
   EdenIconQuestion,
+  SaasUserLayout,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -917,7 +917,7 @@ const TrainAiPage: NextPageWithLayout = () => {
   );
 };
 
-TrainAiPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+TrainAiPage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default TrainAiPage;
 

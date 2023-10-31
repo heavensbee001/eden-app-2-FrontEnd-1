@@ -22,7 +22,7 @@ export const MenuDropdown = ({
     <>
       <div>
         <div
-          className="hover:bg-edenGray-100 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full"
+          className="flex cursor-pointer items-center justify-center rounded-full"
           onClick={() => setOpen(!open)}
         >
           {clickableElement}
@@ -32,7 +32,7 @@ export const MenuDropdown = ({
           className={classNames(
             "style-none border-box border-edenGray-100 absolute right-0 z-40 w-[50vh] overflow-hidden rounded-sm bg-white transition-all duration-200 ease-in-out",
             open ? "max-h-[50vh] border" : "max-h-0",
-            positionY === "top" ? "bottom-8" : "top-8",
+            positionY === "top" ? "bottom-10" : "top-10",
             positionX === "right" ? "!left-0" : ""
           )}
           style={{ maxWidth: "15rem" }}

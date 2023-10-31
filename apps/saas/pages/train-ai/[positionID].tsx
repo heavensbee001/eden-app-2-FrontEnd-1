@@ -1,4 +1,10 @@
-import { AppUserLayout, Card, SEO, Wizard, WizardStep } from "@eden/package-ui";
+import {
+  Card,
+  SaasUserLayout,
+  SEO,
+  Wizard,
+  WizardStep,
+} from "@eden/package-ui";
 
 import type { NextPageWithLayout } from "../_app";
 
@@ -25,6 +31,6 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default HomePage;
