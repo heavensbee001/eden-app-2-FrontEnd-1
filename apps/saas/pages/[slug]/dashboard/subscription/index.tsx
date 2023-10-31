@@ -1,5 +1,5 @@
 // import { UserContext } from "@eden/package-context";
-import { AppUserLayout, Button } from "@eden/package-ui";
+import { Button, SaasUserLayout } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
@@ -335,7 +335,7 @@ const SubscribePage: NextPageWithLayout = () => {
   );
 };
 
-SubscribePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+SubscribePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;

@@ -1,11 +1,11 @@
 import { Project } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   CreateProjectViewAddRoleGPT,
   CreateProjectViews2GPT,
   CreateProjectViewStartGPT,
   GridItemSix,
   GridLayout,
+  SaasUserLayout,
   SEO,
 } from "@eden/package-ui";
 import { useState } from "react";
@@ -87,6 +87,6 @@ const TestPage: NextPageWithLayout = () => {
   );
 };
 
-TestPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+TestPage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default TestPage;

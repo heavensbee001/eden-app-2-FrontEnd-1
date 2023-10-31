@@ -2,9 +2,9 @@ import { gql, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Badge,
   Button,
+  SaasUserLayout,
   // EdenIconExclamation,
   // EdenTooltip,
   SEO,
@@ -151,7 +151,7 @@ const HomePage: NextPageWithLayout = () => {
                 router.push("/signup");
               }}
             >
-              Sign up
+              Join {company?.name}&rsquo;s talent pool
             </Button>
           </section>
         )}
@@ -173,8 +173,7 @@ const HomePage: NextPageWithLayout = () => {
                     key={index}
                     className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white p-4 align-top transition-all"
                     onClick={() => {
-                      if (currentUser)
-                        router.push(`/interview/${position?._id}`);
+                      router.push(`/interview/${position?._id}`);
                     }}
                   >
                     {/* <div className="absolute -right-2 -top-1">
@@ -271,7 +270,7 @@ const HomePage: NextPageWithLayout = () => {
           </div>
         </section>
       </div>
-      <section className="absolute top-48 right-8 w-[calc(33%-4rem)] bg-edenGreen-100 p-4 rounded-md">
+      <section className="bg-edenGreen-100 absolute right-8 top-48 w-[calc(33%-4rem)] rounded-md p-4">
         {company && (
           <Button
             variant="secondary"
@@ -281,7 +280,7 @@ const HomePage: NextPageWithLayout = () => {
             {!currentUser ? "Login to post a job" : "Post a magic job"}
           </Button>
         )}
-        <div className="pt-16 pb-4">
+        <div className="pb-4 pt-16">
           <div className="mb-4">
             {company?.name ? (
               <h2 className="text-edenGreen-600 mb-2">{`Curated by ${company?.name} & Eden`}</h2>
@@ -295,12 +294,12 @@ const HomePage: NextPageWithLayout = () => {
                 {company?.description}
               </p>
             )}
-            <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
+            {/* <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
               <p className="text-xs">Pre-vetted Candidates</p>
               <span className="text-edenGray-900 text-sm font-medium leading-none">
                 {company?.candidatesNum}
               </span>
-            </div>
+            </div> */}
           </div>
 
           {/* {company?.description && (
@@ -342,6 +341,6 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default HomePage;

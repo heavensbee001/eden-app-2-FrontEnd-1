@@ -1,5 +1,5 @@
 import { UserContext } from "@eden/package-context";
-import { AppUserLayout } from "@eden/package-ui";
+import { SaasUserLayout } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
 import { useContext } from "react";
@@ -20,7 +20,7 @@ const ConnectTGPage: NextPageWithLayout = () => {
   );
 };
 
-ConnectTGPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+ConnectTGPage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default ConnectTGPage;
 

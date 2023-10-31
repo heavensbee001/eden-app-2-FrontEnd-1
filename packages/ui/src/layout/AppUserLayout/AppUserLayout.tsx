@@ -1,11 +1,14 @@
-import { LeftToggleNav } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { UserContext } from "@eden/package-context";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { signOut } from "next-auth/react";
+import { useContext } from "react";
+import { FiLogOut } from "react-icons/fi";
 
-import { LeftNav } from "../../components/LeftNav";
+import { MenuDropdown } from "../../components";
+import { Avatar } from "../../elements";
 
-interface IAppUserLayoutProps {
+export interface IAppUserLayoutProps {
   children: React.ReactNode;
   logoLink?: string;
 }
@@ -14,40 +17,72 @@ export const AppUserLayout = ({
   children,
   logoLink = `/`,
 }: IAppUserLayoutProps) => {
-  const [unwrappedNav, setUnwrappedNav] = useState(false);
-
   const router = useRouter();
 
   return (
-    <div className="min-h-screen w-full">
-      <div className="">
-        {/* <AppHeader logoLink={logoLink} inApp /> */}
-        {router.pathname.includes("/jobs") ||
-        router.pathname.includes("/pricing") ||
-        router.pathname.includes("/signup") ||
-        router.pathname.includes("/interview") ||
-        router.pathname.includes("/connect-telegram") ||
-        router.pathname.includes("/request-access") ? (
-          <LeftNav logoLink={logoLink} />
-        ) : (
-          <LeftToggleNav
-            unwrapped={unwrappedNav}
-            onToggleNav={() => setUnwrappedNav(!unwrappedNav)}
-            logoLink={logoLink}
+    <div className="">
+      <nav className="fixed left-0 top-0 h-20 w-screen bg-white">
+        <div className="mx-auto flex h-20 w-full max-w-5xl items-center px-4">
+          <Image
+            src="/eden-logo.png"
+            alt=""
+            width={30}
+            height={30}
+            className="mr-2 cursor-pointer"
+            onClick={() => {
+              router.push(logoLink);
+            }}
           />
-        )}
+          <div className="ml-auto">
+            <UserButton />
+          </div>
+        </div>
+      </nav>
 
-        <main
-          className={classNames(
-            "transition-pl bg-bgColor relative min-h-screen transition-all ease-in-out",
-            unwrappedNav ? "pl-[14.5rem]" : "pl-16"
-          )}
-        >
-          {children}
-        </main>
-      </div>
+      <main className="pt-20">{children}</main>
     </div>
   );
 };
 
 export default AppUserLayout;
+
+const UserButton = () => {
+  const { currentUser } = useContext(UserContext);
+
+  const handleLogout = () => {
+    signOut();
+    localStorage.removeItem("eden_access_token");
+  };
+
+  return currentUser ? (
+    <div className={"relative"}>
+      <div className="z-10">
+        <MenuDropdown
+          positionX="left"
+          positionY="bottom"
+          clickableElement={
+            <div className="flex items-center">
+              <div className="mr-2 inline-block">
+                <Avatar size="xs" src={currentUser.discordAvatar!} />
+              </div>
+              <span className="font-Moret whitespace-nowrap font-bold">
+                {currentUser.discordName}
+              </span>
+            </div>
+          }
+        >
+          {[
+            <li
+              key={1}
+              className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+              onClick={handleLogout}
+            >
+              <FiLogOut className="inline pb-px" size={16} />
+              {" log out"}
+            </li>,
+          ]}
+        </MenuDropdown>
+      </div>
+    </div>
+  ) : null;
+};

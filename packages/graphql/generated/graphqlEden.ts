@@ -105,6 +105,7 @@ export type CardMemory = {
   pineconeDB?: Maybe<PineconeDbType>;
   priority?: Maybe<Scalars["Int"]>;
   score?: Maybe<ScoreCardMemory>;
+  scoreCriteria?: Maybe<Scalars["String"]>;
   tradeOffBoost?: Maybe<Scalars["Int"]>;
   type?: Maybe<TypeCardMemoryEnum>;
 };
@@ -151,20 +152,68 @@ export type Combo = {
 export type Company = {
   __typename?: "Company";
   _id?: Maybe<Scalars["ID"]>;
+  benefits?: Maybe<Scalars["String"]>;
   candidatesNum?: Maybe<Scalars["Int"]>;
   communitiesSubscribed?: Maybe<Array<Maybe<Company>>>;
   communitySubscribers?: Maybe<Array<Maybe<CommunitySubscribersType>>>;
   companySubscribersCommunity?: Maybe<Array<Maybe<Company>>>;
+  culture?: Maybe<CompanyCultureType>;
   description?: Maybe<Scalars["String"]>;
+  edenTake?: Maybe<Scalars["String"]>;
   employees?: Maybe<Array<Maybe<EmployeeType>>>;
+  employeesNumber?: Maybe<Scalars["Int"]>;
+  founders?: Maybe<Scalars["String"]>;
+  funding?: Maybe<Array<Maybe<CompanyFoundRoundType>>>;
+  glassdoor?: Maybe<Scalars["String"]>;
+  imageUrl?: Maybe<Scalars["String"]>;
+  insights?: Maybe<Array<Maybe<CompanyInsightType>>>;
+  mission?: Maybe<Scalars["String"]>;
   name?: Maybe<Scalars["String"]>;
   positionSubscribersCommunity?: Maybe<Array<Maybe<Position>>>;
   positions?: Maybe<Array<Maybe<Position>>>;
   skillsNum?: Maybe<Scalars["Int"]>;
   slug?: Maybe<Scalars["String"]>;
   stripe?: Maybe<StripeType>;
+  tags?: Maybe<Array<Maybe<Scalars["String"]>>>;
   type?: Maybe<TypeCompany>;
   url?: Maybe<Scalars["String"]>;
+  values?: Maybe<Scalars["String"]>;
+  whatsToLove?: Maybe<Scalars["String"]>;
+};
+
+export type CompanyCultureType = {
+  __typename?: "CompanyCultureType";
+  description?: Maybe<Scalars["String"]>;
+  tags?: Maybe<Array<Maybe<Scalars["String"]>>>;
+};
+
+export type CompanyCultureTypeInput = {
+  description?: InputMaybe<Scalars["String"]>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+};
+
+export type CompanyFoundRoundType = {
+  __typename?: "CompanyFoundRoundType";
+  amount?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["String"]>;
+  name?: Maybe<Scalars["String"]>;
+};
+
+export type CompanyFoundRoundTypeInput = {
+  amount?: InputMaybe<Scalars["String"]>;
+  date?: InputMaybe<Scalars["String"]>;
+  name?: InputMaybe<Scalars["String"]>;
+};
+
+export type CompanyInsightType = {
+  __typename?: "CompanyInsightType";
+  letter?: Maybe<Scalars["String"]>;
+  text?: Maybe<Scalars["String"]>;
+};
+
+export type CompanyInsightTypeInput = {
+  letter?: InputMaybe<Scalars["String"]>;
+  text?: InputMaybe<Scalars["String"]>;
 };
 
 export type Conversation = {
@@ -489,7 +538,7 @@ export type Mutation = {
   deleteNodesFromMember?: Maybe<Members>;
   deleteNodesFromMemberInRoom?: Maybe<Members>;
   deleteNodesToProjectRole?: Maybe<Project>;
-  deletePositionCandidate?: Maybe<Position>;
+  deletePositionCandidate?: Maybe<Array<Maybe<CandidateType>>>;
   deleteProject?: Maybe<Project>;
   deleteQueryResponse?: Maybe<QueryResponse>;
   deleteQuestionsToAskPosition?: Maybe<Position>;
@@ -528,6 +577,7 @@ export type Mutation = {
   updateChatReply?: Maybe<Chats>;
   updateChatResult?: Maybe<Chats>;
   updateCompany?: Maybe<Company>;
+  updateCompanyDetails?: Maybe<Company>;
   updateConvSummaries?: Maybe<Array<Maybe<Conversation>>>;
   updateConversation?: Maybe<Conversation>;
   updateGrant?: Maybe<GrantTemplate>;
@@ -958,6 +1008,10 @@ export type MutationUpdateCompanyArgs = {
   fields?: InputMaybe<UpdateCompanyInput>;
 };
 
+export type MutationUpdateCompanyDetailsArgs = {
+  fields?: InputMaybe<UpdateCompanyDetailsInput>;
+};
+
 export type MutationUpdateConvSummariesArgs = {
   fields?: InputMaybe<UpdateConvSummariesInput>;
 };
@@ -1159,6 +1213,7 @@ export type Position = {
     Array<Maybe<InterviewQuestionsForCandidateType>>
   >;
   mainUser?: Maybe<Members>;
+  memory?: Maybe<MemoryType>;
   name?: Maybe<Scalars["String"]>;
   nodes?: Maybe<Array<Maybe<NodeDataType>>>;
   positionsRequirements?: Maybe<PositionsRequirementsType>;
@@ -1166,12 +1221,15 @@ export type Position = {
   status?: Maybe<PositionStatus>;
   talentList?: Maybe<Array<Maybe<TalentListType>>>;
   url?: Maybe<Scalars["String"]>;
+  whatTheJobInvolves?: Maybe<Scalars["String"]>;
+  whoYouAre?: Maybe<Scalars["String"]>;
 };
 
 export enum PositionStatus {
   Active = "ACTIVE",
   Archived = "ARCHIVED",
   Deleted = "DELETED",
+  Unpublished = "UNPUBLISHED",
 }
 
 export type Project = {
@@ -1226,6 +1284,7 @@ export type Query = {
   adminFindAllSkillsEveryState?: Maybe<Array<Maybe<Skills>>>;
   askEdenUserPosition?: Maybe<AskEdenUserPositionOutput>;
   askEdenUserPositionGPTFunc?: Maybe<AskEdenUserPositionGptFuncOutput>;
+  askEdenUserPositionGPTFunc_V2?: Maybe<AskEdenUserPositionGptFunc_V2Output>;
   candidateNotesComparePositionEdenAI?: Maybe<
     Array<Maybe<CandidateNotesComparePositionEdenAiOutput>>
   >;
@@ -1372,6 +1431,10 @@ export type QueryAskEdenUserPositionArgs = {
 
 export type QueryAskEdenUserPositionGptFuncArgs = {
   fields?: InputMaybe<AskEdenUserPositionGptFuncInput>;
+};
+
+export type QueryAskEdenUserPositionGptFunc_V2Args = {
+  fields?: InputMaybe<AskEdenUserPositionGptFunc_V2Input>;
 };
 
 export type QueryCandidateNotesComparePositionEdenAiArgs = {
@@ -2376,6 +2439,19 @@ export type AskEdenUserPositionGptFuncOutput = {
   reply?: Maybe<Scalars["String"]>;
 };
 
+export type AskEdenUserPositionGptFunc_V2Input = {
+  conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
+  memoriesType?: InputMaybe<MemoriesTypeEnum>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+  whatToAsk?: InputMaybe<WhatToAskEnum>;
+};
+
+export type AskEdenUserPositionGptFunc_V2Output = {
+  __typename?: "askEdenUserPositionGPTFunc_V2Output";
+  reply?: Maybe<Scalars["String"]>;
+};
+
 export type AskEdenUserPositionInput = {
   conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
   positionID?: InputMaybe<Scalars["ID"]>;
@@ -3021,7 +3097,7 @@ export type DeleteCardMemoryInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   companyID?: InputMaybe<Scalars["ID"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
-  userID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
 export type DeleteErrorInput = {
@@ -3056,6 +3132,7 @@ export type DeleteNodesToProjectRoleInput = {
 };
 
 export type DeletePositionCandidateInput = {
+  onlyScoreCard?: InputMaybe<Scalars["Boolean"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
 };
@@ -4119,6 +4196,11 @@ export enum MemoriesTypeEnum {
   Old = "OLD",
 }
 
+export type MemoryType = {
+  __typename?: "memoryType";
+  core?: Maybe<Scalars["String"]>;
+};
+
 export type MessageChat = {
   content?: InputMaybe<Scalars["String"]>;
   date?: InputMaybe<Scalars["Date"]>;
@@ -5076,6 +5158,23 @@ export type UpdateChatResultInput = {
   threadID?: InputMaybe<Scalars["ID"]>;
 };
 
+export type UpdateCompanyDetailsInput = {
+  _id?: InputMaybe<Scalars["ID"]>;
+  benefits?: InputMaybe<Scalars["String"]>;
+  culture?: InputMaybe<CompanyCultureTypeInput>;
+  edenTake?: InputMaybe<Scalars["String"]>;
+  employeesNumber?: InputMaybe<Scalars["Int"]>;
+  founders?: InputMaybe<Scalars["String"]>;
+  funding?: InputMaybe<Array<InputMaybe<CompanyFoundRoundTypeInput>>>;
+  glassdoor?: InputMaybe<Scalars["String"]>;
+  imageUrl?: InputMaybe<Scalars["String"]>;
+  insights?: InputMaybe<Array<InputMaybe<CompanyInsightTypeInput>>>;
+  mission?: InputMaybe<Scalars["String"]>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  values?: InputMaybe<Scalars["String"]>;
+  whatsToLove?: InputMaybe<Scalars["String"]>;
+};
+
 export type UpdateCompanyInput = {
   _id?: InputMaybe<Scalars["ID"]>;
   addCompanySubscribersID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
@@ -5094,6 +5193,7 @@ export type UpdateConvSummariesInput = {
 
 export type UpdateConversationInput = {
   conversation?: InputMaybe<Array<InputMaybe<ConversationInput>>>;
+  positionID?: InputMaybe<Scalars["String"]>;
   questionAskingID?: InputMaybe<Scalars["ID"]>;
   questionAskingNow?: InputMaybe<Scalars["String"]>;
   timesAsked?: InputMaybe<Scalars["Int"]>;
@@ -5216,6 +5316,7 @@ export type UpdatePositionGeneralDetailsInput = {
   officePolicy?: InputMaybe<Scalars["String"]>;
   socials?: InputMaybe<SocialsInput>;
   startDate?: InputMaybe<Scalars["String"]>;
+  status?: InputMaybe<PositionStatus>;
   visaRequired?: InputMaybe<Scalars["Boolean"]>;
   yearlySalary?: InputMaybe<Scalars["Float"]>;
 };

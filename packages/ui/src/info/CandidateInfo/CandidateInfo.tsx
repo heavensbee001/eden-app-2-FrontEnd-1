@@ -85,8 +85,9 @@ export const CandidateInfo = ({
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [letterType, setLetterType] =
-    useState<"rejection" | "nextInterviewInvite" | undefined>(undefined);
+  const [letterType, setLetterType] = useState<
+    "rejection" | "nextInterviewInvite" | undefined
+  >(undefined);
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -109,23 +110,23 @@ export const CandidateInfo = ({
   });
 
   const tabs = [
-    {
-      tab: "Notes",
-      Content: () => (
-        <>
-          <MatchTab
-            member={
-              {
-                ...candidate,
-                user: dataMember?.findMember,
-              } as CandidateTypeSkillMatch
-            }
-            summaryQuestions={summaryQuestions}
-          />
-          <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
-        </>
-      ),
-    },
+    // {
+    //   tab: "Notes",
+    //   Content: () => (
+    //     <>
+    //       <MatchTab
+    //         member={
+    //           {
+    //             ...candidate,
+    //             user: dataMember?.findMember,
+    //           } as CandidateTypeSkillMatch
+    //         }
+    //         summaryQuestions={summaryQuestions}
+    //       />
+    //       <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
+    //     </>
+    //   ),
+    // },
     {
       tab: "Background",
       Content: () => (
@@ -145,41 +146,41 @@ export const CandidateInfo = ({
       tab: "Scorecard",
       Content: () => <ScorecardTab candidate={candidate} />,
     },
-    {
-      tab: "Fit",
-      Content: () => (
-        <ReportNotes
-          member={
-            {
-              ...candidate,
-              user: dataMember?.findMember,
-            } as CandidateTypeSkillMatch
-          }
-          candidate={candidate}
-        />
-      ),
-    },
+    // {
+    //   tab: "Fit",
+    //   Content: () => (
+    //     <ReportNotes
+    //       member={
+    //         {
+    //           ...candidate,
+    //           user: dataMember?.findMember,
+    //         } as CandidateTypeSkillMatch
+    //       }
+    //       candidate={candidate}
+    //     />
+    //   ),
+    // },
 
-    {
-      tab: "Skill Match",
-      Content: () => (
-        <GraphTab
-          member={
-            {
-              ...candidate,
-              user: dataMember?.findMember,
-            } as CandidateTypeSkillMatch
-          }
-          candidate={candidate}
-        />
-      ),
-    },
-    {
-      tab: "Key Info",
-      Content: () => (
-        <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
-      ),
-    },
+    // {
+    //   tab: "Skill Match",
+    //   Content: () => (
+    //     <GraphTab
+    //       member={
+    //         {
+    //           ...candidate,
+    //           user: dataMember?.findMember,
+    //         } as CandidateTypeSkillMatch
+    //       }
+    //       candidate={candidate}
+    //     />
+    //   ),
+    // },
+    // {
+    //   tab: "Key Info",
+    //   Content: () => (
+    //     <MeetingNotes member={dataMember?.findMember} candidate={candidate} />
+    //   ),
+    // },
     {
       tab: "Transcript",
       Content: () => (

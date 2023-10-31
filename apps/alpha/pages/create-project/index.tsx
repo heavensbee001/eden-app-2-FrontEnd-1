@@ -1,10 +1,10 @@
 import { Project } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Card,
   CreateProjectContainer,
   GridItemSix,
   GridLayout,
+  SaasUserLayout,
   SEO,
   ViewProjectContainer,
 } from "@eden/package-ui";
@@ -72,7 +72,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
   );
 };
 
-CreateProjectPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+CreateProjectPage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default CreateProjectPage;
 

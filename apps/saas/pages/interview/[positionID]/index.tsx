@@ -5,10 +5,10 @@ import { UserContext } from "@eden/package-context";
 import { UPDATE_MEMBER } from "@eden/package-graphql";
 import { Mutation, UpdateMemberInput } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Button,
   EdenAiProcessingModal,
   Modal,
+  SaasUserLayout,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -400,12 +400,12 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
                 )} */}
                 <h1 className="text-edenGreen-600 text-center">
-                  {findPositionData?.findPosition?.company.type === "COMMUNITY"
+                  {findPositionData?.findPosition?.company?.type === "COMMUNITY"
                     ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
                     : `Hey ${currentUser.discordName}!`}
                 </h1>
                 <p className="text-edenGray-900 text-center">
-                  {findPositionData?.findPosition?.company.type === "COMMUNITY"
+                  {findPositionData?.findPosition?.company?.type === "COMMUNITY"
                     ? `You're about to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
                     : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
                 </p>
@@ -717,7 +717,7 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default HomePage;
 

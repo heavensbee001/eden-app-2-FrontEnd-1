@@ -1,7 +1,11 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CompanyContext } from "@eden/package-context";
 import { Position } from "@eden/package-graphql/generated";
-import { AppUserLayout, Button, EdenAiProcessingModal } from "@eden/package-ui";
+import {
+  Button,
+  EdenAiProcessingModal,
+  SaasUserLayout,
+} from "@eden/package-ui";
 // import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
@@ -158,7 +162,7 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default HomePage;
 

@@ -1,4 +1,4 @@
-import { AppUserLayout } from "@eden/package-ui";
+import { SaasUserLayout } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -8,27 +8,27 @@ import { NextPageWithLayout } from "../_app";
 const HARDCODED_POOLS = [
   {
     title: "Frontend Developer",
-    deform: "https://devdao.deform.cc/frontend",
+    url: "/interview/64e311bf3c477e32522fd57b",
   },
   {
     title: "Backend Developer",
-    deform: "https://devdao.deform.cc/backend",
+    url: "/interview/64dde2a36dee65306b6eb62d",
   },
   {
     title: "Blockchain Developer",
-    deform: "https://devdao.deform.cc/blockchain",
+    url: "/interview/64dc91572d77394577b12925",
   },
   {
     title: "Full Stack Developer",
-    deform: "https://devdao.deform.cc/fullstack",
+    url: "/interview/64e3686c083f8b472997d451",
   },
   {
     title: "DevRel",
-    deform: "https://devdao.deform.cc/devrel",
+    url: "/interview/64dcd423966c1c455f0966bc",
   },
   {
     title: "Designer",
-    deform: "https://devdao.deform.cc/designer",
+    url: "/interview/64dcb0fd2d7739565ab13152",
   },
 ];
 
@@ -44,20 +44,20 @@ const SignupCommunity: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center flex-col">
-        <div className="mb-8 bg-edenPink-300 max-w-[40rem] w-full p-8 flex justify-center">
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <div className="bg-edenPink-300 mb-8 flex w-full max-w-[40rem] justify-center p-8">
           <h2 className="text-edenGreen-600 mr-4">Join D_D as a:</h2>
           <select
             name=""
             id=""
             onChange={handleSelect}
-            className="bg-white rounded-md px-2 outline-none"
+            className="rounded-md bg-white px-2 outline-none"
           >
             <option value="" className="text-edenGray-500" disabled selected>
               Select your position...
             </option>
             {HARDCODED_POOLS.map((pool, index) => (
-              <option value={pool.deform} key={index}>
+              <option value={pool.url} key={index}>
                 {pool.title}
               </option>
             ))}
@@ -68,7 +68,7 @@ const SignupCommunity: NextPageWithLayout = () => {
             If you are a hiring manager login{" "}
             <Link
               href={"/developer-dao/jobs"}
-              className="underline hover:text-edenGray-500"
+              className="hover:text-edenGray-500 underline"
             >
               here
             </Link>
@@ -80,7 +80,7 @@ const SignupCommunity: NextPageWithLayout = () => {
 };
 
 SignupCommunity.getLayout = (page: any) => (
-  <AppUserLayout>{page}</AppUserLayout>
+  <SaasUserLayout>{page}</SaasUserLayout>
 );
 
 export async function getServerSideProps(ctx: {
