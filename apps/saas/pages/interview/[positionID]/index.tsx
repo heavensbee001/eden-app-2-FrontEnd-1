@@ -295,110 +295,6 @@ const HomePage: NextPageWithLayout = () => {
           <div className="relative h-full w-full">
             {step === 0 && (
               <div className="pt-8">
-                {/* {scheduleState === "first" && (
-                  <div className="  px-4 py-8">
-                    <h2 className="text-edenGreen-600 text-center">
-                      {"You're about to head into your interview with Eden."}
-                    </h2>
-                    <p className="text-center">
-                      {"This will take around 10-15 minutes."}
-                    </p>
-                    <p className="mb-12 text-center text-sm">
-                      {"Just be your smashing self. You look great btw ;)"}
-                    </p>
-                    <div className="flex justify-evenly">
-                      <Button
-                        variant="tertiary"
-                        onClick={() => setScheduleState("second")}
-                      >
-                        Schedule The Interview
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        onClick={() => {
-                          setShowStartInterviewModal(false);
-                          setStep(step + 1);
-                        }}
-                      >
-                        {"Let's do this now!"}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-                {scheduleState === "second" && (
-                  <div className="mt-7 flex flex-col items-center justify-center py-48  ">
-                    <div className="mb-4 flex flex-col items-center">
-                      <p className=" text-edenGreen-600 m text-xl font-bold">
-                        Pick the date and time for your interview
-                      </p>
-                      <p className="text-sm ">
-                        This event will appear in your Google Calendar
-                      </p>
-                    </div>
-
-                    <DatePicker
-                      className=" rounded-md border border-black pl-3"
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                      timeInputLabel="Time:"
-                      dateFormat="MM/dd/yyyy h:mm aa"
-                      showTimeSelect
-                      timeIntervals={15}
-                      popperPlacement="top-start"
-                    />
-                    <Button
-                      className="mt-3"
-                      variant="secondary"
-                      onClick={constructLink}
-                    >
-                      Schedule
-                    </Button>
-                    {eventLink && (
-                      <a href={eventLink} target="_blank" rel="noreferrer">
-                        {" "}
-                        Click Here
-                      </a>
-                    )}
-                  </div>
-                )}
-                {scheduleState === "third" && (
-                  <div className="flex flex-col items-center">
-                    <div className="mb-4">
-                      <h1 className=" text-edenGreen-500 mb-4 text-2xl font-bold">
-                        Event Created in your Google Calendar!
-                      </h1>
-
-                      <p className="text-edenGray-900 mb-2 text-lg">
-                        <strong>Event name:</strong> Interview with Eden
-                      </p>
-                      <p className="text-edenGray-900 mb-2">
-                        <strong>Event Description:</strong> A 30 min interview
-                        with Eden AI.
-                      </p>
-
-                      <div className="mb-2 flex space-x-2" text-edenGray-900>
-                        <p>
-                          <strong>Event Start Time:</strong>
-                          {startDate.toString()}
-                        </p>
-                      </div>
-
-                      <div className="text-edenGray-900 flex space-x-2">
-                        <p>
-                          <strong>Event End Time: </strong>
-                          {newEndDateHandler().toString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div>
-                      <a href={eventLink} target="_blank" rel="noreferrer">
-                        <Button variant="secondary">
-                          Schedule in your Google Calendar
-                        </Button>
-                      </a>
-                    </div>
-                  </div>
-                )} */}
                 <h1 className="text-edenGreen-600 text-center">
                   {findPositionData?.findPosition?.company?.type === "COMMUNITY"
                     ? `Let's get you onboarded to the ${findPositionData?.findPosition?.name}, ${currentUser.discordName}!`
@@ -476,7 +372,12 @@ const HomePage: NextPageWithLayout = () => {
                       <span className="mx-1 text-red-600">*</span>
                     </p>
                   </div>
-                  <Modal open={showStartInterviewModal}>
+                  <Modal
+                    open={showStartInterviewModal}
+                    onClose={() => {
+                      setShowStartInterviewModal(false);
+                    }}
+                  >
                     {scheduleState === "first" && (
                       <div className="  px-4 py-8">
                         <h2 className="text-edenGreen-600 text-center">
