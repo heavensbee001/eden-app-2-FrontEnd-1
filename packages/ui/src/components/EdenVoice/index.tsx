@@ -1,8 +1,27 @@
+import { gql, useMutation } from "@apollo/client";
 import React, { useRef, useState } from "react";
+
+const TRANSCRIBED_AUDIO_TO_TEXT = gql`
+  mutation ($fields: storeLongTermMemoryInput!) {
+    storeLongTermMemory(fields: $fields) {
+      summary
+      success
+    }
+  }
+`;
 
 const EdenVoice: React.FC = () => {
   const [recording, setRecording] = useState<boolean>(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
+
+  const [TranscribeAudioToText, {}] = useMutation(TRANSCRIBED_AUDIO_TO_TEXT, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   const startRecording = async () => {
     try {
@@ -20,13 +39,27 @@ const EdenVoice: React.FC = () => {
     if (mediaRecorder.current) {
       mediaRecorder.current.ondataavailable = async () => {
         const audioBlob = event.data;
+
+        console.log("audioBlob", audioBlob);
         // Create a URL representing the audio blob
         const audioUrl = URL.createObjectURL(audioBlob);
+
+        console.log("audioUrl", audioUrl);
 
         //Create a new Audio object
         const audio = new Audio(audioUrl);
 
-        audio.play();
+        TranscribeAudioToText({
+          variables: {
+            fields: {
+              // cvString: text
+              audioFile: audioBlob,
+            },
+          },
+        });
+
+        console.log("audio", audio);
+        // audio.play();
 
         // Transcribe the audio blob using Whisper API
         // const transcription = await transcribeAudio(audioBlob);
