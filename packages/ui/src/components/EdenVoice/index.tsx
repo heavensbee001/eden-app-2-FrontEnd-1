@@ -2,10 +2,9 @@ import { gql, useMutation } from "@apollo/client";
 import React, { useRef, useState } from "react";
 
 const TRANSCRIBED_AUDIO_TO_TEXT = gql`
-  mutation ($fields: storeLongTermMemoryInput!) {
-    storeLongTermMemory(fields: $fields) {
-      summary
-      success
+  mutation ($fields: transcribeAudioToTextInput) {
+    transcribeAudioToText(fields: $fields) {
+      transcription
     }
   }
 `;
@@ -52,7 +51,6 @@ const EdenVoice: React.FC = () => {
         TranscribeAudioToText({
           variables: {
             fields: {
-              // cvString: text
               audioFile: audioBlob,
             },
           },
