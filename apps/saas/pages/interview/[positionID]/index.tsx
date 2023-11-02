@@ -373,59 +373,26 @@ const HomePage: NextPageWithLayout = () => {
                           customInput={<ExampleCustomInput />}
                           showIcon
                         />
-                        <Button
-                          className="mt-3"
-                          variant="secondary"
-                          onClick={constructLink}
-                        >
-                          add to calendar{" "}
-                        </Button>
+                        {!startDate ? (
+                          <Button className="mt-3" variant="secondary" disabled>
+                            add to calendar{" "}
+                          </Button>
+                        ) : (
+                          <Button
+                            className="mt-3"
+                            variant="secondary"
+                            onClick={constructLink}
+                          >
+                            add to calendar{" "}
+                          </Button>
+                        )}
                       </div>
                     )}
                     {scheduleState === "third" && (
-                      <div className="flex flex-col items-center">
-                        <div className="mb-4">
-                          <h1 className=" text-edenGreen-500 mb-4 text-2xl font-bold">
-                            Event Created in your Google Calendar!
-                          </h1>
-
-                          <p className="text-edenGray-900 mb-2 text-lg">
-                            <strong>Event name:</strong> Interview with Eden
-                          </p>
-                          <p className="text-edenGray-900 mb-2">
-                            <strong>Event Description:</strong> A 30 min
-                            interview with Eden AI.
-                          </p>
-
-                          <div
-                            className="mb-2 flex space-x-2"
-                            text-edenGray-900
-                          >
-                            <p>
-                              <strong>Event Start Time:</strong>
-                              {startDate && startDate.toString()}
-                            </p>
-                          </div>
-
-                          <div className="text-edenGray-900 flex space-x-2">
-                            <p>
-                              <strong>Event End Time: </strong>
-                              <div className="text-edenGray-900 flex space-x-2">
-                                <p>
-                                  <strong>Event End Time: </strong>
-                                  {(() => {
-                                    const result = newEndDateHandler();
-
-                                    return result !== null
-                                      ? result.toString()
-                                      : "Unavailable";
-                                  })()}
-                                </p>
-                              </div>
-                            </p>
-                          </div>
-                        </div>
-                        <div></div>
+                      <div className="flex h-60 flex-col items-center justify-center ">
+                        <h1 className="text-edenGreen-500 text-4xl">
+                          See You Then!
+                        </h1>
                       </div>
                     )}
                   </Modal>
