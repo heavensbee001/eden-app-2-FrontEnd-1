@@ -157,90 +157,6 @@ const HomePage: NextPageWithLayout = () => {
     setShowInterviewModal(true);
   }
 
-  // const handleCreateEvent = () => {
-  //   const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
-
-  //   fetch("/api/createCalendarEvent/createCalendarEvent", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       startDate,
-  //       interviewLink: interviewLink,
-  //     }),
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         toast.error("Failed to create and event...");
-  //         throw new Error(`HTTP error: ${response.status}`);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       toast.success("Google Calendar Event Created");
-  //       setScheduleState("third");
-  //       console.log("Event Created", data);
-  //       const startDate = new Date(data.start.dateTime);
-  //       const endDate = new Date(data.end.dateTime);
-
-  //       const formattedDateStartDate = startDate.toLocaleDateString("en-US", {
-  //         weekday: "long",
-  //         year: "numeric",
-  //         month: "long",
-  //         day: "numeric",
-  //       });
-
-  //       const formattedStartTime = startDate.toLocaleTimeString("en-US", {
-  //         hour: "2-digit",
-  //         minute: "2-digit",
-  //         second: "2-digit",
-  //         timeZoneName: "short",
-  //       });
-  //       const formattedDateEndDate = endDate.toLocaleDateString("en-US", {
-  //         weekday: "long",
-  //         year: "numeric",
-  //         month: "long",
-  //         day: "numeric",
-  //       });
-  //       const formattedEndTime = endDate.toLocaleTimeString("en-US", {
-  //         hour: "2-digit",
-  //         minute: "2-digit",
-  //         second: "2-digit",
-  //         timeZoneName: "short",
-  //       });
-
-  //       setGoogleEventInfo((prevState) => {
-  //         console.log("Updating state...");
-
-  //         return {
-  //           ...prevState,
-  //           eventName: data.summary,
-  //           //TO DO: Create Description for the event
-
-  //           eventDescription: data.description,
-  //           eventCreator: data.creator.email,
-  //           eventStart: {
-  //             dateTime: `${formattedDateStartDate} - ${formattedStartTime}`,
-  //             timeZone: ` ${data.start.timeZone}`,
-  //           },
-
-  //           eventEnd: {
-  //             dateTime: `${formattedDateEndDate} - ${formattedEndTime}`,
-  //             timeZone: ` ${data.end.timeZone}`,
-  //           },
-  //           //To Do: Get the link
-  //           // eventLink: someLink
-  //         };
-  //       });
-  //       console.log("googleEventInfo", googleEventInfo);
-  //       console.log("ahahahahahah", data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // };
-
   const newEndDateHandler = () => {
     const newEndDate = new Date(startDate);
 
@@ -269,6 +185,22 @@ const HomePage: NextPageWithLayout = () => {
 
     setScheduleState("third");
   };
+
+  function HumanReadableInput({ value, onClick }) {
+    return (
+      <button className="custom-input" onClick={onClick}>
+        {value
+          ? new Intl.DateTimeFormat("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            }).format(value)
+          : "Pick a date"}
+      </button>
+    );
+  }
 
   return (
     <>
