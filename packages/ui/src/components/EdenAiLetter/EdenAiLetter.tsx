@@ -199,6 +199,12 @@ export const EdenAiLetter = ({
           </div>
 
           <div className="h-[86hv] border-2 bg-white p-4">
+            {/* <TextArea
+                  onChange={(e) => setLetterContent(e.target.value)}
+                  className="whitespace-pre-line"
+                >
+                  {/* {letterContent}
+                </TextArea> */}
             {letterContent ? (
               <div id="text-to-copy" className="h-fit w-fit ">
                 <p className="whitespace-pre-line">{letterContent}</p>
