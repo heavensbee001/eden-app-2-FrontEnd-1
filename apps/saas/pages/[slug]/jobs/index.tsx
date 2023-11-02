@@ -60,10 +60,9 @@ const HomePage: NextPageWithLayout = () => {
     {
       variables: {
         fields: {
-          communityID: company?._id,
+          slug: router.query.slug,
         },
       },
-      skip: !company,
     }
   );
 
