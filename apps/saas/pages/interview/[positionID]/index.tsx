@@ -391,7 +391,7 @@ const HomePage: NextPageWithLayout = () => {
                     {scheduleState === "third" && (
                       <div className="flex h-60 flex-col items-center justify-center ">
                         <h1 className="text-edenGreen-500 text-4xl">
-                          See You Then!
+                          {"See You Then! :)"}
                         </h1>
                       </div>
                     )}
