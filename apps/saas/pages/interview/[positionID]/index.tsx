@@ -18,7 +18,7 @@ import {
 import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import { toast } from "react-toastify";
 
@@ -59,22 +59,10 @@ const HomePage: NextPageWithLayout = () => {
     experienceAreas: null,
   });
   const [generalDetails, setGeneralDetails] = useState<any>({});
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
   //remove later
   const [scheduleState, setScheduleState] = useState("first");
   const [eventLink, setEventLink] = useState("");
-  // const [googleEventInfo, setGoogleEventInfo] = useState({
-  //   eventName: "",
-  //   eventDescription: "",
-  //   eventCreator: "",
-  //   eventStart: {
-  //     dateTime: "",
-  //   },
-  //   eventEnd: {
-  //     dateTime: "",
-  //   },
-  //   eventLink: "",
-  // });
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -157,7 +145,16 @@ const HomePage: NextPageWithLayout = () => {
     setShowInterviewModal(true);
   }
 
+  //Calendar stuff, need to turn this into a component later
+
+  interface CustomInputProps {
+    value?: string;
+    onClick?: () => void;
+  }
+
   const newEndDateHandler = () => {
+    if (!startDate) return null;
+
     const newEndDate = new Date(startDate);
 
     newEndDate.setMinutes(startDate.getMinutes() + 30);
@@ -167,40 +164,44 @@ const HomePage: NextPageWithLayout = () => {
     return newEndDate;
   };
   const constructLink = () => {
-    const startDateFormat =
-      startDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+    if (startDate) {
+      const startDateFormat =
+        startDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
 
-    console.log(startDate);
+      console.log(startDate);
 
-    const newEndDate = newEndDateHandler();
+      const newEndDate = newEndDateHandler();
 
-    const endDateFormat =
-      newEndDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+      if (!newEndDate) return;
 
-    const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
+      const endDateFormat =
+        newEndDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
 
-    const link = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Interview+with+Eden&dates=${startDateFormat}/${endDateFormat}&details=A+30+min+interview+with+Eden+AI.+Join+via+this+link:+<a href="${interviewLink}">Click Here!</a>&location=${interviewLink}&recur=RRULE:FREQ=WEEKLY;UNTIL=20231231T000000Z`;
+      const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
 
-    setEventLink(link);
+      const link = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Interview+with+Eden&dates=${startDateFormat}/${endDateFormat}&details=A+30+min+interview+with+Eden+AI.+Join+via+this+link:+<a href="${interviewLink}">Click Here!</a>&location=${interviewLink}&recur=RRULE:FREQ=WEEKLY;UNTIL=20231231T000000Z`;
 
-    setScheduleState("third");
+      setEventLink(link);
+
+      setScheduleState("third");
+    }
   };
 
-  function HumanReadableInput({ value, onClick }) {
-    return (
-      <button className="custom-input" onClick={onClick}>
-        {value
-          ? new Intl.DateTimeFormat("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            }).format(value)
-          : "Pick a date"}
-      </button>
-    );
-  }
+  const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
+    ({ value, onClick }, ref) => (
+      <h1 className=" text-lg">
+        <button
+          className="bg-edenPink-400 text-edenGreen-500  h-8 w-52 min-w-fit rounded-lg border border-neutral-400 py-[0.16rem] pl-10 pr-6 "
+          onClick={onClick}
+          ref={ref}
+        >
+          {value}
+        </button>
+      </h1>
+    )
+  );
+
+  ExampleCustomInput.displayName = "ExampleCustomInput";
 
   return (
     <>
@@ -344,13 +345,10 @@ const HomePage: NextPageWithLayout = () => {
                     )}
                     {scheduleState === "second" && (
                       <div className="mt-7 flex flex-col items-center justify-center py-48  ">
-                        <div className="mb-4 flex flex-col items-center">
-                          <p className=" text-edenGreen-600 m text-xl font-bold">
-                            Pick the date and time for your interview
-                          </p>
-                          <p className="text-sm ">
-                            This event will appear in your Google Calendar
-                          </p>
+                        <div className="mb-2 flex flex-col items-center">
+                          <h1 className=" text-edenGreen-600 text-3xl font-bold">
+                            Pick a date.{" "}
+                          </h1>
                         </div>
 
                         <DatePicker
@@ -362,13 +360,15 @@ const HomePage: NextPageWithLayout = () => {
                           showTimeSelect
                           timeIntervals={15}
                           popperPlacement="top-start"
+                          customInput={<ExampleCustomInput />}
+                          showIcon
                         />
                         <Button
                           className="mt-3"
                           variant="secondary"
                           onClick={constructLink}
                         >
-                          Schedule
+                          add to calendar{" "}
                         </Button>
                         {eventLink && (
                           <a href={eventLink} target="_blank" rel="noreferrer">
@@ -399,14 +399,25 @@ const HomePage: NextPageWithLayout = () => {
                           >
                             <p>
                               <strong>Event Start Time:</strong>
-                              {startDate.toString()}
+                              {startDate && startDate.toString()}
                             </p>
                           </div>
 
                           <div className="text-edenGray-900 flex space-x-2">
                             <p>
                               <strong>Event End Time: </strong>
-                              {newEndDateHandler().toString()}
+                              <div className="text-edenGray-900 flex space-x-2">
+                                <p>
+                                  <strong>Event End Time: </strong>
+                                  {(() => {
+                                    const result = newEndDateHandler();
+
+                                    return result !== null
+                                      ? result.toString()
+                                      : "Unavailable";
+                                  })()}
+                                </p>
+                              </div>
                             </p>
                           </div>
                         </div>
