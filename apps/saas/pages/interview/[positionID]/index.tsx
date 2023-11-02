@@ -62,7 +62,6 @@ const HomePage: NextPageWithLayout = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   //remove later
   const [scheduleState, setScheduleState] = useState("first");
-  const [eventLink, setEventLink] = useState("");
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -145,6 +144,14 @@ const HomePage: NextPageWithLayout = () => {
     setShowInterviewModal(true);
   }
 
+  const onCloseHandler = () => {
+    setTimeout(() => {
+      setShowStartInterviewModal(false);
+      setScheduleState("first");
+      setStartDate(null);
+    }, 800);
+  };
+
   //Calendar stuff, need to turn this into a component later
 
   interface CustomInputProps {
@@ -163,7 +170,7 @@ const HomePage: NextPageWithLayout = () => {
 
     return newEndDate;
   };
-  const constructLink = () => {
+  const constructLink = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (startDate) {
       const startDateFormat =
         startDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
@@ -181,9 +188,14 @@ const HomePage: NextPageWithLayout = () => {
 
       const link = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Interview+with+Eden&dates=${startDateFormat}/${endDateFormat}&details=A+30+min+interview+with+Eden+AI.+Join+via+this+link:+<a href="${interviewLink}">Click Here!</a>&location=${interviewLink}&recur=RRULE:FREQ=WEEKLY;UNTIL=20231231T000000Z`;
 
-      setEventLink(link);
+      setTimeout(() => {
+        setScheduleState("third");
+      }, 300);
 
-      setScheduleState("third");
+      if (link !== "") {
+        event.preventDefault();
+        window.open(link, "_blank");
+      }
     }
   };
 
@@ -307,9 +319,7 @@ const HomePage: NextPageWithLayout = () => {
                   </div>
                   <Modal
                     open={showStartInterviewModal}
-                    onClose={() => {
-                      setShowStartInterviewModal(false);
-                    }}
+                    onClose={onCloseHandler}
                   >
                     {scheduleState === "first" && (
                       <div className="  px-4 py-8">
@@ -370,12 +380,6 @@ const HomePage: NextPageWithLayout = () => {
                         >
                           add to calendar{" "}
                         </Button>
-                        {eventLink && (
-                          <a href={eventLink} target="_blank" rel="noreferrer">
-                            {" "}
-                            Click Here
-                          </a>
-                        )}
                       </div>
                     )}
                     {scheduleState === "third" && (
@@ -421,13 +425,7 @@ const HomePage: NextPageWithLayout = () => {
                             </p>
                           </div>
                         </div>
-                        <div>
-                          <a href={eventLink} target="_blank" rel="noreferrer">
-                            <Button variant="secondary">
-                              Schedule in your Google Calendar
-                            </Button>
-                          </a>
-                        </div>
+                        <div></div>
                       </div>
                     )}
                   </Modal>
