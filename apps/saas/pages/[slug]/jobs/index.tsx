@@ -273,11 +273,15 @@ const HomePage: NextPageWithLayout = () => {
       <section className="bg-edenGreen-100 absolute right-8 top-48 w-[calc(33%-4rem)] rounded-md p-4">
         {company && (
           <div className="flex flex-row items-center justify-between">
-            <Image
-              className="h-[68px] w-[68px] rounded-full"
-              src={`${company.url}`}
-              alt={`${company.name} company image`}
-            />
+            {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
+            {/* also src should be company.imageUrl */}
+            {company.url ? (
+              <Image
+                className="h-[68px] w-[68px] rounded-full"
+                src={`${company.url}`}
+                alt={`${company.name} company image`}
+              />
+            ) : null}
             <Button
               variant="secondary"
               className="float-right"
