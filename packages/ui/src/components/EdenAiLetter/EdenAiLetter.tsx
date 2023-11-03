@@ -4,6 +4,7 @@ import { CheckCircleIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { Button, Modal, TextArea } from "../../elements";
 
@@ -85,6 +86,8 @@ export const EdenAiLetter = ({
       onClose!();
     },
   });
+
+  const { register } = useForm<any>();
 
   // const handleCopyToClipboard = () => {
   //   const range = document.createRange();
