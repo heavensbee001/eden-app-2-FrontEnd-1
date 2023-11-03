@@ -1,10 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import { Maybe, Members } from "@eden/package-graphql/generated";
+import { classNames } from "@eden/package-ui/utils";
 import { CheckCircleIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { HiPencil } from "react-icons/hi";
 
 import { Button, Modal, TextArea } from "../../elements";
 
@@ -64,18 +66,30 @@ export const EdenAiLetter = ({
   onSubmit,
 }: IEdenAiLetter) => {
   const router = useRouter();
+
+  const { edit } = router.query;
+  const editMode = edit === "true";
+
   const { positionID } = router.query;
   const [letterContent, setLetterContent] = useState("");
   const [copied, setCopied] = useState(false);
+  const [editLetter, setEditLetter] = useState(false);
 
+  const { register, handleSubmit, setValue } = useForm<any>({
+    defaultValues: {
+      letter: letterContent || "",
+    },
+  });
   const [rejectionLetter] = useMutation(REJECTION_LETTER, {
     onCompleted({ rejectionLetter }) {
+      setValue("letter", rejectionLetter.generatedLetter);
       setLetterContent(rejectionLetter.generatedLetter);
     },
   });
 
   const [secondInterviewLetter] = useMutation(SECOND_INTERVIEW_LETTER, {
     onCompleted({ secondInterviewLetter }) {
+      setValue("letter", secondInterviewLetter.generatedLetter);
       setLetterContent(secondInterviewLetter.generatedLetter);
     },
   });
@@ -86,8 +100,6 @@ export const EdenAiLetter = ({
       onClose!();
     },
   });
-
-  const { register } = useForm<any>();
 
   // const handleCopyToClipboard = () => {
   //   const range = document.createRange();
@@ -145,6 +157,8 @@ export const EdenAiLetter = ({
       });
     }
   };
+  const editInputClasses =
+    "inline-block bg-transparent -my-[2px] -mx-2 border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none whitespace-pre-line";
 
   const handleTextArea = (e) => {
     setLetterContent(e.target.value);
@@ -179,6 +193,10 @@ export const EdenAiLetter = ({
     };
   }, [isModalOpen, letterType, member, positionID]);
 
+  const onSubmitLetter = (data) => {
+    setLetterContent(data.letter);
+  };
+
   return (
     <>
       <Modal open={isModalOpen} onClose={onClose}>
@@ -207,13 +225,33 @@ export const EdenAiLetter = ({
 
           <div className="h-[86hv] border-2 bg-white p-4">
             {letterContent ? (
-              <div id="text-to-copy" className="h-fit w-fit ">
-                {/* <TextArea
-                  value={letterContent}
-                  onChange={handleTextArea}
-                  className="whitespace-pre-line"
-                /> */}
-                <p className="whitespace-pre-line">{letterContent}</p>
+              <div>
+                {!editMode && (
+                  <button
+                    className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-700 disabled:border-edenGray-700 absolute right-4 top-4 flex items-center whitespace-nowrap rounded-md border px-2"
+                    onClick={() => {
+                      setEditLetter(!editLetter);
+                    }}
+                  >
+                    <HiPencil size={16} className="mr-2 inline-block" />
+                    Edit
+                  </button>
+                )}
+                <div id="text-to-copy" className="h-fit w-full ">
+                  {!editMode && editLetter ? (
+                    <form onSubmit={handleSubmit(onSubmitLetter)}>
+                      <>
+                        <textarea
+                          {...register("letter")}
+                          className={classNames(editInputClasses, "")}
+                        />
+                        <button type="submit">Save</button>
+                      </>
+                    </form>
+                  ) : (
+                    <p className="whitespace-pre-line">{letterContent}</p>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="flex h-96 w-96 animate-pulse space-x-4">
