@@ -1,5 +1,4 @@
 import { UserContext } from "@eden/package-context";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext } from "react";
@@ -21,14 +20,13 @@ export const AppUserLayout = ({
 
   return (
     <div className="">
-      <nav className="fixed left-0 top-0 h-20 w-screen bg-white">
-        <div className="mx-auto flex h-20 w-full max-w-5xl items-center px-4">
-          <Image
-            src="/eden-logo.png"
-            alt=""
-            width={30}
-            height={30}
-            className="mr-2 cursor-pointer"
+      <nav className="w-screen h-20 fixed left-0 top-0 bg-white z-40">
+        <div className="h-20 w-full max-w-5xl flex items-center px-4 mx-auto">
+          <img
+            src="/eden-imagotype.png"
+            alt="Eden Protocol"
+            width={68}
+            className="cursor-pointer mr-2"
             onClick={() => {
               router.push(logoLink);
             }}
