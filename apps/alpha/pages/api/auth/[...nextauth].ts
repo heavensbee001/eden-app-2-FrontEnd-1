@@ -28,6 +28,8 @@ async function getEdenToken(accessToken: string) {
 
     const data = await res.json();
 
+    console.log("data", data);
+
     return data;
   } catch {
     // TODO: if the server is down, user still gets a session token but should be rejected

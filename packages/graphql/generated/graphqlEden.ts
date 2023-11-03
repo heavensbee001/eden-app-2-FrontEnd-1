@@ -4,9 +4,13 @@ export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]?: Maybe<T[SubKey]> };
+  {
+    [SubKey in K]?: Maybe<T[SubKey]>;
+  };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]: Maybe<T[SubKey]> };
+  {
+    [SubKey in K]: Maybe<T[SubKey]>;
+  };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -90,6 +94,12 @@ export type CandidateType = {
 
 export type CandidateTypeInput = {
   userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type CardMemoriesUsedType = {
+  __typename?: "CardMemoriesUsedType";
+  cardMemory?: Maybe<CardMemory>;
+  score?: Maybe<Scalars["Float"]>;
 };
 
 export type CardMemory = {
@@ -220,11 +230,15 @@ export type Conversation = {
   convKey?: Maybe<Scalars["String"]>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
   extraPositionsID?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  lastMsgSummed?: Maybe<Scalars["Int"]>;
   positionID?: Maybe<Scalars["String"]>;
   positionTrainEdenAI?: Maybe<Scalars["Boolean"]>;
   questionsAnswered?: Maybe<Array<Maybe<QuestionAnsweredType>>>;
+  subjectConv?: Maybe<SubjectConvType>;
+  summariesMessages?: Maybe<Array<Maybe<SummariesMessagesType>>>;
   summary?: Maybe<Array<Maybe<SummaryType>>>;
   summaryReady?: Maybe<Scalars["Boolean"]>;
+  typeConversation?: Maybe<TypeConversationEnum>;
   typeConvo?: Maybe<TypeConvoEnum>;
   updatedAt?: Maybe<Scalars["Date"]>;
   userID?: Maybe<Scalars["String"]>;
@@ -431,6 +445,7 @@ export type Members = {
   links?: Maybe<Array<Maybe<LinkType>>>;
   location?: Maybe<Scalars["String"]>;
   memberRole?: Maybe<RoleTemplate>;
+  memory?: Maybe<MemoryMemberType>;
   network?: Maybe<Array<Maybe<Members>>>;
   nodes?: Maybe<Array<Maybe<NodesType>>>;
   onbording?: Maybe<OnboardingType>;
@@ -501,6 +516,8 @@ export type Mutation = {
   addReview?: Maybe<Review>;
   applyGrant?: Maybe<GrantTemplate>;
   approveTweet?: Maybe<Project>;
+  autoCalculatePrioritiesAndQuestions?: Maybe<Position>;
+  autoCreateCardsForPosition?: Maybe<Array<Maybe<CardMemory>>>;
   autoUpdateMemoryFromCV?: Maybe<AutoUpdateMemoryFromCvOutput>;
   autoUpdateMemoryFromPositionRequirments?: Maybe<AutoUpdateMemoryFromPositionRequirmentsOutput>;
   autoUpdateUserInfoFromCV?: Maybe<AutoUpdateUserInfoFromCvOutput>;
@@ -511,6 +528,7 @@ export type Mutation = {
   conversationCVPositionToReport?: Maybe<ConversationCvPositionToReportOutput>;
   createCardsCandidateForPosition?: Maybe<Array<Maybe<CardMemory>>>;
   createCardsForPosition?: Maybe<Array<Maybe<CardMemory>>>;
+  createCoreMemories?: Maybe<CreateCoreMemoriesOutput>;
   createEndorsementLink?: Maybe<EndorsementLink>;
   createError?: Maybe<ErrorLog>;
   createFakeEndorsement?: Maybe<Endorsement>;
@@ -553,6 +571,7 @@ export type Mutation = {
   login: User;
   messageToGPT?: Maybe<MessageToGptOutput>;
   moveCandidateToPosition?: Maybe<Position>;
+  moveCandidateToPosition_V2?: Maybe<Position>;
   newTweetProject?: Maybe<TweetsProject>;
   pitchPositionToCandidate?: Maybe<PitchPositionToCandidateOutput>;
   positionSuggestQuestionsAskCandidate?: Maybe<PositionSuggestQuestionsAskCandidateOutput>;
@@ -571,6 +590,7 @@ export type Mutation = {
   storeLongTermMemory?: Maybe<StoreLongTermMemoryOutput>;
   storeLongTermMemorySummary?: Maybe<StoreLongTermMemorySummaryOutput>;
   subscribeToCommunity?: Maybe<Company>;
+  talkToEdenGeneral_V1?: Maybe<TalkToEdenGeneral_V1Output>;
   updateAnalysisEdenAICandidates?: Maybe<Array<Maybe<Position>>>;
   updateChatReply?: Maybe<Chats>;
   updateChatResult?: Maybe<Chats>;
@@ -710,6 +730,14 @@ export type MutationApproveTweetArgs = {
   fields: ApproveTweetInput;
 };
 
+export type MutationAutoCalculatePrioritiesAndQuestionsArgs = {
+  fields?: InputMaybe<AutoCalculatePrioritiesAndQuestionsInput>;
+};
+
+export type MutationAutoCreateCardsForPositionArgs = {
+  fields?: InputMaybe<AutoCreateCardsForPositionInput>;
+};
+
 export type MutationAutoUpdateMemoryFromCvArgs = {
   fields?: InputMaybe<AutoUpdateMemoryFromCvInput>;
 };
@@ -748,6 +776,10 @@ export type MutationCreateCardsCandidateForPositionArgs = {
 
 export type MutationCreateCardsForPositionArgs = {
   fields?: InputMaybe<CreateCardsForPositionInput>;
+};
+
+export type MutationCreateCoreMemoriesArgs = {
+  fields?: InputMaybe<CreateCoreMemoriesInput>;
 };
 
 export type MutationCreateEndorsementLinkArgs = {
@@ -918,6 +950,10 @@ export type MutationMoveCandidateToPositionArgs = {
   fields?: InputMaybe<MoveCandidateToPositionInput>;
 };
 
+export type MutationMoveCandidateToPosition_V2Args = {
+  fields?: InputMaybe<MoveCandidateToPosition_V2Input>;
+};
+
 export type MutationNewTweetProjectArgs = {
   fields: NewTweetProjectInput;
 };
@@ -988,6 +1024,10 @@ export type MutationStoreLongTermMemorySummaryArgs = {
 
 export type MutationSubscribeToCommunityArgs = {
   fields?: InputMaybe<SubscribeToCommunityInput>;
+};
+
+export type MutationTalkToEdenGeneral_V1Args = {
+  fields?: InputMaybe<TalkToEdenGeneral_V1Input>;
 };
 
 export type MutationUpdateAnalysisEdenAiCandidatesArgs = {
@@ -1201,6 +1241,7 @@ export type Position = {
   candidates?: Maybe<Array<Maybe<CandidateType>>>;
   candidatesFlagAnalysisCreated?: Maybe<Scalars["Boolean"]>;
   candidatesReadyToDisplay?: Maybe<Scalars["Boolean"]>;
+  cardsPositionCalculated?: Maybe<Scalars["Boolean"]>;
   company?: Maybe<Company>;
   conduct?: Maybe<ConductType>;
   convRecruiter?: Maybe<Array<Maybe<ConvRecruiterType>>>;
@@ -1211,10 +1252,11 @@ export type Position = {
     Array<Maybe<InterviewQuestionsForCandidateType>>
   >;
   mainUser?: Maybe<Members>;
-  memory?: Maybe<MemoryType>;
+  memory?: Maybe<MemoryPositionType>;
   name?: Maybe<Scalars["String"]>;
   nodes?: Maybe<Array<Maybe<NodeDataType>>>;
   positionsRequirements?: Maybe<PositionsRequirementsType>;
+  prioritiesPositionCalculated?: Maybe<Scalars["Boolean"]>;
   questionsToAsk?: Maybe<Array<Maybe<QuestionType>>>;
   status?: Maybe<PositionStatus>;
   talentList?: Maybe<Array<Maybe<TalentListType>>>;
@@ -2439,7 +2481,9 @@ export type AskEdenUserPositionGptFuncOutput = {
 
 export type AskEdenUserPositionGptFunc_V2Input = {
   conversation?: InputMaybe<Array<InputMaybe<MessageChat>>>;
+  conversationID?: InputMaybe<Scalars["ID"]>;
   memoriesType?: InputMaybe<MemoriesTypeEnum>;
+  newMessage?: InputMaybe<Scalars["String"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
   whatToAsk?: InputMaybe<WhatToAskEnum>;
@@ -2447,6 +2491,7 @@ export type AskEdenUserPositionGptFunc_V2Input = {
 
 export type AskEdenUserPositionGptFunc_V2Output = {
   __typename?: "askEdenUserPositionGPTFunc_V2Output";
+  cardMemoriesUsed?: Maybe<Array<Maybe<CardMemoriesUsedType>>>;
   reply?: Maybe<Scalars["String"]>;
 };
 
@@ -2510,6 +2555,14 @@ export type AuthorCardMemoryInput = {
   companyID?: InputMaybe<Scalars["ID"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type AutoCalculatePrioritiesAndQuestionsInput = {
+  nothing?: InputMaybe<Scalars["String"]>;
+};
+
+export type AutoCreateCardsForPositionInput = {
+  nothing?: InputMaybe<Scalars["String"]>;
 };
 
 export type AutoUpdateMemoryFromCvInput = {
@@ -2671,6 +2724,15 @@ export type ChannelOutput = {
   forumID?: Maybe<Scalars["ID"]>;
 };
 
+export type ChatRespType = {
+  __typename?: "chatRespType";
+  content?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["Date"]>;
+  role?: Maybe<RoleEnum>;
+  typeWidget?: Maybe<WidgetTypeEnum>;
+  widgetVars?: Maybe<WidgetVarsType>;
+};
+
 export type ChatResponse = {
   __typename?: "chatResponse";
   numChat?: Maybe<Scalars["Int"]>;
@@ -2824,6 +2886,10 @@ export type ConversationCvPositionToReportOutput = {
   success?: Maybe<Scalars["Boolean"]>;
 };
 
+export type ConversationInfoInput = {
+  conversationID?: InputMaybe<Scalars["ID"]>;
+};
+
 export type ConversationInput = {
   content?: InputMaybe<Scalars["String"]>;
   role?: InputMaybe<Scalars["String"]>;
@@ -2844,6 +2910,8 @@ export type ConversationType = {
   content?: Maybe<Scalars["String"]>;
   date?: Maybe<Scalars["Date"]>;
   role?: Maybe<Scalars["String"]>;
+  typeWidget?: Maybe<WidgetTypeEnum>;
+  widgetVars?: Maybe<WidgetVarsType>;
 };
 
 export type CreateApprovedSkillInput = {
@@ -2857,6 +2925,17 @@ export type CreateCardsCandidateForPositionInput = {
 
 export type CreateCardsForPositionInput = {
   positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type CreateCoreMemoriesInput = {
+  coreMemories?: InputMaybe<Scalars["String"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type CreateCoreMemoriesOutput = {
+  __typename?: "createCoreMemoriesOutput";
+  output?: Maybe<Scalars["String"]>;
 };
 
 export type CreateEndorsementLinkInput = {
@@ -3540,6 +3619,11 @@ export type FindCompanyInput = {
 
 export type FindConversationInput = {
   _id?: InputMaybe<Scalars["ID"]>;
+  limit?: InputMaybe<Scalars["Int"]>;
+  skip?: InputMaybe<Scalars["Int"]>;
+  subjectConv?: InputMaybe<SubjectConversationInput>;
+  typeConversation?: InputMaybe<TypeConversationEnum>;
+  userID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type FindConversationsInput = {
@@ -3710,6 +3794,7 @@ export type FindPositionsInput = {
 
 export type FindPositionsOfCommunityInput = {
   communityID?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]>;
 };
 
 export type FindPrioritiesTrainEdenAiInput = {
@@ -4194,8 +4279,13 @@ export enum MemoriesTypeEnum {
   Old = "OLD",
 }
 
-export type MemoryType = {
-  __typename?: "memoryType";
+export type MemoryMemberType = {
+  __typename?: "memoryMemberType";
+  core?: Maybe<Scalars["String"]>;
+};
+
+export type MemoryPositionType = {
+  __typename?: "memoryPositionType";
   core?: Maybe<Scalars["String"]>;
 };
 
@@ -4286,6 +4376,12 @@ export type MostRelevantMemberNodeType = {
 };
 
 export type MoveCandidateToPositionInput = {
+  positionNewID?: InputMaybe<Scalars["ID"]>;
+  positionOldID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type MoveCandidateToPosition_V2Input = {
   positionNewID?: InputMaybe<Scalars["ID"]>;
   positionOldID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
@@ -4687,6 +4783,24 @@ export type ReportPassFailType2 = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export type ReqVarsActionInput = {
+  positionIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+};
+
+export type ReqVarsStateInput = {
+  positionIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+};
+
+export type ReqVarsStateType = {
+  __typename?: "reqVarsStateType";
+  positionIDs?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+};
+
+export type RequestActionConversationInput = {
+  reqVars?: InputMaybe<ReqVarsActionInput>;
+  typeAction?: InputMaybe<TypeActionConvEnum>;
+};
+
 export type ResourcesInput = {
   name?: InputMaybe<Scalars["String"]>;
   url?: InputMaybe<Scalars["String"]>;
@@ -4729,6 +4843,11 @@ export type ReviewSummaryType = {
   summary?: Maybe<Scalars["String"]>;
   totalIncome?: Maybe<Scalars["Float"]>;
 };
+
+export enum RoleEnum {
+  Assistant = "assistant",
+  User = "user",
+}
 
 export type RoleInput = {
   _id?: InputMaybe<Scalars["ID"]>;
@@ -4952,6 +5071,17 @@ export type SocialsType = {
   twitter?: Maybe<Scalars["String"]>;
 };
 
+export type StateChangeConversationInput = {
+  reqVars?: InputMaybe<ReqVarsStateInput>;
+  typeState?: InputMaybe<TypeStateConvEnum>;
+};
+
+export type StateConversationType = {
+  __typename?: "stateConversationType";
+  reqVars?: Maybe<ReqVarsStateType>;
+  typeState?: Maybe<TypeStateConvEnum>;
+};
+
 export type StateEdenChatType = {
   __typename?: "stateEdenChatType";
   categoryChat?: Maybe<CategoryQueryResponseEnum>;
@@ -4998,9 +5128,29 @@ export type StyleEdgeIn = {
   strength?: InputMaybe<Scalars["Float"]>;
 };
 
+export type SubjectConvType = {
+  __typename?: "subjectConvType";
+  companyIDs?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  positionIDs?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+  userIDs?: Maybe<Array<Maybe<Scalars["ID"]>>>;
+};
+
+export type SubjectConversationInput = {
+  companyIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  positionIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  userIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+};
+
 export type SubscribeToCommunityInput = {
   communityID?: InputMaybe<Scalars["ID"]>;
   companyID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type SummariesMessagesType = {
+  __typename?: "summariesMessagesType";
+  content?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["Date"]>;
+  pineConeID?: Maybe<Scalars["String"]>;
 };
 
 export type SummaryType = {
@@ -5020,6 +5170,19 @@ export type TalentListType = {
 export type TalentType = {
   __typename?: "talentType";
   user?: Maybe<Members>;
+};
+
+export type TalkToEdenGeneral_V1Input = {
+  infoConv?: InputMaybe<ConversationInfoInput>;
+  message?: InputMaybe<Scalars["String"]>;
+  requestAction?: InputMaybe<RequestActionConversationInput>;
+  stateChange?: InputMaybe<StateChangeConversationInput>;
+};
+
+export type TalkToEdenGeneral_V1Output = {
+  __typename?: "talkToEdenGeneral_V1Output";
+  chatResp?: Maybe<Array<Maybe<ChatRespType>>>;
+  state?: Maybe<StateConversationType>;
 };
 
 export type TeamInput = {
@@ -5095,6 +5258,10 @@ export type TweetsType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export enum TypeActionConvEnum {
+  FindNewPosition = "FIND_NEW_POSITION",
+}
+
 export enum TypeCardMemoryEnum {
   Behavior = "BEHAVIOR",
   CoreValues = "CORE_VALUES",
@@ -5114,6 +5281,13 @@ export enum TypeCompany {
   Company = "COMPANY",
 }
 
+export enum TypeConversationEnum {
+  AlignmentPosition = "ALIGNMENT_POSITION",
+  AskOpportunity = "ASK_OPPORTUNITY",
+  Interview = "INTERVIEW",
+  PromoteCandidate = "PROMOTE_CANDIDATE",
+}
+
 export enum TypeConvoEnum {
   Align = "ALIGN",
   AskCandidate = "ASK_CANDIDATE",
@@ -5126,6 +5300,10 @@ export enum TypeConvoEnum {
 export enum TypeEnumMp {
   Member = "Member",
   ProjectRole = "ProjectRole",
+}
+
+export enum TypeStateConvEnum {
+  FindNewPosition = "FIND_NEW_POSITION",
 }
 
 export type UnansweredQuestionsInput = {
@@ -5157,9 +5335,9 @@ export type UpdateChatResultInput = {
 };
 
 export type UpdateCompanyDetailsInput = {
-  _id?: InputMaybe<Scalars["ID"]>;
   benefits?: InputMaybe<Scalars["String"]>;
   culture?: InputMaybe<CompanyCultureTypeInput>;
+  description?: InputMaybe<Scalars["String"]>;
   edenTake?: InputMaybe<Scalars["String"]>;
   employeesNumber?: InputMaybe<Scalars["Int"]>;
   founders?: InputMaybe<Scalars["String"]>;
@@ -5168,6 +5346,7 @@ export type UpdateCompanyDetailsInput = {
   imageUrl?: InputMaybe<Scalars["String"]>;
   insights?: InputMaybe<Array<InputMaybe<CompanyInsightTypeInput>>>;
   mission?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]>;
   tags?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   values?: InputMaybe<Scalars["String"]>;
   whatsToLove?: InputMaybe<Scalars["String"]>;
@@ -5191,6 +5370,7 @@ export type UpdateConvSummariesInput = {
 
 export type UpdateConversationInput = {
   conversation?: InputMaybe<Array<InputMaybe<ConversationInput>>>;
+  conversationID?: InputMaybe<Scalars["String"]>;
   positionID?: InputMaybe<Scalars["String"]>;
   questionAskingID?: InputMaybe<Scalars["ID"]>;
   questionAskingNow?: InputMaybe<Scalars["String"]>;
@@ -5328,6 +5508,8 @@ export type UpdatePositionInput = {
   name?: InputMaybe<Scalars["String"]>;
   status?: InputMaybe<PositionStatus>;
   updatePosition?: InputMaybe<Scalars["ID"]>;
+  whatTheJobInvolves?: InputMaybe<Scalars["String"]>;
+  whoYouAre?: InputMaybe<Scalars["String"]>;
 };
 
 export type UpdatePositionUserAnswersInput = {
@@ -5492,6 +5674,17 @@ export type WhatsAppInput = {
   body?: InputMaybe<Scalars["String"]>;
   from?: InputMaybe<Scalars["String"]>;
   to?: InputMaybe<Scalars["String"]>;
+};
+
+export enum WidgetTypeEnum {
+  IndividualMemories = "INDIVIDUAL_MEMORIES",
+  Message = "MESSAGE",
+  Scorecard = "SCORECARD",
+}
+
+export type WidgetVarsType = {
+  __typename?: "widgetVarsType";
+  memories?: Maybe<Array<Maybe<CardMemory>>>;
 };
 
 export interface PossibleTypesResultData {
