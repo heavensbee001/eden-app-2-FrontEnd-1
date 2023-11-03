@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-import { Button, Modal } from "../../elements";
+import { Button, Modal, TextArea } from "../../elements";
 
 export interface IEdenAiLetter {
   isModalOpen: boolean;
@@ -143,6 +143,10 @@ export const EdenAiLetter = ({
     }
   };
 
+  const handleTextArea = (e) => {
+    setLetterContent(e.target.value);
+  };
+
   useEffect(() => {
     if (isModalOpen) {
       if (letterType === "rejection") {
@@ -199,14 +203,13 @@ export const EdenAiLetter = ({
           </div>
 
           <div className="h-[86hv] border-2 bg-white p-4">
-            {/* <TextArea
-                  onChange={(e) => setLetterContent(e.target.value)}
-                  className="whitespace-pre-line"
-                >
-                  {/* {letterContent}
-                </TextArea> */}
             {letterContent ? (
               <div id="text-to-copy" className="h-fit w-fit ">
+                {/* <TextArea
+                  value={letterContent}
+                  onChange={handleTextArea}
+                  className="whitespace-pre-line"
+                /> */}
                 <p className="whitespace-pre-line">{letterContent}</p>
               </div>
             ) : (
