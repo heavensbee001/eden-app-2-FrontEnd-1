@@ -4,14 +4,13 @@ import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
   Badge,
   Button,
-  SaasUserLayout,
   EdenIconExclamation,
   EdenTooltip,
+  SaasUserLayout,
   SEO,
 } from "@eden/package-ui";
-// import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
-import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useContext } from "react";
@@ -146,8 +145,9 @@ const HomePage: NextPageWithLayout = () => {
               gig.
             </h2>
             <p className="text-edenGray-900 mb-4 text-sm">
-              By joining the Oasis you'll have access to your personal
-              AI-powered career coach who helps you apply, shine & land.
+              {
+                "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
+              }
               {/* <Link
                 href={"https://www.youtube.com/watch?v=S_vJBkCDYNs"}
                 className="underline"
@@ -219,7 +219,7 @@ const HomePage: NextPageWithLayout = () => {
                       </div>
                       <div className="relative h-5 w-[117px]">
                         <div className="border-forestGreen text-edenGreen-500 rounded-full border-2 pl-4 text-xs leading-4">
-                          what's to Love
+                          {"what's to Love"}
                           <div className="absolute right-0 top-0">
                             <EdenTooltip
                               id={`${position?._id}`}
@@ -273,7 +273,7 @@ const HomePage: NextPageWithLayout = () => {
       <section className="bg-edenGreen-100 absolute right-8 top-48 w-[calc(33%-4rem)] rounded-md p-4">
         {company && (
           <div className="flex flex-row items-center justify-between">
-            <img
+            <Image
               className="h-[68px] w-[68px] rounded-full"
               src={`${company.url}`}
               alt={`${company.name} company image`}
