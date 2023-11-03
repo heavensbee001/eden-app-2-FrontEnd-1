@@ -2,10 +2,11 @@ import { ApolloClient, gql, InMemoryCache, useMutation } from "@apollo/client";
 import { Position } from "@eden/package-graphql/generated";
 import { AppUserLayout, Button, Loading, Modal, SEO } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
+import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Control,
   SubmitHandler,
@@ -63,35 +64,41 @@ const PositionPage: NextPageWithLayout = ({
   const editMode = edit === "true";
 
   const [editCompany, setEditCompany] = useState(false);
+  const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
 
-  const { control, register, handleSubmit, getValues } = useForm<any>({
-    defaultValues: {
-      name: position.name || "",
-      whoYouAre: position.whoYouAre || "",
-      whatTheJobInvolves: position.whatTheJobInvolves || "",
-      generalDetails: {
-        yearlySalary: position.generalDetails?.yearlySalary,
-        officeLocation: position.generalDetails?.officeLocation || "",
-        officePolicy: position.generalDetails?.officePolicy || "",
+  const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
+    {
+      defaultValues: {
+        name: position.name || "",
+        whoYouAre: position.whoYouAre || "",
+        whatTheJobInvolves: position.whatTheJobInvolves || "",
+        generalDetails: {
+          yearlySalary: position.generalDetails?.yearlySalary,
+          officeLocation: position.generalDetails?.officeLocation || "",
+          officePolicy: position.generalDetails?.officePolicy || "",
+        },
+        company: {
+          description: position.company?.description,
+          imageUrl: position.company?.imageUrl,
+          employeesNumber: position.company?.employeesNumber,
+          tags: position.company?.tags || [],
+          mission: position.company?.mission,
+          funding:
+            position.company?.funding?.map((round) => ({
+              date: round?.date,
+              amount: round?.amount,
+              name: round?.name,
+            })) || [],
+          benefits: position.company?.benefits,
+          values: position.company?.values,
+          founders: position.company?.founders,
+          glassdoor: position.company?.glassdoor,
+        },
       },
-      company: {
-        description: position.company?.description,
-        employeesNumber: position.company?.employeesNumber,
-        tags: position.company?.tags || [],
-        mission: position.company?.mission,
-        funding:
-          position.company?.funding?.map((round) => ({
-            date: round?.date,
-            amount: round?.amount,
-            name: round?.name,
-          })) || [],
-        benefits: position.company?.benefits,
-        values: position.company?.values,
-        founders: position.company?.founders,
-        glassdoor: position.company?.glassdoor,
-      },
-    },
-  });
+    }
+  );
+
+  const fileInput = useRef<HTMLInputElement | null>(null);
 
   const [updateCompanyDetails, { loading: updateCompanyDetailsLoading }] =
     useMutation(UPDATE_COMPANY_DETAILS, {
@@ -135,6 +142,55 @@ const PositionPage: NextPageWithLayout = ({
         },
       },
     });
+  };
+
+  const handleFileChange = async (e: any) => {
+    if (e.target.files && e.target.files[0]) {
+      setUploadingCompanyImage(true);
+      try {
+        if (e.target.files[0] > 1 * 1024 * 1024) {
+          // setSizeErr(true);
+          setUploadingCompanyImage(false);
+          return;
+        }
+
+        const postid = `${position.company?._id}_${Math.floor(
+          100000 + Math.random() * 900000
+        )}`;
+        const blob = e.target.files[0].slice(
+          0,
+          e.target.files[0].size,
+          "application/png"
+        );
+
+        const newFile = new File([blob], `${postid}.png`, {
+          type: "application/png",
+        });
+
+        const formData = new FormData();
+
+        formData.append("imgfile", newFile);
+
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_AUTH_URL}/storage/store-image` as string,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+        setValue(
+          "company.imageUrl",
+          `https://storage.googleapis.com/eden_companies_images/${postid}.png`
+        );
+        setUploadingCompanyImage(false);
+      } catch (error) {
+        setUploadingCompanyImage(false);
+        // toast.error(error);
+      }
+    }
   };
 
   const parseOfficePolicy = (_officePolicy: string) => {
@@ -280,13 +336,46 @@ const PositionPage: NextPageWithLayout = ({
               </div>
             </div>
             <div className="col-span-7 border-l-2 border-edenGreen-300 pl-4">
-              <img
-                src={
-                  "https://storage.cloud.google.com/eden_companies_images/Tesla_logo.png"
-                }
-                className="h-20"
-                alt={position?.company?.name || ""}
-              />
+              {editMode && editCompany ? (
+                <label
+                  htmlFor="file-upload"
+                  className={classNames(
+                    "relative block w-fit rounded-md cursor-pointer hover:bg-black hover:bg-opacity-20",
+                    editMode
+                      ? "border-2 border-utilityOrange -my-[2px] -mx-2 mb-1"
+                      : ""
+                  )}
+                >
+                  {uploadingCompanyImage && (
+                    <div className="absolute left-0 top-0 w-full h-full pointer-events-none">
+                      <Loading title="" />
+                    </div>
+                  )}
+                  <img
+                    src={getValues("company.imageUrl") || ""}
+                    className="h-20"
+                    alt={position?.company?.name || ""}
+                  />
+                  <HiPencil
+                    size={20}
+                    className="absolute right-1 bottom-1 text-utilityOrange opacity-60"
+                  />
+                  <input
+                    id="file-upload"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    ref={fileInput}
+                    type="file"
+                    accept=".png"
+                  ></input>
+                </label>
+              ) : (
+                <img
+                  src={getValues("company.imageUrl") || ""}
+                  className="h-20"
+                  alt={position?.company?.name || ""}
+                />
+              )}
               <p className="text-edenGray-900 text-sm mb-2">
                 {editMode && editCompany ? (
                   <>
@@ -680,6 +769,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
             _id
             name
             slug
+            imageUrl
             description
             benefits
             employeesNumber
