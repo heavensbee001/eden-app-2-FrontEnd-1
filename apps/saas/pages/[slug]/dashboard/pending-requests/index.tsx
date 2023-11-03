@@ -74,7 +74,7 @@ const PendingRequestsPage: NextPageWithLayout = () => {
           .map((employee, index) => (
             <div
               key={index}
-              className="flex items-center bg-edenPink-300 px-4 py-2 w-[20rem] mb-2 rounded-md"
+              className="bg-edenPink-300 mb-2 flex w-[20rem] items-center rounded-md px-4 py-2"
             >
               <div className="h-8">
                 <Avatar
@@ -85,13 +85,13 @@ const PendingRequestsPage: NextPageWithLayout = () => {
               <h3 className="ml-2">{employee?.user?.discordName}</h3>
               <Button
                 onClick={() => handleAcceptEmployee(employee?.user?._id!)}
-                className="text-sm !px-2 !py-1 mr-2 ml-auto"
+                className="ml-auto mr-2 !px-2 !py-1 text-sm"
               >
                 Accept
               </Button>
               <Button
                 onClick={() => handleRejectEmployee(employee?.user?._id!)}
-                className="text-sm !px-2 !py-1 text-utilityRed border-utilityRed hover:bg-utilityRed hover:border-utilityRed hover:text-white"
+                className="text-utilityRed border-utilityRed hover:bg-utilityRed hover:border-utilityRed !px-2 !py-1 text-sm hover:text-white"
               >
                 Reject
               </Button>

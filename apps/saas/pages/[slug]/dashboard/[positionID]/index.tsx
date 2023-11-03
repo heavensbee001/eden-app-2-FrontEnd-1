@@ -1251,7 +1251,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 )}
                 {findPositionData?.findPosition?.status === "UNPUBLISHED" && (
                   <Button
-                    className="bg-utilityOrange h-6 !text-sm !py-0 ml-4"
+                    className="bg-utilityOrange ml-4 h-6 !py-0 !text-sm"
                     onClick={() => {
                       handlePublish(true);
                     }}
@@ -1263,7 +1263,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 )}
                 {findPositionData?.findPosition?.status === "ACTIVE" && (
                   <Button
-                    className="bg-utilityOrange h-6 !text-sm !py-0 ml-4"
+                    className="bg-utilityOrange ml-4 h-6 !py-0 !text-sm"
                     onClick={() => {
                       handlePublish(false);
                     }}

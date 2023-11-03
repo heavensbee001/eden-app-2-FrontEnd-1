@@ -60,10 +60,10 @@ const UserButton = () => {
           positionY="bottom"
           clickableElement={
             <div className="flex items-center">
-              <div className="inline-block mr-2">
+              <div className="mr-2 inline-block">
                 <Avatar size="xs" src={currentUser.discordAvatar!} />
               </div>
-              <span className="whitespace-nowrap font-Moret font-bold">
+              <span className="font-Moret whitespace-nowrap font-bold">
                 {currentUser.discordName}
               </span>
             </div>

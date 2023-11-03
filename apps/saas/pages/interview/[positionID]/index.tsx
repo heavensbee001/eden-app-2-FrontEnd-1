@@ -1,3 +1,5 @@
+import "react-datepicker/dist/react-datepicker.css";
+
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { UPDATE_MEMBER } from "@eden/package-graphql";
@@ -16,7 +18,8 @@ import {
 import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
+import DatePicker from "react-datepicker";
 import { toast } from "react-toastify";
 
 import ApplicationStepContainer from "@/components/interview/ApplicationContainer";
@@ -56,6 +59,9 @@ const HomePage: NextPageWithLayout = () => {
     experienceAreas: null,
   });
   const [generalDetails, setGeneralDetails] = useState<any>({});
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  //remove later
+  const [scheduleState, setScheduleState] = useState("first");
 
   // console.log("cvEnded = ", cvEnded);
   const {
@@ -137,6 +143,77 @@ const HomePage: NextPageWithLayout = () => {
   function handleFinishInterviewStep() {
     setShowInterviewModal(true);
   }
+
+  const onCloseHandler = () => {
+    setTimeout(() => {
+      setShowStartInterviewModal(false);
+      setScheduleState("first");
+      setStartDate(null);
+    }, 800);
+  };
+
+  //Calendar stuff, need to turn this into a component later
+
+  interface CustomInputProps {
+    value?: string;
+    onClick?: () => void;
+  }
+
+  const newEndDateHandler = () => {
+    if (!startDate) return null;
+
+    const newEndDate = new Date(startDate);
+
+    newEndDate.setMinutes(startDate.getMinutes() + 30);
+
+    console.log("newEndDate", newEndDate);
+
+    return newEndDate;
+  };
+  const constructLink = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (startDate) {
+      const startDateFormat =
+        startDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+
+      console.log(startDate);
+
+      const newEndDate = newEndDateHandler();
+
+      if (!newEndDate) return;
+
+      const endDateFormat =
+        newEndDate.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+
+      const interviewLink = `https://www.edenprotocol.app/interview/${positionID}`;
+
+      const link = `https://calendar.google.com/calendar/u/0/r/eventedit?text=Interview+with+Eden&dates=${startDateFormat}/${endDateFormat}&details=A+30+min+interview+with+Eden+AI.+Join+via+this+link:+<a href="${interviewLink}">Click Here!</a>&location=${interviewLink}&recur=RRULE:FREQ=WEEKLY;UNTIL=20231231T000000Z`;
+
+      setTimeout(() => {
+        setScheduleState("third");
+      }, 300);
+
+      if (link !== "") {
+        event.preventDefault();
+        window.open(link, "_blank");
+      }
+    }
+  };
+
+  const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
+    ({ value, onClick }, ref) => (
+      <h1 className=" text-lg">
+        <button
+          className="bg-edenPink-400 text-edenGreen-500  h-8 w-52 min-w-fit rounded-lg border border-neutral-400 py-[0.16rem] pl-10 pr-6 "
+          onClick={onClick}
+          ref={ref}
+        >
+          {value}
+        </button>
+      </h1>
+    )
+  );
+
+  ExampleCustomInput.displayName = "ExampleCustomInput";
 
   return (
     <>
@@ -240,38 +317,84 @@ const HomePage: NextPageWithLayout = () => {
                       <span className="mx-1 text-red-600">*</span>
                     </p>
                   </div>
-                  <Modal open={showStartInterviewModal} closeOnEsc={false}>
-                    <div className="px-4 py-8">
-                      <h2 className="text-edenGreen-600 text-center">
-                        {"You're about to head into your interview with Eden."}
-                      </h2>
-                      <p className="text-center">
-                        {"This will take around 10-15 minutes."}
-                      </p>
-                      <p className="mb-12 text-center text-sm">
-                        {"Just be your smashing self. You look great btw ;)"}
-                      </p>
-                      <div className="flex justify-evenly">
-                        <Button
-                          onClick={() => {
-                            setShowStartInterviewModal(false);
-                          }}
-                          variant="tertiary"
-                          className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
-                        >
-                          {"Let me put on pants 1st"}
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          onClick={() => {
-                            setShowStartInterviewModal(false);
-                            setStep(step + 1);
-                          }}
-                        >
-                          {"Let's do this!"}
-                        </Button>
+                  <Modal
+                    open={showStartInterviewModal}
+                    onClose={onCloseHandler}
+                  >
+                    {scheduleState === "first" && (
+                      <div className="  px-4 py-8">
+                        <h2 className="text-edenGreen-600 text-center">
+                          {
+                            "You're about to head into your interview with Eden."
+                          }
+                        </h2>
+                        <p className="text-center">
+                          {"This will take around 10-15 minutes."}
+                        </p>
+                        <p className="mb-12 text-center text-sm">
+                          {"Just be your smashing self. You look great btw ;)"}
+                        </p>
+                        <div className="flex justify-evenly">
+                          <Button
+                            variant="tertiary"
+                            onClick={() => setScheduleState("second")}
+                          >
+                            Schedule The Interview
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={() => {
+                              setShowStartInterviewModal(false);
+                              setStep(step + 1);
+                            }}
+                          >
+                            {"Let's do this now!"}
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    )}
+                    {scheduleState === "second" && (
+                      <div className="mt-7 flex flex-col items-center justify-center py-48  ">
+                        <div className="mb-2 flex flex-col items-center">
+                          <h1 className=" text-edenGreen-600 text-3xl font-bold">
+                            Pick a date.{" "}
+                          </h1>
+                        </div>
+
+                        <DatePicker
+                          className=" rounded-md border border-black pl-3"
+                          selected={startDate}
+                          onChange={(date: any) => setStartDate(date)}
+                          timeInputLabel="Time:"
+                          dateFormat="MM/dd/yyyy h:mm aa"
+                          showTimeSelect
+                          timeIntervals={15}
+                          popperPlacement="top-start"
+                          customInput={<ExampleCustomInput />}
+                          showIcon
+                        />
+                        {!startDate ? (
+                          <Button className="mt-3" variant="secondary" disabled>
+                            add to calendar{" "}
+                          </Button>
+                        ) : (
+                          <Button
+                            className="mt-3"
+                            variant="secondary"
+                            onClick={constructLink}
+                          >
+                            add to calendar{" "}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                    {scheduleState === "third" && (
+                      <div className="flex h-60 flex-col items-center justify-center ">
+                        <h1 className="text-edenGreen-500 text-4xl">
+                          {"See You Then! :)"}
+                        </h1>
+                      </div>
+                    )}
                   </Modal>
                 </WizardStep>
                 {/* <WizardStep navigationDisabled nextDisabled={!interviewEnded} label={"chat"}> */}
