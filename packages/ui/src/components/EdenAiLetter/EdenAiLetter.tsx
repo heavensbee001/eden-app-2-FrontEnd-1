@@ -220,23 +220,11 @@ export const EdenAiLetter = ({
             )}
           </div>
 
-          <div className="w- h-[86hv] border-2 bg-white p-4">
+          <div className="w- h-[86hv] border-2 bg-white px-4 pb-4 pt-2">
             {letterContent ? (
               <div>
                 <div id="text-to-copy" className="h-fit w-full ">
-                  <div className="relative ">
-                    {!editLetter && (
-                      <button
-                        className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-800 disabled:border-edenGray-700 -top-  absolute -right-4  flex items-center whitespace-nowrap rounded-md border px-2"
-                        onClick={() => {
-                          setEditLetter(true);
-                        }}
-                      >
-                        <HiPencil size={16} className="mr-2 inline-block" />
-                        Edit
-                      </button>
-                    )}
-                  </div>
+                  <div className="relative "></div>
                   {editLetter ? (
                     <form
                       className="flex h-full w-full flex-col items-center"
@@ -250,7 +238,7 @@ export const EdenAiLetter = ({
                         />
                         <Button
                           variant="secondary"
-                          className="mt-2"
+                          className="mt-4"
                           type="submit"
                         >
                           Done Editing
@@ -258,7 +246,22 @@ export const EdenAiLetter = ({
                       </>
                     </form>
                   ) : (
-                    <p className="whitespace-pre-line">{letterContent}</p>
+                    <span className="whitespace-pre-line">
+                      <div className="flex justify-end">
+                        {!editLetter && (
+                          <button
+                            className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-800 disabled:border-edenGray-700  flex items-center whitespace-nowrap rounded-md border pl-2"
+                            onClick={() => {
+                              setEditLetter(true);
+                            }}
+                          >
+                            <HiPencil size={16} className="mr-2 inline-block" />
+                          </button>
+                        )}
+                      </div>
+
+                      {letterContent}
+                    </span>
                   )}
                 </div>
               </div>
