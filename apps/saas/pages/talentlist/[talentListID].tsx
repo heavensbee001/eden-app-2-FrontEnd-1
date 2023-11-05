@@ -55,8 +55,9 @@ const TalentListPublicPage: NextPageWithLayout = () => {
   // const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -435,7 +436,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
   // });
 
   return (
-    <div className="bg-background min-h-screen container mx-auto max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
+    <div className="bg-background container mx-auto min-h-screen max-w-screen-2xl flex-grow px-2 py-4 sm:px-5">
       <div>
         <div className="mb-4 flex h-10 items-center">
           <h1 className="mr-6 text-2xl font-medium">
@@ -458,11 +459,11 @@ const TalentListPublicPage: NextPageWithLayout = () => {
       </div>
       <div
         className={classNames(
-          "transition-width fixed right-0 top-0 z-30 h-screen overflow-y-scroll scrollbar-hide bg-white shadow-md duration-200 ease-in-out",
+          "transition-width scrollbar-hide fixed right-0 top-0 z-30 h-screen overflow-y-scroll bg-white shadow-md duration-200 ease-in-out",
           selectedUserId ? "w-[48rem]" : "w-0"
         )}
       >
-        <div className="scrollbar-hide h-[100vh] overflow-y-scroll scrollbar-hide bg-white shadow-md">
+        <div className="scrollbar-hide scrollbar-hide h-[100vh] overflow-y-scroll bg-white shadow-md">
           {/* {selectedUserId ? ( */}
           <CandidateInfo
             listMode={ListModeEnum.list}
@@ -488,7 +489,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
       </div>
       <div
         className={classNames(
-          "absolute right-0 top-0 z-20 transform overflow-y-scroll scrollbar-hide transition-all duration-200 ease-in-out",
+          "scrollbar-hide absolute right-0 top-0 z-20 transform overflow-y-scroll transition-all duration-200 ease-in-out",
           router.query.candidate1 && router.query.candidate2
             ? "w-[100vw]"
             : "w-0"
@@ -496,7 +497,7 @@ const TalentListPublicPage: NextPageWithLayout = () => {
       >
         {router.query.candidate1 && router.query.candidate2 && (
           <>
-            <div className="scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll scrollbar-hide border-r border-gray-300 bg-white">
+            <div className="scrollbar-hide scrollbar-hide relative inline-block h-[calc(100vh-4rem)] w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
               {/* {router.query.candidate1 ? ( */}
               <CandidateInfo
                 listMode={ListModeEnum.list}

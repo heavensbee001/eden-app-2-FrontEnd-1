@@ -68,12 +68,13 @@ export const EdenAiLetter = ({
   const router = useRouter();
 
   const { edit } = router.query;
-  const editMode = edit === "true";
+  // const editMode = edit === "true";
 
   const { positionID } = router.query;
   const [letterContent, setLetterContent] = useState("");
   const [copied, setCopied] = useState(false);
   const [editLetter, setEditLetter] = useState(false);
+  // const [editClickCount, setEditClickCount] = useState(0);
 
   const { register, handleSubmit, setValue } = useForm<any>({
     defaultValues: {
@@ -158,11 +159,7 @@ export const EdenAiLetter = ({
     }
   };
   const editInputClasses =
-    "inline-block bg-transparent -my-[2px] -mx-2 border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none whitespace-pre-line";
-
-  const handleTextArea = (e) => {
-    setLetterContent(e.target.value);
-  };
+    "inline-block bg-transparent -my-[2px] -mx-2 h-fit w-[40rem] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none whitespace-pre-line";
 
   useEffect(() => {
     if (isModalOpen) {
@@ -193,9 +190,27 @@ export const EdenAiLetter = ({
     };
   }, [isModalOpen, letterType, member, positionID]);
 
-  const onSubmitLetter = (data) => {
+  // const editHandler = () => {
+  //   setEditClickCount((prevCount) => (prevCount + 1) % 2);
+
+  //   if (editClickCount % 2 === 0) {
+  //     setEditLetter(!editLetter);
+  //   } else {
+  //     setEditLetter(!editLetter);
+  //   }
+  // };
+
+  const onSubmitLetter = (data: any) => {
+    console.log("submiting =========");
     setLetterContent(data.letter);
+    console.log("letter content", letterContent);
+    setEditLetter(false);
   };
+
+  // const handleBlur = (data: any) => {
+  //   console.log("Saving content:", letterContent);
+  //   setLetterContent(data.letter);
+  // };
 
   return (
     <>
@@ -223,29 +238,42 @@ export const EdenAiLetter = ({
             )}
           </div>
 
-          <div className="h-[86hv] border-2 bg-white p-4">
+          <div className="w- h-[86hv] border-2 bg-white p-4">
             {letterContent ? (
               <div>
-                {!editMode && (
-                  <button
-                    className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-700 disabled:border-edenGray-700 absolute right-4 top-4 flex items-center whitespace-nowrap rounded-md border px-2"
-                    onClick={() => {
-                      setEditLetter(!editLetter);
-                    }}
-                  >
-                    <HiPencil size={16} className="mr-2 inline-block" />
-                    Edit
-                  </button>
-                )}
                 <div id="text-to-copy" className="h-fit w-full ">
-                  {!editMode && editLetter ? (
-                    <form onSubmit={handleSubmit(onSubmitLetter)}>
+                  <div className="relative ">
+                    {!editLetter && (
+                      <button
+                        className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-800 disabled:border-edenGray-700 -top-  absolute -right-4  flex items-center whitespace-nowrap rounded-md border px-2"
+                        onClick={() => {
+                          setEditLetter(true);
+                        }}
+                      >
+                        <HiPencil size={16} className="mr-2 inline-block" />
+                        Edit
+                      </button>
+                    )}
+                  </div>
+                  {editLetter ? (
+                    <form
+                      className="flex h-full w-full flex-col items-center"
+                      onSubmit={handleSubmit(onSubmitLetter)}
+                    >
                       <>
                         <textarea
                           {...register("letter")}
-                          className={classNames(editInputClasses, "")}
+                          className={classNames(editInputClasses)}
+                          rows={12}
+                          // onBlur={handleBlur}
                         />
-                        <button type="submit">Save</button>
+                        <Button
+                          variant="secondary"
+                          className="mt-2"
+                          type="submit"
+                        >
+                          Done Editing
+                        </Button>
                       </>
                     </form>
                   ) : (
@@ -257,7 +285,7 @@ export const EdenAiLetter = ({
               <div className="flex h-96 w-96 animate-pulse space-x-4">
                 <div className="flex-1 space-y-2 py-1">
                   <div className="h-3 w-24 rounded bg-slate-200"></div>
-                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200 "></div>
                   <div className="h-3 rounded bg-slate-200"></div>
                   <div className="h-3 rounded bg-slate-200"></div>
                   <div className="h-3 rounded bg-slate-200"></div>
