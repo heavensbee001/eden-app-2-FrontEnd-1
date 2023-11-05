@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { HiPencil } from "react-icons/hi";
 
-import { Button, Modal, TextArea } from "../../elements";
+import { Button, Modal } from "../../elements";
 
 export interface IEdenAiLetter {
   isModalOpen: boolean;
@@ -66,9 +66,6 @@ export const EdenAiLetter = ({
   onSubmit,
 }: IEdenAiLetter) => {
   const router = useRouter();
-
-  const { edit } = router.query;
-  // const editMode = edit === "true";
 
   const { positionID } = router.query;
   const [letterContent, setLetterContent] = useState("");
@@ -190,27 +187,12 @@ export const EdenAiLetter = ({
     };
   }, [isModalOpen, letterType, member, positionID]);
 
-  // const editHandler = () => {
-  //   setEditClickCount((prevCount) => (prevCount + 1) % 2);
-
-  //   if (editClickCount % 2 === 0) {
-  //     setEditLetter(!editLetter);
-  //   } else {
-  //     setEditLetter(!editLetter);
-  //   }
-  // };
-
   const onSubmitLetter = (data: any) => {
     console.log("submiting =========");
     setLetterContent(data.letter);
     console.log("letter content", letterContent);
     setEditLetter(false);
   };
-
-  // const handleBlur = (data: any) => {
-  //   console.log("Saving content:", letterContent);
-  //   setLetterContent(data.letter);
-  // };
 
   return (
     <>
@@ -265,7 +247,6 @@ export const EdenAiLetter = ({
                           {...register("letter")}
                           className={classNames(editInputClasses)}
                           rows={12}
-                          // onBlur={handleBlur}
                         />
                         <Button
                           variant="secondary"
