@@ -1,13 +1,21 @@
 import { ApolloClient, gql, InMemoryCache, useMutation } from "@apollo/client";
-import { Position } from "@eden/package-graphql/generated";
-import { AppUserLayout, Button, Loading, Modal, SEO } from "@eden/package-ui";
+import { Position, PositionStatus } from "@eden/package-graphql/generated";
+import {
+  AppUserLayout,
+  Button,
+  EdenIconExclamationAndQuestion,
+  Loading,
+  Modal,
+  SEO,
+} from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Confetti from "react-confetti";
 import {
   Control,
   SubmitHandler,
@@ -17,7 +25,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
-import { BsStar } from "react-icons/bs";
+import { BsLightningFill, BsStar } from "react-icons/bs";
 import { GoTag } from "react-icons/go";
 import {
   HiOutlineHeart,
@@ -31,20 +39,21 @@ import { toast } from "react-toastify";
 
 import type { NextPageWithLayout } from "../../_app";
 
-const UPDATE_COMPANY_DETAILS = gql`
-  mutation ($fields: updateCompanyDetailsInput!) {
-    updateCompanyDetails(fields: $fields) {
+const BULK_UPDATE = gql`
+  mutation (
+    $fieldsCompany: updateCompanyDetailsInput!
+    $fieldsPosition: updatePositionInput!
+  ) {
+    updateCompanyDetails(fields: $fieldsCompany) {
       _id
       name
       slug
       description
     }
-  }
-`;
-const UPDATE_POSITION = gql`
-  mutation ($fields: updatePositionInput!) {
-    updatePosition(fields: $fields) {
+
+    updatePosition(fields: $fieldsPosition) {
       _id
+      status
       whoYouAre
       whatTheJobInvolves
     }
@@ -66,6 +75,8 @@ const PositionPage: NextPageWithLayout = ({
 
   const [editCompany, setEditCompany] = useState(false);
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
 
   const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
     {
@@ -101,21 +112,17 @@ const PositionPage: NextPageWithLayout = ({
 
   const fileInput = useRef<HTMLInputElement | null>(null);
 
-  const [updateCompanyDetails, { loading: updateCompanyDetailsLoading }] =
-    useMutation(UPDATE_COMPANY_DETAILS, {
-      onCompleted() {
-        console.log("completed update company");
-      },
-      onError() {
-        toast.error("An error occurred while submitting");
-      },
-    });
-
-  const [updatePosition, { loading: updatePositionLoading }] = useMutation(
-    UPDATE_POSITION,
+  const [bulkUpdate, { loading: bulkUpdateLoading }] = useMutation(
+    BULK_UPDATE,
     {
       onCompleted() {
-        console.log("completed update position");
+        console.log("completed update");
+
+        setPublishModalOpen(false);
+        setTrainAiModalOpen(true);
+        // router.push(
+        //   `/${position.company?.name}/dashboard/${position._id}/train-eden-ai`
+        // );
       },
       onError() {
         toast.error("An error occurred while submitting");
@@ -123,23 +130,19 @@ const PositionPage: NextPageWithLayout = ({
     }
   );
 
-  const onSubmit: SubmitHandler<Position> = () => {
-    updateCompanyDetails({
+  const onSubmit: SubmitHandler<Position> = (_position: Position) => {
+    bulkUpdate({
       variables: {
-        fields: {
+        fieldsCompany: {
           slug: position.company?.slug,
-          ...getValues("company"),
+          ..._position.company,
         },
-      },
-    });
-
-    updatePosition({
-      variables: {
-        fields: {
+        fieldsPosition: {
           _id: position._id,
-          name: getValues("name"),
-          whoYouAre: getValues("whoYouAre"),
-          whatTheJobInvolves: getValues("whatTheJobInvolves"),
+          name: _position.name,
+          status: _position.status,
+          whoYouAre: _position.whoYouAre,
+          whatTheJobInvolves: _position.whatTheJobInvolves,
         },
       },
     });
@@ -204,6 +207,24 @@ const PositionPage: NextPageWithLayout = ({
 
     return "";
   };
+
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [confettiRun, setConfettiRun] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (publishModalOpen) {
+      setConfettiRun(true);
+      // @ts-ignore
+      setWidth(ref.current?.clientWidth || 0);
+      // @ts-ignore
+      setHeight(ref.current?.clientHeight || 0);
+      setTimeout(() => {
+        setConfettiRun(false);
+      }, 2500);
+    }
+  }, [publishModalOpen]);
 
   return (
     <>
@@ -724,21 +745,113 @@ const PositionPage: NextPageWithLayout = ({
           ) : (
             <>
               <Button
-                onClick={handleSubmit(onSubmit)}
+                onClick={handleSubmit((data) =>
+                  onSubmit({ ...data, status: PositionStatus.Unpublished })
+                )}
                 className="border-edenPink-400 !text-edenPink-400 mr-4"
               >
                 Save as draft
               </Button>
-              <Button className="border-edenPink-400 !text-edenPink-400">
+              <Button
+                onClick={() => setPublishModalOpen(true)}
+                className="border-edenPink-400 !text-edenPink-400"
+              >
                 Publish to Developer DAO
               </Button>
 
-              <Modal
-                open={updateCompanyDetailsLoading || updatePositionLoading}
-                closeOnEsc={false}
-              >
+              <Modal open={bulkUpdateLoading} closeOnEsc={false}>
                 <div className="h-80">
                   <Loading title={"Updating position"} />
+                </div>
+              </Modal>
+
+              <div
+                className={`pointer-events-none fixed left-0 top-0 z-50 h-screen w-screen	`}
+                ref={ref}
+              >
+                <Confetti
+                  width={width}
+                  height={height}
+                  numberOfPieces={confettiRun ? 250 : 0}
+                  colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
+                />
+              </div>
+              <Modal open={publishModalOpen} closeOnEsc={false}>
+                <div className="flex flex-col items-center justify-center px-28 py-8 text-center">
+                  <EdenIconExclamationAndQuestion className="mb-2 h-16" />
+                  <h2 className="text-edenGreen-600 mb-4">Ready to publish?</h2>
+                  <p className="mb-12">
+                    Soon after you publish Eden will start recruiting in the
+                    community & put the magic into magic job-post.
+                  </p>
+                  <div className="flex justify-center gap-8">
+                    <Button
+                      onClick={() => {
+                        setPublishModalOpen(false);
+                        // handleSubmit((data) =>
+                        //   onSubmit({
+                        //     ...data,
+                        //     status: PositionStatus.Unpublished,
+                        //   })
+                        // );
+                      }}
+                    >
+                      Not done yet
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={handleSubmit((data) =>
+                        onSubmit({ ...data, status: PositionStatus.Active })
+                      )}
+                    >
+                      Let&apos;s do it!
+                    </Button>
+                  </div>
+                </div>
+              </Modal>
+
+              <Modal open={trainAiModalOpen} closeOnEsc={false}>
+                <div className="flex flex-col items-center justify-center px-28 py-8 pt-2 text-center">
+                  <div
+                    className={
+                      "text-edenGreen-600 bg-edenPink-100 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
+                    }
+                  >
+                    <BsLightningFill size={"2rem"} />
+                  </div>
+                  <h2 className="text-edenGreen-600 mb-4">
+                    One last thing: should we configure the AI-interview for
+                    you?
+                  </h2>
+                  <p className="mb-4">
+                    The way talent applies to your opportunity is through an
+                    AI-powered interview.
+                  </p>
+                  <p className="mb-8">
+                    Think of this like the screening interview that a recruiter
+                    would do built into the job board.
+                  </p>
+                  <div className="flex justify-center gap-8">
+                    <Button
+                      onClick={() => {
+                        router.push(
+                          `/${position.company?.name}/dashboard/${position._id}`
+                        );
+                      }}
+                    >
+                      Auto-configure the AI-interview for me
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        router.push(
+                          `/${position.company?.name}/dashboard/${position._id}/train-eden-ai`
+                        );
+                      }}
+                    >
+                      Let me configure the AI-interview
+                    </Button>
+                  </div>
                 </div>
               </Modal>
             </>
@@ -920,8 +1033,6 @@ const FundingWidget = ({
     control, // control props comes from useForm
     name: "company.funding", // unique name for your Field Array
   });
-
-  console.log(fields);
 
   return (
     <div className="mb-4 last:mb-0">
