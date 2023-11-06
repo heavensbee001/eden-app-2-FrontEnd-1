@@ -14,7 +14,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
-import { IconPickerItem } from "react-fa-icon-picker";
+// import { IconPickerItem } from "react-fa-icon-picker";
 import ReactTooltip from "react-tooltip";
 
 import type { NextPageWithLayout } from "../../_app";
@@ -26,9 +26,15 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       name
       status
       icon
+      generalDetails {
+        officePolicy
+        contractType
+        yearlySalary
+      }
       company {
         _id
         name
+        imageUrl
       }
     }
   }
@@ -221,6 +227,7 @@ const HomePage: NextPageWithLayout = () => {
                   _position?.status !== "DELETED"
               )
               ?.map((position: Maybe<Position>, index: number) => {
+                console.log(position);
                 // const randMatchstimate =
                 //   FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
 
@@ -235,10 +242,20 @@ const HomePage: NextPageWithLayout = () => {
                     <div className="flex flex-row items-center justify-between">
                       <div className="w-full max-w-[calc(100%-117px)]">
                         <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
-                          <IconPickerItem
+                          {/* <IconPickerItem
                             icon={position?.icon || "FaCode"}
                             size={"2rem"}
-                            color="#00462C"
+                            color='#00462C'
+                          /> */}
+                          <Image
+                            width="48"
+                            height="48"
+                            src={`${
+                              position?.company?.imageUrl
+                                ? position?.company?.imageUrl
+                                : "/default-company-image.png"
+                            }`}
+                            alt={`${position?.company?.name} company image`}
                           />
                         </div>
                         <div className="pl-16">
@@ -249,8 +266,9 @@ const HomePage: NextPageWithLayout = () => {
                           <p className="text-edenGray-900 text-sm">
                             {position?.generalDetails?.officePolicy &&
                               position?.generalDetails?.officePolicy}
-                            {position?.generalDetails?.contractType &&
-                              " • " + position?.generalDetails?.contractType}
+                            {position?.generalDetails?.contractType
+                              ? " • " + position?.generalDetails?.contractType
+                              : " • Full Time"}
                           </p>
                           {(!!position?.generalDetails?.yearlySalary ||
                             position?.generalDetails?.yearlySalary === 0) && (
