@@ -208,6 +208,12 @@ const PositionPage: NextPageWithLayout = ({
     return "";
   };
 
+  const formattedSalary = (salary: number) => {
+    if (salary >= 1000) return `${salary / 1000}k`;
+
+    return salary;
+  };
+
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [confettiRun, setConfettiRun] = useState(false);
@@ -286,7 +292,9 @@ const PositionPage: NextPageWithLayout = ({
                       />
                     </>
                   ) : (
-                    `$ ${getValues("generalDetails.yearlySalary")}`
+                    `$ ${formattedSalary(
+                      getValues("generalDetails.yearlySalary")
+                    )}`
                   )}
                 </div>
               </div>
