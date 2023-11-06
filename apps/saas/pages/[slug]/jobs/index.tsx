@@ -182,7 +182,7 @@ const HomePage: NextPageWithLayout = () => {
                 return (
                   <div
                     key={index}
-                    className="border-edenGray-100 relative relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
+                    className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
                     onClick={() => {
                       router.push(`/interview/${position?._id}`);
                     }}
@@ -275,10 +275,12 @@ const HomePage: NextPageWithLayout = () => {
           <div className="flex flex-row items-center justify-between">
             {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
             {/* also src should be company.imageUrl */}
-            {company.url ? (
+            {company.imageUrl ? (
               <Image
-                className="h-[68px] w-[68px] rounded-full"
-                src={`${company.url}`}
+                className="rounded-full"
+                width="68"
+                height="68"
+                src={`${company.imageUrl}`}
                 alt={`${company.name} company image`}
               />
             ) : null}
