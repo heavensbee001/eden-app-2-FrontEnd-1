@@ -43,6 +43,7 @@ const BULK_UPDATE = gql`
   mutation (
     $fieldsCompany: updateCompanyDetailsInput!
     $fieldsPosition: updatePositionInput!
+    $fieldsPositionDetails: updatePositionGeneralDetailsInput!
   ) {
     updateCompanyDetails(fields: $fieldsCompany) {
       _id
@@ -56,6 +57,10 @@ const BULK_UPDATE = gql`
       status
       whoYouAre
       whatTheJobInvolves
+    }
+
+    updatePositionGeneralDetails(fields: $fieldsPositionDetails) {
+      _id
     }
   }
 `;
@@ -78,8 +83,8 @@ const PositionPage: NextPageWithLayout = ({
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
 
-  const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
-    {
+  const { control, register, handleSubmit, getValues, setValue, watch } =
+    useForm<any>({
       defaultValues: {
         name: position.name || "",
         whoYouAre: position.whoYouAre || "",
@@ -108,8 +113,7 @@ const PositionPage: NextPageWithLayout = ({
           whatsToLove: position.company?.whatsToLove,
         },
       },
-    }
-  );
+    });
 
   const fileInput = useRef<HTMLInputElement | null>(null);
 
@@ -145,9 +149,15 @@ const PositionPage: NextPageWithLayout = ({
           whoYouAre: _position.whoYouAre,
           whatTheJobInvolves: _position.whatTheJobInvolves,
         },
+        fieldsPositionDetails: {
+          _id: position._id,
+          ...getValues("generalDetails"),
+        },
       },
     });
   };
+
+  console.log(watch("generalDetails.officePolicy"));
 
   const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files[0]) {
