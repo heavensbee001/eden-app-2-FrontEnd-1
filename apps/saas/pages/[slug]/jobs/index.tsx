@@ -2,19 +2,20 @@ import { gql, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
+  AppUserLayout,
   Badge,
   Button,
   EdenIconExclamation,
   EdenTooltip,
-  SaasUserLayout,
   SEO,
 } from "@eden/package-ui";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { IconPickerItem } from "react-fa-icon-picker";
+import ReactTooltip from "react-tooltip";
 
 import type { NextPageWithLayout } from "../../_app";
 
@@ -49,11 +50,63 @@ const FAKE_MATCHSTIMATES = [
   },
 ];
 
+type CutTextTooltipProps = {
+  text?: Maybe<string>;
+};
+
+const CutTextTooltip = ({ text }: CutTextTooltipProps) => {
+  const elementRef = useRef<HTMLDivElement | null>(null);
+  const [tooltipDisable, setTooltipDisable] = useState(true);
+
+  const handleTooltipVisible = () => {
+    if (elementRef.current) {
+      const element = elementRef.current;
+      const isTruncated = element.scrollWidth > element.clientWidth;
+
+      setTooltipDisable(!isTruncated);
+    }
+  };
+
+  useEffect(() => {
+    handleTooltipVisible();
+
+    window.addEventListener("resize", handleTooltipVisible);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      window.removeEventListener("resize", handleTooltipVisible);
+    };
+  }, []);
+
+  return (
+    <>
+      <div
+        data-tip={text}
+        data-for={`badgeTip-${text}`}
+        className="text-truncate"
+        ref={elementRef}
+      >
+        {text}
+        <ReactTooltip
+          id={`badgeTip-${text}`}
+          className="w-fit rounded-xl bg-black !opacity-100"
+          place="top"
+          disable={tooltipDisable}
+          effect="solid"
+        >
+          {text}
+        </ReactTooltip>
+      </div>
+    </>
+  );
+};
+
 const HomePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
   const { company } = useContext(CompanyContext);
   const { currentUser } = useContext(UserContext);
+
   const { data: findPositionsOfCommunityData } = useQuery(
     FIND_POSITIONS_OF_COMMUNITY,
     {
@@ -188,7 +241,7 @@ const HomePage: NextPageWithLayout = () => {
                     }}
                   >
                     <div className="flex flex-row items-center justify-between">
-                      <div className="max-w-[calc(100%-117px)]">
+                      <div className="w-full max-w-[calc(100%-117px)]">
                         <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
                           <IconPickerItem
                             icon={position?.icon || "FaCode"}
@@ -197,9 +250,22 @@ const HomePage: NextPageWithLayout = () => {
                           />
                         </div>
                         <div className="pl-16">
-                          <p className="text-edenGray-900 font-medium">
+                          <CutTextTooltip text={position?.name} />
+                          {/* <p
+                            className='text-edenGray-900 font-medium text-truncate'
+                            onMouseEnter={e => {
+                              const element = e.target as HTMLElement;
+
+                              if (element.textContent === position?.name) {
+                                const isHoverArray = [...isHover];
+
+                                setIsHover(`${position?.name}`);
+                              }
+                            }}
+                            onMouseLeave={}
+                          >
                             {position?.name}
-                          </p>
+                          </p> */}
                           <p className="text-edenGray-900">
                             {position?.company?.name}
                           </p>
@@ -220,7 +286,7 @@ const HomePage: NextPageWithLayout = () => {
                       <div className="relative h-5 w-[117px]">
                         <div className="border-forestGreen text-edenGreen-500 rounded-full border-2 pl-4 text-xs leading-4">
                           {"what's to Love"}
-                          <div className="absolute right-0 top-0">
+                          <div className="absolute -right-1 top-0">
                             <EdenTooltip
                               id={`${position?._id}`}
                               innerTsx={
@@ -275,15 +341,19 @@ const HomePage: NextPageWithLayout = () => {
           <div className="flex flex-row items-center justify-between">
             {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
             {/* also src should be company.imageUrl */}
-            {company.imageUrl ? (
-              <Image
-                className="rounded-full"
-                width="68"
-                height="68"
-                src={`${company.imageUrl}`}
-                alt={`${company.name} company image`}
-              />
-            ) : null}
+
+            <Image
+              className="border-edenGreen-600 rounded-full border-2"
+              width="68"
+              height="68"
+              src={`${
+                company.imageUrl
+                  ? company.imageUrl
+                  : "/default-company-image.png"
+              }`}
+              alt={`${company.name} company image`}
+            />
+
             <Button
               variant="secondary"
               className="float-right"
@@ -375,6 +445,6 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
+HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
