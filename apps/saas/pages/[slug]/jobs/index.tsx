@@ -112,10 +112,9 @@ const HomePage: NextPageWithLayout = () => {
     {
       variables: {
         fields: {
-          communityID: company?._id,
+          slug: router.query.slug,
         },
       },
-      skip: !company,
     }
   );
 
@@ -191,34 +190,27 @@ const HomePage: NextPageWithLayout = () => {
         ></div>
       </section> */}
       <div className="w-[67%] px-8">
-        {!currentUser && (
-          <section className="bg-edenPink-100 mb-4 rounded-md p-4">
-            <h2 className="text-edenGreen-600 mb-2">
-              Use AI to leverage the {company?.name} network & land your dream
-              gig.
-            </h2>
-            <p className="text-edenGray-900 mb-4 text-sm">
-              {
-                "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
-              }
-              {/* <Link
-                href={"https://www.youtube.com/watch?v=S_vJBkCDYNs"}
-                className="underline"
-              >
-                here
-              </Link> */}
-              {/* ) */}
-            </p>
-            <Button
-              onClick={() => {
-                // signIn("google", { callbackUrl: router.asPath });
-                router.push("/signup");
-              }}
-            >
-              Join the oasis
-            </Button>
-          </section>
-        )}
+        {/* {!currentUser && ( */}
+        <section className="bg-edenPink-100 mb-4 rounded-md p-4">
+          <h2 className="text-edenGreen-600 mb-2">
+            Use AI to leverage the {company?.name} network & land your dream
+            gig.
+          </h2>
+          <p className="text-edenGray-900 mb-4 text-sm">
+            {
+              "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
+            }
+          </p>
+          <Button
+            onClick={() => {
+              // signIn("google", { callbackUrl: router.asPath });
+              router.push("/signup");
+            }}
+          >
+            Join the oasis
+          </Button>
+        </section>
+        {/* )} */}
         <section className="">
           <h3 className="mb-2">Open opportunities</h3>
           <div className="-m-2 w-full">
@@ -237,7 +229,7 @@ const HomePage: NextPageWithLayout = () => {
                     key={index}
                     className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
                     onClick={() => {
-                      router.push(`/interview/${position?._id}`);
+                      router.push(`/eden/jobs/${position?._id}`);
                     }}
                   >
                     <div className="flex flex-row items-center justify-between">
@@ -251,21 +243,6 @@ const HomePage: NextPageWithLayout = () => {
                         </div>
                         <div className="pl-16">
                           <CutTextTooltip text={position?.name} />
-                          {/* <p
-                            className='text-edenGray-900 font-medium text-truncate'
-                            onMouseEnter={e => {
-                              const element = e.target as HTMLElement;
-
-                              if (element.textContent === position?.name) {
-                                const isHoverArray = [...isHover];
-
-                                setIsHover(`${position?.name}`);
-                              }
-                            }}
-                            onMouseLeave={}
-                          >
-                            {position?.name}
-                          </p> */}
                           <p className="text-edenGray-900">
                             {position?.company?.name}
                           </p>
@@ -312,7 +289,7 @@ const HomePage: NextPageWithLayout = () => {
                     <div
                       className="bg-edenGreen-200 absolute bottom-2 right-2 h-6 w-6 rounded-full p-1"
                       onClick={() => {
-                        router.push(`/interview/${position?._id}`);
+                        router.push(`/eden/jobs/${position?._id}`);
                       }}
                     >
                       <div className="text-edenGreen-500 align-center flex h-4 w-4 items-center justify-around">
