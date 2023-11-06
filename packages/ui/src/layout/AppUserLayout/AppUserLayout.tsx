@@ -20,13 +20,13 @@ export const AppUserLayout = ({
 
   return (
     <div className="">
-      <nav className="w-screen h-20 fixed left-0 top-0 bg-white z-40">
-        <div className="h-20 w-full max-w-5xl flex items-center px-4 mx-auto">
+      <nav className="fixed left-0 top-0 z-40 h-20 w-screen bg-white">
+        <div className="mx-auto flex h-20 w-full max-w-5xl items-center px-4">
           <img
             src="/eden-imagotype.png"
             alt="Eden Protocol"
             width={68}
-            className="cursor-pointer mr-2"
+            className="mr-2 cursor-pointer"
             onClick={() => {
               router.push(logoLink);
             }}

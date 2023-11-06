@@ -86,8 +86,8 @@ export const CandidateInfo = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [letterType, setLetterType] = useState<
-    "rejection" | "nextInterviewInvite" | undefined
-  >(undefined);
+    "rejection" | "nextInterviewInvite" | ""
+  >("");
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -346,7 +346,7 @@ export const CandidateInfo = ({
         </section>
       )}
 
-      {isOpen && (
+      {isOpen && letterType && (
         <EdenAiLetter
           member={dataMember?.findMember}
           isModalOpen={isOpen}

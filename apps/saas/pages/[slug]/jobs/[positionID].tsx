@@ -429,6 +429,7 @@ const PositionPage: NextPageWithLayout = ({
                   `${getValues("company.description")}`
                 )}
               </p>
+
               {(getValues("company.employeesNumber") ||
                 getValues("company.employeesNumber") === 0 ||
                 (editMode && editCompany)) && (
@@ -467,6 +468,7 @@ const PositionPage: NextPageWithLayout = ({
                   />
                 </p>
               )}
+
               <div className="bg-edenPink-100 rounded-md p-4 text-sm">
                 <div className="mb-2 flex">
                   <div className="bg-edenGreen-300 mr-2 flex h-6 w-6 items-center justify-center rounded-full">
