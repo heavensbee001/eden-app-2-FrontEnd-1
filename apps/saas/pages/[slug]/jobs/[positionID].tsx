@@ -1,12 +1,21 @@
 import { ApolloClient, gql, InMemoryCache, useMutation } from "@apollo/client";
-import { Position } from "@eden/package-graphql/generated";
-import { AppUserLayout, Button, Loading, Modal, SEO } from "@eden/package-ui";
+import { Position, PositionStatus } from "@eden/package-graphql/generated";
+import {
+  AppUserLayout,
+  Button,
+  EdenIconExclamationAndQuestion,
+  Loading,
+  Modal,
+  SEO,
+} from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { getSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import Confetti from "react-confetti";
 import {
   Control,
   SubmitHandler,
@@ -16,7 +25,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
-import { BsStar } from "react-icons/bs";
+import { BsLightningFill, BsStar } from "react-icons/bs";
 import { GoTag } from "react-icons/go";
 import {
   HiOutlineHeart,
@@ -30,22 +39,28 @@ import { toast } from "react-toastify";
 
 import type { NextPageWithLayout } from "../../_app";
 
-const UPDATE_COMPANY_DETAILS = gql`
-  mutation ($fields: updateCompanyDetailsInput!) {
-    updateCompanyDetails(fields: $fields) {
+const BULK_UPDATE = gql`
+  mutation (
+    $fieldsCompany: updateCompanyDetailsInput!
+    $fieldsPosition: updatePositionInput!
+    $fieldsPositionDetails: updatePositionGeneralDetailsInput!
+  ) {
+    updateCompanyDetails(fields: $fieldsCompany) {
       _id
       name
       slug
       description
     }
-  }
-`;
-const UPDATE_POSITION = gql`
-  mutation ($fields: updatePositionInput!) {
-    updatePosition(fields: $fields) {
+
+    updatePosition(fields: $fieldsPosition) {
       _id
+      status
       whoYouAre
       whatTheJobInvolves
+    }
+
+    updatePositionGeneralDetails(fields: $fieldsPositionDetails) {
+      _id
     }
   }
 `;
@@ -65,9 +80,11 @@ const PositionPage: NextPageWithLayout = ({
 
   const [editCompany, setEditCompany] = useState(false);
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
 
-  const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
-    {
+  const { control, register, handleSubmit, getValues, setValue, watch } =
+    useForm<any>({
       defaultValues: {
         name: position.name || "",
         whoYouAre: position.whoYouAre || "",
@@ -93,28 +110,24 @@ const PositionPage: NextPageWithLayout = ({
           values: position.company?.values,
           founders: position.company?.founders,
           glassdoor: position.company?.glassdoor,
+          whatsToLove: position.company?.whatsToLove,
         },
       },
-    }
-  );
+    });
 
   const fileInput = useRef<HTMLInputElement | null>(null);
 
-  const [updateCompanyDetails, { loading: updateCompanyDetailsLoading }] =
-    useMutation(UPDATE_COMPANY_DETAILS, {
-      onCompleted() {
-        console.log("completed update company");
-      },
-      onError() {
-        toast.error("An error occurred while submitting");
-      },
-    });
-
-  const [updatePosition, { loading: updatePositionLoading }] = useMutation(
-    UPDATE_POSITION,
+  const [bulkUpdate, { loading: bulkUpdateLoading }] = useMutation(
+    BULK_UPDATE,
     {
       onCompleted() {
-        console.log("completed update position");
+        console.log("completed update");
+
+        setPublishModalOpen(false);
+        setTrainAiModalOpen(true);
+        // router.push(
+        //   `/${position.company?.name}/dashboard/${position._id}/train-eden-ai`
+        // );
       },
       onError() {
         toast.error("An error occurred while submitting");
@@ -122,27 +135,29 @@ const PositionPage: NextPageWithLayout = ({
     }
   );
 
-  const onSubmit: SubmitHandler<Position> = () => {
-    updateCompanyDetails({
+  const onSubmit: SubmitHandler<Position> = (_position: Position) => {
+    bulkUpdate({
       variables: {
-        fields: {
+        fieldsCompany: {
           slug: position.company?.slug,
-          ...getValues("company"),
+          ..._position.company,
         },
-      },
-    });
-
-    updatePosition({
-      variables: {
-        fields: {
+        fieldsPosition: {
           _id: position._id,
-          name: getValues("name"),
-          whoYouAre: getValues("whoYouAre"),
-          whatTheJobInvolves: getValues("whatTheJobInvolves"),
+          name: _position.name,
+          status: _position.status,
+          whoYouAre: _position.whoYouAre,
+          whatTheJobInvolves: _position.whatTheJobInvolves,
+        },
+        fieldsPositionDetails: {
+          _id: position._id,
+          ...getValues("generalDetails"),
         },
       },
     });
   };
+
+  console.log(watch("generalDetails.officePolicy"));
 
   const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files[0]) {
@@ -204,6 +219,30 @@ const PositionPage: NextPageWithLayout = ({
     return "";
   };
 
+  const formattedSalary = (salary: number) => {
+    if (salary >= 1000) return `${salary / 1000}k`;
+
+    return salary;
+  };
+
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [confettiRun, setConfettiRun] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (publishModalOpen) {
+      setConfettiRun(true);
+      // @ts-ignore
+      setWidth(ref.current?.clientWidth || 0);
+      // @ts-ignore
+      setHeight(ref.current?.clientHeight || 0);
+      setTimeout(() => {
+        setConfettiRun(false);
+      }, 2500);
+    }
+  }, [publishModalOpen]);
+
   return (
     <>
       <SEO
@@ -264,7 +303,9 @@ const PositionPage: NextPageWithLayout = ({
                       />
                     </>
                   ) : (
-                    `$ ${getValues("generalDetails.yearlySalary")}`
+                    `$ ${formattedSalary(
+                      getValues("generalDetails.yearlySalary")
+                    )}`
                   )}
                 </div>
               </div>
@@ -388,40 +429,46 @@ const PositionPage: NextPageWithLayout = ({
                   `${getValues("company.description")}`
                 )}
               </p>
-              <p className="text-edenGray-900 mb-2 text-sm">
-                <HiOutlineUsers
-                  size={20}
-                  className="text-edenGreen-600 mr-2 inline-block"
-                />
-                {editMode && editCompany ? (
-                  <>
-                    <input
-                      type="number"
-                      {...register("company.employeesNumber", {
-                        valueAsNumber: true,
-                      })}
-                      className={classNames(editInputClasses, "w-20")}
-                    />
-                    {` employees`}
-                  </>
-                ) : (
-                  `${getValues("company.employeesNumber")} employees`
-                )}
-              </p>
-              <p className="mb-2 text-sm">
-                <GoTag
-                  size={24}
-                  className="text-edenGreen-600 mr-2 inline-block"
-                />
-                {position?.company?.tags?.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="bg-edenGray-100 mr-2 inline rounded-md px-2 pb-1"
-                  >
-                    {tag}
-                  </div>
-                ))}
-              </p>
+
+              {(getValues("company.employeesNumber") ||
+                getValues("company.employeesNumber") === 0 ||
+                (editMode && editCompany)) && (
+                <p className="text-edenGray-900 mb-2 text-sm">
+                  <HiOutlineUsers
+                    size={20}
+                    className="text-edenGreen-600 mr-2 inline-block"
+                  />
+                  {editMode && editCompany ? (
+                    <>
+                      <input
+                        type="number"
+                        {...register("company.employeesNumber", {
+                          valueAsNumber: true,
+                        })}
+                        className={classNames(editInputClasses, "w-20")}
+                      />
+                      {` employees`}
+                    </>
+                  ) : (
+                    `${getValues("company.employeesNumber")} employees`
+                  )}
+                </p>
+              )}
+              {(editMode || position?.company?.tags?.length) && (
+                <p className="mb-2 text-sm">
+                  <GoTag
+                    size={24}
+                    className="text-edenGreen-600 mr-2 inline-block"
+                  />
+                  <CompanyTagsField
+                    control={control}
+                    getValues={getValues}
+                    register={register}
+                    editMode={editMode && editCompany}
+                  />
+                </p>
+              )}
+
               <div className="bg-edenPink-100 rounded-md p-4 text-sm">
                 <div className="mb-2 flex">
                   <div className="bg-edenGreen-300 mr-2 flex h-6 w-6 items-center justify-center rounded-full">
@@ -430,7 +477,14 @@ const PositionPage: NextPageWithLayout = ({
                   <h3 className="text-edenGreen-600">What&apos;s to love?</h3>
                 </div>
                 <p className="text-edenGray-700 text-xs">
-                  {position?.company?.whatsToLove}
+                  {editMode && editCompany ? (
+                    <textarea
+                      {...register("company.whatsToLove")}
+                      className={classNames(editInputClasses, "w-full")}
+                    />
+                  ) : (
+                    getValues("company.whatsToLove")
+                  )}
                 </p>
               </div>
             </div>
@@ -723,21 +777,113 @@ const PositionPage: NextPageWithLayout = ({
           ) : (
             <>
               <Button
-                onClick={handleSubmit(onSubmit)}
+                onClick={handleSubmit((data) =>
+                  onSubmit({ ...data, status: PositionStatus.Unpublished })
+                )}
                 className="border-edenPink-400 !text-edenPink-400 mr-4"
               >
                 Save as draft
               </Button>
-              <Button className="border-edenPink-400 !text-edenPink-400">
+              <Button
+                onClick={() => setPublishModalOpen(true)}
+                className="border-edenPink-400 !text-edenPink-400"
+              >
                 Publish to Developer DAO
               </Button>
 
-              <Modal
-                open={updateCompanyDetailsLoading || updatePositionLoading}
-                closeOnEsc={false}
-              >
+              <Modal open={bulkUpdateLoading} closeOnEsc={false}>
                 <div className="h-80">
                   <Loading title={"Updating position"} />
+                </div>
+              </Modal>
+
+              <div
+                className={`pointer-events-none fixed left-0 top-0 z-50 h-screen w-screen	`}
+                ref={ref}
+              >
+                <Confetti
+                  width={width}
+                  height={height}
+                  numberOfPieces={confettiRun ? 250 : 0}
+                  colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
+                />
+              </div>
+              <Modal open={publishModalOpen} closeOnEsc={false}>
+                <div className="flex flex-col items-center justify-center px-28 py-8 text-center">
+                  <EdenIconExclamationAndQuestion className="mb-2 h-16" />
+                  <h2 className="text-edenGreen-600 mb-4">Ready to publish?</h2>
+                  <p className="mb-12">
+                    Soon after you publish Eden will start recruiting in the
+                    community & put the magic into magic job-post.
+                  </p>
+                  <div className="flex justify-center gap-8">
+                    <Button
+                      onClick={() => {
+                        setPublishModalOpen(false);
+                        // handleSubmit((data) =>
+                        //   onSubmit({
+                        //     ...data,
+                        //     status: PositionStatus.Unpublished,
+                        //   })
+                        // );
+                      }}
+                    >
+                      Not done yet
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={handleSubmit((data) =>
+                        onSubmit({ ...data, status: PositionStatus.Active })
+                      )}
+                    >
+                      Let&apos;s do it!
+                    </Button>
+                  </div>
+                </div>
+              </Modal>
+
+              <Modal open={trainAiModalOpen} closeOnEsc={false}>
+                <div className="flex flex-col items-center justify-center px-28 py-8 pt-2 text-center">
+                  <div
+                    className={
+                      "text-edenGreen-600 bg-edenPink-100 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
+                    }
+                  >
+                    <BsLightningFill size={"2rem"} />
+                  </div>
+                  <h2 className="text-edenGreen-600 mb-4">
+                    One last thing: should we configure the AI-interview for
+                    you?
+                  </h2>
+                  <p className="mb-4">
+                    The way talent applies to your opportunity is through an
+                    AI-powered interview.
+                  </p>
+                  <p className="mb-8">
+                    Think of this like the screening interview that a recruiter
+                    would do built into the job board.
+                  </p>
+                  <div className="flex justify-center gap-8">
+                    <Button
+                      onClick={() => {
+                        router.push(
+                          `/${position.company?.name}/dashboard/${position._id}`
+                        );
+                      }}
+                    >
+                      Auto-configure the AI-interview for me
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        router.push(
+                          `/${position.company?.name}/dashboard/${position._id}/train-eden-ai`
+                        );
+                      }}
+                    >
+                      Let me configure the AI-interview
+                    </Button>
+                  </div>
                 </div>
               </Modal>
             </>
@@ -750,6 +896,7 @@ const PositionPage: NextPageWithLayout = ({
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const positionID = ctx.params?.positionID;
+  const { edit } = ctx.query;
 
   const client = new ApolloClient({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
@@ -810,6 +957,88 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     },
   });
 
+  // if not edit mode don't authenticate, allow
+  if (edit !== "true") {
+    return {
+      props: { position: data.findPosition || null },
+    };
+  }
+
+  const session = await getSession(ctx);
+
+  // if not session ask for login
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/?redirect=${ctx.req.url}`,
+        permanent: false,
+      },
+    };
+  }
+
+  // if operator access, allow
+  if (session?.accessLevel === 5) {
+    return {
+      props: { position: data.findPosition || null },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userID: session?.user!.id,
+        companySlug: ctx.query.slug,
+      }),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  console.log(res.status);
+
+  // if not authorised, redirect to request-access
+  if (res.status === 401) {
+    return {
+      redirect: {
+        destination: `/request-access?company=${ctx.query.slug}`,
+        permanent: false,
+      },
+    };
+  }
+
+  // if company does not exist, redirect to create-company
+  //@TODO maybe we need a 404 page for this
+  if (res.status === 404) {
+    return {
+      redirect: {
+        destination: `/create-company`,
+        permanent: false,
+      },
+    };
+  }
+
+  const _companyAuth = await res.json();
+
+  // if company is not a community (bc communities don't pay)
+  // and company is not subscribed to any stripe products
+  // redirect to dasboard subscription
+  if (
+    res.status === 200 &&
+    _companyAuth.company.type !== "COMMUNITY" &&
+    (!_companyAuth.company.stripe ||
+      !_companyAuth.company.stripe.product ||
+      !_companyAuth.company.stripe.product.ID)
+  ) {
+    return {
+      redirect: {
+        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+        permanent: false,
+      },
+    };
+  }
+
+  // default allow
   return {
     props: { position: data.findPosition || null },
   };
@@ -836,8 +1065,6 @@ const FundingWidget = ({
     control, // control props comes from useForm
     name: "company.funding", // unique name for your Field Array
   });
-
-  console.log(fields);
 
   return (
     <div className="mb-4 last:mb-0">
@@ -906,6 +1133,71 @@ const FundingWidget = ({
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+export interface ICompanyTagsField {
+  control: Control;
+  register: UseFormRegister<any>;
+  getValues: UseFormGetValues<any>;
+  editMode: boolean;
+}
+
+const CompanyTagsField = ({
+  control,
+  register,
+  getValues,
+  editMode,
+}: IFundingWidget) => {
+  const { fields, append, remove } = useFieldArray({
+    control, // control props comes from useForm
+    name: "company.tags", // unique name for your Field Array
+  });
+
+  console.log(fields);
+
+  return (
+    <div className="inline">
+      {fields.map((field, index) => (
+        <div
+          key={field.id}
+          className="bg-edenGray-100 relative mb-2 mr-2 inline-block max-w-[28%] rounded-md px-2 pb-1"
+        >
+          <span className="">
+            {editMode ? (
+              <input
+                placeholder="date"
+                {...register(`company.tags.${index}`)}
+                className={classNames(
+                  editInputClasses,
+                  "-mx-2! w-[calc(100%+1rem)] px-0"
+                )}
+              />
+            ) : (
+              getValues(`company.tags.${index}`)
+            )}
+          </span>
+          {editMode && (
+            <div
+              className="bg-edenGray-500 text-utilityRed border-utilityRed hover:text-edenGray-500 hover:bg-utilityRed absolute -right-2 -top-2 mx-auto flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 pb-1 text-xl font-bold"
+              onClick={() => remove(index)}
+            >
+              -
+            </div>
+          )}
+        </div>
+      ))}
+      {editMode && (
+        <div
+          className="bg-edenGray-500 text-utilityOrange border-utilityOrange hover:text-edenGray-500 hover:bg-utilityOrange ml-2 inline-block h-6 w-6 cursor-pointer rounded-full border-2 pb-1 text-xl font-bold"
+          onClick={() => append("")}
+        >
+          <div className="flex h-full w-full items-center justify-center">
+            +
+          </div>
+        </div>
+      )}
     </div>
   );
 };

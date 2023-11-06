@@ -12,7 +12,7 @@ import {
 import {
   Button,
   EdenAiProcessingModal,
-  EdenIconQuestion,
+  Modal,
   SaasUserLayout,
   // ProgressBarGeneric,
   // RawDataGraph,
@@ -24,21 +24,16 @@ import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { useContext, useEffect, useRef, useState } from "react";
-import Confetti from "react-confetti";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { MdContentCopy, MdLink } from "react-icons/md";
 import { toast } from "react-toastify";
 
 import { CreateQuestions } from "@/components/TrainEdenAiSteps/CreateQuestionsContainer";
-import { DescriptionContainer } from "@/components/TrainEdenAiSteps/DescriptionContainer";
 import { FinalFormContainer } from "@/components/TrainEdenAiSteps/FinalFormContainer";
 import { InterviewEdenAIContainer } from "@/components/TrainEdenAiSteps/InterviewEdenAIContainer";
 import { PrioritiesAndTradeOffsContainer } from "@/components/TrainEdenAiSteps/PrioritiesAndTradeOffsContainer";
 import { ProfileQuestionsContainer } from "@/components/TrainEdenAiSteps/ProfileQuestionsContainer";
 
-// import { IS_PRODUCTION } from "../../../../../constants";
-// import { rawDataPersonProject } from "../../utils/data/rawDataPersonProject";
 import type { NextPageWithLayout } from "../../../../_app";
 
 export const WEBPAGE_TO_MEMORY = gql`
@@ -54,13 +49,13 @@ export const WEBPAGE_TO_MEMORY = gql`
   }
 `;
 
-const UPDATE_POSITION = gql`
-  mutation ($fields: updatePositionInput!) {
-    updatePosition(fields: $fields) {
-      _id
-    }
-  }
-`;
+// const UPDATE_POSITION = gql`
+//   mutation ($fields: updatePositionInput!) {
+//     updatePosition(fields: $fields) {
+//       _id
+//     }
+//   }
+// `;
 
 const FIND_POSITION = gql`
   query ($fields: findPositionInput) {
@@ -167,11 +162,11 @@ const UPADTE_PRIORITIES_AND_TRADEOFFS = gql`
   }
 `;
 
-type Question = {
-  _id: string;
-  content: string;
-  bestAnswer: string;
-};
+// type Question = {
+//   _id: string;
+//   content: string;
+//   bestAnswer: string;
+// };
 
 const FLOW_TITLES = [
   {
@@ -211,12 +206,12 @@ const FLOW_TITLES = [
 
 const TrainAiPage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
-  const { company, getCompanyFunc } = useContext(CompanyContext);
+  const { company } = useContext(CompanyContext);
   const router = useRouter();
   const { positionID, panda } = router.query;
 
-  // eslint-disable-next-line no-unused-vars
-  const [interviewEnded, setInterviewEnded] = useState(false);
+  // const [interviewEnded, setInterviewEnded] = useState(false);
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [step, setStep] = useState<number>(0);
 
   const {
@@ -242,92 +237,91 @@ const TrainAiPage: NextPageWithLayout = () => {
     defaultValues: { position: "", pastedText: "" },
   });
 
-  const handleInterviewEnd = () => {
-    setInterviewEnded(true);
-  };
+  // const handleInterviewEnd = () => {
+  //   setInterviewEnded(true);
+  // };
 
-  const [scraping, setScraping] = useState<boolean>(false);
-  // eslint-disable-next-line no-unused-vars
-  const [report, setReport] = useState<string | null>(null);
+  // const [scraping, setScraping] = useState<boolean>(false);
+  // const [report, setReport] = useState<string | null>(null);
 
-  const [interviewQuestionsForPosition, setInterviewQuestionsForPosition] =
-    useState<Question[]>([]);
+  // const [interviewQuestionsForPosition, setInterviewQuestionsForPosition] =
+  //   useState<Question[]>([]);
 
   // const { currentUser } = useContext(UserContext);
 
-  const [websiteToMemoryCompany] = useMutation(WEBPAGE_TO_MEMORY, {
-    onCompleted({ websiteToMemoryCompany }) {
-      console.log(
-        "websiteToMemoryCompany.report",
-        websiteToMemoryCompany.report
-      );
-      let jobDescription = websiteToMemoryCompany.report.replace(/<|>/g, "");
+  // const [websiteToMemoryCompany] = useMutation(WEBPAGE_TO_MEMORY, {
+  //   onCompleted({ websiteToMemoryCompany }) {
+  //     console.log(
+  //       "websiteToMemoryCompany.report",
+  //       websiteToMemoryCompany.report
+  //     );
+  //     let jobDescription = websiteToMemoryCompany.report.replace(/<|>/g, "");
 
-      //Change - to •
-      jobDescription = jobDescription.replace(/-\s/g, "• ");
+  //     //Change - to •
+  //     jobDescription = jobDescription.replace(/-\s/g, "• ");
 
-      setReport(jobDescription);
+  //     setReport(jobDescription);
 
-      setScraping(false);
+  //     setScraping(false);
 
-      let questionsChange =
-        websiteToMemoryCompany.interviewQuestionsForPosition.map(
-          (question: any) => {
-            return {
-              _id: question?.originalQuestionID,
-              content: question?.personalizedContent,
-              bestAnswer: "",
-            };
-          }
-        );
+  //     let questionsChange =
+  //       websiteToMemoryCompany.interviewQuestionsForPosition.map(
+  //         (question: any) => {
+  //           return {
+  //             _id: question?.originalQuestionID,
+  //             content: question?.personalizedContent,
+  //             bestAnswer: "",
+  //           };
+  //         }
+  //       );
 
-      questionsChange = questionsChange.filter((question: any) => {
-        return question._id != null;
-      });
+  //     questionsChange = questionsChange.filter((question: any) => {
+  //       return question._id != null;
+  //     });
 
-      setInterviewQuestionsForPosition(questionsChange);
-    },
-  });
+  //     setInterviewQuestionsForPosition(questionsChange);
+  //   },
+  // });
 
-  const [updatePosition] = useMutation(UPDATE_POSITION, {
-    onCompleted() {
-      getCompanyFunc();
-    },
-  });
+  // const [updatePosition] = useMutation(UPDATE_POSITION, {
+  //   onCompleted() {
+  //     getCompanyFunc();
+  //   },
+  // });
 
-  const handleDescriptionStepSubmit = async () => {
-    const _pastedText = getValues("pastedText");
+  // const handleDescriptionStepSubmit = async () => {
+  //   const _pastedText = getValues("pastedText");
 
-    setScraping(true);
+  //   setScraping(true);
 
-    if (_pastedText !== "") {
-      try {
-        await Promise.all([
-          websiteToMemoryCompany({
-            variables: {
-              fields: { message: _pastedText, positionID: positionID },
-            },
-          }),
-          updatePosition({
-            variables: {
-              fields: {
-                _id: positionID,
-                name: getValues("position.name"),
-                icon: getValues("position.icon"),
-                companyID: company?._id,
-              },
-            },
-          }),
-        ]);
+  //   if (_pastedText !== "") {
+  //     try {
+  //       await Promise.all([
+  //         websiteToMemoryCompany({
+  //           variables: {
+  //             fields: { message: _pastedText, positionID: positionID },
+  //           },
+  //         }),
+  //         updatePosition({
+  //           variables: {
+  //             fields: {
+  //               _id: positionID,
+  //               name: getValues("position.name"),
+  //               icon: getValues("position.icon"),
+  //               companyID: company?._id,
+  //             },
+  //           },
+  //         }),
+  //       ]);
 
-        setStep(step + 1);
-      } catch {
-        toast.error("Couldn't save data");
-      }
-    }
+  //       setStep(step + 1);
+  //     } catch {
+  //       toast.error("Couldn't save data");
+  //     }
+  //   }
 
-    setScraping(false);
-  };
+  //   setScraping(false);
+  // };
 
   // const handlePrioritiesStepSubmit = async () => {
   //   const _positionsRequirements = getValues("positionsRequirements");
@@ -446,7 +440,7 @@ const TrainAiPage: NextPageWithLayout = () => {
           },
         },
         onCompleted() {
-          setStep(step + 1);
+          router.push(`/${company?.slug}/dashboard/${positionID}`);
         },
         onError() {
           toast.error("There was an error while submitting");
@@ -489,37 +483,37 @@ const TrainAiPage: NextPageWithLayout = () => {
     }
   };
 
-  const [notificationOpen, setNotificationOpen] = useState(false);
+  // const [notificationOpen, setNotificationOpen] = useState(false);
 
-  const handleCopyLink = (positionID: string) => {
-    // const url = window.location.href;
-    const url = window.location.origin + "/interview/" + positionID;
+  // const handleCopyLink = (positionID: string) => {
+  //   // const url = window.location.href;
+  //   const url = window.location.origin + "/interview/" + positionID;
 
-    navigator.clipboard.writeText(url);
-    setNotificationOpen(true);
-    setTimeout(() => {
-      setNotificationOpen(false);
-    }, 3000);
-  };
+  //   navigator.clipboard.writeText(url);
+  //   setNotificationOpen(true);
+  //   setTimeout(() => {
+  //     setNotificationOpen(false);
+  //   }, 3000);
+  // };
 
   // ---- confetti setup ----
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
-  const [confettiRun, setConfettiRun] = useState(false);
-  const ref = useRef(null);
+  // const [height, setHeight] = useState(0);
+  // const [width, setWidth] = useState(0);
+  // const [confettiRun, setConfettiRun] = useState(false);
+  // const ref = useRef(null);
 
-  useEffect(() => {
-    if (step === 6) {
-      setConfettiRun(true);
-      // @ts-ignore
-      setWidth(ref.current?.clientWidth || 0);
-      // @ts-ignore
-      setHeight(ref.current?.clientHeight || 0);
-      setTimeout(() => {
-        setConfettiRun(false);
-      }, 2500);
-    }
-  }, [step]);
+  // useEffect(() => {
+  //   if (step === 2) {
+  //     setConfettiRun(true);
+  //     // @ts-ignore
+  //     setWidth(ref.current?.clientWidth || 0);
+  //     // @ts-ignore
+  //     setHeight(ref.current?.clientHeight || 0);
+  //     setTimeout(() => {
+  //       setConfettiRun(false);
+  //     }, 2500);
+  //   }
+  // }, [step]);
 
   return (
     <>
@@ -567,7 +561,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 }}
                 animate
               >
-                <WizardStep
+                {/* <WizardStep
                   label={"Description"}
                   navigationDisabled={!panda}
                   nextDisabled
@@ -614,25 +608,62 @@ const TrainAiPage: NextPageWithLayout = () => {
                       </div>
                     </EdenAiProcessingModal>
                   </div>
-                </WizardStep>
+                </WizardStep> */}
 
                 {/* <WizardStep nextDisabled={!interviewEnded} label={"chat"}> */}
-                <WizardStep label={"Eden Convo"} navigationDisabled={!panda}>
-                  <div className="relative mx-auto h-full max-w-2xl">
-                    <div className="relative mx-auto mb-4 h-[calc(100%-4rem)] w-full">
-                      <InterviewEdenAIContainer
-                        handleEnd={handleInterviewEnd}
-                        interviewQuestionsForPosition={
-                          interviewQuestionsForPosition
-                        }
-                      />
-                    </div>
-                    <div className="w-full">
-                      <div className="bg-edenPink-400 mx-auto h-12 w-12 rounded-full p-2">
-                        <EdenIconQuestion className="h-8 w-8" />
+                <WizardStep
+                  label={"Eden Convo"}
+                  nextButton={
+                    <Button
+                      variant="secondary"
+                      className="mx-auto"
+                      onClick={() => {
+                        setShowInterviewModal(true);
+                      }}
+                    >
+                      Next
+                    </Button>
+                  }
+                  navigationDisabled={!panda}
+                >
+                  <div className="relative mx-auto h-full w-full max-w-2xl">
+                    <InterviewEdenAIContainer
+                    // handleEnd={handleInterviewEnd}
+                    // interviewQuestionsForPosition={
+                    //   interviewQuestionsForPosition
+                    // }
+                    />
+                  </div>
+                  <Modal open={showInterviewModal} closeOnEsc={false}>
+                    <div className="px-4 py-8">
+                      <h2 className="mb-4 text-center">
+                        Are you done talking?
+                      </h2>
+                      <p className="text-edenGray-700 mx-auto mb-12 max-w-[60%] text-center">
+                        The more you talk here, the more accurate the matching
+                        will be!
+                      </p>
+                      <div className="flex justify-evenly">
+                        <Button
+                          onClick={() => {
+                            setShowInterviewModal(false);
+                          }}
+                          variant="primary"
+                        >
+                          {"I'm not done yet"}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            setShowInterviewModal(false);
+                            setStep(step + 1);
+                          }}
+                        >
+                          {"Let's move on"}
+                        </Button>
                       </div>
                     </div>
-                  </div>
+                  </Modal>
                 </WizardStep>
 
                 <WizardStep
@@ -813,25 +844,25 @@ const TrainAiPage: NextPageWithLayout = () => {
 
                     <div className="absolute -bottom-20 left-0 mt-4 flex w-full justify-evenly">
                       <Button
-                        variant={"primary"}
+                        variant={"secondary"}
                         className="mx-auto"
                         loading={loadingUpdatePositionGeneralDetails}
                         onClick={() => handleSaveGeneralDetails(false)}
                       >
-                        Save without publishing
+                        Save & continue to dashboard
                       </Button>
-                      <Button
+                      {/* <Button
                         variant={"primary"}
                         className="mx-auto"
                         loading={loadingUpdatePositionGeneralDetails}
                         onClick={() => handleSaveGeneralDetails(true)}
                       >
                         Save & Publish to Developer DAO
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                 </WizardStep>
-                <WizardStep label={"Share Link"} navigationDisabled={!panda}>
+                {/* <WizardStep label={"Share Link"} navigationDisabled={!panda}>
                   <div className="flex h-full flex-col items-center justify-center pb-28">
                     <div className="max-w-3xl">
                       <h1 className="text-edenGreen-600 mb-4 text-center">
@@ -877,7 +908,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   >
                     Continue to Dashboard
                   </Button>
-                </WizardStep>
+                </WizardStep> */}
               </Wizard>
             </div>
             {/* {step === 1 && (
@@ -898,7 +929,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                 Next
               </Button>
             )}
-            {step === 6 && (
+            {/* {step === 2 && (
               <div
                 className={`pointer-events-none fixed left-0 top-0 z-20 h-screen w-screen	`}
                 ref={ref}
@@ -910,7 +941,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
                 />
               </div>
-            )}
+            )} */}
           </div>
         )}
       </div>

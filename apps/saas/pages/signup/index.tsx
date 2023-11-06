@@ -45,6 +45,17 @@ const SignupCommunity: NextPageWithLayout = () => {
   return (
     <>
       <div className="flex min-h-screen flex-col items-center justify-center">
+        <div className="mb-12 w-3/5">
+          <p className="font-Moret text-edenGreen-500 mb-3 text-xl">
+            {" "}
+            I know you aren&apos;t just one thing.
+          </p>
+          <p className="font-Unica text-edenGray-900">
+            {
+              "So don't worry too much about choosing the exact right oasis. If I see you have strong skills in other areas, I'll for sure let you know if I see opportunities that match you as a whole person. I got you ;)"
+            }
+          </p>
+        </div>
         <div className="bg-edenPink-300 mb-8 flex w-full max-w-[40rem] justify-center p-8">
           <h2 className="text-edenGreen-600 mr-4">Join D_D as a:</h2>
           <select
