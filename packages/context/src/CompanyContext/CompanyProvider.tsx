@@ -13,6 +13,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
       name
       slug
       description
+      imageUrl
       positions {
         _id
         name
@@ -25,6 +26,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
         company {
           _id
           name
+          imageUrl
         }
         generalDetails {
           officePolicy

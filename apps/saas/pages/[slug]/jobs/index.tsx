@@ -111,6 +111,8 @@ const HomePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
   const { company } = useContext(CompanyContext);
+
+  console.log("company", company);
   const { currentUser } = useContext(UserContext);
 
   const { data: findPositionsOfCommunityData } = useQuery(
@@ -338,7 +340,7 @@ const HomePage: NextPageWithLayout = () => {
             {/* also src should be company.imageUrl */}
 
             <Image
-              className="border-edenGreen-600 rounded-full border-2"
+              className="rounded-full"
               width="68"
               height="68"
               src={`${
