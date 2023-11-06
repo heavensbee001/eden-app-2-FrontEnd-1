@@ -43,6 +43,7 @@ const BULK_UPDATE = gql`
   mutation (
     $fieldsCompany: updateCompanyDetailsInput!
     $fieldsPosition: updatePositionInput!
+    $fieldsPositionDetails: updatePositionGeneralDetailsInput!
   ) {
     updateCompanyDetails(fields: $fieldsCompany) {
       _id
@@ -56,6 +57,10 @@ const BULK_UPDATE = gql`
       status
       whoYouAre
       whatTheJobInvolves
+    }
+
+    updatePositionGeneralDetails(fields: $fieldsPositionDetails) {
+      _id
     }
   }
 `;
@@ -78,8 +83,8 @@ const PositionPage: NextPageWithLayout = ({
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
 
-  const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
-    {
+  const { control, register, handleSubmit, getValues, setValue, watch } =
+    useForm<any>({
       defaultValues: {
         name: position.name || "",
         whoYouAre: position.whoYouAre || "",
@@ -105,10 +110,10 @@ const PositionPage: NextPageWithLayout = ({
           values: position.company?.values,
           founders: position.company?.founders,
           glassdoor: position.company?.glassdoor,
+          whatsToLove: position.company?.whatsToLove,
         },
       },
-    }
-  );
+    });
 
   const fileInput = useRef<HTMLInputElement | null>(null);
 
@@ -144,9 +149,15 @@ const PositionPage: NextPageWithLayout = ({
           whoYouAre: _position.whoYouAre,
           whatTheJobInvolves: _position.whatTheJobInvolves,
         },
+        fieldsPositionDetails: {
+          _id: position._id,
+          ...getValues("generalDetails"),
+        },
       },
     });
   };
+
+  console.log(watch("generalDetails.officePolicy"));
 
   const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files[0]) {
@@ -418,40 +429,44 @@ const PositionPage: NextPageWithLayout = ({
                   `${getValues("company.description")}`
                 )}
               </p>
-              <p className="text-edenGray-900 mb-2 text-sm">
-                <HiOutlineUsers
-                  size={20}
-                  className="text-edenGreen-600 mr-2 inline-block"
-                />
-                {editMode && editCompany ? (
-                  <>
-                    <input
-                      type="number"
-                      {...register("company.employeesNumber", {
-                        valueAsNumber: true,
-                      })}
-                      className={classNames(editInputClasses, "w-20")}
-                    />
-                    {` employees`}
-                  </>
-                ) : (
-                  `${getValues("company.employeesNumber")} employees`
-                )}
-              </p>
-              <p className="mb-2 text-sm">
-                <GoTag
-                  size={24}
-                  className="text-edenGreen-600 mr-2 inline-block"
-                />
-                {position?.company?.tags?.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="bg-edenGray-100 mr-2 inline rounded-md px-2 pb-1"
-                  >
-                    {tag}
-                  </div>
-                ))}
-              </p>
+              {(getValues("company.employeesNumber") ||
+                getValues("company.employeesNumber") === 0 ||
+                (editMode && editCompany)) && (
+                <p className="text-edenGray-900 mb-2 text-sm">
+                  <HiOutlineUsers
+                    size={20}
+                    className="text-edenGreen-600 mr-2 inline-block"
+                  />
+                  {editMode && editCompany ? (
+                    <>
+                      <input
+                        type="number"
+                        {...register("company.employeesNumber", {
+                          valueAsNumber: true,
+                        })}
+                        className={classNames(editInputClasses, "w-20")}
+                      />
+                      {` employees`}
+                    </>
+                  ) : (
+                    `${getValues("company.employeesNumber")} employees`
+                  )}
+                </p>
+              )}
+              {(editMode || position?.company?.tags?.length) && (
+                <p className="mb-2 text-sm">
+                  <GoTag
+                    size={24}
+                    className="text-edenGreen-600 mr-2 inline-block"
+                  />
+                  <CompanyTagsField
+                    control={control}
+                    getValues={getValues}
+                    register={register}
+                    editMode={editMode && editCompany}
+                  />
+                </p>
+              )}
               <div className="bg-edenPink-100 rounded-md p-4 text-sm">
                 <div className="mb-2 flex">
                   <div className="bg-edenGreen-300 mr-2 flex h-6 w-6 items-center justify-center rounded-full">
@@ -460,7 +475,14 @@ const PositionPage: NextPageWithLayout = ({
                   <h3 className="text-edenGreen-600">What&apos;s to love?</h3>
                 </div>
                 <p className="text-edenGray-700 text-xs">
-                  {position?.company?.whatsToLove}
+                  {editMode && editCompany ? (
+                    <textarea
+                      {...register("company.whatsToLove")}
+                      className={classNames(editInputClasses, "w-full")}
+                    />
+                  ) : (
+                    getValues("company.whatsToLove")
+                  )}
                 </p>
               </div>
             </div>
@@ -1109,6 +1131,71 @@ const FundingWidget = ({
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+export interface ICompanyTagsField {
+  control: Control;
+  register: UseFormRegister<any>;
+  getValues: UseFormGetValues<any>;
+  editMode: boolean;
+}
+
+const CompanyTagsField = ({
+  control,
+  register,
+  getValues,
+  editMode,
+}: IFundingWidget) => {
+  const { fields, append, remove } = useFieldArray({
+    control, // control props comes from useForm
+    name: "company.tags", // unique name for your Field Array
+  });
+
+  console.log(fields);
+
+  return (
+    <div className="inline">
+      {fields.map((field, index) => (
+        <div
+          key={field.id}
+          className="bg-edenGray-100 relative mb-2 mr-2 inline-block max-w-[28%] rounded-md px-2 pb-1"
+        >
+          <span className="">
+            {editMode ? (
+              <input
+                placeholder="date"
+                {...register(`company.tags.${index}`)}
+                className={classNames(
+                  editInputClasses,
+                  "-mx-2! w-[calc(100%+1rem)] px-0"
+                )}
+              />
+            ) : (
+              getValues(`company.tags.${index}`)
+            )}
+          </span>
+          {editMode && (
+            <div
+              className="bg-edenGray-500 text-utilityRed border-utilityRed hover:text-edenGray-500 hover:bg-utilityRed absolute -right-2 -top-2 mx-auto flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 pb-1 text-xl font-bold"
+              onClick={() => remove(index)}
+            >
+              -
+            </div>
+          )}
+        </div>
+      ))}
+      {editMode && (
+        <div
+          className="bg-edenGray-500 text-utilityOrange border-utilityOrange hover:text-edenGray-500 hover:bg-utilityOrange ml-2 inline-block h-6 w-6 cursor-pointer rounded-full border-2 pb-1 text-xl font-bold"
+          onClick={() => append("")}
+        >
+          <div className="flex h-full w-full items-center justify-center">
+            +
+          </div>
+        </div>
+      )}
     </div>
   );
 };
