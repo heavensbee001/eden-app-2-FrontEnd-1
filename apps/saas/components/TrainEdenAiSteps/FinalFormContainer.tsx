@@ -6,7 +6,7 @@ import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { SlLocationPin } from "react-icons/sl";
+// import { SlLocationPin } from "react-icons/sl";
 
 interface IFinalFormContainerProps {
   // eslint-disable-next-line no-unused-vars
@@ -90,7 +90,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
           <Tab.Group>
             <Tab.List className="border-edenGreen-300 flex  w-full justify-between border-b ">
               <div className="flex items-start">
-                <Tab
+                {/* <Tab
                   className={({ selected }) =>
                     classNames(
                       "text-edenGreen-400 -mb-px w-full pb-2 text-xs px-3",
@@ -101,11 +101,11 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                   }
                 >
                   GENERAL
-                </Tab>
+                </Tab> */}
                 <Tab
                   className={({ selected }) =>
                     classNames(
-                      "text-edenGreen-400 -mb-px w-full pb-2 text-xs px-3",
+                      "text-edenGreen-400 -mb-px w-full px-3 pb-2 text-xs",
                       selected
                         ? " !text-edenGreen-600 border-edenGreen-600 border-b outline-none"
                         : "hover:text-edenGreen-500 hover:border-edenGreen-600 hover:border-b"
@@ -117,7 +117,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
               </div>
             </Tab.List>
             <Tab.Panels>
-              <Tab.Panel className="pt-8">
+              {/* <Tab.Panel className="pt-8">
                 <div className="flex  gap-x-6">
                   <div className="flex  flex-col items-start text-xs">
                     <label className="text-xs ">Start Date </label>
@@ -187,19 +187,19 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                   </div>
                 </div>
 
-                <section className="text-start mb-6">
+                <section className="mb-6 text-start">
                   <p className="mb-2 text-xs">Anual Salary</p>
-                  <div className="text-xs w-64 flex items-center border border-EdenGray-100 rounded-md bg-white">
+                  <div className="border-EdenGray-100 flex w-64 items-center rounded-md border bg-white text-xs">
                     <input
                       min={0}
                       // defaultValue={}
                       type="number"
                       id="budget"
-                      className="w-full text-end outline-none font-Unica resize-none h-full p-2 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="font-Unica h-full w-full resize-none bg-transparent p-2 text-end outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       required
                       {...register("yearlySalary")}
                     />
-                    <div className="ml-auto border-l border-edenGray-100 px-3">
+                    <div className="border-edenGray-100 ml-auto border-l px-3">
                       <span>$/year</span>
                     </div>
                   </div>
@@ -244,7 +244,7 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
                     </div>
                   </div>
                 </div>
-              </Tab.Panel>
+              </Tab.Panel> */}
               <Tab.Panel>
                 <div className=" gird grid-cols-2">
                   <FillSocialLinks onChange={handleChangeSocials} />
