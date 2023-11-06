@@ -40,7 +40,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
           discordAvatar
         }
       }
-      candidatesNum
+      # candidatesNum
       skillsNum
     }
   }

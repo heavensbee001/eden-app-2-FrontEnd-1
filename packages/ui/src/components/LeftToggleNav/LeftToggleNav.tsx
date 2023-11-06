@@ -56,7 +56,7 @@ export const LeftToggleNav = ({
       getCompanyFunc();
       router
         .push(
-          `/${company?.slug}/dashboard/${updatePositionData.updatePosition._id}/train-eden-ai`
+          `/${company?.slug}/jobs/${updatePositionData.updatePosition._id}?edit=true`
         )
         .then(() => {
           setUpdatePositionLoading(false);

@@ -2,16 +2,15 @@ import { gql, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Badge,
   Button,
-  // EdenIconExclamation,
-  // EdenTooltip,
+  EdenIconExclamation,
+  EdenTooltip,
+  SaasUserLayout,
   SEO,
 } from "@eden/package-ui";
-// import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
-import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useContext } from "react";
@@ -83,6 +82,17 @@ const HomePage: NextPageWithLayout = () => {
     }
   };
 
+  const positions = [
+    "Frontend Development",
+    "Backend Development",
+    "AI",
+    "Blockchain",
+    "Product",
+    "DevRel",
+    "Technical Writer",
+    "Product Design",
+  ];
+
   return (
     <>
       <SEO />
@@ -102,20 +112,21 @@ const HomePage: NextPageWithLayout = () => {
           }}
         />
       </Head>
-      <div className="w-[67%] px-8 pt-12">
+      <div className="h-[335px] w-full bg-[url('/banner-job-board.png')] px-8 pt-12">
         <section className="mb-4">
-          <h1 className="text-edenGreen-600">
+          <h1 className="text-edenPink-400 text-4xl font-bold leading-[50.4px]">
+            {"Your next great opportunity awaits in "}
             {company?.name}
-            {"'s magic job board"}
+            {"'s network"}
           </h1>
-          <p>
+          <p className="text-edenPink-400 text-base font-normal leading-[22.4px]">
             {
               "Let's build the frontiers of the new web with frens of frens & their frens as well."
             }
           </p>
         </section>
       </div>
-      <section className="mb-4 w-full">
+      {/* <section className="mb-4 w-full">
         <div
           className="bg-edenGreen-600 h-48 w-full bg-cover bg-center"
           style={{
@@ -125,25 +136,25 @@ const HomePage: NextPageWithLayout = () => {
                 : "",
           }}
         ></div>
-      </section>
+      </section> */}
       <div className="w-[67%] px-8">
         {!currentUser && (
           <section className="bg-edenPink-100 mb-4 rounded-md p-4">
             <h2 className="text-edenGreen-600 mb-2">
-              Get your personal talent agent
+              Use AI to leverage the {company?.name} network & land your dream
+              gig.
             </h2>
             <p className="text-edenGray-900 mb-4 text-sm">
-              By signing up for the D_D talent oasis, you&apos;ll get access to
-              curated web3 opportunities by D_D while enjoying the full-force of
-              Eden, your personal talent agent helping you get hired for your
-              fav opportunities, faster. (see the demo{" "}
-              <Link
+              {
+                "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
+              }
+              {/* <Link
                 href={"https://www.youtube.com/watch?v=S_vJBkCDYNs"}
                 className="underline"
               >
                 here
-              </Link>
-              )
+              </Link> */}
+              {/* ) */}
             </p>
             <Button
               onClick={() => {
@@ -151,7 +162,7 @@ const HomePage: NextPageWithLayout = () => {
                 router.push("/signup");
               }}
             >
-              Sign up
+              Join the oasis
             </Button>
           </section>
         )}
@@ -171,99 +182,87 @@ const HomePage: NextPageWithLayout = () => {
                 return (
                   <div
                     key={index}
-                    className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white p-4 align-top transition-all"
+                    className="border-edenGray-100 relative relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
                     onClick={() => {
-                      if (currentUser)
-                        router.push(`/interview/${position?._id}`);
+                      router.push(`/interview/${position?._id}`);
                     }}
                   >
-                    {/* <div className="absolute -right-2 -top-1">
-                      <EdenTooltip
-                        id={`tradeoff-${index}`}
-                        delayHide={currentUser ? 0 : 300}
-                        clickable={currentUser ? false : true}
-                        innerTsx={
-                          <div className="w-60 pt-2">
-                            <div
-                              className={classNames(
-                                "absolute right-2 top-2 rounded-sm border px-2",
-                                currentUser
-                                  ? "border-edenGreen-500"
-                                  : "border-edenGray-500"
-                              )}
-                            >
-                              <h3
-                                className={classNames(
-                                  currentUser
-                                    ? "text-edenGreen-600"
-                                    : "text-edenGray-500 font-Unica px-2 font-normal"
-                                )}
-                              >
-                                {currentUser ? randMatchstimate.grade : "?"}
-                              </h3>
-                            </div>
-                            {currentUser ? (
-                              <p>{randMatchstimate.text}</p>
-                            ) : (
-                              <>
-                                <p className="mb-4">
-                                  {`Sign up to the ${position?.company?.name} talent oasis to see if you'd be a good fit for this role & get the very best matches delivered straight to your telegram.`}
-                                </p>
-                                <Button
-                                  onClick={() => {
-                                    signIn("google", {
-                                      callbackUrl: router.asPath,
-                                    });
-                                  }}
-                                  variant="secondary"
-                                  className="flex h-6 items-center justify-center !py-0 px-2"
-                                >
-                                  Sign up
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        }
-                        title="matchstimate"
-                        place="top"
-                        effect="solid"
-                        backgroundColor="white"
-                        border
-                        borderColor="#e5e7eb"
-                        padding="0.5rem"
-                        containerClassName="w-full"
-                      >
-                        <div className="bg-edenPink-200 h-5 w-5 rounded-full p-1 shadow">
-                          <EdenIconExclamation className="h-full w-full" />
+                    <div className="flex flex-row items-center justify-between">
+                      <div className="max-w-[calc(100%-117px)]">
+                        <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
+                          <IconPickerItem
+                            icon={position?.icon || "FaCode"}
+                            size={"2rem"}
+                            color="#00462C"
+                          />
                         </div>
-                      </EdenTooltip>
-                    </div> */}
-                    <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
-                      <IconPickerItem
-                        icon={position?.icon || "FaCode"}
-                        size={"2rem"}
-                        color="#00462C"
-                      />
+                        <div className="pl-16">
+                          <p className="text-edenGray-900 font-medium">
+                            {position?.name}
+                          </p>
+                          <p className="text-edenGray-900">
+                            {position?.company?.name}
+                          </p>
+                          <p className="text-edenGray-900 text-sm">
+                            {position?.generalDetails?.officePolicy &&
+                              position?.generalDetails?.officePolicy}
+                            {position?.generalDetails?.contractType &&
+                              " • " + position?.generalDetails?.contractType}
+                          </p>
+                          {(!!position?.generalDetails?.yearlySalary ||
+                            position?.generalDetails?.yearlySalary === 0) && (
+                            <p className="text-edenGray-500 text-xs">
+                              ${position?.generalDetails?.yearlySalary}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="relative h-5 w-[117px]">
+                        <div className="border-forestGreen text-edenGreen-500 rounded-full border-2 pl-4 text-xs leading-4">
+                          {"what's to Love"}
+                          <div className="absolute right-0 top-0">
+                            <EdenTooltip
+                              id={`${position?._id}`}
+                              innerTsx={
+                                <div className="w-60">
+                                  <p>This is Eden</p>
+                                </div>
+                              }
+                              place="top"
+                              effect="solid"
+                              backgroundColor="white"
+                              border
+                              borderColor="#e5e7eb"
+                              padding="0.5rem"
+                            >
+                              <div className="bg-edenPink-200 h-5 w-5 rounded-full p-1 shadow-md">
+                                <EdenIconExclamation className="h-full w-full" />
+                              </div>
+                            </EdenTooltip>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="pl-16">
-                      <p className="text-edenGray-900 font-medium">
-                        {position?.name}
-                      </p>
-                      <p className="text-edenGray-900">
-                        {position?.company?.name}
-                      </p>
-                      <p className="text-edenGray-900 text-sm">
-                        {position?.generalDetails?.officePolicy &&
-                          position?.generalDetails?.officePolicy}
-                        {position?.generalDetails?.contractType &&
-                          " • " + position?.generalDetails?.contractType}
-                      </p>
-                      {(!!position?.generalDetails?.yearlySalary ||
-                        position?.generalDetails?.yearlySalary === 0) && (
-                        <p className="text-edenGray-500 text-xs">
-                          ${position?.generalDetails?.yearlySalary}
-                        </p>
-                      )}
+                    <div
+                      className="bg-edenGreen-200 absolute bottom-2 right-2 h-6 w-6 rounded-full p-1"
+                      onClick={() => {
+                        router.push(`/interview/${position?._id}`);
+                      }}
+                    >
+                      <div className="text-edenGreen-500 align-center flex h-4 w-4 items-center justify-around">
+                        <svg
+                          width="12"
+                          height="11"
+                          viewBox="0 0 12 11"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11.0156 6.03906L7.26562 9.78906C6.98438 10.0938 6.49219 10.0938 6.21094 9.78906C5.90625 9.50781 5.90625 9.01562 6.21094 8.73438L8.67188 6.25H1.5C1.07812 6.25 0.75 5.92188 0.75 5.5C0.75 5.10156 1.07812 4.75 1.5 4.75H8.67188L6.21094 2.28906C5.90625 2.00781 5.90625 1.51562 6.21094 1.23438C6.49219 0.929688 6.98438 0.929688 7.26562 1.23438L11.0156 4.98438C11.3203 5.26562 11.3203 5.75781 11.0156 6.03906Z"
+                            fill="#19563F"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 );
@@ -271,35 +270,61 @@ const HomePage: NextPageWithLayout = () => {
           </div>
         </section>
       </div>
-      <section className="absolute top-48 right-8 w-[calc(33%-4rem)] bg-edenGreen-100 p-4 rounded-md">
+      <section className="bg-edenGreen-100 absolute right-8 top-48 w-[calc(33%-4rem)] rounded-md p-4">
         {company && (
-          <Button
-            variant="secondary"
-            className="float-right"
-            onClick={handlePostJobClick}
-          >
-            {!currentUser ? "Login to post a job" : "Post a magic job"}
-          </Button>
+          <div className="flex flex-row items-center justify-between">
+            {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
+            {/* also src should be company.imageUrl */}
+            {company.url ? (
+              <Image
+                className="h-[68px] w-[68px] rounded-full"
+                src={`${company.url}`}
+                alt={`${company.name} company image`}
+              />
+            ) : null}
+            <Button
+              variant="secondary"
+              className="float-right"
+              onClick={handlePostJobClick}
+            >
+              Post a magic job
+            </Button>
+          </div>
         )}
-        <div className="pt-16 pb-4">
+        <div className="pt-2">
           <div className="mb-4">
             {company?.name ? (
-              <h2 className="text-edenGreen-600 mb-2">{`Curated by ${company?.name} & Eden`}</h2>
+              <h2 className="text-edenGreen-600 mb-2">{company?.name}</h2>
             ) : (
               <h2 className="text-edenGreen-600 mb-2">
                 Community talent oasis
               </h2>
             )}
+
             {!!company?.description && (
-              <p className="mb-4 whitespace-pre-wrap text-xs">
+              <p className="mb-4 whitespace-pre-wrap text-sm">
                 {company?.description}
               </p>
             )}
-            <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
+            {/* <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
               <p className="text-xs">Pre-vetted Candidates</p>
               <span className="text-edenGray-900 text-sm font-medium leading-none">
                 {company?.candidatesNum}
               </span>
+            </div> */}
+            <div className="flex flex-row gap-[7px]">
+              <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
+                <p className="text-edenGray-700 text-xs leading-[16.8px]">
+                  Pre-vetted Candidates
+                </p>
+                <p className="text-sm font-medium leading-[19.6px]">273</p>
+              </div>
+              <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
+                <p className="text-edenGray-700 text-xs leading-[16.8px]">
+                  Combined Skills
+                </p>
+                <p className="text-sm font-medium leading-[19.6px]">982</p>
+              </div>
             </div>
           </div>
 
@@ -310,10 +335,8 @@ const HomePage: NextPageWithLayout = () => {
             </div>
           )} */}
 
-          <h2 className="text-edenGreen-600">
-            Talent Pools active in {company?.name ? company?.name : "community"}
-          </h2>
-          {company?.positions
+          <h2 className="text-edenGreen-600">Talent Pools active</h2>
+          {/* {company?.positions
             ?.filter(
               (_position) =>
                 _position?.status !== "ARCHIVED" &&
@@ -335,13 +358,21 @@ const HomePage: NextPageWithLayout = () => {
                 _position?.status !== "DELETED"
             ).length > 6 && (
               <p className="text-edenGray-500 text-xs">and more...</p>
-            )}
+            )} */}
+          {positions.map((position, index) => (
+            <Badge
+              key={index}
+              text={position || ""}
+              cutText={22}
+              className="border-edenGray-500 text-edenGreen-600 border"
+            />
+          ))}
         </div>
       </section>
     </>
   );
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default HomePage;

@@ -5,3 +5,4 @@ export * from "./AppPublicLayout";
 export * from "./AppUserLayout";
 export * from "./AppUserSubmenuLayout";
 export * from "./GridLayout";
+export * from "./SaasUserLayout";

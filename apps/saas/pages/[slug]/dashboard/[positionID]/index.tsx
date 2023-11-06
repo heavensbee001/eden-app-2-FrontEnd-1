@@ -15,7 +15,6 @@ import {
 } from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
-  AppUserLayout,
   AskEdenPopUp,
   Avatar,
   Button,
@@ -28,6 +27,7 @@ import {
   MenuDropdown,
   Modal,
   NodeList,
+  SaasUserLayout,
   SelectList,
   TextField,
   TrainQuestionsEdenAI,
@@ -149,8 +149,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -1251,26 +1252,26 @@ const PositionCRM: NextPageWithLayout = () => {
                 )}
                 {findPositionData?.findPosition?.status === "UNPUBLISHED" && (
                   <Button
-                    className="bg-utilityOrange h-6 !text-sm !py-0 ml-4"
+                    className="bg-utilityOrange ml-4 h-6 !py-0 !text-sm"
                     onClick={() => {
                       handlePublish(true);
                     }}
                     disabled={updatePositionLoading}
                     loading={updatePositionLoading}
                   >
-                    Publish
+                    Publish to Developer DAO
                   </Button>
                 )}
                 {findPositionData?.findPosition?.status === "ACTIVE" && (
                   <Button
-                    className="bg-utilityOrange h-6 !text-sm !py-0 ml-4"
+                    className="bg-utilityOrange ml-4 h-6 !py-0 !text-sm"
                     onClick={() => {
                       handlePublish(false);
                     }}
                     disabled={updatePositionLoading}
                     loading={updatePositionLoading}
                   >
-                    Unpublish
+                    Unpublish from Developer DAO
                   </Button>
                 )}
               </div>
@@ -2034,7 +2035,7 @@ const PositionCRM: NextPageWithLayout = () => {
   );
 };
 
-PositionCRM.getLayout = (page: any) => <AppUserLayout>{page}</AppUserLayout>;
+PositionCRM.getLayout = (page: any) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export default PositionCRM;
 

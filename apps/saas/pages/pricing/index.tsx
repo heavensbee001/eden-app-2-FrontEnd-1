@@ -3,10 +3,10 @@ import { gql, useMutation } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { EmployeeTypeInput } from "@eden/package-graphql/generated";
 import {
-  AppUserLayout,
   Button,
   EdenAiProcessingModal,
   Modal,
+  SaasUserLayout,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
@@ -216,8 +216,9 @@ const SubscribePage: NextPageWithLayout = () => {
   // const router = useRouter();
 
   // const { currentUser } = useContext(UserContext);
-  const [openCreateCompanyId, setOpenCreateCompanyId] =
-    useState<String | null>(null);
+  const [openCreateCompanyId, setOpenCreateCompanyId] = useState<String | null>(
+    null
+  );
 
   // eslint-disable-next-line no-unused-vars
   const handleSubscribeClick = async (slug: String) => {
@@ -249,19 +250,19 @@ const SubscribePage: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="h-screen flex items-center justify-center">
-        <div className="max-w-6xl grid grid-cols-3 gap-4">
+      <div className="flex h-screen items-center justify-center">
+        <div className="grid max-w-6xl grid-cols-3 gap-4">
           {PRODUCTS.map((product, index) => (
             <div
               key={index}
               className={classNames(
-                "relative col-span-1 rounded-md p-4 hover:scale-[1.01] transition-all",
+                "relative col-span-1 rounded-md p-4 transition-all hover:scale-[1.01]",
                 product.featured ? "bg-edenPink-300" : "bg-edenPink-100"
               )}
             >
               <div
                 className={classNames(
-                  "h-8 w-8 mx-auto mb-1 text-edenGreen-600 text-xl rounded-md flex items-center justify-center",
+                  "text-edenGreen-600 mx-auto mb-1 flex h-8 w-8 items-center justify-center rounded-md text-xl",
                   product.featured ? "bg-edenPink-100" : "bg-edenPink-300"
                 )}
               >
@@ -271,14 +272,14 @@ const SubscribePage: NextPageWithLayout = () => {
               <p className="mb-4 text-center text-sm">{product.description}</p>
               <div
                 className={classNames(
-                  "w-[calc(100%+2rem)] -mx-4 py-1 mb-4",
+                  "-mx-4 mb-4 w-[calc(100%+2rem)] py-1",
                   product.featured ? "bg-edenGreen-500" : "bg-edenPink-300"
                 )}
               >
-                <p className="text-xs text-center">
+                <p className="text-center text-xs">
                   <span
                     className={classNames(
-                      "font-semibold font-Moret text-2xl inline",
+                      "font-Moret inline text-2xl font-semibold",
                       product.featured ? "text-white" : "text-edenGreen-600"
                     )}
                   >
@@ -294,15 +295,15 @@ const SubscribePage: NextPageWithLayout = () => {
                 </p>
               </div>
               <section className="mb-4">
-                <h3 className="mb-2 text-edenGreen-600">Access</h3>
+                <h3 className="text-edenGreen-600 mb-2">Access</h3>
                 <ul>
                   {Object.keys(product.features.access).map(
                     (featName: string, index) => (
                       <li
                         key={index}
-                        className="relative pl-6 pr-10 text-xs mb-2"
+                        className="relative mb-2 pl-6 pr-10 text-xs"
                       >
-                        <div className="absolute left-0 top-px bg-edenGreen-500 h-4 w-4 text-edenPink-300 flex items-center justify-center rounded-full pr-px">
+                        <div className="bg-edenGreen-500 text-edenPink-300 absolute left-0 top-px flex h-4 w-4 items-center justify-center rounded-full pr-px">
                           <BiCheck className="" size={"1.4rem"} />
                         </div>
                         {product.features.access[featName].text}
@@ -319,16 +320,16 @@ const SubscribePage: NextPageWithLayout = () => {
                 </ul>
               </section>
               <section className="mb-4">
-                <h3 className="mb-2 text-edenGreen-600">Curation</h3>
+                <h3 className="text-edenGreen-600 mb-2">Curation</h3>
                 <ul>
                   {Object.keys(product.features.curation).map(
                     (featName: string, index) => (
                       <li
                         key={index}
-                        className="relative pl-6 pr-10 text-xs mb-2"
+                        className="relative mb-2 pl-6 pr-10 text-xs"
                       >
                         {product.features.curation[featName].value ? (
-                          <div className="absolute left-0 top-px bg-edenGreen-500 h-4 w-4 text-edenPink-300 flex items-center justify-center rounded-full pr-px">
+                          <div className="bg-edenGreen-500 text-edenPink-300 absolute left-0 top-px flex h-4 w-4 items-center justify-center rounded-full pr-px">
                             <BiCheck className="" size={"1.4rem"} />
                           </div>
                         ) : (
@@ -341,16 +342,16 @@ const SubscribePage: NextPageWithLayout = () => {
                 </ul>
               </section>
               <section className="mb-4">
-                <h3 className="mb-2 text-edenGreen-600">Exposure</h3>
+                <h3 className="text-edenGreen-600 mb-2">Exposure</h3>
                 <ul>
                   {Object.keys(product.features.exposure).map(
                     (featName: string, index) => (
                       <li
                         key={index}
-                        className="relative pl-6 pr-10 text-xs mb-2"
+                        className="relative mb-2 pl-6 pr-10 text-xs"
                       >
                         {product.features.exposure[featName].value ? (
-                          <div className="absolute left-0 top-px bg-edenGreen-500 h-4 w-4 text-edenPink-300 flex items-center justify-center rounded-full pr-px">
+                          <div className="bg-edenGreen-500 text-edenPink-300 absolute left-0 top-px flex h-4 w-4 items-center justify-center rounded-full pr-px">
                             <BiCheck className="" size={"1.4rem"} />
                           </div>
                         ) : (
@@ -364,7 +365,7 @@ const SubscribePage: NextPageWithLayout = () => {
               </section>
               <div className="w-full pt-2">
                 <Button
-                  className="block mx-auto"
+                  className="mx-auto block"
                   variant="secondary"
                   onClick={() => setOpenCreateCompanyId(product.priceID)}
                 >
@@ -385,7 +386,7 @@ const SubscribePage: NextPageWithLayout = () => {
   );
 };
 
-SubscribePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+SubscribePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -559,7 +560,7 @@ const CreateCompany = ({ onSubmit }: ICreateCompany) => {
 
             <Button type="submit" variant="secondary" className="mx-auto block">
               Checkout
-              <BsCreditCard size={16} className="inline ml-2 mb-px" />
+              <BsCreditCard size={16} className="mb-px ml-2 inline" />
             </Button>
           </section>
         </form>
