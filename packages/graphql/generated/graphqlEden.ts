@@ -3,14 +3,12 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-  {
-    [SubKey in K]?: Maybe<T[SubKey]>;
-  };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-  {
-    [SubKey in K]: Maybe<T[SubKey]>;
-  };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -72,6 +70,7 @@ export type CandidateType = {
   acceptedOrRejected?: Maybe<Scalars["Boolean"]>;
   analysisCandidateEdenAI?: Maybe<AnalysisCandidateEdenAiType>;
   averageScoreNotesInterview?: Maybe<Scalars["Float"]>;
+  candidateScoreCardCalculated?: Maybe<Scalars["Boolean"]>;
   compareCandidatePosition?: Maybe<CompareCandidatePositionType>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
   conversationID?: Maybe<Scalars["ID"]>;
@@ -517,9 +516,11 @@ export type Mutation = {
   applyGrant?: Maybe<GrantTemplate>;
   approveTweet?: Maybe<Project>;
   autoCalculatePrioritiesAndQuestions?: Maybe<Position>;
+  autoCreateCardsCandidatesAndScore?: Maybe<Position>;
   autoCreateCardsForPosition?: Maybe<Array<Maybe<CardMemory>>>;
   autoUpdateMemoryFromCV?: Maybe<AutoUpdateMemoryFromCvOutput>;
   autoUpdateMemoryFromPositionRequirments?: Maybe<AutoUpdateMemoryFromPositionRequirmentsOutput>;
+  autoUpdatePositionCompInformation?: Maybe<Position>;
   autoUpdateUserInfoFromCV?: Maybe<AutoUpdateUserInfoFromCvOutput>;
   calculateReputation?: Maybe<Members>;
   calculateScoreCardCandidateToPosition?: Maybe<Array<Maybe<CardMemory>>>;
@@ -572,6 +573,7 @@ export type Mutation = {
   messageToGPT?: Maybe<MessageToGptOutput>;
   moveCandidateToPosition?: Maybe<Position>;
   moveCandidateToPosition_V2?: Maybe<Position>;
+  moveCandidateToPosition_V3?: Maybe<Position>;
   newTweetProject?: Maybe<TweetsProject>;
   pitchPositionToCandidate?: Maybe<PitchPositionToCandidateOutput>;
   positionSuggestQuestionsAskCandidate?: Maybe<PositionSuggestQuestionsAskCandidateOutput>;
@@ -734,6 +736,10 @@ export type MutationAutoCalculatePrioritiesAndQuestionsArgs = {
   fields?: InputMaybe<AutoCalculatePrioritiesAndQuestionsInput>;
 };
 
+export type MutationAutoCreateCardsCandidatesAndScoreArgs = {
+  fields?: InputMaybe<AutoCreateCardsCandidatesAndScoreInput>;
+};
+
 export type MutationAutoCreateCardsForPositionArgs = {
   fields?: InputMaybe<AutoCreateCardsForPositionInput>;
 };
@@ -744,6 +750,10 @@ export type MutationAutoUpdateMemoryFromCvArgs = {
 
 export type MutationAutoUpdateMemoryFromPositionRequirmentsArgs = {
   fields?: InputMaybe<AutoUpdateMemoryFromPositionRequirmentsInput>;
+};
+
+export type MutationAutoUpdatePositionCompInformationArgs = {
+  fields?: InputMaybe<AutoUpdatePositionCompInformationInput>;
 };
 
 export type MutationAutoUpdateUserInfoFromCvArgs = {
@@ -952,6 +962,10 @@ export type MutationMoveCandidateToPositionArgs = {
 
 export type MutationMoveCandidateToPosition_V2Args = {
   fields?: InputMaybe<MoveCandidateToPosition_V2Input>;
+};
+
+export type MutationMoveCandidateToPosition_V3Args = {
+  fields?: InputMaybe<MoveCandidateToPosition_V3Input>;
 };
 
 export type MutationNewTweetProjectArgs = {
@@ -1238,6 +1252,7 @@ export type PaginatedSkills = {
 export type Position = {
   __typename?: "Position";
   _id?: Maybe<Scalars["ID"]>;
+  allCandidateScoreCardCalculated?: Maybe<Scalars["Boolean"]>;
   candidates?: Maybe<Array<Maybe<CandidateType>>>;
   candidatesFlagAnalysisCreated?: Maybe<Scalars["Boolean"]>;
   candidatesReadyToDisplay?: Maybe<Scalars["Boolean"]>;
@@ -2559,6 +2574,11 @@ export type AuthorCardMemoryInput = {
 
 export type AutoCalculatePrioritiesAndQuestionsInput = {
   nothing?: InputMaybe<Scalars["String"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type AutoCreateCardsCandidatesAndScoreInput = {
+  nothing?: InputMaybe<Scalars["String"]>;
 };
 
 export type AutoCreateCardsForPositionInput = {
@@ -2581,6 +2601,11 @@ export type AutoUpdateMemoryFromPositionRequirmentsInput = {
 export type AutoUpdateMemoryFromPositionRequirmentsOutput = {
   __typename?: "autoUpdateMemoryFromPositionRequirmentsOutput";
   positions?: Maybe<Array<Maybe<Position>>>;
+};
+
+export type AutoUpdatePositionCompInformationInput = {
+  mustUpdate?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  positionID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type AutoUpdateUserInfoFromCvInput = {
@@ -4384,6 +4409,13 @@ export type MoveCandidateToPositionInput = {
 export type MoveCandidateToPosition_V2Input = {
   positionNewID?: InputMaybe<Scalars["ID"]>;
   positionOldID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type MoveCandidateToPosition_V3Input = {
+  positionNewID?: InputMaybe<Scalars["ID"]>;
+  positionOldID?: InputMaybe<Scalars["ID"]>;
+  sendMessageCandidateTG?: InputMaybe<Scalars["String"]>;
   userID?: InputMaybe<Scalars["ID"]>;
 };
 
