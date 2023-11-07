@@ -364,14 +364,16 @@ const PositionPage: NextPageWithLayout = ({
                   <p className="text-edenGray-500 text-xs">Login to see</p>
                 </div>
               </div>
-              <div className="mb-4">
-                <SlLocationPin
-                  size={24}
-                  className="text-edenGreen-600 mr-3 inline-block"
-                />
-                <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+              {(getValues("generalDetails.officeLocation") ||
+                getValues("generalDetails.officePolicy") ||
+                (editMode && editCompany)) && (
+                <div className="mb-4">
+                  <SlLocationPin
+                    size={24}
+                    className="text-edenGreen-600 mr-3 inline-block"
+                  />
                   {editMode && editCompany ? (
-                    <>
+                    <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
                       <select
                         {...register("generalDetails.officePolicy")}
                         disabled={!(editMode && editCompany)}
@@ -398,25 +400,32 @@ const PositionPage: NextPageWithLayout = ({
                           Hybrid - 4 day office
                         </option>
                       </select>
-                    </>
+                    </div>
                   ) : (
-                    getValues("generalDetails.officePolicy") &&
-                    parseOfficePolicy(getValues("generalDetails.officePolicy"))
+                    getValues("generalDetails.officePolicy") && (
+                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+                        {parseOfficePolicy(
+                          getValues("generalDetails.officePolicy")
+                        )}
+                      </div>
+                    )
                   )}
-                </div>
-                <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
                   {editMode && editCompany ? (
-                    <>
+                    <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
                       <input
                         {...register("generalDetails.officeLocation")}
                         className={classNames(editInputClasses, "")}
                       />
-                    </>
+                    </div>
                   ) : (
-                    getValues("generalDetails.officeLocation")
+                    getValues("generalDetails.officeLocation") && (
+                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+                        {getValues("generalDetails.officeLocation")}
+                      </div>
+                    )
                   )}
                 </div>
-              </div>
+              )}
             </div>
             <div className="border-edenGreen-300 col-span-7 border-l-2 pl-4">
               {editMode && editCompany ? (
@@ -496,7 +505,7 @@ const PositionPage: NextPageWithLayout = ({
                   )}
                 </p>
               )}
-              {(editMode || position?.company?.tags?.length) && (
+              {(editMode || !!position?.company?.tags?.length) && (
                 <p className="mb-2 text-sm">
                   <GoTag
                     size={24}
