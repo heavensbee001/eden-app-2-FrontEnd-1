@@ -29,7 +29,10 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       generalDetails {
         officePolicy
         contractType
-        yearlySalary
+        yearlySalary {
+          min
+          max
+        }
       }
       company {
         _id
@@ -272,10 +275,11 @@ const HomePage: NextPageWithLayout = () => {
                               ? " • " + position?.generalDetails?.contractType
                               : " • Full Time"}
                           </p>
-                          {(!!position?.generalDetails?.yearlySalary ||
-                            position?.generalDetails?.yearlySalary === 0) && (
+                          {(!!position?.generalDetails?.yearlySalary?.min ||
+                            position?.generalDetails?.yearlySalary?.min ===
+                              0) && (
                             <p className="text-edenGray-500 text-xs">
-                              ${position?.generalDetails?.yearlySalary}
+                              ${position?.generalDetails?.yearlySalary.min}
                             </p>
                           )}
                         </div>

@@ -90,7 +90,10 @@ const PositionPage: NextPageWithLayout = ({
         whoYouAre: position.whoYouAre || "",
         whatTheJobInvolves: position.whatTheJobInvolves || "",
         generalDetails: {
-          yearlySalary: position.generalDetails?.yearlySalary,
+          yearlySalary: {
+            min: position.generalDetails?.yearlySalary?.min,
+            max: position.generalDetails?.yearlySalary?.max,
+          },
           officeLocation: position.generalDetails?.officeLocation || "",
           officePolicy: position.generalDetails?.officePolicy || "",
         },
@@ -285,30 +288,69 @@ const PositionPage: NextPageWithLayout = ({
                   `${getValues("name")}, ${position?.company?.name}`
                 )}
               </h1>
-              <div className="mb-4">
-                <TbMoneybag
-                  size={24}
-                  className="text-edenGreen-600 mr-3 inline-block"
-                />
-                <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
-                  {editMode && editCompany ? (
-                    <>
-                      {`$ `}
-                      <input
-                        type="number"
-                        {...register("generalDetails.yearlySalary", {
-                          valueAsNumber: true,
-                        })}
-                        className={classNames(editInputClasses, "w-20")}
-                      />
-                    </>
-                  ) : (
-                    `$ ${formattedSalary(
-                      getValues("generalDetails.yearlySalary")
-                    )}`
-                  )}
+
+              {editMode && editCompany ? (
+                <div className="mb-4">
+                  <TbMoneybag
+                    size={24}
+                    className="text-edenGreen-600 mr-3 inline-block"
+                  />
+                  <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
+                    {`$ `}
+                    <input
+                      type="number"
+                      placeholder="min salary"
+                      {...register("generalDetails.yearlySalary.min", {
+                        valueAsNumber: true,
+                      })}
+                      className={classNames(editInputClasses, "ml-0 mr-1 w-20")}
+                    />
+                    {` -  $`}
+                    <input
+                      type="number"
+                      placeholder="max salary"
+                      {...register("generalDetails.yearlySalary.max", {
+                        valueAsNumber: true,
+                      })}
+                      className={classNames(editInputClasses, "ml-1 w-20")}
+                    />
+                  </div>
                 </div>
-              </div>
+              ) : getValues("generalDetails.yearlySalary.min") ||
+                getValues("generalDetails.yearlySalary.min") === 0 ||
+                getValues("generalDetails.yearlySalary.max") ||
+                getValues("generalDetails.yearlySalary.max") === 0 ? (
+                <div className="mb-4">
+                  <TbMoneybag
+                    size={24}
+                    className="text-edenGreen-600 mr-3 inline-block"
+                  />
+                  <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
+                    {`${
+                      getValues("generalDetails.yearlySalary.min") ||
+                      getValues("generalDetails.yearlySalary.min") === 0
+                        ? `$ ${formattedSalary(
+                            getValues("generalDetails.yearlySalary.min")
+                          )}`
+                        : ""
+                    }${
+                      (getValues("generalDetails.yearlySalary.min") ||
+                        getValues("generalDetails.yearlySalary.min") === 0) &&
+                      (getValues("generalDetails.yearlySalary.max") ||
+                        getValues("generalDetails.yearlySalary.max") === 0)
+                        ? `  -  `
+                        : ""
+                    }${
+                      getValues("generalDetails.yearlySalary.max") ||
+                      getValues("generalDetails.yearlySalary.max") === 0
+                        ? `$ ${formattedSalary(
+                            getValues("generalDetails.yearlySalary.max")
+                          )}`
+                        : ""
+                    }`}
+                  </div>
+                </div>
+              ) : null}
               <div className="mb-4 flex items-center">
                 <BsStar
                   size={24}
@@ -394,7 +436,7 @@ const PositionPage: NextPageWithLayout = ({
                   )}
                   <img
                     src={getValues("company.imageUrl") || ""}
-                    className="h-20"
+                    className="mb-2 h-20"
                     alt={position?.company?.name || ""}
                   />
                   <HiPencil
@@ -413,7 +455,7 @@ const PositionPage: NextPageWithLayout = ({
               ) : (
                 <img
                   src={getValues("company.imageUrl") || ""}
-                  className="h-20"
+                  className="mb-2 h-20"
                   alt={position?.company?.name || ""}
                 />
               )}
@@ -943,7 +985,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
             glassdoor
           }
           generalDetails {
-            yearlySalary
+            yearlySalary {
+              min
+              max
+            }
             officePolicy
             officeLocation
           }

@@ -1277,6 +1277,7 @@ export type Position = {
   talentList?: Maybe<Array<Maybe<TalentListType>>>;
   url?: Maybe<Scalars["String"]>;
   whatTheJobInvolves?: Maybe<Scalars["String"]>;
+  whatsToLove?: Maybe<Scalars["String"]>;
   whoYouAre?: Maybe<Scalars["String"]>;
 };
 
@@ -3984,7 +3985,7 @@ export type GeneralDetailsType = {
   socials?: Maybe<SocialsType>;
   startDate?: Maybe<Scalars["String"]>;
   visaRequired?: Maybe<Scalars["Boolean"]>;
-  yearlySalary?: Maybe<Scalars["Float"]>;
+  yearlySalary?: Maybe<YearlySalaryType>;
 };
 
 export type IdentifyCategoryAndReplyInput = {
@@ -5351,6 +5352,7 @@ export type UnansweredQuestionsType = {
 
 export type UpdateAnalysisEdenAiCandidatesInput = {
   positionIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  userID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type UpdateChatReplyInput = {
@@ -5528,7 +5530,7 @@ export type UpdatePositionGeneralDetailsInput = {
   startDate?: InputMaybe<Scalars["String"]>;
   status?: InputMaybe<PositionStatus>;
   visaRequired?: InputMaybe<Scalars["Boolean"]>;
-  yearlySalary?: InputMaybe<Scalars["Float"]>;
+  yearlySalary?: InputMaybe<YearlySalaryInput>;
 };
 
 export type UpdatePositionInput = {
@@ -5541,6 +5543,7 @@ export type UpdatePositionInput = {
   status?: InputMaybe<PositionStatus>;
   updatePosition?: InputMaybe<Scalars["ID"]>;
   whatTheJobInvolves?: InputMaybe<Scalars["String"]>;
+  whatsToLove?: InputMaybe<Scalars["String"]>;
   whoYouAre?: InputMaybe<Scalars["String"]>;
 };
 
@@ -5717,6 +5720,17 @@ export enum WidgetTypeEnum {
 export type WidgetVarsType = {
   __typename?: "widgetVarsType";
   memories?: Maybe<Array<Maybe<CardMemory>>>;
+};
+
+export type YearlySalaryInput = {
+  max?: InputMaybe<Scalars["Int"]>;
+  min?: InputMaybe<Scalars["Int"]>;
+};
+
+export type YearlySalaryType = {
+  __typename?: "yearlySalaryType";
+  max?: Maybe<Scalars["Int"]>;
+  min?: Maybe<Scalars["Int"]>;
 };
 
 export interface PossibleTypesResultData {
