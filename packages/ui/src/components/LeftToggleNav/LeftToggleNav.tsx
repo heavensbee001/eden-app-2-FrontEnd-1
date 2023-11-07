@@ -5,6 +5,7 @@ import {
   Button,
   EdenAiProcessingModal,
   MenuDropdown,
+  Modal,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
@@ -13,6 +14,7 @@ import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
 import { IconPickerItem } from "react-fa-icon-picker";
+import { useForm } from "react-hook-form";
 import { BiPlus } from "react-icons/bi";
 import {
   BsChevronDown,
@@ -27,6 +29,43 @@ const UPDATE_POSITION = gql`
   mutation ($fields: updatePositionInput!) {
     updatePosition(fields: $fields) {
       _id
+    }
+  }
+`;
+const AUTO_UPDATE_POSITION = gql`
+  mutation AutoUpdatePositionCompInformation(
+    $fields: autoUpdatePositionCompInformationInput
+  ) {
+    autoUpdatePositionCompInformation(fields: $fields) {
+      _id
+      name
+      whoYouAre
+
+      company {
+        _id
+        name
+        description
+        mission
+        whatsToLove
+      }
+    }
+  }
+`;
+const BULK_UPDATE_POSITION = gql`
+  mutation (
+    $fieldsUpdatePosition: updatePositionInput!
+    $fieldsWebsiteToMemoryCompany: websiteToMemoryCompanyInput!
+  ) {
+    updatePosition(fields: $fieldsUpdatePosition) {
+      _id
+    }
+    websiteToMemoryCompany(fields: $fieldsWebsiteToMemoryCompany) {
+      report
+      interviewQuestionsForPosition {
+        originalQuestionID
+        originalContent
+        personalizedContent
+      }
     }
   }
 `;
@@ -50,17 +89,53 @@ export const LeftToggleNav = ({
   const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
     null
   );
+  const [createPositionOpen, setCreatePositionOpen] = useState<boolean>(false);
+  const [newPositionId, setNewPositionId] = useState<string | null>(null);
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
       getCompanyFunc();
-      router
-        .push(
-          `/${company?.slug}/jobs/${updatePositionData.updatePosition._id}?edit=true`
-        )
-        .then(() => {
-          setUpdatePositionLoading(false);
-        });
+      setNewPositionId(updatePositionData.updatePosition._id);
+      setUpdatePositionLoading(false);
+      setCreatePositionOpen(true);
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const [autoUpdatePosition] = useMutation(AUTO_UPDATE_POSITION, {
+    onCompleted(autoUpdatePositionData) {
+      getCompanyFunc();
+      router.push(
+        `/${company?.slug}/jobs/${autoUpdatePositionData.autoUpdatePositionCompInformation._id}?edit=true`
+      );
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const [bulkUpdatePosition] = useMutation(BULK_UPDATE_POSITION, {
+    onCompleted() {
+      // getCompanyFunc();
+      autoUpdatePosition({
+        variables: {
+          fields: {
+            positionID: newPositionId,
+            mustUpdate: [
+              "mission",
+              "description",
+              "whoYouAre",
+              "whatTheJobInvolves",
+              "benefits",
+              "values",
+              "founders",
+              "whatsToLove",
+            ],
+          },
+        },
+      });
     },
     onError() {
       setUpdatePositionLoading(false);
@@ -73,6 +148,23 @@ export const LeftToggleNav = ({
       open={updatePositionLoading}
     ></EdenAiProcessingModal>
   );
+
+  const handleSubmitCreatePosition = (data: any) => {
+    setUpdatePositionLoading(true);
+
+    bulkUpdatePosition({
+      variables: {
+        fieldsUpdatePosition: {
+          _id: newPositionId,
+          name: data.name,
+        },
+        fieldsWebsiteToMemoryCompany: {
+          positionID: newPositionId,
+          message: data.description,
+        },
+      },
+    });
+  };
 
   const handleCreatePosition = () => {
     const randId = uuidv4();
@@ -267,6 +359,11 @@ export const LeftToggleNav = ({
             )}
           </Button>
           {creatingPositionModal}
+          <CreatePositionModal
+            onClose={() => setCreatePositionOpen(false)}
+            open={createPositionOpen}
+            onSubmit={handleSubmitCreatePosition}
+          />
         </section>
       )}
 
@@ -351,4 +448,62 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
       )}
     </div>
   ) : null;
+};
+
+export interface CreatePositionModalProps {
+  open: boolean;
+  onClose: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSubmit: (data: any) => void;
+}
+
+const CreatePositionModal = ({
+  open,
+  onClose,
+  onSubmit,
+}: CreatePositionModalProps) => {
+  const { register, handleSubmit } = useForm<any>({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
+
+  return (
+    <Modal open={open} onClose={onClose} closeOnEsc title="Create opportunity">
+      <form>
+        <div className="mb-4">
+          <label className="text-edenGray-700 mb-1 block text-sm">
+            Title of your opportunity
+          </label>
+          <input
+            type="text"
+            {...register("name")}
+            placeholder="Write a title"
+            className="border-edenGray-500 block w-full rounded-md border bg-transparent px-3 py-2 focus:outline-none"
+          />
+        </div>
+        <div className="mb-8">
+          <label className="text-edenGray-700 mb-1 block text-sm">
+            {
+              "Paste your job description below. Don't worry about making it look pretty, we'll fix all that in a bit."
+            }
+          </label>
+          <textarea
+            {...register("description")}
+            rows={5}
+            placeholder="This is a sample text..."
+            className="border-edenGray-500 block w-full rounded-md border bg-transparent px-3 py-2 focus:outline-none"
+          />
+        </div>
+        <Button
+          onClick={handleSubmit((data) => onSubmit(data))}
+          variant="secondary"
+          className="mx-auto block"
+        >
+          Submit
+        </Button>
+      </form>
+    </Modal>
+  );
 };

@@ -29,7 +29,10 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       generalDetails {
         officePolicy
         contractType
-        yearlySalary
+        yearlySalary {
+          min
+          max
+        }
       }
       company {
         _id
