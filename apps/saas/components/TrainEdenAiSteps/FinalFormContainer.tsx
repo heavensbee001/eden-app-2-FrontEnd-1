@@ -14,30 +14,30 @@ interface IFinalFormContainerProps {
 }
 
 type FormData = {
-  targetedStartDate: Date;
-  visaRequirements: "yes" | "no";
-  officePolicy:
-    | "on-site"
-    | "remote"
-    | "hybrid-1-day-office"
-    | "hybrid-2-day-office"
-    | "hybrid-3-day-office"
-    | "hybrid-4-day-office";
-  officeLocation: string;
-  contractType: "fulltime" | "parttime" | "freelance" | "intern";
-  contractDuration: string; // You can specify more options if you have them
-  yearlySalary: number;
+  // targetedStartDate: Date;
+  // visaRequirements: "yes" | "no";
+  // officePolicy:
+  //   | "on-site"
+  //   | "remote"
+  //   | "hybrid-1-day-office"
+  //   | "hybrid-2-day-office"
+  //   | "hybrid-3-day-office"
+  //   | "hybrid-4-day-office";
+  // officeLocation: string;
+  // contractType: "fulltime" | "parttime" | "freelance" | "intern";
+  // contractDuration: string; // You can specify more options if you have them
+  // yearlySalary: number;
   socials: { [key: string]: string };
 };
 
 const defaultFormValues: FormData = {
-  targetedStartDate: new Date(),
-  visaRequirements: "yes",
-  officePolicy: "on-site",
-  officeLocation: "",
-  contractType: "fulltime",
-  contractDuration: "",
-  yearlySalary: 0,
+  // targetedStartDate: new Date(),
+  // visaRequirements: "yes",
+  // officePolicy: "on-site",
+  // officeLocation: "",
+  // contractType: "fulltime",
+  // contractDuration: "",
+  // yearlySalary: 0,
   socials: {},
 };
 
@@ -53,23 +53,23 @@ export const FinalFormContainer = ({ onChange }: IFinalFormContainerProps) => {
 
   useMemo(() => {
     onChange({
-      targetedStartDate: formData["targetedStartDate"],
-      visaRequirements: formData["visaRequirements"] === "yes" ? true : false,
-      officePolicy: formData["officePolicy"],
-      officeLocation: formData["officeLocation"],
-      contractType: formData["contractType"],
-      contractDuration: formData["contractDuration"],
-      yearlySalary: formData["yearlySalary"],
+      // targetedStartDate: formData["targetedStartDate"],
+      // visaRequirements: formData["visaRequirements"] === "yes" ? true : false,
+      // officePolicy: formData["officePolicy"],
+      // officeLocation: formData["officeLocation"],
+      // contractType: formData["contractType"],
+      // contractDuration: formData["contractDuration"],
+      // yearlySalary: formData["yearlySalary"],
       socials: formData["socials"],
     } as GeneralDetailsType);
   }, [
-    formData["targetedStartDate"],
-    formData["visaRequirements"],
-    formData["officePolicy"],
-    formData["officeLocation"],
-    formData["contractType"],
-    formData["contractDuration"],
-    formData["yearlySalary"],
+    // formData["targetedStartDate"],
+    // formData["visaRequirements"],
+    // formData["officePolicy"],
+    // formData["officeLocation"],
+    // formData["contractType"],
+    // formData["contractDuration"],
+    // formData["yearlySalary"],
     formData["socials"],
   ]);
 
