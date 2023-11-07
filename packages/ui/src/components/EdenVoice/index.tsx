@@ -1,26 +1,8 @@
-import { gql, useMutation } from "@apollo/client";
 import React, { useRef, useState } from "react";
-
-const TRANSCRIBED_AUDIO_TO_TEXT = gql`
-  mutation ($fields: transcribeAudioToTextInput) {
-    transcribeAudioToText(fields: $fields) {
-      transcription
-    }
-  }
-`;
 
 const EdenVoice: React.FC = () => {
   const [recording, setRecording] = useState<boolean>(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
-
-  const [TranscribeAudioToText, {}] = useMutation(TRANSCRIBED_AUDIO_TO_TEXT, {
-    onCompleted: (data) => {
-      console.log(data);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
 
   const startRecording = async () => {
     try {
@@ -39,41 +21,39 @@ const EdenVoice: React.FC = () => {
       mediaRecorder.current.ondataavailable = async () => {
         const audioBlob = event.data;
 
-        console.log("audioBlob", audioBlob);
-        // Create a URL representing the audio blob
-        const audioUrl = URL.createObjectURL(audioBlob);
+        if (audioBlob.size > 25 * 1024 * 1024) {
+          console.error("File size exceeds the 25 MB limit");
 
-        console.log("audioUrl", audioUrl);
+          return;
+        }
 
-        //Create a new Audio object
-        const audio = new Audio(audioUrl);
+        const formData = new FormData();
 
-        TranscribeAudioToText({
-          variables: {
-            fields: {
-              audioFile: audioBlob,
-            },
-          },
-        });
+        formData.append("audiofile", audioBlob, "recording.web");
 
-        console.log("audio", audio);
-        // audio.play();
+        try {
+          const response = await fetch(
+            `http://localhost:5001/transcribe-audio`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
 
-        // Transcribe the audio blob using Whisper API
-        // const transcription = await transcribeAudio(audioBlob);
-        // Display the transcription in your chat interface
-        // ...
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const result = await response.json();
+
+          console.log("Trancribed Text:", result.transciption);
+        } catch (error) {
+          console.error("Error trancribing audio: ", error);
+        }
       };
       mediaRecorder.current.stop();
       setRecording(false);
     }
-  };
-
-  const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
-    // Implement your logic to send the audioBlob to Whisper API
-    // and return the transcription
-    // ...
-    return "";
   };
 
   return (

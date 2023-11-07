@@ -6,6 +6,7 @@ import {
   EdenAiProcessingModal,
   SaasUserLayout,
 } from "@eden/package-ui";
+import EdenVoice from "@eden/package-ui/src/components/EdenVoice";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
