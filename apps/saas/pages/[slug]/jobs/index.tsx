@@ -2,19 +2,20 @@ import { gql, useQuery } from "@apollo/client";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
+  AppUserLayout,
   Badge,
   Button,
   EdenIconExclamation,
   EdenTooltip,
-  SaasUserLayout,
   SEO,
 } from "@eden/package-ui";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
-import { useContext } from "react";
-import { IconPickerItem } from "react-fa-icon-picker";
+import { useContext, useEffect, useRef, useState } from "react";
+// import { IconPickerItem } from "react-fa-icon-picker";
+import ReactTooltip from "react-tooltip";
 
 import type { NextPageWithLayout } from "../../_app";
 
@@ -25,9 +26,15 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       name
       status
       icon
+      generalDetails {
+        officePolicy
+        contractType
+        yearlySalary
+      }
       company {
         _id
         name
+        imageUrl
       }
     }
   }
@@ -49,20 +56,73 @@ const FAKE_MATCHSTIMATES = [
   },
 ];
 
+type CutTextTooltipProps = {
+  text?: Maybe<string>;
+};
+
+const CutTextTooltip = ({ text }: CutTextTooltipProps) => {
+  const elementRef = useRef<HTMLDivElement | null>(null);
+  const [tooltipDisable, setTooltipDisable] = useState(true);
+
+  const handleTooltipVisible = () => {
+    if (elementRef.current) {
+      const element = elementRef.current;
+      const isTruncated = element.scrollWidth > element.clientWidth;
+
+      setTooltipDisable(!isTruncated);
+    }
+  };
+
+  useEffect(() => {
+    handleTooltipVisible();
+
+    window.addEventListener("resize", handleTooltipVisible);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      window.removeEventListener("resize", handleTooltipVisible);
+    };
+  }, []);
+
+  return (
+    <>
+      <div
+        data-tip={text}
+        data-for={`badgeTip-${text}`}
+        className="text-truncate"
+        ref={elementRef}
+      >
+        {text}
+        <ReactTooltip
+          id={`badgeTip-${text}`}
+          className="w-fit rounded-xl bg-black !opacity-100"
+          place="top"
+          disable={tooltipDisable}
+          effect="solid"
+        >
+          {text}
+        </ReactTooltip>
+      </div>
+    </>
+  );
+};
+
 const HomePage: NextPageWithLayout = () => {
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
   const { company } = useContext(CompanyContext);
+
+  console.log("company", company);
   const { currentUser } = useContext(UserContext);
+
   const { data: findPositionsOfCommunityData } = useQuery(
     FIND_POSITIONS_OF_COMMUNITY,
     {
       variables: {
         fields: {
-          communityID: company?._id,
+          slug: router.query.slug,
         },
       },
-      skip: !company,
     }
   );
 
@@ -138,34 +198,27 @@ const HomePage: NextPageWithLayout = () => {
         ></div>
       </section> */}
       <div className="w-[67%] px-8">
-        {!currentUser && (
-          <section className="bg-edenPink-100 mb-4 rounded-md p-4">
-            <h2 className="text-edenGreen-600 mb-2">
-              Use AI to leverage the {company?.name} network & land your dream
-              gig.
-            </h2>
-            <p className="text-edenGray-900 mb-4 text-sm">
-              {
-                "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
-              }
-              {/* <Link
-                href={"https://www.youtube.com/watch?v=S_vJBkCDYNs"}
-                className="underline"
-              >
-                here
-              </Link> */}
-              {/* ) */}
-            </p>
-            <Button
-              onClick={() => {
-                // signIn("google", { callbackUrl: router.asPath });
-                router.push("/signup");
-              }}
-            >
-              Join the oasis
-            </Button>
-          </section>
-        )}
+        {/* {!currentUser && ( */}
+        <section className="bg-edenPink-100 mb-4 rounded-md p-4">
+          <h2 className="text-edenGreen-600 mb-2">
+            Use AI to leverage the {company?.name} network & land your dream
+            gig.
+          </h2>
+          <p className="text-edenGray-900 mb-4 text-sm">
+            {
+              "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
+            }
+          </p>
+          <Button
+            onClick={() => {
+              // signIn("google", { callbackUrl: router.asPath });
+              router.push("/signup");
+            }}
+          >
+            Join the oasis
+          </Button>
+        </section>
+        {/* )} */}
         <section className="">
           <h3 className="mb-2">Open opportunities</h3>
           <div className="-m-2 w-full">
@@ -176,38 +229,48 @@ const HomePage: NextPageWithLayout = () => {
                   _position?.status !== "DELETED"
               )
               ?.map((position: Maybe<Position>, index: number) => {
+                console.log(position);
                 // const randMatchstimate =
                 //   FAKE_MATCHSTIMATES[Math.round(Math.random() * 2)];
 
                 return (
                   <div
                     key={index}
-                    className="border-edenGray-100 relative relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
+                    className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
                     onClick={() => {
-                      router.push(`/interview/${position?._id}`);
+                      router.push(`/eden/jobs/${position?._id}`);
                     }}
                   >
                     <div className="flex flex-row items-center justify-between">
-                      <div className="max-w-[calc(100%-117px)]">
+                      <div className="w-full max-w-[calc(100%-117px)]">
                         <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
-                          <IconPickerItem
+                          {/* <IconPickerItem
                             icon={position?.icon || "FaCode"}
                             size={"2rem"}
-                            color="#00462C"
+                            color='#00462C'
+                          /> */}
+                          <Image
+                            width="48"
+                            height="48"
+                            src={`${
+                              position?.company?.imageUrl
+                                ? position?.company?.imageUrl
+                                : "/default-company-image.png"
+                            }`}
+                            alt={`${position?.company?.name} company image`}
                           />
                         </div>
                         <div className="pl-16">
-                          <p className="text-edenGray-900 font-medium">
-                            {position?.name}
-                          </p>
+                          <CutTextTooltip text={position?.name} />
                           <p className="text-edenGray-900">
                             {position?.company?.name}
                           </p>
                           <p className="text-edenGray-900 text-sm">
                             {position?.generalDetails?.officePolicy &&
                               position?.generalDetails?.officePolicy}
-                            {position?.generalDetails?.contractType &&
-                              " • " + position?.generalDetails?.contractType}
+                            {position?.generalDetails?.contractType
+                              ? " • " + position?.generalDetails?.contractType
+                              : " • Full Time"}
                           </p>
                           {(!!position?.generalDetails?.yearlySalary ||
                             position?.generalDetails?.yearlySalary === 0) && (
@@ -220,7 +283,7 @@ const HomePage: NextPageWithLayout = () => {
                       <div className="relative h-5 w-[117px]">
                         <div className="border-forestGreen text-edenGreen-500 rounded-full border-2 pl-4 text-xs leading-4">
                           {"what's to Love"}
-                          <div className="absolute right-0 top-0">
+                          <div className="absolute -right-1 top-0">
                             <EdenTooltip
                               id={`${position?._id}`}
                               innerTsx={
@@ -246,7 +309,7 @@ const HomePage: NextPageWithLayout = () => {
                     <div
                       className="bg-edenGreen-200 absolute bottom-2 right-2 h-6 w-6 rounded-full p-1"
                       onClick={() => {
-                        router.push(`/interview/${position?._id}`);
+                        router.push(`/eden/jobs/${position?._id}`);
                       }}
                     >
                       <div className="text-edenGreen-500 align-center flex h-4 w-4 items-center justify-around">
@@ -275,13 +338,19 @@ const HomePage: NextPageWithLayout = () => {
           <div className="flex flex-row items-center justify-between">
             {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
             {/* also src should be company.imageUrl */}
-            {company.url ? (
-              <Image
-                className="h-[68px] w-[68px] rounded-full"
-                src={`${company.url}`}
-                alt={`${company.name} company image`}
-              />
-            ) : null}
+
+            <Image
+              className="rounded-full"
+              width="68"
+              height="68"
+              src={`${
+                company.imageUrl
+                  ? company.imageUrl
+                  : "/default-company-image.png"
+              }`}
+              alt={`${company.name} company image`}
+            />
+
             <Button
               variant="secondary"
               className="float-right"
@@ -373,6 +442,6 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
+HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
