@@ -496,7 +496,7 @@ const PositionPage: NextPageWithLayout = ({
                   )}
                 </p>
               )}
-              {(editMode || position?.company?.tags?.length) && (
+              {(editMode || !!position?.company?.tags?.length) && (
                 <p className="mb-2 text-sm">
                   <GoTag
                     size={24}
