@@ -25,7 +25,7 @@ import {
   UseFormGetValues,
   UseFormRegister,
 } from "react-hook-form";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { AiOutlineEyeInvisible, AiOutlineUserAdd } from "react-icons/ai";
 import { BsLightningFill, BsStar } from "react-icons/bs";
 import { GoTag } from "react-icons/go";
 import {
@@ -34,6 +34,7 @@ import {
   HiOutlineUsers,
   HiPencil,
 } from "react-icons/hi";
+import { HiFlag } from "react-icons/hi2";
 import { SlLocationPin } from "react-icons/sl";
 import { TbMoneybag } from "react-icons/tb";
 import { toast } from "react-toastify";
@@ -605,9 +606,9 @@ const PositionPage: NextPageWithLayout = ({
             </section>
 
             {/* ---- SHARE & REPORT ---- */}
-            <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md px-6 py-4">
+            <section className="bg-edenPink-100 mb-8 grid grid-cols-2 gap-4 overflow-hidden rounded-md px-6 py-4">
               <div
-                className="group flex w-fit cursor-pointer items-center"
+                className="group col-span-1 flex w-fit cursor-pointer items-center"
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `https://edenprotocol.app/${position.company?.slug}/jobs/${position._id}`
@@ -616,11 +617,31 @@ const PositionPage: NextPageWithLayout = ({
                 }}
               >
                 <HiOutlineShare
-                  size={24}
+                  size={20}
                   className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
                 />
-                <span className="group-hover:text-edenGray-500 group-hover:underline">
+                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
                   Share this job
+                </span>
+              </div>
+              <div className="group col-span-1 flex w-fit cursor-pointer items-center">
+                <HiFlag
+                  size={20}
+                  className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
+                />
+                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
+                  <a href="mailto:tom@joineden.xyz">
+                    Report a problem with this job
+                  </a>
+                </span>
+              </div>
+              <div className="group col-span-1 flex w-fit cursor-pointer items-center">
+                <AiOutlineUserAdd
+                  size={20}
+                  className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
+                />
+                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
+                  <a href="mailto:tom@joineden.xyz">Refer someone & get paid</a>
                 </span>
               </div>
             </section>
