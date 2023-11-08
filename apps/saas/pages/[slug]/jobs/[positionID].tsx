@@ -7,6 +7,7 @@ import {
   Loading,
   Modal,
   SEO,
+  Tooltip,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
@@ -24,7 +25,7 @@ import {
   UseFormGetValues,
   UseFormRegister,
 } from "react-hook-form";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { AiOutlineEyeInvisible, AiOutlineUserAdd } from "react-icons/ai";
 import { BsLightningFill, BsStar } from "react-icons/bs";
 import { GoTag } from "react-icons/go";
 import {
@@ -33,6 +34,7 @@ import {
   HiOutlineUsers,
   HiPencil,
 } from "react-icons/hi";
+import { HiFlag } from "react-icons/hi2";
 import { SlLocationPin } from "react-icons/sl";
 import { TbMoneybag } from "react-icons/tb";
 import { toast } from "react-toastify";
@@ -66,7 +68,7 @@ const BULK_UPDATE = gql`
 `;
 
 const editInputClasses =
-  "inline-block bg-transparent -my-[2px] -mx-2 border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none";
+  "inline-block bg-transparent -my-[2px] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none";
 
 const PositionPage: NextPageWithLayout = ({
   position,
@@ -78,13 +80,13 @@ const PositionPage: NextPageWithLayout = ({
 
   const editMode = edit === "true";
 
-  const [editCompany, setEditCompany] = useState(false);
+  const [editCompany] = useState(true);
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
 
-  const { control, register, handleSubmit, getValues, setValue, watch } =
-    useForm<any>({
+  const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
+    {
       defaultValues: {
         name: position.name || "",
         whoYouAre: position.whoYouAre || "",
@@ -116,7 +118,8 @@ const PositionPage: NextPageWithLayout = ({
           whatsToLove: position.company?.whatsToLove,
         },
       },
-    });
+    }
+  );
 
   const fileInput = useRef<HTMLInputElement | null>(null);
 
@@ -158,9 +161,9 @@ const PositionPage: NextPageWithLayout = ({
         },
       },
     });
+    setPublishModalOpen(false);
+    setConfettiRun(true);
   };
-
-  console.log(watch("generalDetails.officePolicy"));
 
   const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files[0]) {
@@ -234,8 +237,7 @@ const PositionPage: NextPageWithLayout = ({
   const ref = useRef(null);
 
   useEffect(() => {
-    if (publishModalOpen) {
-      setConfettiRun(true);
+    if (confettiRun) {
       // @ts-ignore
       setWidth(ref.current?.clientWidth || 0);
       // @ts-ignore
@@ -244,7 +246,7 @@ const PositionPage: NextPageWithLayout = ({
         setConfettiRun(false);
       }, 2500);
     }
-  }, [publishModalOpen]);
+  }, [confettiRun]);
 
   return (
     <>
@@ -263,7 +265,7 @@ const PositionPage: NextPageWithLayout = ({
           }}
         >
           <div className="relative grid w-4/5 max-w-4xl grid-cols-12 rounded-md bg-white p-10">
-            {editMode && (
+            {/* {editMode && (
               <button
                 className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-700 disabled:border-edenGray-700 absolute right-4 top-4 flex items-center whitespace-nowrap rounded-md border px-2"
                 onClick={() => {
@@ -273,7 +275,7 @@ const PositionPage: NextPageWithLayout = ({
                 <HiPencil size={16} className="mr-2 inline-block" />
                 Edit
               </button>
-            )}
+            )} */}
             <div className="col-span-5">
               <h1 className="text-edenGreen-600 mb-10">
                 {editMode && editCompany ? (
@@ -360,8 +362,22 @@ const PositionPage: NextPageWithLayout = ({
                   <h4 className="text-lg">?</h4>
                 </div>
                 <div>
-                  <h3 className="text-edenGreen-600">Matchstimate</h3>
-                  <p className="text-edenGray-500 text-xs">Login to see</p>
+                  <div className="flex flex-nowrap items-center">
+                    <h3 className="text-edenGreen-600">Matchstimate{"  "}</h3>
+                    <Tooltip className="inline">
+                      This helps candidates understand if this opportunity is a
+                      match for them.
+                    </Tooltip>
+                  </div>
+                  <p className="text-edenGray-500 text-xs">
+                    <Link
+                      href={`/interview/${position._id}`}
+                      className="underline"
+                    >
+                      Upload your resume
+                    </Link>{" "}
+                    to unlock
+                  </p>
                 </div>
               </div>
               {(getValues("generalDetails.officeLocation") ||
@@ -434,7 +450,7 @@ const PositionPage: NextPageWithLayout = ({
                   className={classNames(
                     "relative block w-fit cursor-pointer rounded-md hover:bg-black hover:bg-opacity-20",
                     editMode
-                      ? "border-utilityOrange -mx-2 -my-[2px] mb-1 border-2"
+                      ? "border-utilityOrange -my-[2px] mb-1 border-2"
                       : ""
                   )}
                 >
@@ -472,6 +488,7 @@ const PositionPage: NextPageWithLayout = ({
                 {editMode && editCompany ? (
                   <>
                     <textarea
+                      rows={2}
                       {...register("company.description")}
                       className={classNames(editInputClasses, "w-full")}
                     />
@@ -589,9 +606,9 @@ const PositionPage: NextPageWithLayout = ({
             </section>
 
             {/* ---- SHARE & REPORT ---- */}
-            <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md px-6 py-4">
+            <section className="bg-edenPink-100 mb-8 grid grid-cols-2 gap-4 overflow-hidden rounded-md px-6 py-4">
               <div
-                className="group flex w-fit cursor-pointer items-center"
+                className="group col-span-1 flex w-fit cursor-pointer items-center"
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `https://edenprotocol.app/${position.company?.slug}/jobs/${position._id}`
@@ -600,11 +617,31 @@ const PositionPage: NextPageWithLayout = ({
                 }}
               >
                 <HiOutlineShare
-                  size={24}
+                  size={20}
                   className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
                 />
-                <span className="group-hover:text-edenGray-500 group-hover:underline">
+                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
                   Share this job
+                </span>
+              </div>
+              <div className="group col-span-1 flex w-fit cursor-pointer items-center">
+                <HiFlag
+                  size={20}
+                  className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
+                />
+                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
+                  <a href="mailto:tom@joineden.xyz">
+                    Report a problem with this job
+                  </a>
+                </span>
+              </div>
+              <div className="group col-span-1 flex w-fit cursor-pointer items-center">
+                <AiOutlineUserAdd
+                  size={20}
+                  className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
+                />
+                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
+                  <a href="mailto:tom@joineden.xyz">Refer someone & get paid</a>
                 </span>
               </div>
             </section>
@@ -641,7 +678,7 @@ const PositionPage: NextPageWithLayout = ({
                       //   router.push(`/interview/${position._id}`);
                       // }}
                     >
-                      Upload CV
+                      Upload Your Resume
                     </Button>
                   </Link>
                 </div>
@@ -1224,8 +1261,8 @@ const CompanyTagsField = ({
                 placeholder="date"
                 {...register(`company.tags.${index}`)}
                 className={classNames(
-                  editInputClasses,
-                  "-mx-2! w-[calc(100%+1rem)] px-0"
+                  "-mx-2 w-[calc(100%+1rem)] px-0",
+                  editInputClasses
                 )}
               />
             ) : (

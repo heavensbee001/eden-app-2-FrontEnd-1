@@ -1,4 +1,4 @@
-import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
+// import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
 import ReactTooltip from "react-tooltip";
 import { v4 as uuidv4 } from "uuid";
 
@@ -12,20 +12,26 @@ export const Tooltip = ({ tipId, children, className }: TooltipProps) => {
 
   return (
     <>
-      <QuestionMarkCircleIcon
+      <div
         data-tip
         data-for={id}
-        className={`${className} h-5 w-5 cursor-pointer text-gray-500`}
-      />
+        className={`${className} text-2xs inline-block cursor-pointer text-gray-500`}
+      >
+        <div
+          className={`border-edenGray-500 flex h-4 w-4 items-center justify-center rounded-full border-2 font-bold`}
+        >
+          i
+        </div>
+      </div>
       <ReactTooltip
         border
         id={id}
         place="top"
         effect="solid"
-        textColor="#AAAAAA"
-        className="max-w-xs"
-        borderColor="#AAAAAA"
-        backgroundColor="#FFF"
+        textColor="#FFF"
+        className="max-w-xs text-xs font-normal"
+        borderColor="#000346"
+        backgroundColor="#000346"
       >
         {children}
       </ReactTooltip>
