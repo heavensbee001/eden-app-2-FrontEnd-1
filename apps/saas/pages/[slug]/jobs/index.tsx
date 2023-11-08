@@ -245,11 +245,7 @@ const HomePage: NextPageWithLayout = () => {
                     }}
                   >
                     <div className="flex w-full flex-row items-center pr-14">
-                      <div
-                        className={`${
-                          position?.company?.imageUrl ? "" : "bg-edenGreen-600"
-                        } flex h-[60px] w-[60px] items-center justify-around rounded-md`}
-                      >
+                      <div className="flex h-[60px] w-[60px] items-center justify-around rounded-md">
                         {/* <IconPickerItem
                             icon={position?.icon || "FaCode"}
                             size={"2rem"}
@@ -276,7 +272,7 @@ const HomePage: NextPageWithLayout = () => {
                             position?.generalDetails?.officePolicy}
                           {position?.generalDetails?.contractType
                             ? " • " + position?.generalDetails?.contractType
-                            : " • Full Time"}
+                            : " • Fulltime"}
                         </p>
                         {(!!position?.generalDetails?.yearlySalary?.min ||
                           position?.generalDetails?.yearlySalary?.min ===
