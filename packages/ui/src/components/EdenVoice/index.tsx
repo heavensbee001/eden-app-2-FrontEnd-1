@@ -32,6 +32,8 @@ const EdenVoice: React.FC<EdenVoiceProps> = ({
       mediaRecorder.current.ondataavailable = async () => {
         const audioBlob = event.data;
 
+        recordingStateChange(false);
+
         if (audioBlob.size > 25 * 1024 * 1024) {
           console.error("File size exceeds the 25 MB limit");
 
@@ -44,7 +46,7 @@ const EdenVoice: React.FC<EdenVoiceProps> = ({
 
         try {
           const response = await fetch(
-            `http://localhost:5001:/storage/transcribeWhisper`,
+            `${process.env.NEXT_PUBLIC_AUTH_URL}/storage/transcribeWhisper` as string,
             {
               method: "POST",
               body: formData,
