@@ -239,79 +239,84 @@ const HomePage: NextPageWithLayout = () => {
                 return (
                   <div
                     key={index}
-                    className="border-edenGray-100 relative m-2 inline-block w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
+                    className="border-edenGray-100 relative m-2 inline-block h-[135px] w-[calc(50%-2rem)] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
                     onClick={() => {
                       router.push(`/eden/jobs/${position?._id}`);
                     }}
                   >
-                    <div className="flex flex-row items-center justify-between">
-                      <div className="w-full max-w-[calc(100%-117px)]">
-                        <div className="bg-edenPink-400 absolute left-4 top-4 mr-4 flex h-12 w-12 items-center justify-center rounded-md pl-px">
-                          {/* <IconPickerItem
+                    <div className="flex w-full flex-row items-center pr-14">
+                      <div
+                        className={`${
+                          position?.company?.imageUrl ? "" : "bg-edenGreen-600"
+                        } flex h-[60px] w-[60px] items-center justify-around rounded-md`}
+                      >
+                        {/* <IconPickerItem
                             icon={position?.icon || "FaCode"}
                             size={"2rem"}
                             color='#00462C'
                           /> */}
-                          <Image
-                            width="48"
-                            height="48"
-                            src={`${
-                              position?.company?.imageUrl
-                                ? position?.company?.imageUrl
-                                : "/default-company-image.png"
-                            }`}
-                            alt={`${position?.company?.name} company image`}
-                          />
-                        </div>
-                        <div className="pl-16">
-                          <CutTextTooltip text={position?.name} />
-                          <p className="text-edenGray-900">
-                            {position?.company?.name}
-                          </p>
-                          <p className="text-edenGray-900 text-sm">
-                            {position?.generalDetails?.officePolicy &&
-                              position?.generalDetails?.officePolicy}
-                            {position?.generalDetails?.contractType
-                              ? " • " + position?.generalDetails?.contractType
-                              : " • Full Time"}
-                          </p>
-                          {(!!position?.generalDetails?.yearlySalary?.min ||
-                            position?.generalDetails?.yearlySalary?.min ===
-                              0) && (
-                            <p className="text-edenGray-500 text-xs">
-                              ${position?.generalDetails?.yearlySalary.min}
-                            </p>
-                          )}
-                        </div>
+                        <Image
+                          width="48"
+                          height="48"
+                          src={`${
+                            position?.company?.imageUrl
+                              ? position?.company?.imageUrl
+                              : "/default-company-image.png"
+                          }`}
+                          alt={`${position?.company?.name} company image`}
+                        />
                       </div>
-                      <div className="relative h-5 w-[117px]">
-                        <div className="border-forestGreen text-edenGreen-500 rounded-full border-2 pl-4 text-xs leading-4">
-                          {"what's to Love"}
-                          <div className="absolute -right-1 top-0">
-                            <EdenTooltip
-                              id={`${position?._id}`}
-                              innerTsx={
-                                <div className="w-60">
-                                  <p>This is Eden</p>
-                                </div>
-                              }
-                              place="top"
-                              effect="solid"
-                              backgroundColor="white"
-                              border
-                              borderColor="#e5e7eb"
-                              padding="0.5rem"
-                            >
-                              <div className="bg-edenPink-200 h-5 w-5 rounded-full p-1 shadow-md">
-                                <EdenIconExclamation className="h-full w-full" />
-                              </div>
-                            </EdenTooltip>
-                          </div>
-                        </div>
+                      <div className="ml-2 w-full max-w-[calc(100%-64px)]">
+                        <CutTextTooltip text={position?.name} />
+                        <p className="text-edenGray-900">
+                          {position?.company?.name}
+                        </p>
+                        <p className="text-edenGray-900 text-sm capitalize">
+                          {position?.generalDetails?.officePolicy &&
+                            position?.generalDetails?.officePolicy}
+                          {position?.generalDetails?.contractType
+                            ? " • " + position?.generalDetails?.contractType
+                            : " • Full Time"}
+                        </p>
+                        {(!!position?.generalDetails?.yearlySalary?.min ||
+                          position?.generalDetails?.yearlySalary?.min ===
+                            0) && (
+                          <p className="text-edenGray-500 text-xs">
+                            $
+                            {position?.generalDetails?.yearlySalary.min / 1000 +
+                              "k"}
+                            {position?.generalDetails?.yearlySalary.max
+                              ? " - $" +
+                                position?.generalDetails.yearlySalary.max /
+                                  1000 +
+                                "k"
+                              : ""}
+                          </p>
+                        )}
                       </div>
                     </div>
+                    <div className="absolute right-6 top-6 flex h-full flex-col justify-between">
+                      <EdenTooltip
+                        id={`${position?._id}`}
+                        innerTsx={
+                          <div className="w-60">
+                            <p>This is Eden</p>
+                          </div>
+                        }
+                        place="top"
+                        effect="solid"
+                        backgroundColor="white"
+                        border
+                        borderColor="#e5e7eb"
+                        padding="0.5rem"
+                      >
+                        <div className="bg-edenPink-200 h-[35px] w-[35px] rounded-full p-1 shadow-md">
+                          <EdenIconExclamation className="h-full w-full" />
+                        </div>
+                      </EdenTooltip>
+                    </div>
                     <div
-                      className="bg-edenGreen-200 absolute bottom-2 right-2 h-6 w-6 rounded-full p-1"
+                      className="bg-edenGreen-200 absolute bottom-6 right-6 flex h-[35px] w-[35px] items-center justify-around rounded-full p-1"
                       onClick={() => {
                         router.push(`/eden/jobs/${position?._id}`);
                       }}
