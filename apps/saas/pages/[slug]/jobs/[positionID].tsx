@@ -7,6 +7,7 @@ import {
   Loading,
   Modal,
   SEO,
+  Tooltip,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
@@ -360,8 +361,22 @@ const PositionPage: NextPageWithLayout = ({
                   <h4 className="text-lg">?</h4>
                 </div>
                 <div>
-                  <h3 className="text-edenGreen-600">Matchstimate</h3>
-                  <p className="text-edenGray-500 text-xs">Login to see</p>
+                  <div className="flex flex-nowrap items-center">
+                    <h3 className="text-edenGreen-600">Matchstimate{"  "}</h3>
+                    <Tooltip className="inline">
+                      This helps candidates understand if this opportunity is a
+                      match for them.
+                    </Tooltip>
+                  </div>
+                  <p className="text-edenGray-500 text-xs">
+                    <Link
+                      href={`/interview/${position._id}`}
+                      className="underline"
+                    >
+                      Upload your resume
+                    </Link>{" "}
+                    to unlock
+                  </p>
                 </div>
               </div>
               {(getValues("generalDetails.officeLocation") ||
@@ -642,7 +657,7 @@ const PositionPage: NextPageWithLayout = ({
                       //   router.push(`/interview/${position._id}`);
                       // }}
                     >
-                      Upload CV
+                      Upload Your Resume
                     </Button>
                   </Link>
                 </div>
