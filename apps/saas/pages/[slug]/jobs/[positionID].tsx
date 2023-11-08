@@ -66,7 +66,7 @@ const BULK_UPDATE = gql`
 `;
 
 const editInputClasses =
-  "inline-block bg-transparent -my-[2px] -mx-2 border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none";
+  "inline-block bg-transparent -my-[2px] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none";
 
 const PositionPage: NextPageWithLayout = ({
   position,
@@ -78,7 +78,7 @@ const PositionPage: NextPageWithLayout = ({
 
   const editMode = edit === "true";
 
-  const [editCompany, setEditCompany] = useState(false);
+  const [editCompany] = useState(true);
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
@@ -263,7 +263,7 @@ const PositionPage: NextPageWithLayout = ({
           }}
         >
           <div className="relative grid w-4/5 max-w-4xl grid-cols-12 rounded-md bg-white p-10">
-            {editMode && (
+            {/* {editMode && (
               <button
                 className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-700 disabled:border-edenGray-700 absolute right-4 top-4 flex items-center whitespace-nowrap rounded-md border px-2"
                 onClick={() => {
@@ -273,7 +273,7 @@ const PositionPage: NextPageWithLayout = ({
                 <HiPencil size={16} className="mr-2 inline-block" />
                 Edit
               </button>
-            )}
+            )} */}
             <div className="col-span-5">
               <h1 className="text-edenGreen-600 mb-10">
                 {editMode && editCompany ? (
@@ -434,7 +434,7 @@ const PositionPage: NextPageWithLayout = ({
                   className={classNames(
                     "relative block w-fit cursor-pointer rounded-md hover:bg-black hover:bg-opacity-20",
                     editMode
-                      ? "border-utilityOrange -mx-2 -my-[2px] mb-1 border-2"
+                      ? "border-utilityOrange -my-[2px] mb-1 border-2"
                       : ""
                   )}
                 >
@@ -472,6 +472,7 @@ const PositionPage: NextPageWithLayout = ({
                 {editMode && editCompany ? (
                   <>
                     <textarea
+                      rows={2}
                       {...register("company.description")}
                       className={classNames(editInputClasses, "w-full")}
                     />
@@ -1224,8 +1225,8 @@ const CompanyTagsField = ({
                 placeholder="date"
                 {...register(`company.tags.${index}`)}
                 className={classNames(
-                  editInputClasses,
-                  "-mx-2! w-[calc(100%+1rem)] px-0"
+                  "-mx-2 w-[calc(100%+1rem)] px-0",
+                  editInputClasses
                 )}
               />
             ) : (
