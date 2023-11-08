@@ -3,6 +3,7 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
+import EdenVoice from "../EdenVoice";
 
 // import { AiOutlineSend } from "react-icons/ai";
 // import { CiLocationArrow1 } from "react-icons/ci";
@@ -72,6 +73,9 @@ export const ChatSimple = ({
   const [inputMessage, setInputMessage] = useState("");
   const [ctrlKeyDown, setCtrlKeyDown] = useState(false);
   const [numberOfLines, setNumberOfLines] = useState(1);
+  //For Eden voice
+  const [transcription, setTranscription] = useState<string>("");
+  const [recording, setRecording] = useState<boolean>(false);
 
   useEffect(() => {
     // Keep the scroll position at the bottom of the component
@@ -156,6 +160,14 @@ export const ChatSimple = ({
 
   //   return time;
   // };
+
+  const handleTranscription = (newTranscription: string) => {
+    setTranscription(newTranscription);
+  };
+
+  const handleRecordingState = (recording: boolean) => {
+    setRecording(recording);
+  };
 
   return (
     <>
@@ -283,6 +295,11 @@ export const ChatSimple = ({
                 inputMessage.length > 58 || numberOfLines > 1 ? "h-40" : "h-20"
               )}
             >
+              <EdenVoice
+                onTranscriptionComplete={handleTranscription}
+                recordingStateChange={handleRecordingState}
+              />
+              <p>{recording ? "Recording" : "Not Recording"}</p>
               <textarea
                 className={classNames(
                   "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",

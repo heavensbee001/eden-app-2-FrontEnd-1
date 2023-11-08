@@ -1,6 +1,16 @@
 import React, { useRef, useState } from "react";
 
-const EdenVoice: React.FC = () => {
+import { MicrophoneIcon } from "@heroicons/react/solid";
+
+interface EdenVoiceProps {
+  onTranscriptionColmplete: (transcription: string) => void;
+  recordingStateChange: (recording: boolean) => void;
+}
+
+const EdenVoice: React.FC<EdenVoiceProps> = ({
+  onTranscriptionColmplete,
+  recordingStateChange,
+}) => {
   const [recording, setRecording] = useState<boolean>(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
 
@@ -11,6 +21,7 @@ const EdenVoice: React.FC = () => {
       mediaRecorder.current = new MediaRecorder(stream);
       mediaRecorder.current.start();
       setRecording(true);
+      recordingStateChange(true);
     } catch (error) {
       console.error("Error starting recording: ", error);
     }
@@ -33,7 +44,7 @@ const EdenVoice: React.FC = () => {
 
         try {
           const response = await fetch(
-            `http://localhost:5001/transcribe-audio`,
+            `http://localhost:5001:/storage/transcribeWhisper`,
             {
               method: "POST",
               body: formData,
@@ -47,6 +58,7 @@ const EdenVoice: React.FC = () => {
           const result = await response.json();
 
           console.log("Trancribed Text:", result.transciption);
+          onTranscriptionColmplete(result);
         } catch (error) {
           console.error("Error trancribing audio: ", error);
         }
@@ -58,12 +70,13 @@ const EdenVoice: React.FC = () => {
 
   return (
     <div>
-      <button onClick={startRecording} disabled={recording}>
-        Record
-      </button>
-      <button onClick={stopRecording} disabled={!recording}>
-        Stop
-      </button>
+      {!recording ? (
+        <button onClick={startRecording} disabled={recording}>
+          <MicrophoneIcon className="h-4 w-4" />
+        </button>
+      ) : (
+        <button onClick={stopRecording}>Stop</button>
+      )}
     </div>
   );
 };
