@@ -470,7 +470,10 @@ const CreatePositionModal = ({
   });
 
   return (
-    <Modal open={open} onClose={onClose} closeOnEsc title="Create opportunity">
+    <Modal open={open} onClose={onClose} closeOnEsc>
+      <h2 className="text-edenGreen-600 mb-4 text-center">
+        Launch opportunity
+      </h2>
       <form>
         <div className="mb-4">
           <label className="text-edenGray-700 mb-1 block text-sm">
