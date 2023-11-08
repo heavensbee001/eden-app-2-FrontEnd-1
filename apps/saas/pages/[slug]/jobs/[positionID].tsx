@@ -85,8 +85,8 @@ const PositionPage: NextPageWithLayout = ({
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
 
-  const { control, register, handleSubmit, getValues, setValue, watch } =
-    useForm<any>({
+  const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
+    {
       defaultValues: {
         name: position.name || "",
         whoYouAre: position.whoYouAre || "",
@@ -118,7 +118,8 @@ const PositionPage: NextPageWithLayout = ({
           whatsToLove: position.company?.whatsToLove,
         },
       },
-    });
+    }
+  );
 
   const fileInput = useRef<HTMLInputElement | null>(null);
 
@@ -160,9 +161,9 @@ const PositionPage: NextPageWithLayout = ({
         },
       },
     });
+    setPublishModalOpen(false);
+    setConfettiRun(true);
   };
-
-  console.log(watch("generalDetails.officePolicy"));
 
   const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files[0]) {
@@ -236,8 +237,7 @@ const PositionPage: NextPageWithLayout = ({
   const ref = useRef(null);
 
   useEffect(() => {
-    if (publishModalOpen) {
-      setConfettiRun(true);
+    if (confettiRun) {
       // @ts-ignore
       setWidth(ref.current?.clientWidth || 0);
       // @ts-ignore
@@ -246,7 +246,7 @@ const PositionPage: NextPageWithLayout = ({
         setConfettiRun(false);
       }, 2500);
     }
-  }, [publishModalOpen]);
+  }, [confettiRun]);
 
   return (
     <>
