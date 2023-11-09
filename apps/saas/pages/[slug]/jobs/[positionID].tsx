@@ -582,7 +582,7 @@ const PositionPage: NextPageWithLayout = ({
             </div>
           </div>
         </section>
-        <div className="mx-auto grid w-4/5 max-w-4xl grid-cols-12 gap-x-8 px-8 py-16">
+        <div className="mx-auto grid w-4/5 max-w-4xl grid-cols-12 gap-x-8 px-4 py-16">
           {/* ---- POSITION DETAILS ---- */}
           <div className="col-span-12 md:col-span-6">
             <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
@@ -630,7 +630,7 @@ const PositionPage: NextPageWithLayout = ({
             </section>
 
             {/* ---- SHARE & REPORT ---- */}
-            <section className="bg-edenPink-100 mb-8 grid grid-cols-2 gap-4 overflow-hidden rounded-md px-6 py-4">
+            <section className="bg-edenPink-100 mb-8 grid grid-cols-2 gap-4 overflow-hidden rounded-md px-4 py-4">
               <div
                 className="group col-span-1 flex w-fit cursor-pointer items-center"
                 onClick={() => {
@@ -644,7 +644,7 @@ const PositionPage: NextPageWithLayout = ({
                   size={20}
                   className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
                 />
-                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
+                <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
                   Share this job
                 </span>
               </div>
@@ -653,7 +653,7 @@ const PositionPage: NextPageWithLayout = ({
                   size={20}
                   className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
                 />
-                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
+                <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
                   <a href="mailto:tom@joineden.xyz">
                     Report a problem with this job
                   </a>
@@ -664,7 +664,7 @@ const PositionPage: NextPageWithLayout = ({
                   size={20}
                   className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
                 />
-                <span className="group-hover:text-edenGray-500 text-xs group-hover:underline">
+                <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
                   <a href="mailto:tom@joineden.xyz">Refer someone & get paid</a>
                 </span>
               </div>
@@ -718,7 +718,7 @@ const PositionPage: NextPageWithLayout = ({
                 {/* ---- MISSION ---- */}
                 {(position?.company?.mission || editMode) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Company Mission</h3>
+                    <h3 className="text-edenGreen-600">About the company</h3>
                     <p className="text-xs">
                       {editMode ? (
                         <>

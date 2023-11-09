@@ -248,7 +248,7 @@ const HomePage: NextPageWithLayout = () => {
                 <p className="text-edenGray-900 text-center">
                   {findPositionData?.findPosition?.company?.type === "COMMUNITY"
                     ? `You're about to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
-                    : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
+                    : `Let's check if you're a good fit for the ${findPositionData?.findPosition?.name} role at ${findPositionData?.findPosition?.company?.name}!`}
                 </p>
               </div>
             )}
