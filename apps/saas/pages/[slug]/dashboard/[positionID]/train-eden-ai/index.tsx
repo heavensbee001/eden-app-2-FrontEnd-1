@@ -20,6 +20,7 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import { classNames } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -169,10 +170,10 @@ const UPADTE_PRIORITIES_AND_TRADEOFFS = gql`
 // };
 
 const FLOW_TITLES = [
-  {
-    title: "Tell me about your opportunity!",
-    subtitle: "You're launching a new opportunity with Eden.",
-  },
+  // {
+  //   title: "Tell me about your opportunity!",
+  //   subtitle: "You're launching a new opportunity with Eden.",
+  // },
   {
     title: "Some questions to make sure we're on the same page!",
     subtitle:
@@ -210,7 +211,9 @@ const TrainAiPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID, panda } = router.query;
 
-  // const [interviewEnded, setInterviewEnded] = useState(false);
+  const [interviewEnded, setInterviewEnded] = useState(false);
+  const [createQuestionsEnded, setCreateQuestionsEnded] = useState(false);
+  const [alignmentEnded, setAlignmentEnded] = useState(false);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [step, setStep] = useState<number>(0);
 
@@ -237,9 +240,9 @@ const TrainAiPage: NextPageWithLayout = () => {
     defaultValues: { position: "", pastedText: "" },
   });
 
-  // const handleInterviewEnd = () => {
-  //   setInterviewEnded(true);
-  // };
+  const handleInterviewEnd = () => {
+    setInterviewEnded(true);
+  };
 
   // const [scraping, setScraping] = useState<boolean>(false);
   // const [report, setReport] = useState<string | null>(null);
@@ -616,7 +619,12 @@ const TrainAiPage: NextPageWithLayout = () => {
                   nextButton={
                     <Button
                       variant="secondary"
-                      className="mx-auto"
+                      className={classNames(
+                        "mx-auto",
+                        !interviewEnded
+                          ? "!text-edenGray-500 !bg-edenGray-100"
+                          : ""
+                      )}
                       onClick={() => {
                         setShowInterviewModal(true);
                       }}
@@ -628,10 +636,10 @@ const TrainAiPage: NextPageWithLayout = () => {
                 >
                   <div className="relative mx-auto h-full w-full max-w-2xl">
                     <InterviewEdenAIContainer
-                    // handleEnd={handleInterviewEnd}
-                    // interviewQuestionsForPosition={
-                    //   interviewQuestionsForPosition
-                    // }
+                      handleEnd={handleInterviewEnd}
+                      // interviewQuestionsForPosition={
+                      //   interviewQuestionsForPosition
+                      // }
                     />
                   </div>
                   <Modal open={showInterviewModal} closeOnEsc={false}>
@@ -706,20 +714,24 @@ const TrainAiPage: NextPageWithLayout = () => {
                   label={"Alignment"}
                   navigationDisabled={!panda}
                   nextButton={
-                    <Button
-                      variant="secondary"
-                      className="mx-auto"
-                      onClick={() => {
-                        handleSubmitAlignment();
-                      }}
-                      loading={loadingUpdateReportToPosition}
-                      disabled={
-                        !watch("position.positionsRequirements.content") ||
-                        loadingUpdateReportToPosition
-                      }
-                    >
-                      Save & Continue
-                    </Button>
+                    alignmentEnded ? (
+                      <Button
+                        variant="secondary"
+                        className="mx-auto"
+                        onClick={() => {
+                          handleSubmitAlignment();
+                        }}
+                        loading={loadingUpdateReportToPosition}
+                        disabled={
+                          !watch("position.positionsRequirements.content") ||
+                          loadingUpdateReportToPosition
+                        }
+                      >
+                        Save & Continue
+                      </Button>
+                    ) : (
+                      <></>
+                    )
                   }
                 >
                   <div className="mx-auto h-full max-w-2xl">
@@ -732,6 +744,9 @@ const TrainAiPage: NextPageWithLayout = () => {
                     <ProfileQuestionsContainer
                       onChange={(val) => {
                         setValue("position.positionsRequirements.content", val);
+                      }}
+                      onLastStep={(isLastStep: boolean) => {
+                        setAlignmentEnded(isLastStep);
                       }}
                     />
                     {loadingUpdateQuestionsToPosition && (
@@ -753,14 +768,18 @@ const TrainAiPage: NextPageWithLayout = () => {
                   label={"Eden Suggestions"}
                   navigationDisabled={!panda}
                   nextButton={
-                    <Button
-                      variant={"primary"}
-                      className="mx-auto"
-                      loading={loadingUpdateQuestionsToPosition}
-                      onClick={() => handleSaveChangesInterviewQuestions()}
-                    >
-                      Save & Continue
-                    </Button>
+                    createQuestionsEnded ? (
+                      <Button
+                        variant={"primary"}
+                        className="mx-auto"
+                        loading={loadingUpdateQuestionsToPosition}
+                        onClick={() => handleSaveChangesInterviewQuestions()}
+                      >
+                        Save & Continue
+                      </Button>
+                    ) : (
+                      <></>
+                    )
                   }
                 >
                   <div className="relative mx-auto h-full max-w-2xl">
@@ -775,6 +794,9 @@ const TrainAiPage: NextPageWithLayout = () => {
                     <CreateQuestions
                       onChange={(data: QuestionType[]) => {
                         setValue("position.questionsToAsk", data);
+                      }}
+                      onLastStep={(isLastStep: boolean) => {
+                        setCreateQuestionsEnded(isLastStep);
                       }}
                     />
                     {loadingUpdateQuestionsToPosition && (

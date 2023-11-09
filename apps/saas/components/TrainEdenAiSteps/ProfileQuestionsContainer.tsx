@@ -29,10 +29,13 @@ type QuestionGroupedByCategory = {
 interface IProfileQuestionsContainerProps {
   // eslint-disable-next-line no-unused-vars
   onChange: (val: any) => void;
+  // eslint-disable-next-line no-unused-vars
+  onLastStep: (isLastStep: boolean) => void;
 }
 
 export const ProfileQuestionsContainer = ({
   onChange,
+  onLastStep,
 }: IProfileQuestionsContainerProps) => {
   // const { currentUser } = useContext(UserContext);
   // eslint-disable-next-line no-unused-vars
@@ -41,8 +44,9 @@ export const ProfileQuestionsContainer = ({
 
   const [scraping, setScraping] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const [editQuestionIndex, setEditQuestionIndex] =
-    useState<number | null>(null);
+  const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
+    null
+  );
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -192,8 +196,16 @@ export const ProfileQuestionsContainer = ({
     onChange(convertCategoryToText(categories, questions));
   }, [categories, questions]);
 
+  useEffect(() => {
+    if (index === Object.keys(questions).length - 1) {
+      onLastStep(true);
+    } else {
+      onLastStep(false);
+    }
+  }, [index]);
+
   return (
-    <div className="w-full">
+    <div className="relative mt-6 w-full pt-3">
       {scraping && (
         <EdenAiProcessingModal
           open={scraping}
@@ -207,7 +219,8 @@ export const ProfileQuestionsContainer = ({
       {!scraping && questions && (
         <div className="whitespace-pre-wrap">
           <Tab.Group
-            defaultIndex={index}
+            defaultIndex={0}
+            selectedIndex={index}
             onChange={(index: number) => {
               setIndex(index);
             }}
@@ -292,6 +305,17 @@ export const ProfileQuestionsContainer = ({
               ))}
             </Tab.Panels>
           </Tab.Group>
+        </div>
+      )}
+      {index !== Object.keys(questions).length - 1 && (
+        <div className={"pointer-events-none fixed bottom-0 w-full max-w-2xl"}>
+          <Button
+            variant={"primary"}
+            className={"bg-bgColor pointer-events-auto mx-auto block"}
+            onClick={() => setIndex(index + 1)}
+          >
+            Continue
+          </Button>
         </div>
       )}
     </div>

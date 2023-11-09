@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 
 import { classNames } from "../../../utils";
 import {
@@ -48,6 +48,9 @@ export interface IAskEdenPopUpProps {
   service: AI_INTERVIEW_SERVICES;
   placeholder?: string;
   title?: string;
+  className?: string;
+  forceOpen?: boolean;
+  onClose?: () => void;
 }
 
 export const AskEdenPopUp = ({
@@ -55,6 +58,9 @@ export const AskEdenPopUp = ({
   service,
   placeholder = "Ask me any question",
   title,
+  className = "",
+  forceOpen = false,
+  onClose,
 }: IAskEdenPopUpProps) => {
   const [open, setOpen] = useState(false);
 
@@ -105,14 +111,26 @@ export const AskEdenPopUp = ({
   // eslint-disable-next-line no-unused-vars
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
+  useEffect(() => {
+    if (forceOpen) {
+      setOpen(true);
+    }
+  }, [forceOpen]);
+
+  useEffect(() => {
+    if (!open && onClose) {
+      onClose!();
+    }
+  }, [open]);
+
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-40">
+      <div className={classNames("fixed bottom-4 right-4 z-40", className)}>
         <div
           className={classNames(
-            "relative drop-shadow-sm rounded-full cursor-pointer transition-all ease-in-out",
+            "relative cursor-pointer rounded-full drop-shadow-sm transition-all ease-in-out",
             title
-              ? "h-[calc(3rem+4px)] overflow-hidden scrollbar-hide border-2 border-edenGreen-600 pl-4 flex items-center justify-between bg-white hover:bg-edenGreen-100"
+              ? "scrollbar-hide border-edenGreen-600 hover:bg-edenGreen-100 flex h-[calc(3rem+4px)] items-center justify-between overflow-hidden border-2 bg-white pl-4"
               : "",
             open && title ? "max-w-[calc(3rem+4px)]" : "max-w-[50vw]"
           )}
@@ -123,15 +141,15 @@ export const AskEdenPopUp = ({
           )}
           <div
             className={classNames(
-              "w-12 h-12 bg-edenPink-400 rounded-full flex items-center justify-center cursor-pointer transition-all transform ease-in-out",
+              "bg-edenPink-400 flex h-12 w-12 transform cursor-pointer items-center justify-center rounded-full transition-all ease-in-out",
               open ? "-rotate-45" : "rotate-0",
               title ? "absolute right-0 float-right" : ""
             )}
           >
             {open ? (
-              <EdenIconQuestion className="w-8 h-8" />
+              <EdenIconQuestion className="h-8 w-8" />
             ) : (
-              <EdenIconExclamationAndQuestion className="w-8 h-8" />
+              <EdenIconExclamationAndQuestion className="h-8 w-8" />
             )}
           </div>
         </div>
@@ -145,7 +163,7 @@ export const AskEdenPopUp = ({
           leaveFrom="w-[30rem] h-[70vh]"
           leaveTo="w-0 h-0"
         >
-          <div className="max-w-lg absolute right-0 bottom-14 overflow-hidden">
+          <div className="absolute bottom-14 right-0 max-w-lg overflow-hidden">
             <InterviewEdenAI
               key={experienceTypeID}
               aiReplyService={service}
@@ -175,7 +193,7 @@ export const AskEdenPopUp = ({
       </div>
       {open && (
         <div
-          className="z-30 fixed w-screen h-screen top-0 left-0"
+          className="fixed left-0 top-0 z-30 h-screen w-screen"
           onClick={(e) => {
             e.stopPropagation();
             setOpen(false);
