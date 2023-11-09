@@ -156,9 +156,8 @@ export const PrioritiesAndTradeOffsContainer = ({
       )}
       <section className="bg-edenPink-100 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
-        <p className="mb-6 text-center">
-          Here&apos;s what I got your priorities are - please re-arrange as you
-          see fit.
+        <p className="mb-6 text-center text-sm">
+          {"Here's your priorities. Feel free to re-arrange"}
         </p>
         <ul className="">
           {priorities &&
@@ -229,9 +228,8 @@ export const PrioritiesAndTradeOffsContainer = ({
       </section>
       <section className="bg-edenPink-100 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Tradeoffs</h2>
-        <p className="mb-6 text-center">
-          From what I gathered, these are your tradeoff preferences - feel free
-          to adjust
+        <p className="mb-6 text-center text-sm">
+          {"These are your tradeoff preferences. Adjust as you see fit"}
         </p>
 
         <div className="flex flex-col items-center justify-center">
