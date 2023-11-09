@@ -212,6 +212,7 @@ const TrainAiPage: NextPageWithLayout = () => {
   const { positionID, panda } = router.query;
 
   const [interviewEnded, setInterviewEnded] = useState(false);
+  const [createQuestionsEnded, setCreateQuestionsEnded] = useState(false);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [step, setStep] = useState<number>(0);
 
@@ -759,14 +760,18 @@ const TrainAiPage: NextPageWithLayout = () => {
                   label={"Eden Suggestions"}
                   navigationDisabled={!panda}
                   nextButton={
-                    <Button
-                      variant={"primary"}
-                      className="mx-auto"
-                      loading={loadingUpdateQuestionsToPosition}
-                      onClick={() => handleSaveChangesInterviewQuestions()}
-                    >
-                      Save & Continue
-                    </Button>
+                    createQuestionsEnded ? (
+                      <Button
+                        variant={"primary"}
+                        className="mx-auto"
+                        loading={loadingUpdateQuestionsToPosition}
+                        onClick={() => handleSaveChangesInterviewQuestions()}
+                      >
+                        Save & Continue
+                      </Button>
+                    ) : (
+                      <></>
+                    )
                   }
                 >
                   <div className="relative mx-auto h-full max-w-2xl">
@@ -781,6 +786,9 @@ const TrainAiPage: NextPageWithLayout = () => {
                     <CreateQuestions
                       onChange={(data: QuestionType[]) => {
                         setValue("position.questionsToAsk", data);
+                      }}
+                      onLastStep={(isLastStep: boolean) => {
+                        setCreateQuestionsEnded(isLastStep);
                       }}
                     />
                     {loadingUpdateQuestionsToPosition && (

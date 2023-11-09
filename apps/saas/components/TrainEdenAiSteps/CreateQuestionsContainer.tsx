@@ -68,9 +68,11 @@ interface QuestionSuSQL {
 interface ICreateQuestions {
   // eslint-disable-next-line no-unused-vars
   onChange: (data: QuestionType[]) => void;
+  // eslint-disable-next-line no-unused-vars
+  onLastStep: (isLastStep: boolean) => void;
 }
 
-export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
+export const CreateQuestions = ({ onChange, onLastStep }: ICreateQuestions) => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
 
@@ -303,8 +305,16 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
     onChange(_mappedQuestions);
   }, [questions]);
 
+  useEffect(() => {
+    if (index === Object.keys(questions).length - 1) {
+      onLastStep(true);
+    } else {
+      onLastStep(false);
+    }
+  }, [index]);
+
   return (
-    <div className="mt-6 w-full pt-3">
+    <div className="relative mt-6 w-full pt-3">
       {loadingQuestions && (
         <EdenAiProcessingModal
           open={loadingQuestions}
@@ -327,7 +337,8 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
       </Button> */}
       <div className="">
         <Tab.Group
-          defaultIndex={index}
+          defaultIndex={0}
+          selectedIndex={index}
           onChange={(index: number) => {
             setIndex(index);
           }}
@@ -403,6 +414,17 @@ export const CreateQuestions = ({ onChange }: ICreateQuestions) => {
           </Tab.Panels>
         </Tab.Group>
       </div>
+      {index !== Object.keys(questions).length - 1 && (
+        <div className={"pointer-events-none fixed bottom-0 w-full max-w-2xl"}>
+          <Button
+            variant={"primary"}
+            className={"bg-bgColor pointer-events-auto mx-auto block"}
+            onClick={() => setIndex(index + 1)}
+          >
+            Continue
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
