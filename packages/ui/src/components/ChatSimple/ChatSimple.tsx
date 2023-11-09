@@ -163,17 +163,13 @@ export const ChatSimple = ({
   // };
 
   const handleTranscription = (newTranscription: string) => {
-    console.log("newTranscription is: ", newTranscription);
     const transcription = newTranscription;
 
     setTranscription(transcription);
-    console.log("transcription from Parent ", transcription);
   };
 
   const handleRecordingState = (recording: boolean) => {
-    console.log("recording is...", recording);
     setRecording(recording);
-    console.log("recording is...", recording);
   };
 
   return (
