@@ -1,7 +1,10 @@
 import { ApolloClient, gql, InMemoryCache, useMutation } from "@apollo/client";
+import { UserContext } from "@eden/package-context";
 import { Position, PositionStatus } from "@eden/package-graphql/generated";
 import {
+  AI_INTERVIEW_SERVICES,
   AppUserLayout,
+  AskEdenPopUp,
   Button,
   EdenIconExclamationAndQuestion,
   Loading,
@@ -15,7 +18,7 @@ import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import {
   Control,
@@ -77,13 +80,15 @@ const PositionPage: NextPageWithLayout = ({
 }) => {
   const router = useRouter();
   const { edit } = router.query;
-
   const editMode = edit === "true";
+
+  const { currentUser } = useContext(UserContext);
 
   const [editCompany] = useState(true);
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
+  const [openAskEden, setOpenAskEden] = useState(false);
 
   const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
     {
@@ -380,6 +385,7 @@ const PositionPage: NextPageWithLayout = ({
                   </p>
                 </div>
               </div>
+
               {(getValues("generalDetails.officeLocation") ||
                 getValues("generalDetails.officePolicy") ||
                 (editMode && editCompany)) && (
@@ -442,6 +448,24 @@ const PositionPage: NextPageWithLayout = ({
                   )}
                 </div>
               )}
+
+              <div
+                className={classNames(
+                  "border-edenGreen-600 hover:bg-edenGreen-100 relative mt-12 flex h-[calc(2.5rem+4px)] w-[calc(100%-1.5rem)] cursor-pointer items-center justify-between overflow-hidden rounded-full border-2 bg-white pl-4 drop-shadow-sm transition-all ease-in-out"
+                )}
+                onClick={() => setOpenAskEden(true)}
+              >
+                <span className="text-edenGreen-600 font-Moret mr-4">
+                  {"Ask Eden about this opportunity"}
+                </span>
+                <div
+                  className={classNames(
+                    "bg-edenPink-400 absolute right-0 float-right flex h-10 w-10 transform cursor-pointer items-center justify-center rounded-full transition-all ease-in-out"
+                  )}
+                >
+                  <EdenIconExclamationAndQuestion className="h-6 w-6" />
+                </div>
+              </div>
             </div>
             <div className="border-edenGreen-300 col-span-7 border-l-2 pl-4">
               {editMode && editCompany ? (
@@ -857,11 +881,27 @@ const PositionPage: NextPageWithLayout = ({
         {/* ---- FOOTER APPLY ---- */}
         <footer className="bg-edenGreen-600 fixed bottom-0 left-0 flex h-16 w-full items-center justify-center">
           {!editMode ? (
-            <Link href={`/interview/${position._id}`}>
-              <Button className="border-edenPink-400 !text-edenPink-400">
-                Apply with AI
-              </Button>
-            </Link>
+            <>
+              <Link href={`/interview/${position._id}`}>
+                <Button className="border-edenPink-400 !text-edenPink-400">
+                  Apply with AI
+                </Button>
+              </Link>
+              {currentUser?._id && (
+                <AskEdenPopUp
+                  memberID={currentUser?._id}
+                  service={
+                    AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW
+                  }
+                  title="Ask Eden about this opportunity"
+                  className="!bottom-[0.35rem] !right-2"
+                  forceOpen={openAskEden}
+                  onClose={() => {
+                    setOpenAskEden(false);
+                  }}
+                />
+              )}
+            </>
           ) : (
             <>
               <Button
