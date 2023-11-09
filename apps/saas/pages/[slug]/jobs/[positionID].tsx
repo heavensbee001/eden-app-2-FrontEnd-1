@@ -931,7 +931,7 @@ const PositionPage: NextPageWithLayout = ({
               </Modal>
 
               <Modal open={trainAiModalOpen} closeOnEsc={false}>
-                <div className="flex flex-col items-center justify-center px-28 py-8 pt-2 text-center">
+                <div className="flex flex-col items-center justify-center px-8 py-8 pt-2 text-center">
                   <div
                     className={
                       "text-edenGreen-600 bg-edenPink-100 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
