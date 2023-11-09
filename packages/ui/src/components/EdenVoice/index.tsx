@@ -1,14 +1,13 @@
+import { MicrophoneIcon } from "@heroicons/react/solid";
 import React, { useRef, useState } from "react";
 
-import { MicrophoneIcon } from "@heroicons/react/solid";
-
 interface EdenVoiceProps {
-  onTranscriptionColmplete: (transcription: string) => void;
+  onTranscriptionComplete: (transcription: string) => void;
   recordingStateChange: (recording: boolean) => void;
 }
 
 const EdenVoice: React.FC<EdenVoiceProps> = ({
-  onTranscriptionColmplete,
+  onTranscriptionComplete,
   recordingStateChange,
 }) => {
   const [recording, setRecording] = useState<boolean>(false);
@@ -59,10 +58,10 @@ const EdenVoice: React.FC<EdenVoiceProps> = ({
 
           const result = await response.json();
 
-          console.log("Trancribed Text:", result.transciption);
-          onTranscriptionColmplete(result);
+          console.log("Transcribed Text:", result.transcription);
+          onTranscriptionComplete(result.transcription);
         } catch (error) {
-          console.error("Error trancribing audio: ", error);
+          console.error("Error transcribing audio: ", error);
         }
       };
       mediaRecorder.current.stop();

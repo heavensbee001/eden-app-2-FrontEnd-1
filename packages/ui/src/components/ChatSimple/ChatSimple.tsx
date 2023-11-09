@@ -3,6 +3,7 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
+
 import EdenVoice from "../EdenVoice";
 
 // import { AiOutlineSend } from "react-icons/ai";
@@ -163,7 +164,7 @@ export const ChatSimple = ({
 
   const handleTranscription = (newTranscription: string) => {
     setTranscription(newTranscription);
-    console.log("transcription", transcription);
+    console.log("transcription from Parent ", transcription);
   };
 
   const handleRecordingState = (recording: boolean) => {
@@ -301,7 +302,7 @@ export const ChatSimple = ({
                 recordingStateChange={handleRecordingState}
               />
               <p>{recording ? "Recording" : "Not Recording"}</p>
-              <p>{transcription ? { transcription } : ""}</p>
+              {/* <p>{transcription ? { transcription } : ""}</p> */}
               <textarea
                 className={classNames(
                   "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",
