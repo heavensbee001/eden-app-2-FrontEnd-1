@@ -718,7 +718,7 @@ const PositionPage: NextPageWithLayout = ({
                 {/* ---- MISSION ---- */}
                 {(position?.company?.mission || editMode) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Company Mission</h3>
+                    <h3 className="text-edenGreen-600">About the company</h3>
                     <p className="text-xs">
                       {editMode ? (
                         <>
