@@ -82,6 +82,12 @@ const ApplicationStepContainer = ({
     strongSuit: true,
   });
 
+  const formattedSalary = (salary: number) => {
+    if (salary >= 1000) return `${salary / 1000}k`;
+
+    return salary;
+  };
+
   return (
     <>
       <div>
@@ -211,6 +217,7 @@ const ApplicationStepContainer = ({
                 {matchText.toUpperCase()}
               </div>
             </section>
+
             {(position?.generalDetails?.yearlySalary?.min ||
               position?.generalDetails?.yearlySalary?.min === 0) && (
               <section className="mb-2 p-4">
@@ -219,7 +226,28 @@ const ApplicationStepContainer = ({
                   Yearly Salary
                 </h3>
                 <p className="text-lg font-medium">
-                  ${position?.generalDetails?.yearlySalary?.min}
+                  {`${
+                    position?.generalDetails?.yearlySalary?.min ||
+                    position?.generalDetails?.yearlySalary?.min === 0
+                      ? `$${formattedSalary(
+                          position?.generalDetails?.yearlySalary?.min
+                        )}`
+                      : ""
+                  }${
+                    (position?.generalDetails?.yearlySalary?.min ||
+                      position?.generalDetails?.yearlySalary?.min === 0) &&
+                    (position?.generalDetails?.yearlySalary?.max ||
+                      position?.generalDetails?.yearlySalary?.max === 0)
+                      ? `  -  `
+                      : ""
+                  }${
+                    position?.generalDetails?.yearlySalary?.max ||
+                    position?.generalDetails?.yearlySalary?.max === 0
+                      ? `$${formattedSalary(
+                          position?.generalDetails?.yearlySalary?.max
+                        )}`
+                      : ""
+                  }`}
                 </p>
               </section>
             )}
