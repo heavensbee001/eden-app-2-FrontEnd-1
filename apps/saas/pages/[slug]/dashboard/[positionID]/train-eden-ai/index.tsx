@@ -20,6 +20,7 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import { classNames } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -210,7 +211,7 @@ const TrainAiPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { positionID, panda } = router.query;
 
-  // const [interviewEnded, setInterviewEnded] = useState(false);
+  const [interviewEnded, setInterviewEnded] = useState(false);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [step, setStep] = useState<number>(0);
 
@@ -237,9 +238,9 @@ const TrainAiPage: NextPageWithLayout = () => {
     defaultValues: { position: "", pastedText: "" },
   });
 
-  // const handleInterviewEnd = () => {
-  //   setInterviewEnded(true);
-  // };
+  const handleInterviewEnd = () => {
+    setInterviewEnded(true);
+  };
 
   // const [scraping, setScraping] = useState<boolean>(false);
   // const [report, setReport] = useState<string | null>(null);
@@ -616,7 +617,12 @@ const TrainAiPage: NextPageWithLayout = () => {
                   nextButton={
                     <Button
                       variant="secondary"
-                      className="mx-auto"
+                      className={classNames(
+                        "mx-auto",
+                        !interviewEnded
+                          ? "!text-edenGray-500 !bg-edenGray-100"
+                          : ""
+                      )}
                       onClick={() => {
                         setShowInterviewModal(true);
                       }}
@@ -628,10 +634,10 @@ const TrainAiPage: NextPageWithLayout = () => {
                 >
                   <div className="relative mx-auto h-full w-full max-w-2xl">
                     <InterviewEdenAIContainer
-                    // handleEnd={handleInterviewEnd}
-                    // interviewQuestionsForPosition={
-                    //   interviewQuestionsForPosition
-                    // }
+                      handleEnd={handleInterviewEnd}
+                      // interviewQuestionsForPosition={
+                      //   interviewQuestionsForPosition
+                      // }
                     />
                   </div>
                   <Modal open={showInterviewModal} closeOnEsc={false}>
