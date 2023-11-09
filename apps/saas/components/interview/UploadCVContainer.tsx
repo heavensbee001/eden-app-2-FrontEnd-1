@@ -3,7 +3,7 @@ import { CVUploadGPT } from "@eden/package-ui";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
+// import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface UploadCVContainerProps {
   setTitleRole: Dispatch<SetStateAction<string>>;
@@ -18,6 +18,7 @@ const UploadCVContainer = ({
   setTopSkills,
   setContent,
   handleCvEnd,
+  // eslint-disable-next-line no-unused-vars
   position,
 }: UploadCVContainerProps) => {
   const router = useRouter();
@@ -41,7 +42,7 @@ const UploadCVContainer = ({
 
   return (
     <div className="pt-8">
-      <section className="grid grid-cols-3 gap-6">
+      {/* <section className="grid grid-cols-3 gap-6">
         <div className="bg-edenPink-100 col-span-1 h-full rounded-md py-4 px-8">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
             Min Requirements
@@ -84,7 +85,7 @@ const UploadCVContainer = ({
             <li className="mb-2">Strong suit about your profile</li>
           </ul>
         </div>
-      </section>
+      </section> */}
       <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md p-4">
         {!recaptcha && ReCAPTCHA ? (
           <ReCAPTCHA
