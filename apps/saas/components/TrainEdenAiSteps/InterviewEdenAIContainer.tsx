@@ -102,7 +102,7 @@ export const InterviewEdenAIContainer = ({
     },
     skip: positionID == "" || positionID == null,
     onCompleted: (data) => {
-      console.log("data = ", data);
+      // console.log("data = ", data);
       let questionsChange = data.findPosition.interviewQuestionsForPosition.map(
         (question: any) => {
           return {
@@ -125,7 +125,7 @@ export const InterviewEdenAIContainer = ({
 
   const [conversationID, setConversationID] = useState<String>("");
 
-  console.log("findPositionData = ", findPositionData);
+  // console.log("findPositionData = ", findPositionData);
 
   const [experienceTypeID] = useState<string>("");
 
@@ -152,6 +152,12 @@ export const InterviewEdenAIContainer = ({
   //   questions.length,
   //   findPositionData?.findPosition?.questionsToAsk.length
   // );
+
+  useEffect(() => {
+    if (chatN.length >= 2) {
+      handleEnd!();
+    }
+  }, [chatN]);
 
   return (
     <div className="h-full w-full">

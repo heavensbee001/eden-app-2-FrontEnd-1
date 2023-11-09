@@ -175,7 +175,7 @@ const HomePage: NextPageWithLayout = () => {
           }}
         />
       </Head>
-      <div className="h-[335px] w-full bg-[url('/banner-job-board.png')] px-8 pt-12">
+      <div className="mb-4 h-[335px] w-full bg-[url('/banner-job-board.png')] px-8 pt-12">
         <section className="mb-4">
           <h1 className="text-edenPink-400 text-4xl font-bold leading-[50.4px]">
             {"Your next great opportunity awaits in "}

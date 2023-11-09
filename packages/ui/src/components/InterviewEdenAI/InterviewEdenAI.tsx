@@ -370,8 +370,8 @@ export const InterviewEdenAI = ({
       aiReplyService != AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION ||
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "",
-    onCompleted: (data) => {
-      console.log(data);
+    onCompleted: () => {
+      // console.log(data);
       // toraFunc();
       // setElapsedTime(0);
       // setStartTime(Date.now());
@@ -409,8 +409,8 @@ export const InterviewEdenAI = ({
           AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW ||
         chatN[chatN.length - 1]?.user == "01" ||
         userID == "",
-      onCompleted: (data) => {
-        console.log(data);
+      onCompleted: () => {
+        // console.log(data);
         // toraFunc();
         // setElapsedTime(0);
         // setStartTime(Date.now());
@@ -447,8 +447,8 @@ export const InterviewEdenAI = ({
       aiReplyService != AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY ||
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "",
-    onCompleted: (data) => {
-      console.log(data);
+    onCompleted: () => {
+      // console.log(data);
       // toraFunc();
       // setElapsedTime(0);
       // setStartTime(Date.now());
@@ -487,8 +487,8 @@ export const InterviewEdenAI = ({
           AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_GPT_FUNC_V2 ||
         chatN[chatN.length - 1]?.user == "01" ||
         userID == "",
-      onCompleted: (data) => {
-        console.log(data);
+      onCompleted: () => {
+        // console.log(data);
         // toraFunc();
         // setElapsedTime(0);
         // setStartTime(Date.now());
@@ -500,7 +500,7 @@ export const InterviewEdenAI = ({
     }
   );
 
-  console.log("chatN = ", chatN, questions);
+  // console.log("chatN = ", chatN, questions);
 
   // ---------- When GPT Reply, Store all convo messages and GPT friendly formated messages ------------
   useEffect(() => {
