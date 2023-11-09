@@ -41,7 +41,7 @@ const UploadCVContainer = ({
   const [recaptcha, setRecaptcha] = useState<string | null>(null);
 
   return (
-    <div className="pt-8">
+    <div className="flex h-full w-full items-center pt-8">
       {/* <section className="grid grid-cols-3 gap-6">
         <div className="bg-edenPink-100 col-span-1 h-full rounded-md py-4 px-8">
           <h3 className="text-edenGreen-600 mb-4 text-center text-2xl font-semibold">
