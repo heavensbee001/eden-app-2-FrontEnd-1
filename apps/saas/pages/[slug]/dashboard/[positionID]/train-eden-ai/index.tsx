@@ -170,10 +170,10 @@ const UPADTE_PRIORITIES_AND_TRADEOFFS = gql`
 // };
 
 const FLOW_TITLES = [
-  {
-    title: "Tell me about your opportunity!",
-    subtitle: "You're launching a new opportunity with Eden.",
-  },
+  // {
+  //   title: "Tell me about your opportunity!",
+  //   subtitle: "You're launching a new opportunity with Eden.",
+  // },
   {
     title: "Some questions to make sure we're on the same page!",
     subtitle:
@@ -213,6 +213,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
   const [interviewEnded, setInterviewEnded] = useState(false);
   const [createQuestionsEnded, setCreateQuestionsEnded] = useState(false);
+  const [alignmentEnded, setAlignmentEnded] = useState(false);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [step, setStep] = useState<number>(0);
 
@@ -713,20 +714,24 @@ const TrainAiPage: NextPageWithLayout = () => {
                   label={"Alignment"}
                   navigationDisabled={!panda}
                   nextButton={
-                    <Button
-                      variant="secondary"
-                      className="mx-auto"
-                      onClick={() => {
-                        handleSubmitAlignment();
-                      }}
-                      loading={loadingUpdateReportToPosition}
-                      disabled={
-                        !watch("position.positionsRequirements.content") ||
-                        loadingUpdateReportToPosition
-                      }
-                    >
-                      Save & Continue
-                    </Button>
+                    alignmentEnded ? (
+                      <Button
+                        variant="secondary"
+                        className="mx-auto"
+                        onClick={() => {
+                          handleSubmitAlignment();
+                        }}
+                        loading={loadingUpdateReportToPosition}
+                        disabled={
+                          !watch("position.positionsRequirements.content") ||
+                          loadingUpdateReportToPosition
+                        }
+                      >
+                        Save & Continue
+                      </Button>
+                    ) : (
+                      <></>
+                    )
                   }
                 >
                   <div className="mx-auto h-full max-w-2xl">
@@ -739,6 +744,9 @@ const TrainAiPage: NextPageWithLayout = () => {
                     <ProfileQuestionsContainer
                       onChange={(val) => {
                         setValue("position.positionsRequirements.content", val);
+                      }}
+                      onLastStep={(isLastStep: boolean) => {
+                        setAlignmentEnded(isLastStep);
                       }}
                     />
                     {loadingUpdateQuestionsToPosition && (
