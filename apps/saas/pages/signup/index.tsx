@@ -44,9 +44,9 @@ const SignupCommunity: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[url('/signup-bg.png')]">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[url('/signup-bg.png')] bg-cover bg-no-repeat">
         <div className="mx-auto flex h-[236px] w-[604px] flex-col items-center justify-center rounded-lg bg-white">
-          <div className="font-Moret text-2xl font-bold leading-[33.6px]">
+          <div className="font-Moret text-edenGreen-600 text-2xl font-bold leading-[33.6px]">
             Choose your talent collective.
           </div>
           <div className="font-Unica text-xs leading-[16.8px] tracking-[-1.9%]">
@@ -54,7 +54,7 @@ const SignupCommunity: NextPageWithLayout = () => {
           </div>
           <div className="font-Unica text-xs leading-[16.8px] tracking-[-1.9%]">
             {
-              "You'll automatically be considered for other oasis based on your skills & profile."
+              "You'll automatically be considered for opportunities across oasis based on your skills."
             }
           </div>
           <div
@@ -119,7 +119,7 @@ const SignupCommunity: NextPageWithLayout = () => {
           </Button>
         </div>
         <div className="flex w-[604px] flex-col pt-8">
-          <h1 className="text-edenPink-500">{"What's the talent oasis?"}</h1>
+          <h1 className="text-edenPink-500">{"What is a talent oasis?"}</h1>
           <div className="text-edenPink-400 font-Unica mt-[13px] text-base font-normal tracking-[-1.9%]">
             <p>
               {
@@ -132,17 +132,20 @@ const SignupCommunity: NextPageWithLayout = () => {
                 "By joining the oasis, our AI will actively pitch your profile to hiring managers."
               }
             </p>
-            <p>{"Be discovered by hiring managers before anyone else."}</p>
-            <p>
+            <p className="pl-[2px]">
+              {"1. Be discovered by hiring managers before anyone else."}
+            </p>
+            <p className="pl-[2px]">
               {
-                "Get constant feedback on your current profile, application & interview style."
+                "2. Get constant feedback on your current profile, application & interview style."
               }
             </p>
-            <p>
+            <p className="pl-[2px]">
               {
-                "Ask for career advice: given your profile & the current market, what could be your next move?"
+                "3. Ask for career advice: given your profile & the current market, what could be your"
               }
             </p>
+            <p className="pl-4">{"next move?"}</p>
           </div>
         </div>
       </div>
