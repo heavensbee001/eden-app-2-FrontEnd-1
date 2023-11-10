@@ -3,7 +3,6 @@ import "./styles.css";
 
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
-import { MicrophoneIcon, StopIcon } from "@heroicons/react/outline";
 
 import EdenVoice from "../EdenVoice";
 
@@ -76,7 +75,6 @@ export const ChatSimple = ({
   const [ctrlKeyDown, setCtrlKeyDown] = useState(false);
   const [numberOfLines, setNumberOfLines] = useState(1);
   //For Eden voice
-  const [transcription, setTranscription] = useState<string>("");
   const [recording, setRecording] = useState<boolean>(false);
 
   useEffect(() => {
@@ -166,12 +164,13 @@ export const ChatSimple = ({
   const handleTranscription = (newTranscription: string) => {
     const transcription = newTranscription;
 
-    setTranscription(transcription);
+    setInputMessage(transcription);
   };
 
-  const handleRecordingState = (recording: boolean) => {
-    setRecording(recording);
-  };
+  // const handleRecordingState = (recording: boolean) => {
+  //   console.log("recording in parent is ====>", recording);
+  //   setRecording(recording);
+  // };
 
   return (
     <>
@@ -295,96 +294,92 @@ export const ChatSimple = ({
 
             <section
               className={classNames(
-                "transition-height flex w-full items-center justify-between gap-3 px-3 ease-in-out",
+                "transition-height relative flex w-full items-center justify-between gap-3 px-3 ease-in-out",
                 inputMessage.length > 58 || numberOfLines > 1 ? "h-40" : "h-20"
               )}
             >
-              <div className="bg-edenPink-300 mx-auto flex w-full items-center justify-between rounded-xl p-4 shadow-md">
-                <div className="flex-1"></div>
-                <div className="flex flex-col items-center">
-                  <div className="mb-2 h-2 w-2 animate-pulse rounded-full bg-red-500"></div>
-                  <MicrophoneIcon className="text-edenGreen-500 h-8 w-8" />
+              <>
+                <div
+                  className={classNames(
+                    !recording ? "absolute right-20 w-4" : "w-full"
+                  )}
+                >
+                  <EdenVoice
+                    onTranscriptionComplete={handleTranscription}
+                    setRecording={setRecording}
+                    recording={recording}
+                    // recordingStateChange={handleRecordingState}
+                  />
                 </div>
-                <div className="flex flex-1 justify-end">
+
+                <div
+                  className=" w-full items-center space-x-2"
+                  style={{ display: !recording ? "flex" : "none" }}
+                >
+                  <textarea
+                    className={classNames(
+                      "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",
+                      inputMessage.length > 58 || numberOfLines > 1
+                        ? "h-[8.6rem]"
+                        : "h-[3.6rem]"
+                    )}
+                    placeholder="Type your message here..."
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    onKeyUp={handleKeyUp}
+                  />
+
                   <button
+                    className={classNames(
+                      "border-edenGray-100 flex h-[38px] w-[38px] items-center justify-center overflow-hidden rounded-full border",
+                      inputMessage ? "cursor-pointer" : "bg-edenGray-100"
+                    )}
+                    disabled={!inputMessage}
                     onClick={() => {
-                      /* add stop recording functionality */
+                      handleSentMessage(inputMessage, "02");
+
+                      setInputMessage("");
                     }}
-                    aria-label="Stop recording"
-                    className="cursor-pointer rounded-full p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 "
-                    title="Stop recording"
                   >
-                    <StopIcon className="text-edenGreen-500 h-11 w-11 " />
-                  </button>{" "}
+                    {inputMessage === "" ? (
+                      <div>
+                        <svg
+                          width="24px"
+                          height="24px"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
+                            fill="#9CA3AF"
+                          />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="">
+                        <svg
+                          width="24px"
+                          height="24px"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
+                            fill="#00462C"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
                 </div>
-              </div>
-              {/* <EdenVoice */}
-              {/*   onTranscriptionComplete={handleTranscription} */}
-              {/*   recordingStateChange={handleRecordingState} */}
-              {/* /> */}
-              {/* <p>{recording ? "Recording" : "Not Recording"}</p> */}
-              {/* <p>{transcription ? { transcription } : ""}</p> */}
-              {/* <textarea */}
-              {/*   className={classNames( */}
-              {/*     "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none", */}
-              {/*     inputMessage.length > 58 || numberOfLines > 1 */}
-              {/*       ? "h-[8.6rem]" */}
-              {/*       : "h-[3.6rem]" */}
-              {/*   )} */}
-              {/*   placeholder="Type your message here..." */}
-              {/*   value={inputMessage} */}
-              {/*   onChange={(e) => setInputMessage(e.target.value)} */}
-              {/*   onKeyDown={handleKeyDown} */}
-              {/*   onKeyUp={handleKeyUp} */}
-              {/* /> */}
-              {/* <button */}
-              {/*   className={classNames( */}
-              {/*     "border-edenGray-100 flex h-[38px] w-[38px] items-center justify-center overflow-hidden rounded-full border", */}
-              {/*     inputMessage ? "cursor-pointer" : "bg-edenGray-100" */}
-              {/*   )} */}
-              {/*   disabled={!inputMessage} */}
-              {/*   onClick={() => { */}
-              {/*     handleSentMessage(inputMessage, "02"); */}
-              {/**/}
-              {/*     setInputMessage(""); */}
-              {/*   }} */}
-              {/* > */}
-              {/*   {inputMessage === "" ? ( */}
-              {/*     <div> */}
-              {/*       <svg */}
-              {/*         width="24px" */}
-              {/*         height="24px" */}
-              {/*         viewBox="0 0 24 24" */}
-              {/*         fill="none" */}
-              {/*         xmlns="http://www.w3.org/2000/svg" */}
-              {/*       > */}
-              {/*         <path */}
-              {/*           fillRule="evenodd" */}
-              {/*           clipRule="evenodd" */}
-              {/*           d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z" */}
-              {/*           fill="#9CA3AF" */}
-              {/*         /> */}
-              {/*       </svg> */}
-              {/*     </div> */}
-              {/*   ) : ( */}
-              {/*     <div className=""> */}
-              {/*       <svg */}
-              {/*         width="24px" */}
-              {/*         height="24px" */}
-              {/*         viewBox="0 0 24 24" */}
-              {/*         fill="none" */}
-              {/*         xmlns="http://www.w3.org/2000/svg" */}
-              {/*       > */}
-              {/*         <path */}
-              {/*           fillRule="evenodd" */}
-              {/*           clipRule="evenodd" */}
-              {/*           d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z" */}
-              {/*           fill="#00462C" */}
-              {/*         /> */}
-              {/*       </svg> */}
-              {/*     </div> */}
-              {/*   )} */}
-              {/* </button> */}
+              </>
             </section>
           </div>
         </div>
