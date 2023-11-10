@@ -14,6 +14,12 @@ const FIND_COMPANY_FROM_SLUG = gql`
       slug
       description
       imageUrl
+      mission
+      description
+      benefits
+      values
+      founders
+      whatsToLove
       positions {
         _id
         name
