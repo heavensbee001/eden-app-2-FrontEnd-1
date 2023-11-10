@@ -101,6 +101,7 @@ const PositionPage: NextPageWithLayout = ({
             min: position.generalDetails?.yearlySalary?.min,
             max: position.generalDetails?.yearlySalary?.max,
           },
+          contractType: position.generalDetails?.contractType || "",
           officeLocation: position.generalDetails?.officeLocation || "",
           officePolicy: position.generalDetails?.officePolicy || "",
         },
@@ -282,19 +283,44 @@ const PositionPage: NextPageWithLayout = ({
               </button>
             )} */}
             <div className="col-span-5">
-              <h1 className="text-edenGreen-600 mb-10">
+              <div className="mb-10">
+                <h1 className="text-edenGreen-600 mb-2">
+                  {editMode && editCompany ? (
+                    <>
+                      <input
+                        {...register("name")}
+                        className={classNames(editInputClasses, "")}
+                      />
+                      {`, ${position?.company?.name}`}
+                    </>
+                  ) : (
+                    `${getValues("name")}, ${position?.company?.name}`
+                  )}
+                </h1>
                 {editMode && editCompany ? (
-                  <>
-                    <input
-                      {...register("name")}
-                      className={classNames(editInputClasses, "")}
-                    />
-                    {`, ${position?.company?.name}`}
-                  </>
+                  <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
+                    <select
+                      {...register("generalDetails.contractType")}
+                      disabled={!(editMode && editCompany)}
+                      className={classNames(
+                        editInputClasses,
+                        "disabled:border-0 disabled:opacity-100"
+                      )}
+                    >
+                      <option value={""} disabled hidden>
+                        Select an option...
+                      </option>
+                      <option value="Full-time">Full-time</option>
+                      <option value="Part-time">Part-time</option>
+                      <option value="Contractor">Contractor</option>
+                    </select>
+                  </div>
                 ) : (
-                  `${getValues("name")}, ${position?.company?.name}`
+                  <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
+                    {getValues("generalDetails.contractType")}
+                  </div>
                 )}
-              </h1>
+              </div>
 
               {editMode && editCompany ? (
                 <div className="mb-4">
@@ -1075,6 +1101,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
               min
               max
             }
+            contractType
             officePolicy
             officeLocation
           }
