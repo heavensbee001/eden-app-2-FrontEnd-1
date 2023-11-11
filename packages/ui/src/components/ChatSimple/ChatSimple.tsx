@@ -77,6 +77,7 @@ export const ChatSimple = ({
   //For Eden voice
   const [recording, setRecording] = useState<boolean>(false);
   const [transcribing, setTranscribing] = useState<boolean>(false);
+  const [showEdenVoice, setShowEdenVoice] = useState<boolean>(true);
 
   useEffect(() => {
     // Keep the scroll position at the bottom of the component
@@ -166,7 +167,6 @@ export const ChatSimple = ({
     const transcription = newTranscription;
 
     setInputMessage(transcription);
-    setTranscribing(false);
   };
 
   // const handleRecordingState = (recording: boolean) => {
@@ -305,23 +305,29 @@ export const ChatSimple = ({
               )}
             >
               <>
-                <div
-                  className={classNames(
-                    !recording ? "absolute right-20 w-4" : "w-full"
-                  )}
-                >
-                  <EdenVoice
-                    onTranscriptionComplete={handleTranscription}
-                    setRecording={setRecording}
-                    recording={recording}
-                    transcribing={transcribing}
-                    setTranscribing={setTranscribing}
-                  />
-                </div>
+                {showEdenVoice && !inputMessage && (
+                  <div
+                    className={classNames(
+                      !recording && !transcribing
+                        ? "absolute right-20 w-4"
+                        : "w-full"
+                    )}
+                  >
+                    <EdenVoice
+                      onTranscriptionComplete={handleTranscription}
+                      setRecording={setRecording}
+                      recording={recording}
+                      transcribing={transcribing}
+                      setTranscribing={setTranscribing}
+                    />
+                  </div>
+                )}
 
                 <div
                   className=" w-full items-center space-x-2"
-                  style={{ display: !recording ? "flex" : "none" }}
+                  style={{
+                    display: !recording && !transcribing ? "flex" : "none",
+                  }}
                 >
                   <textarea
                     className={classNames(
