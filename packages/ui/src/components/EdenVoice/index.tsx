@@ -80,7 +80,6 @@ const EdenVoice: React.FC<EdenVoiceProps> = ({
         </button>
       ) : (
         <div className="bg-edenPink-300 mx-auto flex w-full items-center justify-between rounded-xl p-4 shadow-md">
-          <div className="flex-1"></div>
           <div className="flex flex-col items-center">
             <div className="mb-2 h-2 w-2 animate-pulse rounded-full bg-red-500"></div>
             <MicrophoneIcon className="text-edenGreen-500 h-8 w-8" />
