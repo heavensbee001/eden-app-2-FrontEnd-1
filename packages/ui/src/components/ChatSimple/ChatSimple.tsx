@@ -76,6 +76,7 @@ export const ChatSimple = ({
   const [numberOfLines, setNumberOfLines] = useState(1);
   //For Eden voice
   const [recording, setRecording] = useState<boolean>(false);
+  const [transcribing, setTranscribing] = useState<boolean>(false);
 
   useEffect(() => {
     // Keep the scroll position at the bottom of the component
@@ -165,6 +166,7 @@ export const ChatSimple = ({
     const transcription = newTranscription;
 
     setInputMessage(transcription);
+    setTranscribing(false);
   };
 
   // const handleRecordingState = (recording: boolean) => {
@@ -308,7 +310,8 @@ export const ChatSimple = ({
                     onTranscriptionComplete={handleTranscription}
                     setRecording={setRecording}
                     recording={recording}
-                    // recordingStateChange={handleRecordingState}
+                    transcribing={transcribing}
+                    setTranscribing={setTranscribing}
                   />
                 </div>
 
