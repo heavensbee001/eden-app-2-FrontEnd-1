@@ -184,7 +184,6 @@ const CreateCompany: NextPageWithLayout = () => {
           title="Creating your company"
           open={submitting}
         />
-        <EdenVoice />
       </div>
     </>
   );
