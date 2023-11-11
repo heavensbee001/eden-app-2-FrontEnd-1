@@ -98,7 +98,7 @@ export const ChatSimple = ({
   }, [chatN]);
 
   useEffect(() => {
-    setNumberOfLines(inputMessage.split("\n").length);
+    inputMessage && setNumberOfLines(inputMessage.split("\n").length);
   }, [inputMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -190,10 +190,12 @@ export const ChatSimple = ({
               className={classNames(
                 "scrollbar-hide border-edenGray-100 transition-height overflow-y-scroll border-b ease-in-out",
                 headerText
-                  ? inputMessage.length > 58 || numberOfLines > 1
+                  ? (inputMessage && inputMessage.length > 58) ||
+                    numberOfLines > 1
                     ? "h-[calc(100%-12.75rem)]"
                     : "h-[calc(100%-7.75rem)]"
-                  : inputMessage.length > 58 || numberOfLines > 1
+                  : (inputMessage && inputMessage.length > 58) ||
+                    numberOfLines > 1
                   ? "h-[calc(100%-10rem)]"
                   : "h-[calc(100%-5rem)]"
               )}
@@ -297,7 +299,9 @@ export const ChatSimple = ({
             <section
               className={classNames(
                 "transition-height relative flex w-full items-center justify-between gap-3 px-3 ease-in-out",
-                inputMessage.length > 58 || numberOfLines > 1 ? "h-40" : "h-20"
+                (inputMessage && inputMessage.length > 58) || numberOfLines > 1
+                  ? "h-40"
+                  : "h-20"
               )}
             >
               <>
@@ -322,7 +326,8 @@ export const ChatSimple = ({
                   <textarea
                     className={classNames(
                       "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",
-                      inputMessage.length > 58 || numberOfLines > 1
+                      (inputMessage && inputMessage.length) > 58 ||
+                        numberOfLines > 1
                         ? "h-[8.6rem]"
                         : "h-[3.6rem]"
                     )}
