@@ -20,10 +20,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
     // return res.status(404).end();
   }
-  console.log(
-    "From Fetch Token",
-    JSON.stringify({ accessToken: token.accessToken })
-  );
+  // console.log(
+  //   "From Fetch Token",
+  //   JSON.stringify({ accessToken: token.accessToken })
+  // );
   await fetch(`${NEXT_PUBLIC_AUTH_URL}/auth/token`, {
     method: "POST",
     body: JSON.stringify({ accessToken: token.accessToken }),
@@ -34,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       console.log("FETCH TOKEN API DATA", data);
       if (data.edenToken) {
         edenToken = data.edenToken;
-        console.log("edenToken", edenToken);
+        // console.log("edenToken", edenToken);
       }
       if (data.error) {
         error = data.error;

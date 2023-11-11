@@ -50,7 +50,10 @@ const FIND_POSITION = gql`
         benefits
       }
       generalDetails {
-        yearlySalary
+        yearlySalary {
+          min
+          max
+        }
       }
     }
   }

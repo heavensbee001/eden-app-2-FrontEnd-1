@@ -20,8 +20,9 @@ export const AppUserLayout = ({
 
   return (
     <div className="">
-      <nav className="fixed left-0 top-0 z-40 h-20 w-screen bg-white">
-        <div className="mx-auto flex h-20 w-full max-w-5xl items-center px-4">
+
+      <nav className="fixed left-0 top-0 z-40 h-16 w-screen bg-white">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center px-4">
           <img
             src="/eden-imagotype.png"
             alt="Eden Protocol"
@@ -37,7 +38,7 @@ export const AppUserLayout = ({
         </div>
       </nav>
 
-      <main className="pt-20">{children}</main>
+      <main className="pt-16">{children}</main>
     </div>
   );
 };
