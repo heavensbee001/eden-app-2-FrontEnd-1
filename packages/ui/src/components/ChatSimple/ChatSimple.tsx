@@ -4,6 +4,8 @@ import "./styles.css";
 import { UserContext } from "@eden/package-context";
 import { useContext, useEffect, useRef, useState } from "react";
 
+import EdenVoice from "../EdenVoice";
+
 // import { AiOutlineSend } from "react-icons/ai";
 // import { CiLocationArrow1 } from "react-icons/ci";
 // import { Card } from "../..";
@@ -72,6 +74,10 @@ export const ChatSimple = ({
   const [inputMessage, setInputMessage] = useState("");
   const [ctrlKeyDown, setCtrlKeyDown] = useState(false);
   const [numberOfLines, setNumberOfLines] = useState(1);
+  //For Eden voice
+  const [recording, setRecording] = useState<boolean>(false);
+  const [transcribing, setTranscribing] = useState<boolean>(false);
+  const [showEdenVoice, setShowEdenVoice] = useState<boolean>(true);
 
   useEffect(() => {
     // Keep the scroll position at the bottom of the component
@@ -93,7 +99,7 @@ export const ChatSimple = ({
   }, [chatN]);
 
   useEffect(() => {
-    setNumberOfLines(inputMessage.split("\n").length);
+    inputMessage && setNumberOfLines(inputMessage.split("\n").length);
   }, [inputMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -157,8 +163,19 @@ export const ChatSimple = ({
   //   return time;
   // };
 
+  const handleTranscription = (newTranscription: string) => {
+    const transcription = newTranscription;
+
+    setInputMessage(transcription);
+  };
+
+  // const handleRecordingState = (recording: boolean) => {
+  //   console.log("recording in parent is ====>", recording);
+  //   setRecording(recording);
+  // };
+
   return (
-    <>
+     <>
       <div className="flex h-full flex-col justify-between">
         <div className="h-full">
           <div className="border-edenGray-100 h-full overflow-hidden rounded-md border bg-white">
@@ -173,10 +190,12 @@ export const ChatSimple = ({
               className={classNames(
                 "scrollbar-hide border-edenGray-100 transition-height overflow-y-scroll border-b ease-in-out",
                 headerText
-                  ? inputMessage.length > 58 || numberOfLines > 1
+                  ? (inputMessage && inputMessage.length > 58) ||
+                    numberOfLines > 1
                     ? "h-[calc(100%-12.75rem)]"
                     : "h-[calc(100%-7.75rem)]"
-                  : inputMessage.length > 58 || numberOfLines > 1
+                  : (inputMessage && inputMessage.length > 58) ||
+                    numberOfLines > 1
                   ? "h-[calc(100%-10rem)]"
                   : "h-[calc(100%-5rem)]"
               )}
@@ -279,73 +298,102 @@ export const ChatSimple = ({
 
             <section
               className={classNames(
-                "transition-height flex w-full items-center justify-between gap-3 px-3 ease-in-out",
-                inputMessage.length > 58 || numberOfLines > 1 ? "h-40" : "h-20"
+                "transition-height relative flex w-full items-center justify-between gap-3 px-3 ease-in-out",
+                (inputMessage && inputMessage.length > 58) || numberOfLines > 1
+                  ? "h-40"
+                  : "h-20"
               )}
             >
-              <textarea
-                className={classNames(
-                  "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",
-                  inputMessage.length > 58 || numberOfLines > 1
-                    ? "h-[8.6rem]"
-                    : "h-[3.6rem]"
+              <>
+                {showEdenVoice && !inputMessage && (
+                  <div
+                    className={classNames(
+                      !recording && !transcribing
+                        ? "absolute right-20 w-4"
+                        : "w-full"
+                    )}
+                  >
+                    <EdenVoice
+                      onTranscriptionComplete={handleTranscription}
+                      setRecording={setRecording}
+                      recording={recording}
+                      transcribing={transcribing}
+                      setTranscribing={setTranscribing}
+                    />
+                  </div>
                 )}
-                placeholder="Type your message here..."
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onKeyUp={handleKeyUp}
-              />
-              <button
-                className={classNames(
-                  "border-edenGray-100 flex h-[38px] w-[38px] items-center justify-center overflow-hidden rounded-full border",
-                  inputMessage
-                    ? "bg-edenGreen-500 cursor-pointer"
-                    : "bg-edenGreen-300"
-                )}
-                disabled={!inputMessage}
-                onClick={() => {
-                  handleSentMessage(inputMessage, "02");
 
-                  setInputMessage("");
-                }}
-              >
-                {inputMessage === "" ? (
-                  <div>
-                    <svg
-                      width="24px"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
-                        fill="#FEF9FB"
-                      />
-                    </svg>
-                  </div>
-                ) : (
-                  <div className="">
-                    <svg
-                      width="24px"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
-                        fill="#F9E1ED"
-                      />
-                    </svg>
-                  </div>
-                )}
-              </button>
+                <div
+                  className=" w-full items-center space-x-2"
+                  style={{
+                    display: !recording && !transcribing ? "flex" : "none",
+                  }}
+                >
+                  <textarea
+                    className={classNames(
+                      "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",
+                      (inputMessage && inputMessage.length) > 58 ||
+                        numberOfLines > 1
+                        ? "h-[8.6rem]"
+                        : "h-[3.6rem]"
+                    )}
+                    placeholder="Type your message here..."
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    onKeyUp={handleKeyUp}
+                  />
+
+                  <button
+                    className={classNames(
+                      "border-edenGray-100 flex h-[38px] w-[38px] items-center justify-center overflow-hidden rounded-full border",
+                      inputMessage ? "cursor-pointer" : "bg-edenGray-100"
+                    )}
+                    disabled={!inputMessage}
+                    onClick={() => {
+                      handleSentMessage(inputMessage, "02");
+
+                      setInputMessage("");
+                    }}
+                  >
+                    {inputMessage === "" ? (
+                      <div>
+                        <svg
+                          width="24px"
+                          height="24px"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
+                            fill="#9CA3AF"
+                          />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="">
+                        <svg
+                          width="24px"
+                          height="24px"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M3.3938 2.20468C3.70395 1.96828 4.12324 1.93374 4.4679 2.1162L21.4679 11.1162C21.7953 11.2895 22 11.6296 22 12C22 12.3704 21.7953 12.7105 21.4679 12.8838L4.4679 21.8838C4.12324 22.0662 3.70395 22.0317 3.3938 21.7953C3.08365 21.5589 2.93922 21.1637 3.02382 20.7831L4.97561 12L3.02382 3.21692C2.93922 2.83623 3.08365 2.44109 3.3938 2.20468ZM6.80218 13L5.44596 19.103L16.9739 13H6.80218ZM16.9739 11H6.80218L5.44596 4.89699L16.9739 11Z"
+                            fill="#00462C"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              </>
             </section>
           </div>
         </div>
