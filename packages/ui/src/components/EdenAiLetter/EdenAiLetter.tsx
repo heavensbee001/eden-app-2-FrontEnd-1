@@ -1,9 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import { Maybe, Members } from "@eden/package-graphql/generated";
+import { classNames } from "@eden/package-ui/utils";
 import { CheckCircleIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 // import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { HiPencil } from "react-icons/hi";
 
 import { Button, Modal } from "../../elements";
 
@@ -63,18 +66,28 @@ export const EdenAiLetter = ({
   onSubmit,
 }: IEdenAiLetter) => {
   const router = useRouter();
+
   const { positionID } = router.query;
   const [letterContent, setLetterContent] = useState("");
   const [copied, setCopied] = useState(false);
+  const [editLetter, setEditLetter] = useState(false);
+  // const [editClickCount, setEditClickCount] = useState(0);
 
+  const { register, handleSubmit, setValue } = useForm<any>({
+    defaultValues: {
+      letter: letterContent || "",
+    },
+  });
   const [rejectionLetter] = useMutation(REJECTION_LETTER, {
     onCompleted({ rejectionLetter }) {
+      setValue("letter", rejectionLetter.generatedLetter);
       setLetterContent(rejectionLetter.generatedLetter);
     },
   });
 
   const [secondInterviewLetter] = useMutation(SECOND_INTERVIEW_LETTER, {
     onCompleted({ secondInterviewLetter }) {
+      setValue("letter", secondInterviewLetter.generatedLetter);
       setLetterContent(secondInterviewLetter.generatedLetter);
     },
   });
@@ -142,6 +155,8 @@ export const EdenAiLetter = ({
       });
     }
   };
+  const editInputClasses =
+    "inline-block bg-transparent -my-[2px] -mx-2 h-fit w-[40rem] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none whitespace-pre-line";
 
   useEffect(() => {
     if (isModalOpen) {
@@ -172,6 +187,13 @@ export const EdenAiLetter = ({
     };
   }, [isModalOpen, letterType, member, positionID]);
 
+  const onSubmitLetter = (data: any) => {
+    console.log("submiting =========");
+    setLetterContent(data.letter);
+    console.log("letter content", letterContent);
+    setEditLetter(false);
+  };
+
   return (
     <>
       <Modal open={isModalOpen} onClose={onClose}>
@@ -198,16 +220,56 @@ export const EdenAiLetter = ({
             )}
           </div>
 
-          <div className="h-[86hv] border-2 bg-white p-4">
+          <div className="w- h-[86hv] border-2 bg-white px-4 pb-4 pt-2">
             {letterContent ? (
-              <div id="text-to-copy" className="h-fit w-fit ">
-                <p className="whitespace-pre-line">{letterContent}</p>
+              <div>
+                <div id="text-to-copy" className="h-fit w-full ">
+                  <div className="relative "></div>
+                  {editLetter ? (
+                    <form
+                      className="flex h-full w-full flex-col items-center"
+                      onSubmit={handleSubmit(onSubmitLetter)}
+                    >
+                      <>
+                        <textarea
+                          {...register("letter")}
+                          className={classNames(editInputClasses)}
+                          rows={12}
+                        />
+                        <Button
+                          variant="secondary"
+                          className="mt-4"
+                          type="submit"
+                        >
+                          Done Editing
+                        </Button>
+                      </>
+                    </form>
+                  ) : (
+                    <span className="whitespace-pre-line">
+                      <div className="flex justify-end">
+                        {!editLetter && (
+                          <button
+                            className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-800 disabled:border-edenGray-700  flex items-center whitespace-nowrap rounded-md border pl-2"
+                            onClick={() => {
+                              setEditLetter(true);
+                            }}
+                          >
+                            <HiPencil size={16} className="mr-2 inline-block" />
+                          </button>
+                        )}
+                      </div>
+
+                      {letterContent}
+                    </span>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="flex h-96 w-96 animate-pulse space-x-4">
                 <div className="flex-1 space-y-2 py-1">
                   <div className="h-3 w-24 rounded bg-slate-200"></div>
-                  <div className="h-3 rounded bg-slate-200"></div>
+                  <div className="h-3 rounded bg-slate-200 "></div>
                   <div className="h-3 rounded bg-slate-200"></div>
                   <div className="h-3 rounded bg-slate-200"></div>
                   <div className="h-3 rounded bg-slate-200"></div>

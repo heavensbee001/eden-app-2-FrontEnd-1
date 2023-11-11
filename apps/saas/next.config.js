@@ -11,6 +11,7 @@ module.exports = {
       "pbs.twimg.com",
       "app.lottiefiles.com",
       "storage.cloud.google.com",
+      "storage.googleapis.com",
     ],
     formats: ["image/avif"],
   },

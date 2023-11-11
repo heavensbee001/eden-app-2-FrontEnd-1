@@ -10,6 +10,7 @@
     font-weight: 700;
     line-height: 140%;
   }
+
   h2 {
     font-family: Moret;
     font-size: 1.25rem;
@@ -17,6 +18,7 @@
     font-weight: 700;
     line-height: 140%;
   }
+
   h3 {
     font-family: Moret;
     font-size: 1.125rem;
@@ -24,6 +26,7 @@
     font-weight: 700;
     line-height: 140%;
   }
+
   h4 {
     font-family: Moret;
     font-size: 0.875rem;
@@ -52,8 +55,10 @@
 
   /* Hide scrollbar for IE, Edge and Firefox */
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
@@ -62,12 +67,24 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
 .remove-arrow {
   -moz-appearance: textfield;
 }
 
+.__react_component_tooltip.show {
+  opacity: 1 !important;
+}
+
 @layer components {
   .input-primary {
-    @apply font-Unica focus:border-accentColor focus:ring-soilGreen-500 my-2 flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent  focus:ring;
+    @apply font-Unica focus:border-accentColor focus:ring-soilGreen-500 my-2 flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring;
   }
+}
+
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 3px);
 }

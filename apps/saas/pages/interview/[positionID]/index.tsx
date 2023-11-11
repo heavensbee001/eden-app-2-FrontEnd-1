@@ -5,10 +5,10 @@ import { UserContext } from "@eden/package-context";
 import { UPDATE_MEMBER } from "@eden/package-graphql";
 import { Mutation, UpdateMemberInput } from "@eden/package-graphql/generated";
 import {
+  AppUserLayout,
   Button,
   EdenAiProcessingModal,
   Modal,
-  SaasUserLayout,
   // ProgressBarGeneric,
   // RawDataGraph,
   SEO,
@@ -240,7 +240,7 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
       <SEO />
-      <div className="scrollbar-hide relative mx-auto h-screen w-full max-w-7xl overflow-y-scroll p-8">
+      <div className="scrollbar-hide relative mx-auto h-[calc(100vh-4rem)] w-full max-w-7xl overflow-y-scroll p-8 pt-4">
         {/* <Card className="mx-auto mt-3 h-[88vh] w-full max-w-7xl overflow-y-scroll rounded-none px-4 pt-4"> */}
         {currentUser && (
           <div className="relative h-full w-full">
@@ -254,7 +254,7 @@ const HomePage: NextPageWithLayout = () => {
                 <p className="text-edenGray-900 text-center">
                   {findPositionData?.findPosition?.company?.type === "COMMUNITY"
                     ? `You're about to do an interview with Eden to join ${findPositionData?.findPosition?.company?.name}.`
-                    : `Congrats! You've been selected to do an interview with ${findPositionData?.findPosition?.company?.name} for the ${findPositionData?.findPosition?.name} role!`}
+                    : `Let's check if you're a good fit for the ${findPositionData?.findPosition?.name} role at ${findPositionData?.findPosition?.company?.name}!`}
                 </p>
               </div>
             )}
@@ -532,7 +532,7 @@ const HomePage: NextPageWithLayout = () => {
   );
 };
 
-HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
+HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
 
@@ -584,7 +584,10 @@ const FIND_POSITION = gql`
         benefits
       }
       generalDetails {
-        yearlySalary
+        yearlySalary {
+          min
+          max
+        }
       }
     }
   }

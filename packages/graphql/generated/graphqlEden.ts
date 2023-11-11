@@ -70,6 +70,7 @@ export type CandidateType = {
   acceptedOrRejected?: Maybe<Scalars["Boolean"]>;
   analysisCandidateEdenAI?: Maybe<AnalysisCandidateEdenAiType>;
   averageScoreNotesInterview?: Maybe<Scalars["Float"]>;
+  candidateScoreCardCalculated?: Maybe<Scalars["Boolean"]>;
   compareCandidatePosition?: Maybe<CompareCandidatePositionType>;
   conversation?: Maybe<Array<Maybe<ConversationType>>>;
   conversationID?: Maybe<Scalars["ID"]>;
@@ -515,9 +516,11 @@ export type Mutation = {
   applyGrant?: Maybe<GrantTemplate>;
   approveTweet?: Maybe<Project>;
   autoCalculatePrioritiesAndQuestions?: Maybe<Position>;
+  autoCreateCardsCandidatesAndScore?: Maybe<Position>;
   autoCreateCardsForPosition?: Maybe<Array<Maybe<CardMemory>>>;
   autoUpdateMemoryFromCV?: Maybe<AutoUpdateMemoryFromCvOutput>;
   autoUpdateMemoryFromPositionRequirments?: Maybe<AutoUpdateMemoryFromPositionRequirmentsOutput>;
+  autoUpdatePositionCompInformation?: Maybe<Position>;
   autoUpdateUserInfoFromCV?: Maybe<AutoUpdateUserInfoFromCvOutput>;
   calculateReputation?: Maybe<Members>;
   calculateScoreCardCandidateToPosition?: Maybe<Array<Maybe<CardMemory>>>;
@@ -570,6 +573,7 @@ export type Mutation = {
   messageToGPT?: Maybe<MessageToGptOutput>;
   moveCandidateToPosition?: Maybe<Position>;
   moveCandidateToPosition_V2?: Maybe<Position>;
+  moveCandidateToPosition_V3?: Maybe<Position>;
   newTweetProject?: Maybe<TweetsProject>;
   pitchPositionToCandidate?: Maybe<PitchPositionToCandidateOutput>;
   positionSuggestQuestionsAskCandidate?: Maybe<PositionSuggestQuestionsAskCandidateOutput>;
@@ -732,6 +736,10 @@ export type MutationAutoCalculatePrioritiesAndQuestionsArgs = {
   fields?: InputMaybe<AutoCalculatePrioritiesAndQuestionsInput>;
 };
 
+export type MutationAutoCreateCardsCandidatesAndScoreArgs = {
+  fields?: InputMaybe<AutoCreateCardsCandidatesAndScoreInput>;
+};
+
 export type MutationAutoCreateCardsForPositionArgs = {
   fields?: InputMaybe<AutoCreateCardsForPositionInput>;
 };
@@ -742,6 +750,10 @@ export type MutationAutoUpdateMemoryFromCvArgs = {
 
 export type MutationAutoUpdateMemoryFromPositionRequirmentsArgs = {
   fields?: InputMaybe<AutoUpdateMemoryFromPositionRequirmentsInput>;
+};
+
+export type MutationAutoUpdatePositionCompInformationArgs = {
+  fields?: InputMaybe<AutoUpdatePositionCompInformationInput>;
 };
 
 export type MutationAutoUpdateUserInfoFromCvArgs = {
@@ -950,6 +962,10 @@ export type MutationMoveCandidateToPositionArgs = {
 
 export type MutationMoveCandidateToPosition_V2Args = {
   fields?: InputMaybe<MoveCandidateToPosition_V2Input>;
+};
+
+export type MutationMoveCandidateToPosition_V3Args = {
+  fields?: InputMaybe<MoveCandidateToPosition_V3Input>;
 };
 
 export type MutationNewTweetProjectArgs = {
@@ -1236,6 +1252,7 @@ export type PaginatedSkills = {
 export type Position = {
   __typename?: "Position";
   _id?: Maybe<Scalars["ID"]>;
+  allCandidateScoreCardCalculated?: Maybe<Scalars["Boolean"]>;
   candidates?: Maybe<Array<Maybe<CandidateType>>>;
   candidatesFlagAnalysisCreated?: Maybe<Scalars["Boolean"]>;
   candidatesReadyToDisplay?: Maybe<Scalars["Boolean"]>;
@@ -1260,6 +1277,7 @@ export type Position = {
   talentList?: Maybe<Array<Maybe<TalentListType>>>;
   url?: Maybe<Scalars["String"]>;
   whatTheJobInvolves?: Maybe<Scalars["String"]>;
+  whatsToLove?: Maybe<Scalars["String"]>;
   whoYouAre?: Maybe<Scalars["String"]>;
 };
 
@@ -2557,6 +2575,11 @@ export type AuthorCardMemoryInput = {
 
 export type AutoCalculatePrioritiesAndQuestionsInput = {
   nothing?: InputMaybe<Scalars["String"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type AutoCreateCardsCandidatesAndScoreInput = {
+  nothing?: InputMaybe<Scalars["String"]>;
 };
 
 export type AutoCreateCardsForPositionInput = {
@@ -2579,6 +2602,11 @@ export type AutoUpdateMemoryFromPositionRequirmentsInput = {
 export type AutoUpdateMemoryFromPositionRequirmentsOutput = {
   __typename?: "autoUpdateMemoryFromPositionRequirmentsOutput";
   positions?: Maybe<Array<Maybe<Position>>>;
+};
+
+export type AutoUpdatePositionCompInformationInput = {
+  mustUpdate?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  positionID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type AutoUpdateUserInfoFromCvInput = {
@@ -3957,7 +3985,7 @@ export type GeneralDetailsType = {
   socials?: Maybe<SocialsType>;
   startDate?: Maybe<Scalars["String"]>;
   visaRequired?: Maybe<Scalars["Boolean"]>;
-  yearlySalary?: Maybe<Scalars["Float"]>;
+  yearlySalary?: Maybe<YearlySalaryType>;
 };
 
 export type IdentifyCategoryAndReplyInput = {
@@ -4382,6 +4410,13 @@ export type MoveCandidateToPositionInput = {
 export type MoveCandidateToPosition_V2Input = {
   positionNewID?: InputMaybe<Scalars["ID"]>;
   positionOldID?: InputMaybe<Scalars["ID"]>;
+  userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type MoveCandidateToPosition_V3Input = {
+  positionNewID?: InputMaybe<Scalars["ID"]>;
+  positionOldID?: InputMaybe<Scalars["ID"]>;
+  sendMessageCandidateTG?: InputMaybe<Scalars["String"]>;
   userID?: InputMaybe<Scalars["ID"]>;
 };
 
@@ -5317,6 +5352,7 @@ export type UnansweredQuestionsType = {
 
 export type UpdateAnalysisEdenAiCandidatesInput = {
   positionIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  userID?: InputMaybe<Scalars["ID"]>;
 };
 
 export type UpdateChatReplyInput = {
@@ -5494,7 +5530,7 @@ export type UpdatePositionGeneralDetailsInput = {
   startDate?: InputMaybe<Scalars["String"]>;
   status?: InputMaybe<PositionStatus>;
   visaRequired?: InputMaybe<Scalars["Boolean"]>;
-  yearlySalary?: InputMaybe<Scalars["Float"]>;
+  yearlySalary?: InputMaybe<YearlySalaryInput>;
 };
 
 export type UpdatePositionInput = {
@@ -5507,6 +5543,7 @@ export type UpdatePositionInput = {
   status?: InputMaybe<PositionStatus>;
   updatePosition?: InputMaybe<Scalars["ID"]>;
   whatTheJobInvolves?: InputMaybe<Scalars["String"]>;
+  whatsToLove?: InputMaybe<Scalars["String"]>;
   whoYouAre?: InputMaybe<Scalars["String"]>;
 };
 
@@ -5683,6 +5720,17 @@ export enum WidgetTypeEnum {
 export type WidgetVarsType = {
   __typename?: "widgetVarsType";
   memories?: Maybe<Array<Maybe<CardMemory>>>;
+};
+
+export type YearlySalaryInput = {
+  max?: InputMaybe<Scalars["Int"]>;
+  min?: InputMaybe<Scalars["Int"]>;
+};
+
+export type YearlySalaryType = {
+  __typename?: "yearlySalaryType";
+  max?: Maybe<Scalars["Int"]>;
+  min?: Maybe<Scalars["Int"]>;
 };
 
 export interface PossibleTypesResultData {

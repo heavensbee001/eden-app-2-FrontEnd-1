@@ -154,11 +154,10 @@ export const PrioritiesAndTradeOffsContainer = ({
           </div>
         </EdenAiProcessingModal>
       )}
-      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+      <section className="bg-edenPink-100 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Key Priorities</h2>
-        <p className="mb-6 text-center">
-          Here&apos;s what I got your priorities are - please re-arrange as you
-          see fit.
+        <p className="mb-6 text-center text-sm">
+          {"Here's your priorities. Feel free to re-arrange"}
         </p>
         <ul className="">
           {priorities &&
@@ -168,27 +167,27 @@ export const PrioritiesAndTradeOffsContainer = ({
                 key={index}
                 className="relative mb-2 rounded-md bg-white px-4 py-4"
               >
-                <div className="absolute -right-2 -top-1">
-                  <EdenTooltip
-                    id={priority.reason!.split(" ").join("")}
-                    innerTsx={
-                      <div className="w-60">
-                        <p>{priority.reason}</p>
-                      </div>
-                    }
-                    place="top"
-                    effect="solid"
-                    backgroundColor="white"
-                    border
-                    borderColor="#e5e7eb"
-                    padding="0.5rem"
-                  >
-                    <div className="shadow-md bg-edenPink-200 rounded-full p-1 w-5 h-5">
-                      <EdenIconExclamation className="w-full h-full" />
-                    </div>
-                  </EdenTooltip>
-                </div>
                 <div className="relative flex w-full items-center">
+                  <div className="mr-2">
+                    <EdenTooltip
+                      id={priority.reason!.split(" ").join("")}
+                      innerTsx={
+                        <div className="w-60">
+                          <p>{priority.reason}</p>
+                        </div>
+                      }
+                      place="right"
+                      effect="solid"
+                      backgroundColor="white"
+                      border
+                      borderColor="#e5e7eb"
+                      padding="0.5rem"
+                    >
+                      <div className="bg-edenPink-200 h-6 w-6 rounded-full p-1 shadow-md">
+                        <EdenIconExclamation className="h-full w-full" />
+                      </div>
+                    </EdenTooltip>
+                  </div>
                   <div className="-my-2 mr-4">
                     <div
                       className={classNames(
@@ -227,19 +226,18 @@ export const PrioritiesAndTradeOffsContainer = ({
             ))}
         </ul>
       </section>
-      <section className="bg-edenPink-200 col-span-6 rounded-md px-12 py-4">
+      <section className="bg-edenPink-100 col-span-6 rounded-md px-12 py-4">
         <h2 className="text-edenGreen-600 mb-2 text-center">Tradeoffs</h2>
-        <p className="mb-6 text-center">
-          From what I gathered, these are your tradeoff preferences - feel free
-          to adjust
+        <p className="mb-6 text-center text-sm">
+          {"These are your tradeoff preferences. Adjust as you see fit"}
         </p>
 
         <div className="flex flex-col items-center justify-center">
           {tradeOffs &&
             tradeOffs.length > 0 &&
             tradeOffs.map((tradeOff, index) => (
-              <div key={index} className="relative w-full">
-                <div className="absolute z-10 -right-2 -top-1">
+              <div key={index} className="relative flex w-full items-center">
+                <div className="mr-2">
                   <EdenTooltip
                     id={`tradeoff-${index}`}
                     innerTsx={
@@ -247,7 +245,7 @@ export const PrioritiesAndTradeOffsContainer = ({
                         <p>{tradeOff.reason}</p>
                       </div>
                     }
-                    place="top"
+                    place="right"
                     effect="solid"
                     backgroundColor="white"
                     border
@@ -255,12 +253,12 @@ export const PrioritiesAndTradeOffsContainer = ({
                     padding="0.5rem"
                     containerClassName="w-full"
                   >
-                    <div className="shadow bg-edenPink-200 rounded-full p-1 w-5 h-5">
-                      <EdenIconExclamation className="w-full h-full" />
+                    <div className="bg-edenPink-200 h-6 w-6 rounded-full p-1 shadow">
+                      <EdenIconExclamation className="h-full w-full" />
                     </div>
                   </EdenTooltip>
                 </div>
-                <div className="grid grid-cols-2">
+                <div className="relative grid w-[calc(100%-2rem)] grid-cols-2">
                   <label
                     className={classNames(
                       "col-span-1 mb-2 flex w-full cursor-pointer items-center justify-center px-4 py-2 text-center transition-all ease-in-out",

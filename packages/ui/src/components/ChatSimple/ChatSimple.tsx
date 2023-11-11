@@ -175,7 +175,7 @@ export const ChatSimple = ({
   // };
 
   return (
-    <>
+     <>
       <div className="flex h-full flex-col justify-between">
         <div className="h-full">
           <div className="border-edenGray-100 h-full overflow-hidden rounded-md border bg-white">
