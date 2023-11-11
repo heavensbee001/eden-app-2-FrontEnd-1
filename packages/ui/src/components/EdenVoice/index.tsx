@@ -1,7 +1,8 @@
 import { MicrophoneIcon, StopIcon } from "@heroicons/react/solid";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
 interface EdenVoiceProps {
+  // eslint-disable-next-line no-unused-vars
   onTranscriptionComplete: (transcription: string) => void;
   setRecording: React.Dispatch<React.SetStateAction<boolean>>;
   recording: boolean;
@@ -20,31 +21,20 @@ const EdenVoice: React.FC<EdenVoiceProps> = ({
         audio: true,
       });
 
-      console.log(mediaRecorder.current, "asdjnasdfnaouno");
-
       setRecording((prevRecording) => !prevRecording);
 
       mediaRecorder.current = new MediaRecorder(stream);
       mediaRecorder.current.start();
-      console.log("Hi 1");
       console.log(mediaRecorder.current, "after state change");
-    } catch (error) {
-      console.error("Error starting recording: ", error);
-    }
-    console.log(mediaRecorder.current, "aaaaaaaaaa");
+    } catch (error) {}
   };
 
   // recordingStateChange(true);
 
-  console.log(mediaRecorder.current, "asdjnasdfnaouno");
-
   const stopRecording = () => {
-    console.log("Stop buttton pressed 1");
-    console.log(mediaRecorder);
     if (mediaRecorder.current) {
-      console.log("Stop buttton pressed 2");
-      mediaRecorder.current.ondataavailable = async () => {
-        const audioBlob = event.data;
+      mediaRecorder.current.ondataavailable = async (e) => {
+        const audioBlob = e.data;
 
         if (audioBlob.size > 25 * 1024 * 1024) {
           console.error("File size exceeds the 25 MB limit");
@@ -57,7 +47,6 @@ const EdenVoice: React.FC<EdenVoiceProps> = ({
         formData.append("audiofile", audioBlob, "recording.web");
 
         try {
-          console.log("Stop buttton pressed 3");
           const response = await fetch(
             `${process.env.NEXT_PUBLIC_AUTH_URL}/storage/transcribeWhisper` as string,
             {
