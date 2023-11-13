@@ -1,7 +1,8 @@
-import { SaasUserLayout } from "@eden/package-ui";
+import { AppUserLayout, Button } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -34,48 +35,70 @@ const HARDCODED_POOLS = [
 
 const SignupCommunity: NextPageWithLayout = () => {
   const router = useRouter();
-  const handleSelect = (e: any) => {
-    console.log(e);
+  const [selectedCollective, setSelectedCollective] = useState<number>(-1);
+  const [showOptions, setShowOptions] = useState<boolean>(false);
 
-    if (e.currentTarget.value) {
-      router.push(e.currentTarget.value);
-    }
+  const handleSelect = (index: number) => {
+    setSelectedCollective(index);
   };
 
   return (
     <>
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <div className="mb-12 w-3/5">
-          <p className="font-Moret text-edenGreen-500 mb-3 text-xl">
-            {" "}
-            I know you aren&apos;t just one thing.
-          </p>
-          <p className="font-Unica text-edenGray-900">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[url('/signup-bg.png')] bg-cover bg-no-repeat">
+        <div className="mx-auto flex h-[236px] w-[604px] flex-col items-center justify-center rounded-lg bg-white">
+          <div className="font-Moret text-edenGreen-600 text-2xl font-bold leading-[33.6px]">
+            Choose your talent collective.
+          </div>
+          <div className="font-Unica text-xs leading-[16.8px] tracking-[-1.9%]">
+            {"Choose the talent oasis that aligns most with your skills."}
+          </div>
+          <div className="font-Unica text-xs leading-[16.8px] tracking-[-1.9%]">
             {
-              "So don't worry too much about choosing the exact right oasis. If I see you have strong skills in other areas, I'll for sure let you know if I see opportunities that match you as a whole person. I got you ;)"
+              "You'll automatically be considered for opportunities across oases based on your skills."
             }
-          </p>
-        </div>
-        <div className="bg-edenPink-300 mb-8 flex w-full max-w-[40rem] justify-center p-8">
-          <h2 className="text-edenGreen-600 mr-4">Join D_D as a:</h2>
-          <select
-            name=""
-            id=""
-            onChange={handleSelect}
-            className="rounded-md bg-white px-2 outline-none"
+          </div>
+          <div
+            onClick={() => setShowOptions(!showOptions)}
+            className="relative mb-[10px] mt-[18px]"
           >
-            <option value="" className="text-edenGray-500" disabled selected>
-              Select your position...
-            </option>
-            {HARDCODED_POOLS.map((pool, index) => (
-              <option value={pool.url} key={index}>
-                {pool.title}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <p>
+            <div
+              className={`${
+                selectedCollective > -1 ? "text-black" : "text-edenGray-500 "
+              } bg-edenPink-200 border-edenGray-500 flex  h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs outline-none`}
+            >
+              {selectedCollective > -1
+                ? HARDCODED_POOLS[selectedCollective].title
+                : "Select talent collective to join"}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            </div>
+            {showOptions && (
+              <div className="border-edenGray-500 bg-edenPink-200 absolute left-0 top-full w-[204px] translate-y-1 rounded-md border">
+                {HARDCODED_POOLS.map((pool, index) => (
+                  <div
+                    className="hover:bg-edenPink-400 pl-4 text-xs"
+                    onClick={() => handleSelect(index)}
+                    key={index}
+                  >
+                    {pool.title}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <p className="text-edenGray-700 mb-[10px] text-[10px] leading-[14px]">
             If you are a hiring manager login{" "}
             <Link
               href={"/developer-dao/jobs"}
@@ -84,6 +107,46 @@ const SignupCommunity: NextPageWithLayout = () => {
               here
             </Link>
           </p>
+          <Button
+            className="flex h-[34px] items-center"
+            onClick={() => {
+              // signIn("google", { callbackUrl: router.asPath });
+              if (selectedCollective > -1)
+                router.push(HARDCODED_POOLS[selectedCollective].url);
+            }}
+          >
+            Join the oasis
+          </Button>
+        </div>
+        <div className="flex w-[604px] flex-col pt-8">
+          <h1 className="text-edenPink-500">{"What is a talent oasis?"}</h1>
+          <div className="text-edenPink-400 font-Unica mt-[13px] text-base font-normal tracking-[-1.9%]">
+            <p>
+              {
+                "The Eden talent collectives are an AI-managed & curated talent pool that helps you apply, shine for & land your dream opportunities."
+              }
+            </p>
+            <br />
+            <p>
+              {
+                "By joining the oasis, our AI will actively pitch your profile to hiring managers."
+              }
+            </p>
+            <p className="pl-[2px]">
+              {"1. Be discovered by hiring managers before anyone else."}
+            </p>
+            <p className="pl-[2px]">
+              {
+                "2. Get constant feedback on your current profile, application & interview style."
+              }
+            </p>
+            <p className="pl-[2px]">
+              {
+                "3. Ask for career advice: given your profile & the current market, what could be your"
+              }
+            </p>
+            <p className="pl-4">{"next move?"}</p>
+          </div>
         </div>
       </div>
     </>
@@ -91,7 +154,7 @@ const SignupCommunity: NextPageWithLayout = () => {
 };
 
 SignupCommunity.getLayout = (page: any) => (
-  <SaasUserLayout>{page}</SaasUserLayout>
+  <AppUserLayout>{page}</AppUserLayout>
 );
 
 export async function getServerSideProps(ctx: {
