@@ -54,7 +54,7 @@ const SignupCommunity: NextPageWithLayout = () => {
           </div>
           <div className="font-Unica text-xs leading-[16.8px] tracking-[-1.9%]">
             {
-              "You'll automatically be considered for opportunities across oasis based on your skills."
+              "You'll automatically be considered for opportunities across oases based on your skills."
             }
           </div>
           <div
