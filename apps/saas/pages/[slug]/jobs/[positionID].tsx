@@ -94,8 +94,9 @@ const PositionPage: NextPageWithLayout = ({
     {
       defaultValues: {
         name: position.name || "",
-        whoYouAre: position.whoYouAre || "",
-        whatTheJobInvolves: position.whatTheJobInvolves || "",
+        whoYouAre: position.whoYouAre?.replace(/- /g, "") || "",
+        whatTheJobInvolves:
+          position.whatTheJobInvolves?.replace(/- /g, "") || "",
         generalDetails: {
           yearlySalary: {
             min: position.generalDetails?.yearlySalary?.min,
@@ -117,6 +118,7 @@ const PositionPage: NextPageWithLayout = ({
               amount: round?.amount,
               name: round?.name,
             })) || [],
+          // benefits: position.company?.benefits?.replace(/- /g, ""),
           benefits: position.company?.benefits,
           values: position.company?.values,
           founders: position.company?.founders,
@@ -630,7 +632,15 @@ const PositionPage: NextPageWithLayout = ({
                         />
                       </>
                     ) : (
-                      getValues("whoYouAre")
+                      <ul className="text-edenGray-900 list-disc pl-4 ">
+                        {getValues("whoYouAre")
+                          .split("\n")
+                          .map((line, index) => (
+                            <li className="mb-4" key={index}>
+                              {line}
+                            </li>
+                          ))}{" "}
+                      </ul>
                     )}
                   </p>
                 </div>
@@ -648,7 +658,15 @@ const PositionPage: NextPageWithLayout = ({
                         />
                       </>
                     ) : (
-                      getValues("whatTheJobInvolves")
+                      <ul className="text-edenGray-900 list-disc pl-4 ">
+                        {getValues("whatTheJobInvolves")
+                          .split("\n")
+                          .map((line, index) => (
+                            <li className="mb-4" key={index}>
+                              {line}
+                            </li>
+                          ))}
+                      </ul>
                     )}
                   </p>
                 </div>
