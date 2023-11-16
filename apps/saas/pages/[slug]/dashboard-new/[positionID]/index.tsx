@@ -12,6 +12,13 @@ import {
   EdenAiLetter,
   ListModeEnum,
 } from "@eden/package-ui";
+import {
+  CultureFitSVG,
+  EdenFavesSVG,
+  HiddenGemsSVG,
+  IndustryVeteranSVG,
+  SkillFitSVG,
+} from "@eden/package-ui/src/svgs";
 import { useRouter } from "next/router";
 import React, { useContext, useMemo, useRef, useState } from "react";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
@@ -19,13 +26,6 @@ import { toast } from "react-toastify";
 
 import ApprovedCandidatesList from "./ApprovedCandidatesList";
 import CandidatesList from "./CandidatesList";
-import {
-  CultureFitSVG,
-  EdenFavesSVG,
-  HiddenGemsSVG,
-  IndustryVeteranSVG,
-  SkillFitSVG,
-} from "./svgs";
 import useOutside from "./useOutSide";
 
 const CandidateInfoNew = dynamic(
