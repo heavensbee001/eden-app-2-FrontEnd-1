@@ -289,6 +289,10 @@ const PositionCRM: NextPageWithLayout = () => {
               };
             });
 
+          console.log(
+            "candidatesListWithSkillMatch = ",
+            candidatesListWithSkillMatch
+          );
           // sort the candidatesList by the totalMatchPerc
           const sortedCandidatesList = candidatesListWithSkillMatch.sort(
             (a: any, b: any) => {
@@ -863,6 +867,104 @@ const PositionCRM: NextPageWithLayout = () => {
     setIsOpen(true);
   };
 
+  const handleCandidatesReorder = (topic: string) => {
+    if (topic === "Eden's faves") {
+      const sortedCandidatesList = candidatesFromTalentList.sort(
+        (a: any, b: any) => {
+          if (a.scoreCardTotal.score > b.scoreCardTotal.score) {
+            return -1;
+          }
+          if (a.scoreCardTotal.score < b.scoreCardTotal.score) {
+            return 1;
+          }
+          return 0;
+        }
+      );
+
+      setCandidatesFromTalentList(sortedCandidatesList);
+    } else if (topic === "Top Culture Fits") {
+      const sortedCandidatesList = candidatesFromTalentList.sort(
+        (a: any, b: any) => {
+          if (
+            a.scoreCardCategoryMemories[1].score >
+            b.scoreCardCategoryMemories[1].score
+          ) {
+            return -1;
+          }
+          if (
+            a.scoreCardCategoryMemories[1].score <
+            b.scoreCardCategoryMemories[1].score
+          ) {
+            return 1;
+          }
+          return 0;
+        }
+      );
+
+      setCandidatesFromTalentList(sortedCandidatesList);
+    } else if (topic === "Top Skill Fits") {
+      const sortedCandidatesList = candidatesFromTalentList.sort(
+        (a: any, b: any) => {
+          if (
+            a.scoreCardCategoryMemories[0].score >
+            b.scoreCardCategoryMemories[0].score
+          ) {
+            return -1;
+          }
+          if (
+            a.scoreCardCategoryMemories[0].score <
+            b.scoreCardCategoryMemories[0].score
+          ) {
+            return 1;
+          }
+          return 0;
+        }
+      );
+
+      setCandidatesFromTalentList(sortedCandidatesList);
+    } else if (topic === "Industry Veterans") {
+      const sortedCandidatesList = candidatesFromTalentList.sort(
+        (a: any, b: any) => {
+          if (
+            a.scoreCardCategoryMemories[2].score >
+            b.scoreCardCategoryMemories[2].score
+          ) {
+            return -1;
+          }
+          if (
+            a.scoreCardCategoryMemories[2].score <
+            b.scoreCardCategoryMemories[2].score
+          ) {
+            return 1;
+          }
+          return 0;
+        }
+      );
+
+      setCandidatesFromTalentList(sortedCandidatesList);
+    } else if (topic === "Hidden Gems") {
+      const sortedCandidatesList = candidatesFromTalentList.sort(
+        (a: any, b: any) => {
+          if (
+            a.scoreCardCategoryMemories[3].score >
+            b.scoreCardCategoryMemories[3].score
+          ) {
+            return -1;
+          }
+          if (
+            a.scoreCardCategoryMemories[3].score <
+            b.scoreCardCategoryMemories[3].score
+          ) {
+            return 1;
+          }
+          return 0;
+        }
+      );
+
+      setCandidatesFromTalentList(sortedCandidatesList);
+    }
+  };
+
   const handleApproveCandidate = async (candidateID: string) => {
     setQuickActionButtonUsed(true);
     const _prevTalent = findPositionData?.findPosition?.talentList
@@ -923,20 +1025,25 @@ const PositionCRM: NextPageWithLayout = () => {
                   <h1 className="text-edenGreen-600 relative w-full border-b text-center">
                     Explore talent by topic
                   </h1>
-                  {topics.map((topic) => (
+                  {topics.map((aiTopic) => (
                     <div
-                      className="bg-edenPink-300 flex h-24 flex-row items-center rounded-lg px-4 py-2"
-                      key={`${topic.topic}`}
+                      className={`${
+                        topic === aiTopic.topic
+                          ? "border-edenGreen-600 border-2"
+                          : ""
+                      } bg-edenPink-300 flex h-24 flex-row items-center rounded-lg px-4 py-2`}
+                      key={`${aiTopic.topic}`}
                       onClick={() => {
-                        setTopic(topic.topic);
+                        setTopic(aiTopic.topic);
+                        handleCandidatesReorder(aiTopic.topic);
                         setIsTopicListMenuOpen(false);
                       }}
                     >
-                      {topic.svg}
+                      {aiTopic.svg}
                       <div className="ml-6 flex flex-col">
-                        <h1>{topic.topic}</h1>
+                        <h1>{aiTopic.topic}</h1>
                         <p className="font-Unica mt-3 text-xs font-medium leading-[140%] tracking-[-1.9%]">
-                          {topic.text}
+                          {aiTopic.text}
                         </p>
                       </div>
                     </div>

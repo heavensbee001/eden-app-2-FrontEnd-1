@@ -101,7 +101,7 @@ const CandidatesList = ({
           key={candidate.user?._id}
           className={`${
             candidate.user?._id === candidateIDRowSelected
-              ? "border-edenGreen-700 border-1"
+              ? "border-edenGreen-600 border-2"
               : ""
           } bg-edenPink-300 mb-2 flex h-24 flex-row items-center justify-around rounded-lg`}
           onClick={() => handleObjectDataSelection(candidate)}
