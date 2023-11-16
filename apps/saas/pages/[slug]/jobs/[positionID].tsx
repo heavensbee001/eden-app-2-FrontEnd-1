@@ -118,9 +118,8 @@ const PositionPage: NextPageWithLayout = ({
               amount: round?.amount,
               name: round?.name,
             })) || [],
-          // benefits: position.company?.benefits?.replace(/- /g, ""),
-          benefits: position.company?.benefits,
-          values: position.company?.values,
+          benefits: position.company?.benefits?.replace(/- /g, ""),
+          values: position.company?.values.replace(/^\s*-\s*/gm, ""),
           founders: position.company?.founders,
           glassdoor: position.company?.glassdoor,
           whatsToLove: position.company?.whatsToLove,
@@ -872,7 +871,15 @@ const PositionPage: NextPageWithLayout = ({
                           />
                         </>
                       ) : (
-                        getValues("company.benefits")
+                        <ul className="text-edenGray-900 list-disc pl-4 ">
+                          {getValues("company.benefits")
+                            .split("\n")
+                            .map((line, index) => (
+                              <li className="mb-4" key={index}>
+                                {line}
+                              </li>
+                            ))}
+                        </ul>
                       )}
                     </p>
                   </div>
@@ -892,7 +899,15 @@ const PositionPage: NextPageWithLayout = ({
                           />
                         </>
                       ) : (
-                        getValues("company.values")
+                        <ul className="text-edenGray-900 list-disc pl-4 ">
+                          {getValues("company.values")
+                            .split("\n")
+                            .map((line, index) => (
+                              <li className="mb-4" key={index}>
+                                {line}
+                              </li>
+                            ))}
+                        </ul>
                       )}
                     </p>
                   </div>
