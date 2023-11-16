@@ -94,7 +94,7 @@ const PositionPage: NextPageWithLayout = ({
     {
       defaultValues: {
         name: position.name || "",
-        //Removes -
+        //Removes - //
         whoYouAre: position.whoYouAre?.replace(/- /g, "") || "",
         whatTheJobInvolves:
           position.whatTheJobInvolves?.replace(/- /g, "") || "",
