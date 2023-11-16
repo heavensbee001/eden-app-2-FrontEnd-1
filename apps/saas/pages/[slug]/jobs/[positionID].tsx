@@ -634,7 +634,7 @@ const PositionPage: NextPageWithLayout = ({
                       <ul className="text-edenGray-900 list-disc pl-4 ">
                         {getValues("whoYouAre")
                           .split("\n")
-                          .map((line, index) => (
+                          .map((line: any, index: any) => (
                             <li className="mb-4" key={index}>
                               {line}
                             </li>
@@ -660,7 +660,7 @@ const PositionPage: NextPageWithLayout = ({
                       <ul className="text-edenGray-900 list-disc pl-4 ">
                         {getValues("whatTheJobInvolves")
                           .split("\n")
-                          .map((line, index) => (
+                          .map((line: any, index: any) => (
                             <li className="mb-4" key={index}>
                               {line}
                             </li>
@@ -874,7 +874,7 @@ const PositionPage: NextPageWithLayout = ({
                         <ul className="text-edenGray-900 list-disc pl-4 ">
                           {getValues("company.benefits")
                             .split("\n")
-                            .map((line, index) => (
+                            .map((line: any, index: any) => (
                               <li className="mb-4" key={index}>
                                 {line}
                               </li>
@@ -902,7 +902,7 @@ const PositionPage: NextPageWithLayout = ({
                         <ul className="text-edenGray-900 list-disc pl-4 ">
                           {getValues("company.values")
                             .split("\n")
-                            .map((line, index) => (
+                            .map((line: any, index: any) => (
                               <li className="mb-4" key={index}>
                                 {line}
                               </li>
