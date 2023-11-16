@@ -1018,11 +1018,11 @@ const PositionCRM: NextPageWithLayout = () => {
               <div
                 className={`${
                   isTopicListMenuOpen ? "w-full" : "w-0"
-                } shadow-r-md transition-width absolute left-0 top-0 z-20 h-full bg-white p-2 duration-200 ease-in-out`}
+                } shadow-r-md transition-width duration-400 absolute left-0 top-0 z-20 h-full bg-white p-2 ease-in-out`}
                 ref={topicListMenuRef}
               >
                 <div className="flex h-full w-full flex-col gap-5">
-                  <h1 className="text-edenGreen-600 relative w-full border-b text-center">
+                  <h1 className="text-edenGreen-600 border-edenGreen-400 relative w-full border-b pb-2 text-center">
                     Explore talent by topic
                   </h1>
                   {topics.map((aiTopic) => (
