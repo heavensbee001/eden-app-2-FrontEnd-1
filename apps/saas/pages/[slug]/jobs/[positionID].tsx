@@ -119,7 +119,7 @@ const PositionPage: NextPageWithLayout = ({
               name: round?.name,
             })) || [],
           benefits: position.company?.benefits?.replace(/- /g, ""),
-          values: position.company?.values.replace(/^\s*-\s*/gm, ""),
+          values: position.company?.values?.replace(/^\s*-\s*/gm, ""),
           founders: position.company?.founders,
           glassdoor: position.company?.glassdoor,
           whatsToLove: position.company?.whatsToLove,
