@@ -36,3 +36,6 @@ jobs:
       #   run: yarn build:landing
       # - name: Build web
       #   run: yarn build
+      - name: Deploy to Vercel (Develop Preview)
+        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
+
