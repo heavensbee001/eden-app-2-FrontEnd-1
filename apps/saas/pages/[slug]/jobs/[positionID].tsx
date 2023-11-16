@@ -94,8 +94,9 @@ const PositionPage: NextPageWithLayout = ({
     {
       defaultValues: {
         name: position.name || "",
-        whoYouAre: position.whoYouAre || "",
-        whatTheJobInvolves: position.whatTheJobInvolves || "",
+        whoYouAre: position.whoYouAre?.replace(/- /g, "") || "",
+        whatTheJobInvolves:
+          position.whatTheJobInvolves?.replace(/- /g, "") || "",
         generalDetails: {
           yearlySalary: {
             min: position.generalDetails?.yearlySalary?.min,
@@ -117,8 +118,8 @@ const PositionPage: NextPageWithLayout = ({
               amount: round?.amount,
               name: round?.name,
             })) || [],
-          benefits: position.company?.benefits,
-          values: position.company?.values,
+          benefits: position.company?.benefits?.replace(/- /g, ""),
+          values: position.company?.values?.replace(/^\s*-\s*/gm, ""),
           founders: position.company?.founders,
           glassdoor: position.company?.glassdoor,
           whatsToLove: position.company?.whatsToLove,
@@ -630,7 +631,15 @@ const PositionPage: NextPageWithLayout = ({
                         />
                       </>
                     ) : (
-                      getValues("whoYouAre")
+                      <ul className="text-edenGray-900 list-disc pl-4 ">
+                        {getValues("whoYouAre")
+                          .split("\n")
+                          .map((line: any, index: any) => (
+                            <li className="mb-4" key={index}>
+                              {line}
+                            </li>
+                          ))}{" "}
+                      </ul>
                     )}
                   </p>
                 </div>
@@ -648,7 +657,15 @@ const PositionPage: NextPageWithLayout = ({
                         />
                       </>
                     ) : (
-                      getValues("whatTheJobInvolves")
+                      <ul className="text-edenGray-900 list-disc pl-4 ">
+                        {getValues("whatTheJobInvolves")
+                          .split("\n")
+                          .map((line: any, index: any) => (
+                            <li className="mb-4" key={index}>
+                              {line}
+                            </li>
+                          ))}
+                      </ul>
                     )}
                   </p>
                 </div>
@@ -854,7 +871,15 @@ const PositionPage: NextPageWithLayout = ({
                           />
                         </>
                       ) : (
-                        getValues("company.benefits")
+                        <ul className="text-edenGray-900 list-disc pl-4 ">
+                          {getValues("company.benefits")
+                            .split("\n")
+                            .map((line: any, index: any) => (
+                              <li className="mb-4" key={index}>
+                                {line}
+                              </li>
+                            ))}
+                        </ul>
                       )}
                     </p>
                   </div>
@@ -874,7 +899,15 @@ const PositionPage: NextPageWithLayout = ({
                           />
                         </>
                       ) : (
-                        getValues("company.values")
+                        <ul className="text-edenGray-900 list-disc pl-4 ">
+                          {getValues("company.values")
+                            .split("\n")
+                            .map((line: any, index: any) => (
+                              <li className="mb-4" key={index}>
+                                {line}
+                              </li>
+                            ))}
+                        </ul>
                       )}
                     </p>
                   </div>
