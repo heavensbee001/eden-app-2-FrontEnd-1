@@ -61,11 +61,12 @@ const SignupCommunity: NextPageWithLayout = () => {
             onClick={() => setShowOptions(!showOptions)}
             className="relative mb-[10px] mt-[18px]"
           >
-            <div
-              className={`${
-                selectedCollective > -1 ? "text-black" : "text-edenGray-500 "
-              } bg-edenPink-200 border-edenGray-500 flex  h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs outline-none`}
-            >
+            {/* <div */}
+            {/*   className={`${ */}
+            {/*     selectedCollective > -1 ? "text-black" : "text-balck  " */}
+            {/*   } bg-edenPink-200 border-edenGray-500  flex h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs outline-none hover:cursor-pointer`} */}
+            {/* > */}
+            <div className="bg-edenPink-200 border-edenGray-500 flex  h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs text-black outline-none hover:cursor-pointer">
               {selectedCollective > -1
                 ? HARDCODED_POOLS[selectedCollective].title
                 : "Select talent collective to join"}
@@ -73,7 +74,7 @@ const SignupCommunity: NextPageWithLayout = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
+                strokeWidth={2.3}
                 stroke="currentColor"
                 className="h-6 w-6"
               >
@@ -88,7 +89,7 @@ const SignupCommunity: NextPageWithLayout = () => {
               <div className="border-edenGray-500 bg-edenPink-200 absolute left-0 top-full w-[204px] translate-y-1 rounded-md border">
                 {HARDCODED_POOLS.map((pool, index) => (
                   <div
-                    className="hover:bg-edenPink-400 pl-4 text-xs"
+                    className="hover:bg-edenPink-400 pl-4 text-xs hover:cursor-pointer"
                     onClick={() => handleSelect(index)}
                     key={index}
                   >
@@ -108,6 +109,7 @@ const SignupCommunity: NextPageWithLayout = () => {
             </Link>
           </p>
           <Button
+            disabled={selectedCollective === -1}
             className="flex h-[34px] items-center"
             onClick={() => {
               // signIn("google", { callbackUrl: router.asPath });

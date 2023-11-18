@@ -80,9 +80,9 @@ const EdenVoice: React.FC<EdenVoiceProps> = ({
   return (
     <div>
       {!recording && !transcribing && (
-        <button onClick={startRecording} disabled={recording}>
+        <button onClick={startRecording} disabled={recording} className="py-1">
           {" "}
-          <MicrophoneIcon className="h-4 w-4" />{" "}
+          <MicrophoneIcon className="h-4 w-4 rounded-full hover:cursor-pointer hover:bg-gray-50 hover:shadow-md" />{" "}
         </button>
       )}
       {recording && !transcribing && (
