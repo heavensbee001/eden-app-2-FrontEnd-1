@@ -29,7 +29,7 @@ export const Button = ({
     className || "",
     "py-2 px-4 font-Moret text-lg rounded-md font-bold",
     variant === "default" || variant === "primary"
-      ? "box-border border-2 border-edenGreen-600 text-edenGreen-600 hover:bg-edenGreen-500 hover:border-edenGreen-500 hover:text-white disabled:!text-edenGray-500 disabled:!border-edenGray-500 disabled:!bg-edenGray-100"
+      ? "box-border border-2 border-edenGreen-600 text-edenGreen-600 hover:bg-edenGreen-500 hover:border-edenGreen-500 hover:text-white disabled:!text-edenGray-500 disabled:!border-edenGray-500 disabled:!bg-edenGray-100 disabled:cursor-not-allowed"
       : "",
     variant === "secondary"
       ? "bg-edenGreen-600 text-white hover:bg-edenGreen-300 hover:text-edenGreen-600 disabled:!text-edenGray-500 disabled:!bg-edenGray-100"
