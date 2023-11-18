@@ -15,6 +15,7 @@ import {
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
@@ -530,10 +531,21 @@ const PositionPage: NextPageWithLayout = ({
                   ></input>
                 </label>
               ) : (
-                <img
-                  src={getValues("company.imageUrl") || ""}
-                  className="mb-2 h-20"
-                  alt={position?.company?.name || ""}
+                // <img
+                //   src={getValues("company.imageUrl") || ""}
+                //   className="mb-2 h-20"
+                //   alt={position?.company?.name || ""}
+                // />
+                <Image
+                  width="96"
+                  height="96"
+                  className="mb-6"
+                  src={`${
+                    position?.company?.imageUrl
+                      ? position?.company?.imageUrl
+                      : "/default-company-image.svg"
+                  }`}
+                  alt={`${position?.company?.name} company image`}
                 />
               )}
               <p className="text-edenGray-900 mb-2 text-sm">
