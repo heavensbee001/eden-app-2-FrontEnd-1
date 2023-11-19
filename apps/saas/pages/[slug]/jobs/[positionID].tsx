@@ -89,6 +89,7 @@ const PositionPage: NextPageWithLayout = ({
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
+  const [redirectDevDAO, setRedirectDevDAO] = useState(false);
   const [openAskEden, setOpenAskEden] = useState(false);
 
   const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
@@ -222,6 +223,8 @@ const PositionPage: NextPageWithLayout = ({
       }
     }
   };
+
+  console.log("publishModalOpen", publishModalOpen);
 
   const parseOfficePolicy = (_officePolicy: string) => {
     if (_officePolicy === "on-site") return "On site";
@@ -987,7 +990,10 @@ const PositionPage: NextPageWithLayout = ({
                 Save as draft
               </Button>
               <Button
-                onClick={() => setPublishModalOpen(true)}
+                onClick={() => {
+                  setPublishModalOpen(true);
+                  setRedirectDevDAO(true);
+                }}
                 className="border-edenPink-400 !text-edenPink-400"
               >
                 Publish to Developer DAO
@@ -1068,9 +1074,13 @@ const PositionPage: NextPageWithLayout = ({
                   <div className="flex justify-center gap-8">
                     <Button
                       onClick={() => {
-                        router.push(
-                          `/${position.company?.slug}/dashboard/${position._id}`
-                        );
+                        if (redirectDevDAO == true) {
+                          router.push(`/developer-dao/jobs`);
+                        } else {
+                          router.push(
+                            `/${position.company?.slug}/dashboard/${position._id}`
+                          );
+                        }
                       }}
                     >
                       Auto-configure the AI-interview for me
