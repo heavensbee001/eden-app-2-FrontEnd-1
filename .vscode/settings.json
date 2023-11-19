@@ -24,5 +24,6 @@
     "terminal.integrated.fontFamily": "MesloLGS NF"
   },
   "peacock.color": "#1A231D",
-  "cSpell.words": ["Perc"]
+  "cSpell.words": ["Perc"],
+  "nuxt.isNuxtApp": false
 }
