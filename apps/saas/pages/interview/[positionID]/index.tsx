@@ -548,9 +548,12 @@ export async function getServerSideProps(ctx: {
   const url = ctx.req.url;
 
   if (!session) {
+    const newUrl = url?.replace(/\/_next\/data\/development/, "");
+
+    console.log("redirecting =========:>>>>>>>>>>> ", newUrl);
     return {
       redirect: {
-        destination: `/?redirect=${url}`,
+        destination: `/?redirect=${newUrl}`,
         permanent: false,
       },
     };
