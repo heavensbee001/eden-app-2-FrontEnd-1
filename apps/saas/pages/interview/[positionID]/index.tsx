@@ -545,18 +545,12 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  const url = ctx.req.url;
+  const url = (ctx as any).resolvedUrl;
 
   if (!session) {
-    const newUrl = url?.replace(
-      /\/_next\/data\/[^\/]+\/interview/,
-      "/interview"
-    );
-
-    console.log("redirecting =========:>>>>>>>>>>> ", newUrl);
     return {
       redirect: {
-        destination: `/?redirect=${newUrl}`,
+        destination: `/?redirect=${encodeURIComponent(url)}`,
         permanent: false,
       },
     };
