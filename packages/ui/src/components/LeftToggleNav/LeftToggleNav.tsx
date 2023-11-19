@@ -33,10 +33,10 @@ const UPDATE_POSITION = gql`
   }
 `;
 const AUTO_UPDATE_POSITION = gql`
-  mutation AutoUpdatePositionCompInformation(
+  mutation autoUpdatePositionCompInformation_V2(
     $fields: autoUpdatePositionCompInformationInput
   ) {
-    autoUpdatePositionCompInformation(fields: $fields) {
+    autoUpdatePositionCompInformation_V2(fields: $fields) {
       _id
       name
       whoYouAre
@@ -108,7 +108,7 @@ export const LeftToggleNav = ({
     onCompleted(autoUpdatePositionData) {
       getCompanyFunc();
       router.push(
-        `/${company?.slug}/jobs/${autoUpdatePositionData.autoUpdatePositionCompInformation._id}?edit=true`
+        `/${company?.slug}/jobs/${autoUpdatePositionData.autoUpdatePositionCompInformation_V2._id}?edit=true`
       );
     },
     onError() {
@@ -123,16 +123,16 @@ export const LeftToggleNav = ({
         variables: {
           fields: {
             positionID: newPositionId,
-            mustUpdate: [
-              "mission",
-              "description",
-              "whoYouAre",
-              "whatTheJobInvolves",
-              "benefits",
-              "values",
-              "founders",
-              "whatsToLove",
-            ],
+            // mustUpdate: [
+            //   "mission",
+            //   "description",
+            //   "whoYouAre",
+            //   "whatTheJobInvolves",
+            //   "benefits",
+            //   "values",
+            //   "founders",
+            //   "whatsToLove",
+            // ],
           },
         },
       });
