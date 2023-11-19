@@ -78,8 +78,8 @@ const ApplicationStepContainer = ({
     strongSuit: boolean;
   }>({
     areasToImprove: true,
-    growth: true,
-    strongSuit: true,
+    growth: false,
+    strongSuit: false,
   });
 
   const formattedSalary = (salary: number) => {
