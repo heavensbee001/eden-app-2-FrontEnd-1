@@ -1,4 +1,5 @@
 export * from "./CandidateInfo";
+export * from "./CandidateInfoNew";
 export * from "./GrantsInfo";
 export * from "./MemberInfo";
 export * from "./MemberInfoWithDynamicGraph";
