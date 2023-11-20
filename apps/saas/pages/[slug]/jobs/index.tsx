@@ -131,6 +131,7 @@ const HomePage: NextPageWithLayout = () => {
 
   const handlePostJobClick = () => {
     if (!currentUser) {
+      console.log("herheehrehreherh");
       signIn("google", {
         callbackUrl: router.asPath,
       });
@@ -139,8 +140,10 @@ const HomePage: NextPageWithLayout = () => {
       currentUser?.companies[0] &&
       currentUser?.companies[0].company?.slug
     ) {
+      console.log("1111111");
       router.push(`/${currentUser?.companies[0].company?.slug}/dashboard`);
     } else {
+      console.log("2222222");
       router.push(`/pricing?community=${company?._id}`);
     }
   };
