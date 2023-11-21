@@ -11,6 +11,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
     findCompanyFromSlug(fields: $fields) {
       _id
       name
+      imageUrl
       slug
       positions {
         _id
@@ -74,7 +75,7 @@ const HomePage: NextPageWithLayout = () => {
 
       <div className="mx-auto h-full w-full rounded px-8">
         <div className="z-40 flex h-full w-full flex-row gap-2">
-          <div className="relative h-full min-w-[330px]">
+          <div className="bg-edenPink-100 relative h-full min-w-[330px]">
             <div className="border-edenGreen-400 relative mb-2 border-b pb-2 text-center">
               <h1 className="text-edenGreen-600">
                 {"Communities you're subscribed to"}
@@ -82,15 +83,18 @@ const HomePage: NextPageWithLayout = () => {
             </div>
 
             <div className="scrollbar-hide h-[calc(100%-106px)] overflow-y-auto pt-4">
-              <div className="flex flex-row rounded-lg px-2 py-4">
+              <div className="bg-edenPink-300 flex flex-row items-center rounded-lg px-2 py-4">
                 <Image
                   width="56"
                   height="56"
                   src={findCompanyData?.findCompanyFromSlug?.imageUrl}
                   alt={`${findCompanyData?.findCompanyFromSlug?.name} image`}
                 />
-                <div className="flex flex-col">
-                  <h1>{findCompanyData?.findCompanyFromSlug?.name}</h1>
+                <div className="ml-4 flex flex-col">
+                  <h1 className="text-edenGreen-600">
+                    {findCompanyData?.findCompanyFromSlug?.name}
+                  </h1>
+                  <p>5000+ active web3 developers.</p>
                 </div>
               </div>
             </div>
@@ -105,20 +109,170 @@ const HomePage: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="min-w-1/2 bg-edenGreen-200 h-full flex-grow"></div>
-          <div className="relative h-full min-w-[330px]">
+          <div className="bg-edenPink-100 relative h-full min-w-[330px]">
             <div className="border-edenGreen-400 relative mb-2 border-b pb-2 text-center">
               <h1 className="text-edenGreen-600">
                 {"AI-powered Engage Flows"}
               </h1>
             </div>
 
-            <div className="scrollbar-hide max-h-[calc(100%-160px)] overflow-y-auto pt-4"></div>
+            <div className="scrollbar-hide max-h-[calc(100%-160px)] overflow-y-auto pt-2">
+              <div className="bg-edenPink-300 m-4 flex flex-row items-center rounded-md py-2">
+                <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M1.40537 6.06455C2.33543 5.06666 3.65893 4.50976 5.21796 4.50976H14.2811C15.8435 4.50976 17.1675 5.06635 18.0973 6.06481C19.0214 7.05723 19.5 8.4252 19.5 9.9563V13.7453C19.5 15.2759 19.0213 16.6437 18.0971 17.636C17.1672 18.6343 15.8429 19.1908 14.2801 19.1908H5.21796C3.65557 19.1908 2.33171 18.6342 1.40222 17.6359C0.47837 16.6435 0 15.2758 0 13.7453V9.9563C0 8.4245 0.48076 7.05659 1.40537 6.06455ZM2.50267 7.08726C1.87993 7.7554 1.5 8.7358 1.5 9.9563V13.7453C1.5 14.9661 1.8785 15.9461 2.50007 16.6137C3.11601 17.2753 4.02614 17.6908 5.21796 17.6908H14.2801C15.4725 17.6908 16.3832 17.2753 16.9994 16.6136C17.6213 15.946 18 14.966 18 13.7453V9.9563C18 8.735 17.6213 7.7548 16.9995 7.08701C16.3833 6.42528 15.4729 6.00976 14.2811 6.00976H5.21796C4.03042 6.00976 3.11994 6.42498 2.50267 7.08726Z"
+                      fill="#00462C"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M10.3104 0.27669C10.5718 0.59799 10.5232 1.07038 10.2019 1.33179L4.48117 5.98624C4.15987 6.24765 3.68748 6.1991 3.42607 5.8778C3.16465 5.5565 3.2132 5.08411 3.5345 4.8227L9.2553 0.16825C9.5766 -0.0931598 10.0489 -0.0446099 10.3104 0.27669Z"
+                      fill="#00462C"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M14.6914 11.3203C15.1056 11.3203 15.4414 11.6561 15.4414 12.0703V14.5443C15.4414 14.9585 15.1056 15.2943 14.6914 15.2943C14.2772 15.2943 13.9414 14.9585 13.9414 14.5443V12.0703C13.9414 11.6561 14.2772 11.3203 14.6914 11.3203Z"
+                      fill="#00462C"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11.7852 11.3203C12.1994 11.3203 12.5352 11.6561 12.5352 12.0703V14.5443C12.5352 14.9585 12.1994 15.2943 11.7852 15.2943C11.3709 15.2943 11.0352 14.9585 11.0352 14.5443V12.0703C11.0352 11.6561 11.3709 11.3203 11.7852 11.3203Z"
+                      fill="#00462C"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M4.05859 13.3071C4.05859 12.0899 5.04532 11.1016 6.26412 11.1016C7.48293 11.1016 8.4697 12.0899 8.4697 13.3071C8.4697 14.5256 7.48261 15.5126 6.26412 15.5126C5.04564 15.5126 4.05859 14.5256 4.05859 13.3071ZM6.26412 12.6016C5.87439 12.6016 5.55859 12.9177 5.55859 13.3071C5.55859 13.6971 5.87407 14.0126 6.26412 14.0126C6.65418 14.0126 6.96965 13.6971 6.96965 13.3071C6.96965 12.9177 6.65386 12.6016 6.26412 12.6016Z"
+                      fill="#00462C"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M3.62695 9.0332C3.62695 8.619 3.96274 8.2832 4.37695 8.2832H15.1232C15.5374 8.2832 15.8732 8.619 15.8732 9.0332C15.8732 9.4474 15.5374 9.7832 15.1232 9.7832H4.37695C3.96274 9.7832 3.62695 9.4474 3.62695 9.0332Z"
+                      fill="#00462C"
+                    />
+                  </svg>
+                </div>
+                <div className="flex flex-col px-3">
+                  <h1 className="text-edenGreen-600">Talent radio</h1>
+                  <p className="text-edenGray-500">
+                    Fav profile based recruitment
+                  </p>
+                </div>
+              </div>
+              <div className="bg-edenPink-300 m-4 flex flex-row items-center rounded-md py-2">
+                <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
+                  <svg
+                    width="37"
+                    height="37"
+                    viewBox="0 0 37 37"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M27.223 25.2281C28.262 24.4814 28.7235 23.3892 29.0797 22.2286C29.3202 21.4479 29.3884 16.9983 29.4048 15.3079C29.4167 14.1384 30.3679 13.2004 31.5375 13.2004C32.6981 13.2004 33.6464 14.1295 33.6687 15.2916C33.731 18.5463 34.0842 22.3724 33.0558 25.5159C32.1682 28.226 30.3784 30.5903 27.9354 32.0788"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M22.3624 32.2318C22.3474 30.3617 22.4069 25.8915 22.6739 24.4356C23.1192 21.9868 25.494 18.6949 29.3082 19.7783"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M12.5827 25.2281C11.5438 24.4814 11.0822 23.3892 10.726 22.2286C10.4856 21.4479 10.4173 16.9983 10.401 15.3079C10.3891 14.1384 9.43775 13.2004 8.26824 13.2004C7.10763 13.2004 6.15926 14.1295 6.137 15.2916C6.07467 18.5463 5.72144 22.3724 6.74995 25.5159C7.63747 28.226 9.42736 30.5903 11.8703 32.0788"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M17.4469 32.2318C17.4618 30.3617 17.4023 25.8915 17.1353 24.4356C16.6901 21.9868 14.3154 18.6949 10.5011 19.7783"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      opacity="0.4"
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M21.2106 14.6228H18.5954C18.1843 14.6228 17.8503 14.2889 17.8503 13.8763V11.7525H15.7221C15.311 11.7525 14.9771 11.4185 14.9771 11.0059V8.38492C14.9771 7.97381 15.311 7.63839 15.7221 7.63839H17.8503V5.51605C17.8503 5.10347 18.1843 4.76953 18.5954 4.76953H21.2106C21.6231 4.76953 21.957 5.10347 21.957 5.51605V7.63839H24.0838C24.4965 7.63839 24.8304 7.97381 24.8304 8.38492V11.0059C24.8304 11.4185 24.4965 11.7525 24.0838 11.7525H21.957V13.8763C21.957 14.2889 21.6231 14.6228 21.2106 14.6228Z"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div className="flex flex-col px-3">
+                  <h1 className="text-edenGreen-600">Smart referrals</h1>
+                  <p className="text-edenGray-500">
+                    Ask the right people for referrals
+                  </p>
+                </div>
+              </div>
+              <div className="bg-edenPink-300 m-4 flex flex-row items-center rounded-md py-2">
+                <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.6392 20.9996L8.4647 20.1113C7.99184 19.9186 7.45964 19.9342 6.99943 20.1541L6.22789 20.5228C5.41742 20.911 4.4795 20.3195 4.48047 19.4205L4.4902 6.98325C4.4902 4.52364 5.85817 3 8.31292 3H15.721C18.1825 3 19.5203 4.52364 19.5203 6.98325V11.274"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M17.1047 14.8594V20.9997M17.1047 14.8594L14.6895 17.2849M17.1047 14.8594L19.5201 17.2849"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M14.1075 9.04297H9.13867M12.4506 12.9025H9.13867"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div className="flex flex-col px-3">
+                  <h1 className="text-edenGreen-600">Passive Talent Pitch</h1>
+                  <p className="text-edenGray-500">
+                    Reach talent that is not actively looking
+                  </p>
+                </div>
+              </div>
+            </div>
             <div className="bg-edenGreen-600 absolute bottom-0 flex w-full justify-around px-6 py-2">
               <Button
                 className="w-56 border-white text-center text-white"
                 onClick={handleSetupCustomFlow}
               >
-                Setup custome engage flow
+                Setup custom engage flow
               </Button>
             </div>
           </div>
