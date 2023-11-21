@@ -1,8 +1,6 @@
 import { CandidateType } from "@eden/package-graphql/generated";
-import { Avatar, ListModeEnum } from "@eden/package-ui";
+import { Avatar, CutTextTooltip, ListModeEnum } from "@eden/package-ui";
 import { ComponentPropsWithoutRef, FC, ReactNode } from "react";
-
-import CutTextTooltip from "./CutTextTooltip";
 
 type Grade = {
   letter: string;
@@ -85,7 +83,7 @@ const getGrade = (percentage: number | null | undefined): Grade => {
   return grade;
 };
 
-const CandidatesList = ({
+export const ApprovedCandidatesList = ({
   candidatesList,
   candidateIDRowSelected,
   setRowObjectData,
@@ -101,7 +99,7 @@ const CandidatesList = ({
           key={candidate.user?._id}
           className={`${
             candidate.user?._id === candidateIDRowSelected
-              ? "border-edenGreen-600 border-2"
+              ? "border-edenGreen-600 border-2 shadow-md"
               : ""
           } bg-edenPink-300 mb-2 flex h-24 flex-row items-center justify-around rounded-lg`}
           onClick={() => handleObjectDataSelection(candidate)}
@@ -136,5 +134,3 @@ const CandidatesList = ({
     </div>
   );
 };
-
-export default CandidatesList;

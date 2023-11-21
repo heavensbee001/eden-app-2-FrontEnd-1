@@ -16,6 +16,7 @@ export * from "./LongText";
 export * from "./MatchAvatar";
 export * from "./MenuItem";
 export * from "./Modal";
+export * from "./ModalNew";
 export * from "./NumberCircle";
 export * from "./PopoverOnHover";
 export * from "./PopoverScoreReason";

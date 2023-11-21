@@ -7,10 +7,15 @@ import {
 } from "@eden/package-graphql";
 import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
+  ApprovedCandidatesList,
   AppUserLayoutNew,
+  Avatar,
   Button,
+  CandidatesList,
+  CutTextTooltip,
   EdenAiLetter,
   ListModeEnum,
+  ModalNew,
 } from "@eden/package-ui";
 import {
   CultureFitSVG,
@@ -24,8 +29,6 @@ import React, { useContext, useMemo, useRef, useState } from "react";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { toast } from "react-toastify";
 
-import ApprovedCandidatesList from "./ApprovedCandidatesList";
-import CandidatesList from "./CandidatesList";
 import useOutside from "./useOutSide";
 
 const CandidateInfoNew = dynamic(
@@ -89,13 +92,18 @@ const PositionCRM: NextPageWithLayout = () => {
   const topicListMenuRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID, panda } = router.query;
+  const [secondMeetingLink, setSecondMeetingLink] = useState<string>("");
 
   const [topic, setTopic] = useState<string>("Eden's faves");
 
   const { company, getCompanyFunc } = useContext(CompanyContext);
+  const [invitationPopup, setInvitationPopup] = useState<boolean>(false);
 
   const [approvedTalentListID, setApprovedTalentListID] = useState<string>("");
   const [rejectedTalentListID, setRejectedTalentListID] = useState<string>("");
+
+  const [selectedInvitationCandidateID, setSelectedInvitationCandidateID] =
+    useState<string>("");
 
   const [
     approvedTalentListCandidatesList,
@@ -136,7 +144,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [addToListOpen, setAddToListOpen] = useState(false);
 
-  const [isTopicListMenuOpen, setIsTopicListMenuOpen] = useState(false);
+  const [isTopicListMenuOpen, setIsTopicListMenuOpen] = useState(true);
 
   const [letterType, setLetterType] = useState<
     "rejection" | "nextInterviewInvite" | ""
@@ -809,7 +817,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const topics = [
     {
-      topic: "Edem's faves",
+      topic: "Eden's faves",
       svg: <EdenFavesSVG />,
       text: "Based on your overall preferences",
     },
@@ -868,8 +876,13 @@ const PositionCRM: NextPageWithLayout = () => {
   };
 
   const handleCandidatesReorder = (topic: string) => {
+    console.log(
+      "candidateslist",
+      candidatesOriginalList,
+      candidatesFromTalentList
+    );
     if (topic === "Eden's faves") {
-      const sortedCandidatesList = candidatesFromTalentList.sort(
+      const sortedCandidatesList = candidatesOriginalList.sort(
         (a: any, b: any) => {
           if (a.scoreCardTotal.score > b.scoreCardTotal.score) {
             return -1;
@@ -883,17 +896,17 @@ const PositionCRM: NextPageWithLayout = () => {
 
       setCandidatesFromTalentList(sortedCandidatesList);
     } else if (topic === "Top Culture Fits") {
-      const sortedCandidatesList = candidatesFromTalentList.sort(
+      const sortedCandidatesList = candidatesOriginalList.sort(
         (a: any, b: any) => {
           if (
-            a.scoreCardCategoryMemories[1].score >
-            b.scoreCardCategoryMemories[1].score
+            a.scoreCardCategoryMemories[2].score >
+            b.scoreCardCategoryMemories[2].score
           ) {
             return -1;
           }
           if (
-            a.scoreCardCategoryMemories[1].score <
-            b.scoreCardCategoryMemories[1].score
+            a.scoreCardCategoryMemories[2].score <
+            b.scoreCardCategoryMemories[2].score
           ) {
             return 1;
           }
@@ -903,7 +916,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
       setCandidatesFromTalentList(sortedCandidatesList);
     } else if (topic === "Top Skill Fits") {
-      const sortedCandidatesList = candidatesFromTalentList.sort(
+      const sortedCandidatesList = candidatesOriginalList.sort(
         (a: any, b: any) => {
           if (
             a.scoreCardCategoryMemories[0].score >
@@ -943,7 +956,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
       setCandidatesFromTalentList(sortedCandidatesList);
     } else if (topic === "Hidden Gems") {
-      const sortedCandidatesList = candidatesFromTalentList.sort(
+      const sortedCandidatesList = candidatesOriginalList.sort(
         (a: any, b: any) => {
           if (
             a.scoreCardCategoryMemories[3].score >
@@ -992,6 +1005,12 @@ const PositionCRM: NextPageWithLayout = () => {
     setIsTopicListMenuOpen(false);
   });
 
+  const handleSecondMeetingLinkChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSecondMeetingLink(e.target.value);
+  };
+
   return (
     <div className="h-full">
       <Head>
@@ -1011,7 +1030,7 @@ const PositionCRM: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div className="mx-auto h-full w-full rounded p-8">
+      <div className="mx-auto h-full w-full rounded px-8">
         <div className="z-40 flex h-full w-full flex-row gap-2">
           <div className="relative h-full min-w-[330px]">
             {isTopicListMenuOpen && (
@@ -1065,12 +1084,11 @@ const PositionCRM: NextPageWithLayout = () => {
                   height="11"
                   className="absolute left-0 top-3"
                   viewBox="0 0 19 11"
-                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M9.34682 10.9101C9.5816 10.7839 9.72797 10.5438 9.72797 10.2827V6.21729H17.7823C18.189 6.21729 18.519 5.89596 18.519 5.50003C18.519 5.1041 18.189 4.78276 17.7823 4.78276H9.72797V0.717314C9.72797 0.455274 9.5816 0.21523 9.34682 0.0899481C9.11203 -0.0372466 8.82519 -0.0286395 8.59826 0.110031L0.802319 4.89274C0.588167 5.02472 0.458496 5.25329 0.458496 5.50003C0.458496 5.74676 0.588167 5.97533 0.802319 6.10731L8.59826 10.89C8.71811 10.9627 8.85466 11 8.9912 11C9.11301 11 9.23581 10.9694 9.34682 10.9101Z"
-                    fill="#00462C"
+                    className="fill-edenGreen-600 hover:fill-edenGreen-400 hover:shadow-md"
                   />
                 </svg>
               </div>
@@ -1136,18 +1154,32 @@ const PositionCRM: NextPageWithLayout = () => {
                     />
                   </svg>
 
-                  <h1 className="text-edenGreen-600 border-edenGreen-400 border-b">
-                    {findPositionData?.findPosition?.name
-                      ? findPositionData?.findPosition?.name
-                          .charAt(0)
-                          .toUpperCase() +
+                  <h1 className="text-edenGreen-600 border-edenGreen-400 border-b pl-8 pr-4">
+                    <CutTextTooltip
+                      text={
                         findPositionData?.findPosition?.name
-                          .slice(1)
-                          .toLowerCase()
-                      : ""}
+                          ? findPositionData?.findPosition?.name
+                              .charAt(0)
+                              .toUpperCase() +
+                            findPositionData?.findPosition?.name
+                              .slice(1)
+                              .toLowerCase()
+                          : ""
+                      }
+                    />
                   </h1>
                 </div>
-                <Button variant="primary">Invite all for 2nd interview</Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    setInvitationPopup(true);
+                    setSelectedInvitationCandidateID(
+                      approvedTalentListCandidatesList[0].user?._id || ""
+                    );
+                  }}
+                >
+                  Invite all for 2nd interview
+                </Button>
               </div>
             )}
 
@@ -1173,8 +1205,179 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
+        <div
+          className="text-edenGreen-600 fixed right-1/3 top-3 z-[200] flex flex-row"
+          onClick={() => router.push(`/${router.query.slug}/dashboard-new`)}
+        >
+          <svg
+            width="30"
+            height="29"
+            viewBox="0 0 30 29"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M24.5859 15.0678C23.9327 19.8089 19.6431 23.4695 14.4486 23.4695C8.80175 23.4695 4.2251 19.1445 4.2251 13.8081C4.2251 8.87985 8.1304 4.81237 13.1765 4.22046"
+              stroke="#00462C"
+              stroke-width="1.77187"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M21.4062 18.5222L25.5658 22.4437"
+              stroke="#00462C"
+              stroke-width="1.77187"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M22.2306 3.71192L23.1646 5.48764C23.2121 5.57729 23.3021 5.63935 23.4067 5.6543L25.4974 5.93933C25.5814 5.94967 25.658 5.99219 25.7102 6.05541C25.8075 6.17609 25.793 6.34619 25.6761 6.44963L24.1607 7.83458C24.0841 7.90238 24.0489 8.00353 24.0695 8.10122L24.432 10.0551C24.4575 10.2171 24.3407 10.3689 24.1692 10.3953C24.0987 10.4056 24.0257 10.3941 23.9612 10.3642L22.0992 9.44248C22.0056 9.39422 21.8937 9.39422 21.8001 9.44248L19.9246 10.37C19.7665 10.4447 19.5756 10.3895 19.4892 10.2436C19.4576 10.185 19.4455 10.1183 19.4576 10.0539L19.8201 8.09892C19.8382 8.00123 19.8042 7.90238 19.7289 7.83227L18.2049 6.44849C18.0821 6.33125 18.0821 6.14161 18.2049 6.02438C18.256 5.9807 18.3192 5.95082 18.3874 5.93933L20.4792 5.65314C20.5839 5.63705 20.6739 5.57499 20.7212 5.48534L21.6541 3.71192C21.6919 3.63952 21.7575 3.5855 21.839 3.55906C21.9205 3.53377 22.008 3.54067 22.0846 3.5763C22.1479 3.60619 22.199 3.65331 22.2306 3.71192Z"
+              stroke="#00462C"
+              stroke-width="1.77187"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          All your opportunities
+        </div>
       </div>
-
+      {invitationPopup ? (
+        <ModalNew
+          open={invitationPopup}
+          onClose={() => setInvitationPopup(false)}
+        >
+          <div className="h-[658px] w-[852px] px-8 py-2">
+            <h1 className="text-edenGreen-600">
+              Invite your fav candidates for a follow up call.
+            </h1>
+            <div className="mt-9 flex flex-row items-center justify-end gap-4">
+              <div>
+                <p className="text-edenGreen-600 font-Moret text-base">
+                  Where should we setup the call?
+                </p>
+                <p className="text-edenGray-500 text-sm">
+                  Add your calendly, cal, cron ..
+                </p>
+              </div>
+              <div className="relative">
+                <input
+                  id="meetingink"
+                  type="text"
+                  value={secondMeetingLink}
+                  onChange={handleSecondMeetingLinkChange}
+                  className="border-edenGray-500 bg-edenPink-200 h-8 w-52 rounded-lg border p-2 pl-8"
+                  placeholder=""
+                />
+                <div className="absolute left-1 top-1">
+                  <svg
+                    width="21"
+                    height="21"
+                    viewBox="0 0 21 21"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.16455 12.8371C10.5846 14.7355 13.2748 15.1238 15.1733 13.7037C15.3376 13.5803 15.4933 13.4458 15.6381 13.3011L17.6073 11.332C19.2545 9.62675 19.2068 6.9093 17.5016 5.26197C15.8382 3.65551 13.2008 3.65551 11.5364 5.26197"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M12.7102 9.50469C11.2902 7.60625 8.59999 7.21804 6.70152 8.63805C6.53721 8.76146 6.38143 8.89604 6.2367 9.04076L4.26758 11.0099C2.62025 12.7151 2.66793 15.4326 4.37314 17.0798C6.03664 18.6871 8.67405 18.6871 10.3384 17.0798"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="scrollbar-hide h-[calc(100%-100px)] overflow-y-auto">
+              {approvedTalentListCandidatesList.map((candidate, index) =>
+                candidate.user?._id === selectedInvitationCandidateID ? (
+                  <div
+                    className="flex flex-col items-center bg-white pb-4 pl-2 pr-4 pt-2"
+                    key={`interviewmeeting${index}`}
+                  >
+                    <div className="mb-7 flex w-full flex-row items-center justify-between">
+                      <div className="flex flex-row items-center content-none">
+                        <Avatar
+                          src={candidate.user?.discordAvatar || ""}
+                          size="lg"
+                        />
+                        <p className="text-edenGreen-600 font-Moret ml-4 text-lg">
+                          {candidate.user?.discordName || ""}
+                        </p>
+                      </div>
+                      <Button
+                        variant="primary"
+                        className="h-11 w-[94px]"
+                        disabled={secondMeetingLink === "" ? true : false}
+                      >
+                        Send
+                      </Button>
+                    </div>
+                    <div className="px-1">
+                      <p>
+                        {
+                          "Hi Tom - we're thoroughly impressed by your experience working with the European Union and it sounds like that experience will come in very handy while working on our brand new products that we'll be launching soon, I did have a couple of additional questions and wanted to invite you for a call here:"
+                        }
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="border-edenGreen-600 my-2 flex flex-row items-center justify-between border-b px-4 py-2"
+                    key={`interviewmeeting${index}`}
+                    onClick={() =>
+                      setSelectedInvitationCandidateID(
+                        candidate.user?._id || ""
+                      )
+                    }
+                  >
+                    <div className="flex flex-row items-center content-none">
+                      <Avatar
+                        src={candidate.user?.discordAvatar || ""}
+                        size="lg"
+                      />
+                      <p className="text-edenGreen-600 font-Moret ml-4 text-lg">
+                        {candidate.user?.discordName || ""}
+                      </p>
+                    </div>
+                    <div
+                      onClick={() =>
+                        setSelectedInvitationCandidateID(
+                          candidate.user?._id || ""
+                        )
+                      }
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 5L15.5 12L8.5 19"
+                          stroke="black"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        </ModalNew>
+      ) : null}
       {isOpen && letterType && (
         <EdenAiLetter
           member={dataMember?.findMember}
@@ -1237,9 +1440,6 @@ import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
-// import { BsFillGearFill } from "react-icons/bs";
-// import { GiHeartWings } from "react-icons/gi";
-// import { TbTrashXFilled } from "react-icons/tb";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -1318,59 +1518,3 @@ export async function getServerSideProps(ctx: {
     props: { key: url },
   };
 }
-
-// interface ICandidateCardProps {
-//   candidate: CandidateTypeSkillMatch;
-//   onClick: React.MouseEventHandler<HTMLDivElement>;
-// }
-
-// const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
-//   return (
-//     <div
-//       className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer whitespace-normal rounded-md border bg-white last:mr-0"
-//       onClick={onClick}
-//     >
-//       <div className="relative flex h-full px-4 pb-2 pt-2" onClick={onClick}>
-//         <div className="mr-4 flex items-center">
-//           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
-//         </div>
-//         <div className="flex w-3/4 flex-col justify-center">
-//           <p className="font-bold">{candidate.user?.discordName}</p>
-//           {candidate.analysisCandidateEdenAI?.background?.oneLiner && (
-//             <p className="text-edenGray-600 w-full whitespace-normal text-xs">
-//               {candidate.analysisCandidateEdenAI.background.oneLiner}
-//             </p>
-//           )}
-//         </div>
-//         <Button
-//           className="bg-edenGreen-100 group-hover:bg-edenGreen-200 absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center !rounded-full !p-0"
-//           variant="tertiary"
-//         >
-//           <FaArrowRight size={"0.75rem"} />
-//         </Button>
-//         {candidate.analysisCandidateEdenAI?.background?.content && (
-//           <EdenTooltip
-//             id={candidate.user?._id + "_tooltip"}
-//             innerTsx={
-//               <div className="w-96">
-//                 <span className="text-gray-600">
-//                   {candidate.analysisCandidateEdenAI?.background?.content}
-//                 </span>
-//               </div>
-//             }
-//             place="top"
-//             effect="solid"
-//             backgroundColor="white"
-//             border
-//             borderColor="#e5e7eb"
-//             padding="0.5rem"
-//           >
-//             <div className="bg-edenPink-200 absolute -right-2 -top-1 h-5 w-5 rounded-full p-1">
-//               <EdenIconExclamation className="h-full w-full" />
-//             </div>
-//           </EdenTooltip>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
