@@ -6,6 +6,7 @@ import {
   AppUserLayout,
   AskEdenPopUp,
   Button,
+  EdenAiProcessingModal,
   EdenIconExclamationAndQuestion,
   Loading,
   Modal,
@@ -16,7 +17,6 @@ import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -246,6 +246,7 @@ const PositionPage: NextPageWithLayout = ({
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [confettiRun, setConfettiRun] = useState(false);
+  const [loadingSpinner, setLoadingSpinner] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -259,6 +260,12 @@ const PositionPage: NextPageWithLayout = ({
       }, 2500);
     }
   }, [confettiRun]);
+
+  const handleInterviewNav = async () => {
+    setLoadingSpinner(true);
+    await router.push(`/interview/${position._id}`);
+    setLoadingSpinner(false);
+  };
 
   return (
     <>
@@ -407,12 +414,9 @@ const PositionPage: NextPageWithLayout = ({
                     </Tooltip>
                   </div>
                   <p className="text-edenGray-500 text-xs">
-                    <Link
-                      href={`/interview/${position._id}`}
-                      className="underline"
-                    >
+                    <Button onClick={() => handleInterviewNav()}>
                       Upload your resume
-                    </Link>{" "}
+                    </Button>{" "}
                     to unlock
                   </p>
                 </div>
@@ -756,16 +760,17 @@ const PositionPage: NextPageWithLayout = ({
                 </ul>
 
                 <div className="mt-4 flex justify-center">
-                  <Link href={`/interview/${position._id}`}>
-                    <Button
-                      variant="secondary"
-                      // onClick={() => {
-                      //   router.push(`/interview/${position._id}`);
-                      // }}
-                    >
-                      Upload Your Resume
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="secondary"
+                    // onClick={() => {
+                    //   router.push(`/interview/${position._id}`);
+                    // }}
+                    onClick={() => {
+                      handleInterviewNav();
+                    }}
+                  >
+                    Upload Your Resume
+                  </Button>
                 </div>
               </div>
             </section>
@@ -959,11 +964,14 @@ const PositionPage: NextPageWithLayout = ({
         <footer className="bg-edenGreen-600 fixed bottom-0 left-0 flex h-16 w-full items-center justify-center">
           {!editMode ? (
             <>
-              <Link href={`/interview/${position._id}`}>
-                <Button className="border-edenPink-400 !text-edenPink-400">
-                  Apply with AI
-                </Button>
-              </Link>
+              <Button
+                className="border-edenPink-400 !text-edenPink-400"
+                onClick={() => {
+                  handleInterviewNav();
+                }}
+              >
+                Apply with AI
+              </Button>
               {currentUser?._id && (
                 <AskEdenPopUp
                   memberID={currentUser?._id}
@@ -1102,6 +1110,10 @@ const PositionPage: NextPageWithLayout = ({
           )}
         </footer>
       </div>
+      <EdenAiProcessingModal
+        title="This will be exciting"
+        open={loadingSpinner}
+      />
     </>
   );
 };
