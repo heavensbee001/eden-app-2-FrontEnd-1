@@ -1205,7 +1205,10 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
-        <div className="text-edenGreen-600 fixed right-1/3 top-3 z-[200] flex flex-row">
+        <div
+          className="text-edenGreen-600 fixed right-1/3 top-3 z-[200] flex flex-row"
+          onClick={() => router.push(`/${router.query.slug}/dashboard-new`)}
+        >
           <svg
             width="30"
             height="29"
@@ -1515,59 +1518,3 @@ export async function getServerSideProps(ctx: {
     props: { key: url },
   };
 }
-
-// interface ICandidateCardProps {
-//   candidate: CandidateTypeSkillMatch;
-//   onClick: React.MouseEventHandler<HTMLDivElement>;
-// }
-
-// const CandidateCard = ({ candidate, onClick }: ICandidateCardProps) => {
-//   return (
-//     <div
-//       className="border-edenGray-100 group relative mr-4 inline-block w-80 cursor-pointer whitespace-normal rounded-md border bg-white last:mr-0"
-//       onClick={onClick}
-//     >
-//       <div className="relative flex h-full px-4 pb-2 pt-2" onClick={onClick}>
-//         <div className="mr-4 flex items-center">
-//           <Avatar src={candidate.user?.discordAvatar || ""} size="sm" />
-//         </div>
-//         <div className="flex w-3/4 flex-col justify-center">
-//           <p className="font-bold">{candidate.user?.discordName}</p>
-//           {candidate.analysisCandidateEdenAI?.background?.oneLiner && (
-//             <p className="text-edenGray-600 w-full whitespace-normal text-xs">
-//               {candidate.analysisCandidateEdenAI.background.oneLiner}
-//             </p>
-//           )}
-//         </div>
-//         <Button
-//           className="bg-edenGreen-100 group-hover:bg-edenGreen-200 absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center !rounded-full !p-0"
-//           variant="tertiary"
-//         >
-//           <FaArrowRight size={"0.75rem"} />
-//         </Button>
-//         {candidate.analysisCandidateEdenAI?.background?.content && (
-//           <EdenTooltip
-//             id={candidate.user?._id + "_tooltip"}
-//             innerTsx={
-//               <div className="w-96">
-//                 <span className="text-gray-600">
-//                   {candidate.analysisCandidateEdenAI?.background?.content}
-//                 </span>
-//               </div>
-//             }
-//             place="top"
-//             effect="solid"
-//             backgroundColor="white"
-//             border
-//             borderColor="#e5e7eb"
-//             padding="0.5rem"
-//           >
-//             <div className="bg-edenPink-200 absolute -right-2 -top-1 h-5 w-5 rounded-full p-1">
-//               <EdenIconExclamation className="h-full w-full" />
-//             </div>
-//           </EdenTooltip>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
