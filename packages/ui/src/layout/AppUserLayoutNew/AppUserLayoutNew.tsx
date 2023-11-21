@@ -20,8 +20,8 @@ export const AppUserLayoutNew = ({
 
   return (
     <div className="max-h-screen">
-      <nav className="fixed left-0 top-0 z-40 h-20 w-screen bg-white">
-        <div className="mx-auto flex h-20 w-full max-w-5xl items-center px-4">
+      <nav className="fixed left-0 top-0 z-40 h-12 w-screen bg-white">
+        <div className="mx-auto flex h-12 w-full max-w-5xl items-center px-4">
           <img
             src="/eden-imagotype.png"
             alt="Eden Protocol"
@@ -37,7 +37,7 @@ export const AppUserLayoutNew = ({
         </div>
       </nav>
 
-      <main className="h-screen max-h-screen pt-20">{children}</main>
+      <main className="h-screen max-h-screen pt-12">{children}</main>
     </div>
   );
 };

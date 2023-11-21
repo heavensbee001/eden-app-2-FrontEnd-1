@@ -101,7 +101,7 @@ const CandidatesList = ({
           key={candidate.user?._id}
           className={`${
             candidate.user?._id === candidateIDRowSelected
-              ? "border-edenGreen-600 border-2"
+              ? "border-edenGreen-600 border-2 shadow-md"
               : ""
           } bg-edenPink-300 mb-2 flex h-24 flex-row items-center justify-around rounded-lg`}
           onClick={() => handleObjectDataSelection(candidate)}
@@ -114,7 +114,10 @@ const CandidatesList = ({
             />
           </ColumnStyled>
           <span className="w-32 max-w-[200px]">
-            <CutTextTooltip text={candidate.user?.discordName!} />
+            <CutTextTooltip
+              className={"text-xl"}
+              text={candidate.user?.discordName!}
+            />
           </span>
           <ColumnStyled textColor="text-fuchsia-600 text-center w-14 h-8">
             {candidate.scoreCardTotal &&
