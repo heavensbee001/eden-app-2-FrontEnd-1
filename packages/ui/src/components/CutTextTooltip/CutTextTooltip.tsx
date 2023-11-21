@@ -2,12 +2,12 @@ import { Maybe } from "@eden/package-graphql/generated";
 import React, { useEffect, useRef, useState } from "react";
 import ReactTooltip from "react-tooltip";
 
-type CutTextTooltipProps = {
+export type CutTextTooltipProps = {
   text?: Maybe<string>;
   className?: Maybe<string>;
 };
 
-const CutTextTooltip = ({ text, className }: CutTextTooltipProps) => {
+export const CutTextTooltip = ({ text, className }: CutTextTooltipProps) => {
   const elementRef = useRef<HTMLDivElement | null>(null);
   const [tooltipDisable, setTooltipDisable] = useState(true);
 
@@ -52,5 +52,3 @@ const CutTextTooltip = ({ text, className }: CutTextTooltipProps) => {
     </>
   );
 };
-
-export default CutTextTooltip;

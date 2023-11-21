@@ -1,8 +1,6 @@
 import { CandidateType } from "@eden/package-graphql/generated";
-import { Avatar, ListModeEnum } from "@eden/package-ui";
+import { Avatar, CutTextTooltip, ListModeEnum } from "@eden/package-ui";
 import { ComponentPropsWithoutRef, FC, ReactNode } from "react";
-
-import CutTextTooltip from "./CutTextTooltip";
 
 type Grade = {
   letter: string;
@@ -85,7 +83,7 @@ const getGrade = (percentage: number | null | undefined): Grade => {
   return grade;
 };
 
-const CandidatesList = ({
+export const ApprovedCandidatesList = ({
   candidatesList,
   candidateIDRowSelected,
   setRowObjectData,
@@ -114,10 +112,7 @@ const CandidatesList = ({
             />
           </ColumnStyled>
           <span className="w-32 max-w-[200px]">
-            <CutTextTooltip
-              className={"text-xl"}
-              text={candidate.user?.discordName!}
-            />
+            <CutTextTooltip text={candidate.user?.discordName!} />
           </span>
           <ColumnStyled textColor="text-fuchsia-600 text-center w-14 h-8">
             {candidate.scoreCardTotal &&
@@ -139,5 +134,3 @@ const CandidatesList = ({
     </div>
   );
 };
-
-export default CandidatesList;

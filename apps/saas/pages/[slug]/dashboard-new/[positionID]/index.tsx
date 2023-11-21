@@ -7,9 +7,12 @@ import {
 } from "@eden/package-graphql";
 import { CandidateType, TalentListType } from "@eden/package-graphql/generated";
 import {
+  ApprovedCandidatesList,
   AppUserLayoutNew,
   Avatar,
   Button,
+  CandidatesList,
+  CutTextTooltip,
   EdenAiLetter,
   ListModeEnum,
   Modal,
@@ -26,8 +29,6 @@ import React, { useContext, useMemo, useRef, useState } from "react";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { toast } from "react-toastify";
 
-import ApprovedCandidatesList from "./ApprovedCandidatesList";
-import CandidatesList from "./CandidatesList";
 import useOutside from "./useOutSide";
 
 const CandidateInfoNew = dynamic(
@@ -143,7 +144,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [addToListOpen, setAddToListOpen] = useState(false);
 
-  const [isTopicListMenuOpen, setIsTopicListMenuOpen] = useState(false);
+  const [isTopicListMenuOpen, setIsTopicListMenuOpen] = useState(true);
 
   const [letterType, setLetterType] = useState<
     "rejection" | "nextInterviewInvite" | ""
@@ -1408,11 +1409,6 @@ import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
-
-import CutTextTooltip from "./CutTextTooltip";
-// import { BsFillGearFill } from "react-icons/bs";
-// import { GiHeartWings } from "react-icons/gi";
-// import { TbTrashXFilled } from "react-icons/tb";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;

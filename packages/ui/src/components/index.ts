@@ -5,6 +5,7 @@ export * from "./CalendarComp";
 export * from "./ChatSimple";
 export * from "./ClassicGraphs";
 export * from "./CountdownTimer";
+export * from "./CutTextTooltip";
 export * from "./CVUploadGPT";
 export * from "./DescriptionGPT";
 export * from "./DiscoverTalent";
