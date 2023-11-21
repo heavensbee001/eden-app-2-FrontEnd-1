@@ -1,8 +1,6 @@
 import { CandidateType } from "@eden/package-graphql/generated";
-import { Avatar, ListModeEnum } from "@eden/package-ui";
+import { Avatar, CutTextTooltip, ListModeEnum } from "@eden/package-ui";
 import { ComponentPropsWithoutRef, FC, ReactNode } from "react";
-
-import CutTextTooltip from "./CutTextTooltip";
 
 type Grade = {
   letter: string;
@@ -21,7 +19,7 @@ interface CandidateTypeSkillMatch extends CandidateType {
   status?: "ACCEPTED" | "REJECTED" | undefined;
 }
 
-type CandidatesListProps = {
+export type CandidatesListProps = {
   candidatesList: CandidateTypeSkillMatch[];
   // eslint-disable-next-line no-unused-vars
   fetchIsLoading: boolean;
@@ -85,7 +83,7 @@ const getGrade = (percentage: number | null | undefined): Grade => {
   return grade;
 };
 
-const ApprovedCandidatesList = ({
+export const CandidatesList = ({
   candidatesList,
   candidateIDRowSelected,
   setRowObjectData,
@@ -101,7 +99,7 @@ const ApprovedCandidatesList = ({
           key={candidate.user?._id}
           className={`${
             candidate.user?._id === candidateIDRowSelected
-              ? "border-edenGreen-700 border-1"
+              ? "border-edenGreen-600 border-2 shadow-md"
               : ""
           } bg-edenPink-300 mb-2 flex h-24 flex-row items-center justify-around rounded-lg`}
           onClick={() => handleObjectDataSelection(candidate)}
@@ -114,7 +112,10 @@ const ApprovedCandidatesList = ({
             />
           </ColumnStyled>
           <span className="w-32 max-w-[200px]">
-            <CutTextTooltip text={candidate.user?.discordName!} />
+            <CutTextTooltip
+              className={"text-xl"}
+              text={candidate.user?.discordName!}
+            />
           </span>
           <ColumnStyled textColor="text-fuchsia-600 text-center w-14 h-8">
             {candidate.scoreCardTotal &&
@@ -136,5 +137,3 @@ const ApprovedCandidatesList = ({
     </div>
   );
 };
-
-export default ApprovedCandidatesList;
