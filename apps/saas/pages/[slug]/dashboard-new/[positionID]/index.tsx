@@ -15,7 +15,7 @@ import {
   CutTextTooltip,
   EdenAiLetter,
   ListModeEnum,
-  Modal,
+  ModalNew,
 } from "@eden/package-ui";
 import {
   CultureFitSVG,
@@ -92,7 +92,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const topicListMenuRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID, panda } = router.query;
-  // const [secondMeetingLink, setSecondMeetingLink] = useState<string>("");
+  const [secondMeetingLink, setSecondMeetingLink] = useState<string>("");
 
   const [topic, setTopic] = useState<string>("Eden's faves");
 
@@ -1005,6 +1005,12 @@ const PositionCRM: NextPageWithLayout = () => {
     setIsTopicListMenuOpen(false);
   });
 
+  const handleSecondMeetingLinkChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSecondMeetingLink(e.target.value);
+  };
+
   return (
     <div className="h-full">
       <Head>
@@ -1235,64 +1241,84 @@ const PositionCRM: NextPageWithLayout = () => {
         </div>
       </div>
       {invitationPopup ? (
-        <Modal open={invitationPopup} onClose={() => setInvitationPopup(false)}>
-          <div className="z-50 h-3/4 w-3/4 px-28 py-9">
+        <ModalNew
+          open={invitationPopup}
+          onClose={() => setInvitationPopup(false)}
+        >
+          <div className="h-[658px] w-[852px] px-8 py-2">
             <h1 className="text-edenGreen-600">
               Invite your fav candidates for a follow up call.
             </h1>
-            <div className="fles flex-row gap-4">
+            <div className="mt-9 flex flex-row items-center justify-end gap-4">
               <div>
-                <p>Where should we setup the call?</p>
-                <p>Add your calendly, cal, cron ..</p>
+                <p className="text-edenGreen-600 font-Moret text-base">
+                  Where should we setup the call?
+                </p>
+                <p className="text-edenGray-500 text-sm">
+                  Add your calendly, cal, cron ..
+                </p>
               </div>
-              <div
-                className="border-edenGray-500 border p-2"
-                contentEditable="true"
-                placeholder=""
-              >
-                <svg
-                  width="21"
-                  height="21"
-                  viewBox="0 0 21 21"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9.16455 12.8371C10.5846 14.7355 13.2748 15.1238 15.1733 13.7037C15.3376 13.5803 15.4933 13.4458 15.6381 13.3011L17.6073 11.332C19.2545 9.62675 19.2068 6.9093 17.5016 5.26197C15.8382 3.65551 13.2008 3.65551 11.5364 5.26197"
-                    stroke="#00462C"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12.7102 9.50469C11.2902 7.60625 8.59999 7.21804 6.70152 8.63805C6.53721 8.76146 6.38143 8.89604 6.2367 9.04076L4.26758 11.0099C2.62025 12.7151 2.66793 15.4326 4.37314 17.0798C6.03664 18.6871 8.67405 18.6871 10.3384 17.0798"
-                    stroke="#00462C"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                {/* {secondMeetingLink} */}
+              <div className="relative">
+                <input
+                  id="meetingink"
+                  type="text"
+                  value={secondMeetingLink}
+                  onChange={handleSecondMeetingLinkChange}
+                  className="border-edenGray-500 bg-edenPink-200 h-8 w-52 rounded-lg border p-2 pl-8"
+                  placeholder=""
+                />
+                <div className="absolute left-1 top-1">
+                  <svg
+                    width="21"
+                    height="21"
+                    viewBox="0 0 21 21"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.16455 12.8371C10.5846 14.7355 13.2748 15.1238 15.1733 13.7037C15.3376 13.5803 15.4933 13.4458 15.6381 13.3011L17.6073 11.332C19.2545 9.62675 19.2068 6.9093 17.5016 5.26197C15.8382 3.65551 13.2008 3.65551 11.5364 5.26197"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M12.7102 9.50469C11.2902 7.60625 8.59999 7.21804 6.70152 8.63805C6.53721 8.76146 6.38143 8.89604 6.2367 9.04076L4.26758 11.0099C2.62025 12.7151 2.66793 15.4326 4.37314 17.0798C6.03664 18.6871 8.67405 18.6871 10.3384 17.0798"
+                      stroke="#00462C"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
-            <div>
+            <div className="scrollbar-hide h-[calc(100%-100px)] overflow-y-auto">
               {approvedTalentListCandidatesList.map((candidate, index) =>
                 candidate.user?._id === selectedInvitationCandidateID ? (
                   <div
-                    className="flex flex-col bg-white"
+                    className="flex flex-col items-center bg-white pb-4 pl-2 pr-4 pt-2"
                     key={`interviewmeeting${index}`}
                   >
-                    <div className="flex flex-row justify-between">
-                      <div className="flex flex-row content-none">
+                    <div className="mb-7 flex w-full flex-row items-center justify-between">
+                      <div className="flex flex-row items-center content-none">
                         <Avatar
                           src={candidate.user?.discordAvatar || ""}
                           size="lg"
                         />
-                        <p>{candidate.user?.discordName || ""}</p>
+                        <p className="text-edenGreen-600 font-Moret ml-4 text-lg">
+                          {candidate.user?.discordName || ""}
+                        </p>
                       </div>
-                      <Button variant="primary">Send</Button>
+                      <Button
+                        variant="primary"
+                        className="h-11 w-[94px]"
+                        disabled={secondMeetingLink === "" ? true : false}
+                      >
+                        Send
+                      </Button>
                     </div>
-                    <div>
+                    <div className="px-1">
                       <p>
                         {
                           "Hi Tom - we're thoroughly impressed by your experience working with the European Union and it sounds like that experience will come in very handy while working on our brand new products that we'll be launching soon, I did have a couple of additional questions and wanted to invite you for a call here:"
@@ -1302,7 +1328,7 @@ const PositionCRM: NextPageWithLayout = () => {
                   </div>
                 ) : (
                   <div
-                    className="flex flex-row justify-between px-4 py-2"
+                    className="border-edenGreen-600 my-2 flex flex-row items-center justify-between border-b px-4 py-2"
                     key={`interviewmeeting${index}`}
                     onClick={() =>
                       setSelectedInvitationCandidateID(
@@ -1310,12 +1336,14 @@ const PositionCRM: NextPageWithLayout = () => {
                       )
                     }
                   >
-                    <div className="flex flex-row content-none">
+                    <div className="flex flex-row items-center content-none">
                       <Avatar
                         src={candidate.user?.discordAvatar || ""}
                         size="lg"
                       />
-                      <p>{candidate.user?.discordName || ""}</p>
+                      <p className="text-edenGreen-600 font-Moret ml-4 text-lg">
+                        {candidate.user?.discordName || ""}
+                      </p>
                     </div>
                     <div
                       onClick={() =>
@@ -1345,7 +1373,7 @@ const PositionCRM: NextPageWithLayout = () => {
               )}
             </div>
           </div>
-        </Modal>
+        </ModalNew>
       ) : null}
       {isOpen && letterType && (
         <EdenAiLetter
