@@ -91,7 +91,7 @@ const PositionCRM: NextPageWithLayout = () => {
   const topicListMenuRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID, panda } = router.query;
-  const [secondMeetingLink, setSecondMeetingLink] = useState<string>("");
+  // const [secondMeetingLink, setSecondMeetingLink] = useState<string>("");
 
   const [topic, setTopic] = useState<string>("Eden's faves");
 
@@ -1023,7 +1023,7 @@ const PositionCRM: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div className="mx-auto h-full w-full rounded px-8" onClick={() => {}}>
+      <div className="mx-auto h-full w-full rounded px-8">
         <div className="z-40 flex h-full w-full flex-row gap-2">
           <div className="relative h-full min-w-[330px]">
             {isTopicListMenuOpen && (
@@ -1244,7 +1244,11 @@ const PositionCRM: NextPageWithLayout = () => {
                 <p>Where should we setup the call?</p>
                 <p>Add your calendly, cal, cron ..</p>
               </div>
-              <input className="border-edenGray-500 border p-2">
+              <div
+                className="border-edenGray-500 border p-2"
+                contentEditable="true"
+                placeholder=""
+              >
                 <svg
                   width="21"
                   height="21"
@@ -1267,8 +1271,8 @@ const PositionCRM: NextPageWithLayout = () => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                {secondMeetingLink}
-              </input>
+                {/* {secondMeetingLink} */}
+              </div>
             </div>
             <div>
               {approvedTalentListCandidatesList.map((candidate, index) =>
@@ -1289,18 +1293,16 @@ const PositionCRM: NextPageWithLayout = () => {
                     </div>
                     <div>
                       <p>
-                        Hi Tom - we're thoroughly impressed by your experience
-                        working with the European Union and it sounds like that
-                        experience will come in very handy while working on our
-                        brand new products that we'll be launching soon, I did
-                        have a couple of additional questions and wanted to
-                        invite you for a call here:
+                        {
+                          "Hi Tom - we're thoroughly impressed by your experience working with the European Union and it sounds like that experience will come in very handy while working on our brand new products that we'll be launching soon, I did have a couple of additional questions and wanted to invite you for a call here:"
+                        }
                       </p>
                     </div>
                   </div>
                 ) : (
                   <div
                     className="flex flex-row justify-between px-4 py-2"
+                    key={`interviewmeeting${index}`}
                     onClick={() =>
                       setSelectedInvitationCandidateID(
                         candidate.user?._id || ""
@@ -1406,6 +1408,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
+
 import CutTextTooltip from "./CutTextTooltip";
 // import { BsFillGearFill } from "react-icons/bs";
 // import { GiHeartWings } from "react-icons/gi";
