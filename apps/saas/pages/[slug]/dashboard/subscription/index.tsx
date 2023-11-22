@@ -344,12 +344,12 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-  const url = ctx.req.url;
+  const url = (ctx as any).resolvedUrl;
 
   if (!session) {
     return {
       redirect: {
-        destination: `/?redirect=${url}`,
+        destination: `/?redirect=${encodeURIComponent(url)}`,
         permanent: false,
       },
     };
