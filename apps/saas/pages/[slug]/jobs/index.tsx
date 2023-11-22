@@ -5,6 +5,7 @@ import {
   AppUserLayout,
   Badge,
   Button,
+  EdenAiProcessingModal,
   EdenIconExclamation,
   EdenTooltip,
   SEO,
@@ -115,6 +116,8 @@ const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const { company } = useContext(CompanyContext);
 
+  const [loadingSpinner, setLoadingSpinner] = useState(false);
+
   console.log("company", company);
   const { currentUser } = useContext(UserContext);
 
@@ -129,7 +132,7 @@ const HomePage: NextPageWithLayout = () => {
     }
   );
 
-  const handlePostJobClick = () => {
+  const handlePostJobClick = async () => {
     if (!currentUser) {
       console.log("herheehrehreherh");
       signIn("google", {
@@ -140,12 +143,28 @@ const HomePage: NextPageWithLayout = () => {
       currentUser?.companies[0] &&
       currentUser?.companies[0].company?.slug
     ) {
-      console.log("1111111");
-      router.push(`/${currentUser?.companies[0].company?.slug}/dashboard`);
+      setLoadingSpinner(true);
+      await router.push(
+        `/${currentUser?.companies[0].company?.slug}/dashboard`
+      );
+      setLoadingSpinner(false);
     } else {
       console.log("2222222");
       router.push(`/pricing?community=${company?._id}`);
     }
+  };
+
+  const handlePickJobs = async (pos: any) => {
+    console.log("ahahahaha");
+    setLoadingSpinner(true);
+    await router.push(`/eden/jobs/${pos._id}`);
+    setLoadingSpinner(false);
+  };
+
+  const handleOasisClick = async () => {
+    setLoadingSpinner(true);
+    await router.push("/signup");
+    setLoadingSpinner(false);
   };
 
   const positions = [
@@ -219,7 +238,7 @@ const HomePage: NextPageWithLayout = () => {
             <Button
               onClick={() => {
                 // signIn("google", { callbackUrl: router.asPath });
-                router.push("/signup");
+                handleOasisClick();
               }}
             >
               Join the oasis
@@ -245,7 +264,7 @@ const HomePage: NextPageWithLayout = () => {
                       key={index}
                       className="border-edenGray-100 relative col-span-1 inline-block h-[135px] min-w-[20rem] cursor-pointer rounded-md border bg-white px-4 py-6 align-top transition-all"
                       onClick={() => {
-                        router.push(`/eden/jobs/${position?._id}`);
+                        handlePickJobs(position);
                       }}
                     >
                       <div className="flex w-full flex-row items-center pr-14">
@@ -319,7 +338,7 @@ const HomePage: NextPageWithLayout = () => {
                       <div
                         className="bg-edenGreen-200 absolute bottom-6 right-6 flex h-[35px] w-[35px] items-center justify-around rounded-full p-1"
                         onClick={() => {
-                          router.push(`/eden/jobs/${position?._id}`);
+                          handlePickJobs(position);
                         }}
                       >
                         <div className="text-edenGreen-500 align-center flex h-4 w-4 items-center justify-around">
@@ -447,6 +466,10 @@ const HomePage: NextPageWithLayout = () => {
                   className="border-edenGray-500 text-edenGreen-600 border"
                 />
               ))}
+              <EdenAiProcessingModal
+                title="Getting things ready for you"
+                open={loadingSpinner}
+              />
             </div>
           </section>
         </div>

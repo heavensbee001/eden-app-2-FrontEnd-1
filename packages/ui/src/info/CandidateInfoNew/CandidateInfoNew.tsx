@@ -10,12 +10,12 @@ import {
   Button,
   CandidateTypeSkillMatch,
   EdenAiLetter,
-  EdenChatTab,
+  EdenChatTabNew,
   InfoTabNew,
   ListModeEnum,
 } from "@eden/package-ui";
 import { Tab } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ScorecardTabNew } from "./tabs/ScorecardTabNew";
 
@@ -63,16 +63,12 @@ export const CandidateInfoNew = ({
   mostRelevantMemberNode,
   candidate,
   listMode = ListModeEnum.edit,
-  // rejectCandidateFn,
-  // approveCandidateFn,
-  // handleChkSelection,
   talentListsAvailables,
-  // handleCreateNewList,
   handleAddCandidatesToList,
-}: // qualified = undefined,
-ICandidateInfoNewProps) => {
+}: ICandidateInfoNewProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [tabClicked, setTabClicked] = useState(false);
 
   const [letterType, setLetterType] = useState<
     "rejection" | "nextInterviewInvite" | ""
@@ -82,6 +78,8 @@ ICandidateInfoNewProps) => {
     setLetterType("rejection");
     setIsOpen(true);
   };
+
+  const tabRef = useRef<HTMLDivElement | null>(null);
 
   const handleSecondInterviewLetter = () => {
     setLetterType("nextInterviewInvite");
@@ -123,7 +121,7 @@ ICandidateInfoNewProps) => {
     {
       tab: "Transcript",
       Content: () => (
-        <EdenChatTab
+        <EdenChatTabNew
           member={dataMember?.findMember}
           memberImg={dataMember?.findMember.discordAvatar}
           conversationID={candidate?.conversationID || undefined}
@@ -164,13 +162,27 @@ ICandidateInfoNewProps) => {
     return grade;
   };
 
+  useEffect(() => {
+    if (tabClicked) {
+      if (index === 1) setTimeout(() => ScrollToTop(), 1000);
+      else ScrollToTop();
+      setTabClicked(false);
+    }
+  }, [index]);
+
+  const ScrollToTop = () => {
+    if (tabRef.current) {
+      tabRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <div className="relative h-full">
       <div className="scrollbar-hide eden-green-200 h-full	overflow-y-scroll overscroll-y-contain">
         <section className="w-full flex-col">
           {/* ---- Header ---- */}
           <div>
-            <div className="bg-edenGreen-600 mb-6 flex p-8 pb-4">
+            <div className="bg-edenGreen-600 flex p-8 pb-4">
               <div className="flex w-full flex-row">
                 <div className="flex max-w-2xl flex-col pr-6 pt-1">
                   <div className="flex flex-row text-white">
@@ -473,15 +485,16 @@ ICandidateInfoNewProps) => {
                 </div>
               </div>
             </div>
+            <div ref={tabRef} />
           </div>
         </section>
-        <section className="pb-20">
+        <section className="mt-6 pb-20 ">
           {/* @TODO memoize tab group */}
           <Tab.Group
             defaultIndex={index}
             onChange={(index: number) => {
-              // console.log("Changed selected tab to:", index);
               setIndex(index);
+              setTabClicked(true);
             }}
           >
             <Tab.List className="border-edenGreen-300 flex h-8 w-full justify-between border-b">
