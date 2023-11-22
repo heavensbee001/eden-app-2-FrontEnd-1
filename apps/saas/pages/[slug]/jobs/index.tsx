@@ -10,11 +10,9 @@ import {
   EdenTooltip,
   SEO,
 } from "@eden/package-ui";
-import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { getSession, signIn } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 // import { IconPickerItem } from "react-fa-icon-picker";
 import ReactTooltip from "react-tooltip";
