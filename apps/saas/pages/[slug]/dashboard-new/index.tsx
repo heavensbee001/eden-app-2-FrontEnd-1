@@ -1,8 +1,15 @@
-import { gql, useQuery } from "@apollo/client";
-import { AppUserLayoutNew, Button } from "@eden/package-ui";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import {
+  AppUserLayoutNew,
+  Button,
+  CutTextTooltip,
+  EdenAiProcessingModal,
+} from "@eden/package-ui";
+import { CompanyContext } from "@eden/package-context";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { NextPageWithLayout } from "../../_app";
 
@@ -26,9 +33,20 @@ const FIND_COMPANY_FROM_SLUG = gql`
   }
 `;
 
+const UPDATE_POSITION = gql`
+  mutation ($fields: updatePositionInput!) {
+    updatePosition(fields: $fields) {
+      _id
+    }
+  }
+`;
+
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const [companyLoading, setCompanyLoading] = useState(true);
+  const { getCompanyFunc } = useContext(CompanyContext);
+  const [updatePositionLoading, setUpdatePositionLoading] =
+    useState<boolean>(false);
 
   const { data: findCompanyData } = useQuery(FIND_COMPANY_FROM_SLUG, {
     variables: {
@@ -54,6 +72,37 @@ const HomePage: NextPageWithLayout = () => {
     console.log("hey");
   };
 
+  const [updatePosition] = useMutation(UPDATE_POSITION, {
+    onCompleted(updatePositionData) {
+      getCompanyFunc();
+      router
+        .push(
+          `/${findCompanyData?.findCompanyFromSlug?.slug}/dashboard/${updatePositionData.updatePosition._id}/train-eden-ai`
+        )
+        .then(() => {
+          setUpdatePositionLoading(false);
+        });
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const handleCreatePosition = () => {
+    const randId = uuidv4();
+
+    setUpdatePositionLoading(true);
+
+    updatePosition({
+      variables: {
+        fields: {
+          name: `New Opportunity ${randId}`,
+          companyID: findCompanyData?.findCompanyFromSlug?._id,
+        },
+      },
+    });
+  };
+
   return (
     <div className="h-full">
       <Head>
@@ -72,6 +121,11 @@ const HomePage: NextPageWithLayout = () => {
           }}
         />
       </Head>
+
+      <EdenAiProcessingModal
+        title="Creating position"
+        open={updatePositionLoading}
+      ></EdenAiProcessingModal>
 
       <div className="mx-auto h-full w-full rounded px-8">
         <div className="z-40 flex h-full w-full flex-row gap-2">
@@ -108,7 +162,133 @@ const HomePage: NextPageWithLayout = () => {
               </Button>
             </div>
           </div>
-          <div className="min-w-1/2 bg-edenGreen-200 h-full flex-grow"></div>
+          <div className="min-w-1/2 h-full flex-grow bg-white px-20">
+            <h1 className="text-edenGreen-600 mb-5">Your Opportunities</h1>
+            <div className="grid-wrap scrollbar-hide grid h-[calc(100%-54px)] grid-cols-2 gap-4 overflow-y-auto">
+              <div
+                className="flex h-[200px] min-w-[300px] flex-col items-center rounded-lg bg-[url('/new-opportunity.png')] bg-cover bg-no-repeat p-3 align-baseline opacity-70"
+                onClick={handleCreatePosition}
+              >
+                <div className="mt-9 flex h-[60px] w-[60px] items-center justify-center">
+                  <svg
+                    width="55"
+                    height="55"
+                    viewBox="0 0 55 55"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M39.09 0.5C48.1575 0.5 54.25 6.865 54.25 16.3375V38.4125C54.25 47.885 48.1575 54.25 39.09 54.25H15.66C6.5925 54.25 0.5 47.885 0.5 38.4125V16.3375C0.5 6.865 6.5925 0.5 15.66 0.5H39.09ZM39.09 4.25H15.66C8.73 4.25 4.25 8.9925 4.25 16.3375V38.4125C4.25 45.7575 8.73 50.5 15.66 50.5H39.09C46.0225 50.5 50.5 45.7575 50.5 38.4125V16.3375C50.5 8.9925 46.0225 4.25 39.09 4.25ZM27.375 16.3183C28.41 16.3183 29.25 17.1583 29.25 18.1933V25.475L36.5413 25.4755C37.5763 25.4755 38.4163 26.3155 38.4163 27.3505C38.4163 28.3855 37.5763 29.2255 36.5413 29.2255L29.25 29.225V36.5107C29.25 37.5457 28.41 38.3857 27.375 38.3857C26.34 38.3857 25.5 37.5457 25.5 36.5107V29.225L18.2087 29.2255C17.1712 29.2255 16.3337 28.3855 16.3337 27.3505C16.3337 26.3155 17.1712 25.4755 18.2087 25.4755L25.5 25.475V18.1933C25.5 17.1583 26.34 16.3183 27.375 16.3183Z"
+                      fill="#F9E1ED"
+                    />
+                  </svg>
+                </div>
+                <h1 className="text-edenPink-400 mt-2">
+                  Launch new opportunity
+                </h1>
+              </div>
+              {findCompanyData &&
+                findCompanyData.findCompanyFromSlug.positions &&
+                findCompanyData.findCompanyFromSlug.positions.map(
+                  (position: any, index: number) => (
+                    <div
+                      className="bg-edenGreen-400 text-edenPink-400 relative h-[200px] min-w-[300px] rounded-lg p-3"
+                      key={`position${index}`}
+                    >
+                      <div className="flex flex-row items-center justify-start gap-4">
+                        <div className="min-w-[155px] max-w-[200px]">
+                          <CutTextTooltip
+                            className="text-edenPink-400 text-left"
+                            text={position.name}
+                          />
+                        </div>
+                        <svg
+                          width="19"
+                          height="9"
+                          viewBox="0 0 19 9"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.17223 0.854527C8.93745 0.938686 8.79108 1.09872 8.79108 1.27277V3.98307H0.736774C0.330082 3.98307 1.14441e-05 4.19729 1.14441e-05 4.46125C1.14441e-05 4.7252 0.330082 4.93942 0.736774 4.93942H8.79108V7.64972C8.79108 7.82441 8.93745 7.98444 9.17223 8.06796C9.40701 8.15276 9.69386 8.14702 9.92078 8.05458L17.7167 4.8661C17.9309 4.77812 18.0605 4.62574 18.0605 4.46125C18.0605 4.29675 17.9309 4.14437 17.7167 4.05639L9.92078 0.867917C9.80093 0.819461 9.66439 0.794596 9.52784 0.794596C9.40603 0.794596 9.28323 0.814998 9.17223 0.854527Z"
+                            fill="#00462C"
+                          />
+                        </svg>
+                      </div>
+                      <div className="text-edenGreen-200 text-[8px]">
+                        <span>posted on </span>
+                        <span className="underline">24th of November 2023</span>
+                        <span> Miltiadis Saratzidis</span>
+                      </div>
+                      <div className="mt-2 flex flex-col">
+                        <div className="flex h-[34px] w-full flex-row items-center">
+                          <div className="text-edenGreen-600 border-edenGray-100 ml-1 mr-4 flex h-[22px] w-[34px] items-center justify-center rounded-[2.78px] border bg-white text-sm">
+                            23
+                          </div>
+                          <div className="text-edenGreen-600 text-base font-bold">
+                            <span className="font-Moret underline">
+                              Talents to review
+                            </span>
+                            <span className="font-Moret"> in pools</span>
+                          </div>
+                        </div>
+                        <div className="flex h-[34px] w-full flex-row items-center">
+                          <div className="text-edenGreen-600 border-edenGray-100 ml-1 mr-4 flex h-[22px] w-[34px] items-center justify-center rounded-[2.78px] border bg-white text-sm">
+                            42
+                          </div>
+                          <div className="text-edenGreen-600 text-base font-bold">
+                            <span className="font-Moret">Talents </span>
+                            <span className="font-Moret underline">
+                              reviewed
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex h-[34px] w-full flex-row items-center">
+                          <div className="text-edenGreen-600 border-edenGray-100 ml-1 mr-4 flex h-[22px] w-[34px] items-center justify-center rounded-[2.78px] border bg-white text-sm">
+                            3
+                          </div>
+                          <div className="text-edenGreen-600 text-base font-bold">
+                            <span className="font-Moret underline">
+                              Invited
+                            </span>
+                            <span className="font-Moret">
+                              {" "}
+                              for 2nd interview
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute right-5 top-6">
+                        <svg
+                          width="13"
+                          height="3"
+                          viewBox="0 0 13 3"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle cx="1.5" cy="1.5" r="1.5" fill="white" />
+                          <circle cx="6.5" cy="1.5" r="1.5" fill="white" />
+                          <circle cx="11.5" cy="1.5" r="1.5" fill="white" />
+                        </svg>
+                      </div>
+                      <div className="absolute bottom-[9px] left-2 text-[10px]">
+                        <span className="underline">Link</span>
+                        <span> to live post</span>
+                      </div>
+                      <div className="absolute bottom-[9px] right-[55px] text-[10px]">
+                        <span>Published in </span>
+                        <span className="underline">2/2</span>
+                        <span> communities</span>
+                      </div>
+                      <div className="bg-edenGreen-300 absolute bottom-[9px] right-3 h-[11px] w-[34px] rounded-[10px]" />
+                      <div className="bg-edenGreen-600 absolute bottom-[5.5px] right-3 h-[18px] w-[18px] rounded-full" />
+                    </div>
+                  )
+                )}
+            </div>
+          </div>
           <div className="bg-edenPink-100 relative h-full min-w-[330px]">
             <div className="border-edenGreen-400 relative mb-2 border-b pb-2 text-center">
               <h1 className="text-edenGreen-600">
