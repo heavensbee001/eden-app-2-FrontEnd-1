@@ -317,8 +317,8 @@ const HomePage: NextPageWithLayout = () => {
           <div className="min-w-1/2 h-full flex-grow bg-white px-20">
             <h1 className="text-edenGreen-600 mb-5">Your Opportunities</h1>
             <div className="grid-wrap scrollbar-hide grid h-[calc(100%-54px)] grid-cols-2 gap-4 overflow-y-auto">
-              <div
-                className="flex h-[200px] min-w-[300px] flex-col items-center rounded-lg bg-[url('/new-opportunity.png')] bg-cover bg-no-repeat p-3 align-baseline opacity-70"
+              <button
+                className="flex h-[200px] min-w-[300px] flex-col items-center rounded-lg bg-[url('/new-opportunity.png')] bg-cover bg-no-repeat p-3 align-baseline opacity-70 hover:opacity-80 hover:shadow-lg"
                 onClick={handleCreatePosition}
               >
                 <div className="mt-9 flex h-[60px] w-[60px] items-center justify-center">
@@ -340,13 +340,13 @@ const HomePage: NextPageWithLayout = () => {
                 <h1 className="text-edenPink-400 mt-2">
                   Launch new opportunity
                 </h1>
-              </div>
+              </button>
               {findCompanyData &&
                 findCompanyData.findCompanyFromSlug.positions &&
                 findCompanyData.findCompanyFromSlug.positions.map(
                   (position: any, index: number) => (
                     <div
-                      className="bg-edenGreen-400 text-edenPink-400 relative h-[200px] min-w-[300px] rounded-lg p-3"
+                      className="bg-edenGreen-400 text-edenPink-400 relative h-[200px] min-w-[300px] rounded-lg p-3 hover:cursor-pointer hover:bg-[#729788] hover:shadow-lg"
                       key={`position${index}`}
                       onClick={() =>
                         router.push(
@@ -374,7 +374,7 @@ const HomePage: NextPageWithLayout = () => {
                           />
                         </svg>
                       </div>
-                      <div className="text-edenGreen-200 text-[8px]">
+                      <div className="text-edenGreen-200 text-left text-[8px]">
                         <span>posted on </span>
                         <span className="underline">24th of November 2023</span>
                         <span> Miltiadis Saratzidis</span>
@@ -454,7 +454,7 @@ const HomePage: NextPageWithLayout = () => {
             </div>
 
             <div className="scrollbar-hide max-h-[calc(100%-160px)] overflow-y-auto pt-2">
-              <div className="bg-edenPink-300 m-4 flex flex-row items-center rounded-md py-2">
+              <button className="bg-edenPink-300 hover:bg-edenPink-400 m-4 flex w-[calc(100%-32px)] flex-row items-center rounded-md py-2 hover:shadow-md">
                 <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
                   <svg
                     width="20"
@@ -507,8 +507,8 @@ const HomePage: NextPageWithLayout = () => {
                     Fav profile based recruitment
                   </p>
                 </div>
-              </div>
-              <div className="bg-edenPink-300 m-4 flex flex-row items-center rounded-md py-2">
+              </button>
+              <button className="bg-edenPink-300 hover:bg-edenPink-400 m-4 flex w-[calc(100%-32px)] flex-row items-center rounded-md py-2 hover:shadow-md">
                 <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
                   <svg
                     width="37"
@@ -563,8 +563,8 @@ const HomePage: NextPageWithLayout = () => {
                     Ask the right people for referrals
                   </p>
                 </div>
-              </div>
-              <div className="bg-edenPink-300 m-4 flex flex-row items-center rounded-md py-2">
+              </button>
+              <button className="bg-edenPink-300 hover:bg-edenPink-400 m-4 flex w-[calc(100%-32px)] flex-row items-center rounded-md py-2 hover:shadow-md">
                 <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
                   <svg
                     width="24"
@@ -602,7 +602,7 @@ const HomePage: NextPageWithLayout = () => {
                     Reach talent that is not actively looking
                   </p>
                 </div>
-              </div>
+              </button>
             </div>
             <div className="bg-edenGreen-600 absolute bottom-0 flex w-full justify-around px-6 py-2">
               <Button
@@ -614,7 +614,10 @@ const HomePage: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
-        <div className="text-edenGreen-600 fixed right-1/3 top-3 z-[200] flex flex-row">
+        <button
+          className="text-edenGreen-600 fixed right-[300px] top-9 z-[200] flex flex-row hover:font-medium"
+          onClick={() => router.push(`/${router.query.slug}/dashboard-new`)}
+        >
           <svg
             width="30"
             height="29"
@@ -647,7 +650,7 @@ const HomePage: NextPageWithLayout = () => {
             />
           </svg>
           All your opportunities
-        </div>
+        </button>
       </div>
     </div>
   );
