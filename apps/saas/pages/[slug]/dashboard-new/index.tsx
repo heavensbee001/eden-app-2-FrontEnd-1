@@ -1,14 +1,16 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { CompanyContext } from "@eden/package-context";
 import {
   AppUserLayoutNew,
   Button,
   CutTextTooltip,
   EdenAiProcessingModal,
+  Modal,
 } from "@eden/package-ui";
-import { CompanyContext } from "@eden/package-context";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
 import { NextPageWithLayout } from "../../_app";
@@ -41,12 +43,113 @@ const UPDATE_POSITION = gql`
   }
 `;
 
+const AUTO_UPDATE_POSITION = gql`
+  mutation autoUpdatePositionCompInformation_V2(
+    $fields: autoUpdatePositionCompInformationInput
+  ) {
+    autoUpdatePositionCompInformation_V2(fields: $fields) {
+      _id
+      name
+      whoYouAre
+      company {
+        _id
+        name
+        description
+        mission
+        whatsToLove
+      }
+    }
+  }
+`;
+
+const BULK_UPDATE_POSITION = gql`
+  mutation (
+    $fieldsUpdatePosition: updatePositionInput!
+    $fieldsWebsiteToMemoryCompany: websiteToMemoryCompanyInput!
+  ) {
+    updatePosition(fields: $fieldsUpdatePosition) {
+      _id
+    }
+    websiteToMemoryCompany(fields: $fieldsWebsiteToMemoryCompany) {
+      report
+      interviewQuestionsForPosition {
+        originalQuestionID
+        originalContent
+        personalizedContent
+      }
+    }
+  }
+`;
+
+export interface CreatePositionModalProps {
+  open: boolean;
+  onClose: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSubmit: (data: any) => void;
+}
+
+const CreatePositionModal = ({
+  open,
+  onClose,
+  onSubmit,
+}: CreatePositionModalProps) => {
+  const { register, handleSubmit } = useForm<any>({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
+
+  return (
+    <Modal open={open} onClose={onClose} closeOnEsc>
+      <h2 className="text-edenGreen-600 mb-4 text-center">
+        Launch opportunity
+      </h2>
+      <form>
+        <div className="mb-4">
+          <label className="text-edenGray-700 mb-1 block text-sm">
+            Title of your opportunity
+          </label>
+          <input
+            type="text"
+            {...register("name")}
+            placeholder="Write a title"
+            className="border-edenGray-500 block w-full rounded-md border bg-transparent px-3 py-2 focus:outline-none"
+          />
+        </div>
+        <div className="mb-8">
+          <label className="text-edenGray-700 mb-1 block text-sm">
+            {
+              "Paste your job description below. Don't worry about making it look pretty, we'll fix all that in a bit."
+            }
+          </label>
+          <textarea
+            {...register("description")}
+            rows={5}
+            placeholder="This is a sample text..."
+            className="border-edenGray-500 block w-full rounded-md border bg-transparent px-3 py-2 focus:outline-none"
+          />
+        </div>
+        <Button
+          onClick={handleSubmit((data) => onSubmit(data))}
+          variant="secondary"
+          className="mx-auto block"
+        >
+          Submit
+        </Button>
+      </form>
+    </Modal>
+  );
+};
+
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
   const [companyLoading, setCompanyLoading] = useState(true);
-  const { getCompanyFunc } = useContext(CompanyContext);
+  const { company, getCompanyFunc } = useContext(CompanyContext);
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
+  const [createPositionOpen, setCreatePositionOpen] = useState<boolean>(false);
+  const [newPositionId, setNewPositionId] = useState<string | null>(null);
 
   const { data: findCompanyData } = useQuery(FIND_COMPANY_FROM_SLUG, {
     variables: {
@@ -75,13 +178,9 @@ const HomePage: NextPageWithLayout = () => {
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
       getCompanyFunc();
-      router
-        .push(
-          `/${findCompanyData?.findCompanyFromSlug?.slug}/dashboard/${updatePositionData.updatePosition._id}/train-eden-ai`
-        )
-        .then(() => {
-          setUpdatePositionLoading(false);
-        });
+      setNewPositionId(updatePositionData.updatePosition._id);
+      setUpdatePositionLoading(false);
+      setCreatePositionOpen(true);
     },
     onError() {
       setUpdatePositionLoading(false);
@@ -97,7 +196,58 @@ const HomePage: NextPageWithLayout = () => {
       variables: {
         fields: {
           name: `New Opportunity ${randId}`,
-          companyID: findCompanyData?.findCompanyFromSlug?._id,
+          companyID: company?._id,
+        },
+      },
+    });
+  };
+
+  const [autoUpdatePosition] = useMutation(AUTO_UPDATE_POSITION, {
+    onCompleted(autoUpdatePositionData) {
+      getCompanyFunc();
+      router.push(
+        `/${company?.slug}/jobs/${autoUpdatePositionData.autoUpdatePositionCompInformation_V2._id}?edit=true`
+      );
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const creatingPositionModal = (
+    <EdenAiProcessingModal
+      title="Creating position"
+      open={updatePositionLoading}
+    ></EdenAiProcessingModal>
+  );
+
+  const [bulkUpdatePosition] = useMutation(BULK_UPDATE_POSITION, {
+    onCompleted() {
+      autoUpdatePosition({
+        variables: {
+          fields: {
+            positionID: newPositionId,
+          },
+        },
+      });
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const handleSubmitCreatePosition = (data: any) => {
+    setUpdatePositionLoading(true);
+
+    bulkUpdatePosition({
+      variables: {
+        fieldsUpdatePosition: {
+          _id: newPositionId,
+          name: data.name,
+        },
+        fieldsWebsiteToMemoryCompany: {
+          positionID: newPositionId,
+          message: data.description,
         },
       },
     });
@@ -122,10 +272,12 @@ const HomePage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <EdenAiProcessingModal
-        title="Creating position"
-        open={updatePositionLoading}
-      ></EdenAiProcessingModal>
+      {creatingPositionModal}
+      <CreatePositionModal
+        onClose={() => setCreatePositionOpen(false)}
+        open={createPositionOpen}
+        onSubmit={handleSubmitCreatePosition}
+      />
 
       <div className="mx-auto h-full w-full rounded px-8">
         <div className="z-40 flex h-full w-full flex-row gap-2">
@@ -196,6 +348,11 @@ const HomePage: NextPageWithLayout = () => {
                     <div
                       className="bg-edenGreen-400 text-edenPink-400 relative h-[200px] min-w-[300px] rounded-lg p-3"
                       key={`position${index}`}
+                      onClick={() =>
+                        router.push(
+                          `/${company?.slug}/dashboard-new/${position._id}`
+                        )
+                      }
                     >
                       <div className="flex flex-row items-center justify-start gap-4">
                         <div className="min-w-[155px] max-w-[200px]">
