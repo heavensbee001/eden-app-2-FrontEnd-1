@@ -656,7 +656,7 @@ const PositionCRM: NextPageWithLayout = () => {
               );
               router.push(
                 {
-                  pathname: `/${company?.slug}/dashboard/${positionID}`,
+                  pathname: `/${company?.slug}/dashboard-new/${positionID}`,
                 },
                 undefined,
                 { shallow: true }
@@ -695,7 +695,7 @@ const PositionCRM: NextPageWithLayout = () => {
             // setCandidatesFromTalentList(candidatesOnTalentListSelected);
             router.push(
               {
-                pathname: `/${company?.slug}/dashboard/${positionID}`,
+                pathname: `/${company?.slug}/dashboard-new/${positionID}`,
                 query: {
                   listID: editedTalentList._id,
                 },
