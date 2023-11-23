@@ -414,7 +414,7 @@ export async function getServerSideProps(ctx: {
   query: { slug: string };
 }) {
   const session = await getSession(ctx);
-
+  //removes the next error in the url
   const url = (ctx as any).resolvedUrl;
 
   if (!session) {
