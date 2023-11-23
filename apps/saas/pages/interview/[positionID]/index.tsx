@@ -544,13 +544,7 @@ export async function getServerSideProps(ctx: {
   res: ServerResponse;
 }) {
   const session = await getSession(ctx);
-  /*
 
-  resolvedUrl is used to "remember" the path a user was attempting to access,
-  particularly in cases where authentication is required. After logging in, the
-  application can use this saved path to redirect the user back to their initial destination
-
-  */
   const url = (ctx as any).resolvedUrl;
 
   if (!session) {
