@@ -1045,12 +1045,12 @@ const PositionCRM: NextPageWithLayout = () => {
                     Explore talent by topic
                   </h1>
                   {topics.map((aiTopic) => (
-                    <button
+                    <div
                       className={`${
                         topic === aiTopic.topic
                           ? "border-edenGreen-600 border-2 shadow-md"
                           : ""
-                      } bg-edenPink-300 hover:bg-edenPink-400 flex h-24 flex-row items-center rounded-lg px-4 py-2 hover:shadow-md`}
+                      } bg-edenPink-300 hover:bg-edenPink-400 flex h-24 flex-row items-center rounded-lg px-4 py-2 hover:cursor-pointer hover:shadow-md`}
                       key={`${aiTopic.topic}`}
                       onClick={() => {
                         setTopic(aiTopic.topic);
@@ -1065,7 +1065,7 @@ const PositionCRM: NextPageWithLayout = () => {
                           {aiTopic.text}
                         </p>
                       </div>
-                    </button>
+                    </div>
                   ))}
 
                   <div className="bg-edenGreen-600 absolute bottom-0 flex w-[calc(100%-16px)] justify-around px-4 py-2">

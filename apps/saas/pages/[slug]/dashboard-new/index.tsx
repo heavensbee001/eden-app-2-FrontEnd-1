@@ -346,7 +346,7 @@ const HomePage: NextPageWithLayout = () => {
                 findCompanyData.findCompanyFromSlug.positions.map(
                   (position: any, index: number) => (
                     <div
-                      className="bg-edenGreen-400 text-edenPink-400 relative h-[200px] min-w-[300px] rounded-lg p-3 hover:cursor-pointer hover:bg-[#729788] hover:shadow-lg"
+                      className="bg-edenGreen-400 text-edenPink-400 relative h-[200px] min-w-[300px] rounded-lg p-3 hover:cursor-pointer hover:bg-[#6c9584] hover:shadow-lg"
                       key={`position${index}`}
                       onClick={() =>
                         router.push(
