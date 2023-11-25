@@ -1,6 +1,7 @@
-import { useQuery } from "@apollo/client";
+import { gql, useQuery, useSubscription } from "@apollo/client";
 import { Maybe } from "@eden/package-graphql/generated";
 import { ChatSimple } from "@eden/package-ui";
+import { printSync } from "@swc/core";
 // import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
@@ -14,6 +15,14 @@ import {
   SEARCH_EDEN_V1,
   // MESSAGE_MAP_KG_V4,
 } from "./gqlFunctions";
+
+const CONVERSATION_UPDATED = gql`
+  subscription ($fields: conversationUpdatedInput) {
+    conversationUpdated(fields: $fields) {
+      role
+    }
+  }
+`;
 
 interface NodeObj {
   [key: string]: {
@@ -40,7 +49,7 @@ interface MessageObject {
   user?: string;
 }
 
-export enum AI_INTERVIEW_SERVICES {
+export enum AI_INTERVIEW_SERVICES_2 {
   // eslint-disable-next-line no-unused-vars
   INTERVIEW_EDEN_AI = "INTERVIEW_EDEN_AI",
   // eslint-disable-next-line no-unused-vars
@@ -54,13 +63,13 @@ export enum AI_INTERVIEW_SERVICES {
   // eslint-disable-next-line no-unused-vars
   SEARCH_EDEN_V1 = "SEARCH_EDEN_V1",
 }
-export type ChatMessage = Array<{ user: string; message: string; date: Date }>;
+export type ChatMessage2 = Array<{ user: string; message: string; date: Date }>;
 
-export interface IInterviewEdenAIProps {
-  aiReplyService: AI_INTERVIEW_SERVICES;
+export interface ISearchEdenAIProps {
+  aiReplyService: AI_INTERVIEW_SERVICES_2;
   extraNodes?: Array<any>;
   sentMessageToEdenAIobj?: MessageObject;
-  changeChatN?: ChatMessage;
+  changeChatN?: ChatMessage2;
   experienceTypeID?: string;
   questions?: Question[];
   userID?: Maybe<string> | undefined;
@@ -71,7 +80,7 @@ export interface IInterviewEdenAIProps {
   // eslint-disable-next-line no-unused-vars
   handleChangeNodes?: (nodes: NodeObj) => void;
   // eslint-disable-next-line no-unused-vars
-  handleChangeChat?: (chat: ChatMessage) => void;
+  handleChangeChat?: (chat: ChatMessage2) => void;
   // eslint-disable-next-line no-unused-vars
   setShowPopupSalary?: (show: boolean) => void;
   // eslint-disable-next-line no-unused-vars
@@ -90,7 +99,7 @@ export interface IInterviewEdenAIProps {
   handleEnd?: () => void;
 }
 
-export const InterviewEdenAI = ({
+export const SearchEdenAI = ({
   aiReplyService,
   // extraNodes, // extra nodes to add to the query
   sentMessageToEdenAIobj,
@@ -113,14 +122,14 @@ export const InterviewEdenAI = ({
   placeholder = "",
   handleEnd,
   headerText,
-}: IInterviewEdenAIProps) => {
+}: ISearchEdenAIProps) => {
   // const { currentUser } = useContext(UserContext);
 
-  const [chatN, setChatN] = useState<ChatMessage>(
-    changeChatN || ([] as ChatMessage)
+  const [chatN, setChatN] = useState<ChatMessage2>(
+    changeChatN || ([] as ChatMessage2)
   ); // all chat messages
 
-  // const [conversationN, setConversationN] = useState<ChatMessage>([] as ChatMessage); // all chat messages
+  // const [conversationN, setConversationN] = useState<ChatMessage2>([] as ChatMessage2); // all chat messages
 
   // const [chatNprepareGPT, setChatNprepareGPT] = useState<string>(""); // formated chat messages for chatGPT
   // eslint-disable-next-line no-unused-vars
@@ -131,6 +140,23 @@ export const InterviewEdenAI = ({
 
   const [edenAIsentMessage, setEdenAIsentMessage] = useState<boolean>(true); // sets if response is pending (TODO => change logic to query based)
   const [numMessageLongTermMem, setNumMessageLongTermMem] = useState<any>(0);
+
+  useSubscription(CONVERSATION_UPDATED, {
+    variables: {
+      fields: {
+        conversationID: conversationID,
+      },
+    },
+    onData: ({ data }) => {
+      console.log("data donki= ");
+      console.log("data donki= ", data);
+      if (data?.data?.conversationUpdated) {
+        // if (data?.data?.memberDataConnectedTG?._id == userID) {
+        //   setFlagFinishTGconnection(true);
+        // }
+      }
+    },
+  });
 
   // console.log("questions = 223 ", questions);
 
@@ -327,7 +353,7 @@ export const InterviewEdenAI = ({
     },
     skip:
       chatN.length == 0 ||
-      aiReplyService != AI_INTERVIEW_SERVICES.INTERVIEW_EDEN_AI ||
+      aiReplyService != AI_INTERVIEW_SERVICES_2.INTERVIEW_EDEN_AI ||
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "" ||
       questions?.length == 0 ||
@@ -370,7 +396,7 @@ export const InterviewEdenAI = ({
     },
     skip:
       chatN.length == 0 ||
-      aiReplyService != AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION ||
+      aiReplyService != AI_INTERVIEW_SERVICES_2.ASK_EDEN_USER_POSITION ||
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "",
     onCompleted: () => {
@@ -409,7 +435,7 @@ export const InterviewEdenAI = ({
       skip:
         chatN.length == 0 ||
         aiReplyService !=
-          AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW ||
+          AI_INTERVIEW_SERVICES_2.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW ||
         chatN[chatN.length - 1]?.user == "01" ||
         userID == "",
       onCompleted: () => {
@@ -447,7 +473,7 @@ export const InterviewEdenAI = ({
     },
     skip:
       // chatN.length == 0 ||
-      aiReplyService != AI_INTERVIEW_SERVICES.ASK_EDEN_GPT4_ONLY ||
+      aiReplyService != AI_INTERVIEW_SERVICES_2.ASK_EDEN_GPT4_ONLY ||
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "",
     onCompleted: () => {
@@ -487,7 +513,7 @@ export const InterviewEdenAI = ({
       skip:
         // chatN.length == 0 ||
         aiReplyService !=
-          AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_GPT_FUNC_V2 ||
+          AI_INTERVIEW_SERVICES_2.ASK_EDEN_USER_POSITION_GPT_FUNC_V2 ||
         chatN[chatN.length - 1]?.user == "01" ||
         userID == "",
       onCompleted: () => {
@@ -525,7 +551,7 @@ export const InterviewEdenAI = ({
     },
     skip:
       // chatN.length == 0 ||
-      aiReplyService != AI_INTERVIEW_SERVICES.SEARCH_EDEN_V1 ||
+      aiReplyService != AI_INTERVIEW_SERVICES_2.SEARCH_EDEN_V1 ||
       chatN[chatN.length - 1]?.user == "01" ||
       userID == "",
     onCompleted: () => {
@@ -545,15 +571,15 @@ export const InterviewEdenAI = ({
   // ---------- When GPT Reply, Store all convo messages and GPT friendly formated messages ------------
   useEffect(() => {
     if (dataInterviewEdenAI && edenAIsentMessage == true) {
-      const chatT: ChatMessage = [...chatN];
+      const chatT: ChatMessage2 = [...chatN];
 
       // let newMessage = "";
 
-      // if (aiReplyService === AI_INTERVIEW_SERVICES.EDEN_GPT_REPLY_CHAT_API_V2) {
+      // if (aiReplyService === AI_INTERVIEW_SERVICES_2.EDEN_GPT_REPLY_CHAT_API_V2) {
       //   newMessage = dataEdenGPTReplyChatAPI.edenGPTreplyChatAPI_V2.reply;
-      // } else if (aiReplyService === AI_INTERVIEW_SERVICES.EDEN_GPT_REPLY_MEMORY) {
+      // } else if (aiReplyService === AI_INTERVIEW_SERVICES_2.EDEN_GPT_REPLY_MEMORY) {
       //   newMessage = dataEdenGPTReplyMemory.edenGPTreplyMemory.reply;
-      // } else if (aiReplyService === AI_INTERVIEW_SERVICES.EDEN_GPT_REPLY) {
+      // } else if (aiReplyService === AI_INTERVIEW_SERVICES_2.EDEN_GPT_REPLY) {
       //   newMessage = dataInterviewEdenAI.interviewEdenAI.reply;
       // }
       const reply = dataInterviewEdenAI?.interviewEdenAI?.reply;
@@ -622,7 +648,7 @@ export const InterviewEdenAI = ({
 
   useEffect(() => {
     if (dataAskEdenGPT4only && edenAIsentMessage == true) {
-      const chatT: ChatMessage = [...chatN];
+      const chatT: ChatMessage2 = [...chatN];
 
       const reply = dataAskEdenGPT4only?.interviewEdenGPT4only?.reply;
 
@@ -653,7 +679,7 @@ export const InterviewEdenAI = ({
         else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
       }
 
-      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+      // console.log("chatNprepareGPTP = ", chatNprepareGPTP);
 
       // setChatNprepareGPT(chatNprepareGPTP);
       setEdenAIsentMessage(false);
@@ -663,7 +689,7 @@ export const InterviewEdenAI = ({
 
   useEffect(() => {
     if (dataAskEdenUSerPositionGPTFuncV2 && edenAIsentMessage == true) {
-      const chatT: ChatMessage = [...chatN];
+      const chatT: ChatMessage2 = [...chatN];
 
       const resN =
         dataAskEdenUSerPositionGPTFuncV2?.askEdenUserPositionGPTFunc_V2;
@@ -696,7 +722,7 @@ export const InterviewEdenAI = ({
         else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
       }
 
-      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+      // console.log("chatNprepareGPTP = ", chatNprepareGPTP);
 
       // setChatNprepareGPT(chatNprepareGPTP);
       setEdenAIsentMessage(false);
@@ -706,7 +732,7 @@ export const InterviewEdenAI = ({
 
   useEffect(() => {
     if (dataSearchEdenV1 && edenAIsentMessage == true) {
-      const chatT: ChatMessage = [...chatN];
+      const chatT: ChatMessage2 = [...chatN];
 
       const resN = dataSearchEdenV1?.searchEden_V1;
 
@@ -738,7 +764,7 @@ export const InterviewEdenAI = ({
         else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
       }
 
-      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+      // console.log("chatNprepareGPTP = ", chatNprepareGPTP);
 
       // setChatNprepareGPT(chatNprepareGPTP);
       setEdenAIsentMessage(false);
@@ -751,11 +777,11 @@ export const InterviewEdenAI = ({
       dataAskEdenUserPosition || dataAskEdenUserPositionAfterInterview;
 
     if (_data && edenAIsentMessage == true) {
-      const chatT: ChatMessage = [...chatN];
+      const chatT: ChatMessage2 = [...chatN];
 
       const reply = _data?.askEdenUserPosition?.reply;
 
-      console.log("reply 22 =", reply);
+      // console.log("reply 22 =", reply);
 
       chatT.push({
         user: "01",
@@ -775,7 +801,7 @@ export const InterviewEdenAI = ({
         else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
       }
 
-      console.log("chatNprepareGPTP = ", chatNprepareGPTP);
+      // console.log("chatNprepareGPTP = ", chatNprepareGPTP);
 
       // setChatNprepareGPT(chatNprepareGPTP);
       setEdenAIsentMessage(false);
