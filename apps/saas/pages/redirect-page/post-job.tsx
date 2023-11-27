@@ -43,6 +43,7 @@ RedirectPostJobPage.getLayout = (page) => (
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
+  resolvedUrl: string;
   query: { slug: string };
 }) {
   const session = await getSession(ctx);
@@ -52,7 +53,7 @@ export async function getServerSideProps(ctx: {
   if (!session) {
     return {
       redirect: {
-        destination: `/?redirect=${url}`,
+        destination: `/?redirect=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };

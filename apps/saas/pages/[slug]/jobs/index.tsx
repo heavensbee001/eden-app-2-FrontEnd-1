@@ -13,7 +13,6 @@ import {
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 // import { IconPickerItem } from "react-fa-icon-picker";
 import ReactTooltip from "react-tooltip";
@@ -135,9 +134,9 @@ const HomePage: NextPageWithLayout = () => {
 
   const handlePostJobClick = async () => {
     if (!currentUser) {
-      signIn("google", {
-        callbackUrl: router.asPath,
-      });
+      setLoadingSpinner(true);
+      router.push(`/redirect-page/post-job?community=${company?._id}`);
+      setLoadingSpinner(false);
     } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
