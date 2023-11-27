@@ -278,7 +278,7 @@ const HomePage: NextPageWithLayout = () => {
                 <WizardStep
                   navigationDisabled={!panda}
                   nextDisabled={!cvEnded}
-                  label={"CV UPLOAD"}
+                  label={"Resume UPLOAD"}
                 >
                   <UploadCVContainer
                     setTitleRole={setTitleRole}
@@ -318,8 +318,8 @@ const HomePage: NextPageWithLayout = () => {
                       className="mr-3"
                     />
                     <p>
-                      I acknowledge that my CV and responses can be stored and
-                      shared with hiring managers by Eden
+                      I acknowledge that my Resume and responses can be stored
+                      and shared with hiring managers by Eden
                       <span className="mx-1 text-red-600">*</span>
                     </p>
                   </div>
