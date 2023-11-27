@@ -307,7 +307,7 @@ const HomePage: NextPageWithLayout = () => {
             onClick={handleCreatePosition}
           >
             <BiPlus size={"1.3rem"} className="" />
-            <span className="font-Moret ml-1">Add Opportunity 2</span>
+            <span className="font-Moret ml-1">Add Opportunity</span>
           </Button>
 
           <EdenAiProcessingModal
