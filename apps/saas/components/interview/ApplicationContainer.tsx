@@ -70,7 +70,7 @@ const ApplicationStepContainer = ({
       return "";
     }
   };
-  const matchText = getMatchText();
+  const matchText = getMatchText(); //
 
   const [openSections, setOpenSections] = useState<{
     areasToImprove: boolean;
