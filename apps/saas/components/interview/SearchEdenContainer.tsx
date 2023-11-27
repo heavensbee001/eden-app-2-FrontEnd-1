@@ -128,7 +128,7 @@ const SearchEdenContainer = ({ handleEnd }: SearchEdenContainerProps) => {
   const [addCandidateFlag, setAddCandidateFlag] = useState<boolean>(false);
 
   const [conversationID, setConversationID] = useState<String>(
-    "656243b056d67681c6d1829a"
+    "656248629d414e89c8dbbe33"
   );
   const [chatN, setChatN] = useState<ChatMessage>([]);
 
@@ -213,9 +213,9 @@ const SearchEdenContainer = ({ handleEnd }: SearchEdenContainerProps) => {
             handleChangeChat={(_chat: any) => {
               // setChatN(_chat);
             }}
-            angeChatN={chatN}
-            MessageToEdenAIobj={sentMessageToEdenAIobj}
-            tSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
+            changeChatN={chatN}
+            sentMessageToEdenAIobj={sentMessageToEdenAIobj}
+            setSentMessageToEdenAIobj={setSentMessageToEdenAIobj}
             placeholder={
               <div className="pt-4">
                 <Loading title="Loading Eden AI" />
@@ -225,7 +225,7 @@ const SearchEdenContainer = ({ handleEnd }: SearchEdenContainerProps) => {
             setQuestions={setQuestions}
             userID={"108867786318229498302"}
             positionID={positionID}
-            sitionTrainEdenAI={false}
+            positionTrainEdenAI={false}
             conversationID={conversationID}
             setConversationID={setConversationID}
             handleEnd={() => {

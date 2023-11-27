@@ -560,7 +560,7 @@ export const SearchEdenAI = ({
         //   }
         // }),
         positionID: positionID,
-        newThread: true,
+        // newThread: true,
         // userID: userID,
       },
     },
