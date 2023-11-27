@@ -142,14 +142,66 @@ const CreatePositionModal = ({
   );
 };
 
+export interface ExploreCommunitiesModalProps {
+  open: boolean;
+  onClose: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSubmit: (data: any) => void;
+}
+
+const ExploreCommunitiesModal = ({
+  open,
+  onClose,
+  onSubmit,
+}: ExploreCommunitiesModalProps) => {
+  const [community, setCommunity] = useState<string>("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCommunity(e.target.value);
+  };
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <h1 className="text-edenGreen-600 mb-2 text-center">
+        Explore Communities
+      </h1>
+      <p className="mb-4">
+        Let us know which community we should add next here:
+      </p>
+      <textarea
+        title="community"
+        id="community"
+        name="community"
+        value={community}
+        className="border-edenGray-500 h-48 w-full rounded-md border-2 text-base"
+        onChange={handleChange}
+      />
+      <div className="mt-4 flex justify-end">
+        <Button
+          variant="primary"
+          onClick={() => {
+            onSubmit(community);
+            onClose();
+          }}
+          className="w-24"
+        >
+          Share
+        </Button>
+      </div>
+    </Modal>
+  );
+};
+
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
+  // eslint-disable-next-line no-unused-vars
   const [companyLoading, setCompanyLoading] = useState(true);
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
   const [createPositionOpen, setCreatePositionOpen] = useState<boolean>(false);
   const [comingSoon, setComingSoon] = useState<boolean>(false);
+  const [exploreCommunities, setExploreCommunities] = useState<boolean>(false);
   const [newPositionId, setNewPositionId] = useState<string | null>(null);
 
   const { data: findCompanyData } = useQuery(FIND_COMPANY_FROM_SLUG, {
@@ -167,14 +219,6 @@ const HomePage: NextPageWithLayout = () => {
       }
     },
   });
-
-  const handleExploreCommunities = () => {
-    console.log("hey", companyLoading);
-  };
-
-  const handleSetupCustomFlow = () => {
-    console.log("hey");
-  };
 
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
@@ -254,6 +298,10 @@ const HomePage: NextPageWithLayout = () => {
     });
   };
 
+  const handleShareNewCommunity = (community: string) => {
+    console.log("Hey", community);
+  };
+
   return (
     <div className="h-full">
       <Head>
@@ -281,6 +329,12 @@ const HomePage: NextPageWithLayout = () => {
           Coming Soon
         </div>
       </Modal>
+      <ExploreCommunitiesModal
+        open={exploreCommunities}
+        onClose={() => setExploreCommunities(false)}
+        onSubmit={handleShareNewCommunity}
+      />
+
       <CreatePositionModal
         onClose={() => setCreatePositionOpen(false)}
         open={createPositionOpen}
@@ -288,15 +342,15 @@ const HomePage: NextPageWithLayout = () => {
       />
 
       <div className="relative mx-auto h-full max-w-screen-2xl rounded">
-        <div className="z-40 grid h-full grid-cols-12 gap-4">
-          <div className="bg-edenPink-100 relative col-span-3 h-full pl-1 pr-2">
+        <div className="z-40 grid h-full grid-cols-12">
+          <div className="bg-edenPink-100 relative col-span-3 h-full px-1">
             <div className="border-edenGreen-400 relative mb-2 border-b pb-2 text-center">
               <h1 className="text-edenGreen-600">
                 {"Communities you're subscribed to"}
               </h1>
             </div>
 
-            <div className="scrollbar-hide h-[calc(100%-106px)] overflow-y-auto px-2 pt-4">
+            <div className="scrollbar-hide max-h-[calc(100%-106px)] overflow-y-auto px-2 pt-4">
               <div className="bg-edenPink-300 flex flex-row items-center rounded-lg px-2 py-4">
                 <Image
                   width="56"
@@ -316,20 +370,20 @@ const HomePage: NextPageWithLayout = () => {
               <Button
                 className="w-60 text-center"
                 variant="primary"
-                onClick={handleExploreCommunities}
+                onClick={() => setExploreCommunities(true)}
               >
                 Explore more communities
               </Button>
             </div>
           </div>
-          <div className="col-span-6 h-full flex-grow bg-white px-[7%]">
-            <h1 className="text-edenGreen-600 mb-5">Your Opportunities</h1>
-            <div className="grid-wrap scrollbar-hide grid h-[calc(100%-54px)] grid-cols-2 gap-x-[8%] gap-y-6 overflow-y-auto">
+          <div className="scrollbar-hide col-span-6 h-full overflow-y-auto bg-white px-[7%]">
+            <h1 className="text-edenGreen-600 mb-10">Your Opportunities</h1>
+            <div className=" grid grid-cols-2 gap-x-[8%] gap-y-6">
               <div
                 className="flex min-h-[200px] flex-col items-center rounded-lg bg-[url('/new-opportunity.png')] bg-cover bg-no-repeat p-3 align-baseline opacity-70 hover:cursor-pointer hover:opacity-80 hover:shadow-lg"
                 onClick={handleCreatePosition}
               >
-                <div className="mt-9 flex aspect-square h-[30%] items-center justify-center">
+                <div className="mt-12 flex aspect-square h-[30%] items-center justify-center">
                   <svg
                     width="55"
                     height="55"
@@ -363,7 +417,7 @@ const HomePage: NextPageWithLayout = () => {
                       }
                     >
                       <div className="flex flex-row items-center justify-start gap-4">
-                        <div className="min-w-[155px] max-w-[200px]">
+                        <div className="min-w-[40%]  max-w-[75%]">
                           <CutTextTooltip
                             className="text-edenPink-400 text-left"
                             text={position.name}
@@ -454,7 +508,7 @@ const HomePage: NextPageWithLayout = () => {
                 )}
             </div>
           </div>
-          <div className="bg-edenPink-100 relative col-span-3 h-full pl-2 pr-1">
+          <div className="bg-edenPink-100 relative col-span-3 h-full px-1">
             <div className="border-edenGreen-400 relative mb-2 border-b pb-2 text-center">
               <h1 className="text-edenGreen-600">
                 {"AI-powered Engage Flows"}
@@ -463,7 +517,7 @@ const HomePage: NextPageWithLayout = () => {
 
             <div className="scrollbar-hide max-h-[calc(100%-160px)] overflow-y-auto px-2 pt-2">
               <button
-                className="bg-edenPink-300 hover:bg-edenPink-400 my-4 flex w-[calc(100%-32px)] flex-row items-center rounded-md py-2 hover:cursor-pointer hover:shadow-md"
+                className="bg-edenPink-300 hover:bg-edenPink-400 my-4 flex w-full flex-row items-center rounded-md py-2 hover:cursor-pointer hover:shadow-md"
                 onClick={() => setComingSoon(true)}
               >
                 <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
@@ -520,7 +574,7 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </button>
               <button
-                className="bg-edenPink-300 hover:bg-edenPink-400 my-4 flex w-[calc(100%-32px)] flex-row items-center rounded-md py-2 hover:cursor-pointer hover:shadow-md"
+                className="bg-edenPink-300 hover:bg-edenPink-400 my-4 flex w-full flex-row items-center rounded-md py-2 hover:cursor-pointer hover:shadow-md"
                 onClick={() => setComingSoon(true)}
               >
                 <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
@@ -579,7 +633,7 @@ const HomePage: NextPageWithLayout = () => {
                 </div>
               </button>
               <button
-                className="bg-edenPink-300 hover:bg-edenPink-400 my-4 flex w-[calc(100%-32px)] flex-row items-center rounded-md py-2 hover:cursor-pointer hover:shadow-md"
+                className="bg-edenPink-300 hover:bg-edenPink-400 my-4 flex w-full flex-row items-center rounded-md py-2 hover:cursor-pointer hover:shadow-md"
                 onClick={() => setComingSoon(true)}
               >
                 <div className="border-edenGreen-300 flex h-11 w-14 items-center justify-center border-r">
@@ -624,7 +678,7 @@ const HomePage: NextPageWithLayout = () => {
             <div className="bg-edenGreen-600 absolute bottom-0 flex w-full justify-around px-6 py-2">
               <Button
                 className="w-56 border-white text-center text-white"
-                onClick={handleSetupCustomFlow}
+                onClick={() => setComingSoon(true)}
               >
                 Setup custom engage flow
               </Button>
