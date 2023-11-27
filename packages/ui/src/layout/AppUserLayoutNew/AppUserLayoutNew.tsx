@@ -21,7 +21,7 @@ export const AppUserLayoutNew = ({
   return (
     <div className="max-h-screen">
       <nav className="fixed left-0 top-0 z-40 flex h-24 w-screen items-center bg-white">
-        <div className="m-auto flex h-12 w-full max-w-full items-center px-4">
+        <div className="mx-auto flex h-12 w-full max-w-screen-2xl items-center">
           <img
             src="/eden-imagotype.png"
             alt="Eden Protocol"
