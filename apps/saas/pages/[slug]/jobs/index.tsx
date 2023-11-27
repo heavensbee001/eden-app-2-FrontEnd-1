@@ -13,6 +13,7 @@ import {
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 // import { IconPickerItem } from "react-fa-icon-picker";
 import ReactTooltip from "react-tooltip";
@@ -37,7 +38,6 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       company {
         _id
         name
-        slug
         imageUrl
       }
     }
@@ -134,9 +134,9 @@ const HomePage: NextPageWithLayout = () => {
 
   const handlePostJobClick = async () => {
     if (!currentUser) {
-      setLoadingSpinner(true);
-      router.push(`/redirect-page/post-job?community=${company?._id}`);
-      setLoadingSpinner(false);
+      signIn("google", {
+        callbackUrl: router.asPath,
+      });
     } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
@@ -154,9 +154,9 @@ const HomePage: NextPageWithLayout = () => {
   };
 
   const handlePickJobs = async (pos: any) => {
-    console.log("ahahahaha", pos);
+    console.log("ahahahaha");
     setLoadingSpinner(true);
-    await router.push(`/${pos.company.slug}/jobs/${pos._id}`);
+    await router.push(`/eden/jobs/${pos._id}`);
     setLoadingSpinner(false);
   };
 
