@@ -131,42 +131,15 @@ const RequestAccess: NextPageWithLayout = () => {
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
-  resolvedUrl: string;
-  query: { company: string };
 }) {
   const session = await getSession(ctx);
 
-  // const url = ctx.req.url;
+  const url = ctx.req.url;
 
   if (!session) {
     return {
       redirect: {
-        destination: `/?redirect=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        userID: session.user!.id,
-        companySlug: ctx.query.company,
-      }),
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-
-  if (res.status === 200) {
-    const _companyAuth = await res.json();
-
-    console.log("_companyAuth", _companyAuth);
-
-    return {
-      redirect: {
-        destination: `/${_companyAuth.company.slug}/dashboard`,
+        destination: `/?redirect=${url}`,
         permanent: false,
       },
     };
