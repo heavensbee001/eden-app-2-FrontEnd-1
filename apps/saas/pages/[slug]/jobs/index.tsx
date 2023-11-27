@@ -38,6 +38,7 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       company {
         _id
         name
+        slug
         imageUrl
       }
     }
@@ -154,9 +155,9 @@ const HomePage: NextPageWithLayout = () => {
   };
 
   const handlePickJobs = async (pos: any) => {
-    console.log("ahahahaha");
+    console.log("ahahahaha", pos);
     setLoadingSpinner(true);
-    await router.push(`/eden/jobs/${pos._id}`);
+    await router.push(`/${pos.company.slug}/jobs/${pos._id}`);
     setLoadingSpinner(false);
   };
 
