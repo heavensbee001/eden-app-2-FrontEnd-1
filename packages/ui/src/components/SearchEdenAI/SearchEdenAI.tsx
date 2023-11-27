@@ -20,6 +20,9 @@ const CONVERSATION_UPDATED = gql`
   subscription ($fields: conversationUpdatedInput) {
     conversationUpdated(fields: $fields) {
       role
+      typeWidget
+      content
+      date
     }
   }
 `;
@@ -148,12 +151,23 @@ export const SearchEdenAI = ({
       },
     },
     onData: ({ data }) => {
-      console.log("data donki= ");
-      console.log("data donki= ", data);
       if (data?.data?.conversationUpdated) {
-        // if (data?.data?.memberDataConnectedTG?._id == userID) {
-        //   setFlagFinishTGconnection(true);
-        // }
+        const chatT: ChatMessage2 = [...chatN];
+
+        let resN = data?.data?.conversationUpdated.content;
+
+        if (data?.data?.conversationUpdated.role == "assistant") {
+          if (data?.data?.conversationUpdated.typeWidget == "ADD_STATE") {
+            resN = "Add new Info to State...";
+          }
+          chatT.push({
+            user: "01",
+            message: resN,
+            date: new Date(),
+          });
+
+          setChatN(chatT);
+        }
       }
     },
   });
@@ -546,6 +560,7 @@ export const SearchEdenAI = ({
         //   }
         // }),
         positionID: positionID,
+        // newThread: true,
         // userID: userID,
       },
     },
@@ -747,6 +762,8 @@ export const SearchEdenAI = ({
         setConversationID(conversationID);
       }
 
+      console.log("ff2");
+
       chatT.push({
         user: "01",
         message: replyT,
@@ -755,14 +772,14 @@ export const SearchEdenAI = ({
 
       setChatN(chatT);
 
-      // from chatT that is an array of objects, translate it to a string
-      let chatNprepareGPTP = "";
+      // // from chatT that is an array of objects, translate it to a string
+      // let chatNprepareGPTP = "";
 
-      for (let i = 0; i < chatT.length; i++) {
-        if (chatT[i].user == "01")
-          chatNprepareGPTP += "Eden AI: " + chatT[i].message + "\n";
-        else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
-      }
+      // for (let i = 0; i < chatT.length; i++) {
+      //   if (chatT[i].user == "01")
+      //     chatNprepareGPTP += "Eden AI: " + chatT[i].message + "\n";
+      //   else chatNprepareGPTP += "User: " + chatT[i].message + "\n";
+      // }
 
       // console.log("chatNprepareGPTP = ", chatNprepareGPTP);
 

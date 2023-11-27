@@ -544,8 +544,8 @@ const PositionPage: NextPageWithLayout = ({
                 //   alt={position?.company?.name || ""}
                 // />
                 <Image
-                  width="96"
-                  height="96"
+                  width="180"
+                  height="180"
                   className="mb-6"
                   src={`${
                     position?.company?.imageUrl
