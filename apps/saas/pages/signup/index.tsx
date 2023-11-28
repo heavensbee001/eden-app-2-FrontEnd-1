@@ -3,6 +3,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -37,6 +38,7 @@ const SignupCommunity: NextPageWithLayout = () => {
   const router = useRouter();
   const [selectedCollective, setSelectedCollective] = useState<number>(-1);
   const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (index: number) => {
     setSelectedCollective(index);
@@ -44,110 +46,124 @@ const SignupCommunity: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[url('/signup-bg.png')] bg-cover bg-no-repeat">
-        <div className="mx-auto flex h-[236px] w-[604px] flex-col items-center justify-center rounded-lg bg-white">
-          <div className="font-Moret text-edenGreen-600 text-2xl font-bold leading-[33.6px]">
-            Choose your talent collective.
-          </div>
-          <div className="font-Unica text-xs leading-[16.8px] tracking-[-1.9%]">
-            {"Choose the talent oasis that aligns most with your skills."}
-          </div>
-          <div className="font-Unica text-xs leading-[16.8px] tracking-[-1.9%]">
-            {
-              "You'll automatically be considered for opportunities across oases based on your skills."
-            }
-          </div>
-          <div
-            onClick={() => setShowOptions(!showOptions)}
-            className="relative mb-[10px] mt-[18px]"
-          >
-            {/* <div */}
-            {/*   className={`${ */}
-            {/*     selectedCollective > -1 ? "text-black" : "text-balck  " */}
-            {/*   } bg-edenPink-200 border-edenGray-500  flex h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs outline-none hover:cursor-pointer`} */}
-            {/* > */}
-            <div className="bg-edenPink-200 border-edenGray-500 flex  h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs text-black outline-none hover:cursor-pointer">
-              {selectedCollective > -1
-                ? HARDCODED_POOLS[selectedCollective].title
-                : "Select talent collective to join"}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.3}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                />
-              </svg>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[url('/oasis-bg.png')] bg-cover bg-no-repeat">
+        <div>
+          <div className="mx-auto flex h-[236px] w-[604px] flex-col items-center justify-center rounded-lg bg-white">
+            <div className="font-Moret text-edenGreen-600 text-2xl font-bold leading-[33.6px]">
+              Choose your talent collective.
             </div>
-            {showOptions && (
-              <div className="border-edenGray-500 bg-edenPink-200 absolute left-0 top-full w-[204px] translate-y-1 rounded-md border">
-                {HARDCODED_POOLS.map((pool, index) => (
-                  <div
-                    className="hover:bg-edenPink-400 pl-4 text-xs hover:cursor-pointer"
-                    onClick={() => handleSelect(index)}
-                    key={index}
-                  >
-                    {pool.title}
-                  </div>
-                ))}
+            <p>
+              You’ll be considered for all opportunities that align with your
+              skills.{" "}
+            </p>
+
+            <div
+              onClick={() => setShowOptions(!showOptions)}
+              className="relative mb-[10px] mt-[18px]"
+            >
+              {/* <div */}
+              {/*   className={`${ */}
+              {/*     selectedCollective > -1 ? "text-black" : "text-balck  " */}
+              {/*   } bg-edenPink-200 border-edenGray-500  flex h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs outline-none hover:cursor-pointer`} */}
+              {/* > */}
+              <div className="bg-edenPink-200 border-edenGray-500 flex  h-[33px] w-[204px] items-center justify-between rounded-md border pl-[13px] pr-1 text-center text-xs text-black outline-none hover:cursor-pointer">
+                {selectedCollective > -1
+                  ? HARDCODED_POOLS[selectedCollective].title
+                  : "Select talent collective to join"}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.3}
+                  stroke="currentColor"
+                  className="h-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                  />
+                </svg>
+              </div>
+              {showOptions && (
+                <div className="border-edenGray-500 bg-edenPink-200 absolute left-0 top-full w-[204px] translate-y-1 rounded-md border">
+                  {HARDCODED_POOLS.map((pool, index) => (
+                    <div
+                      className="hover:bg-edenPink-400 pl-4 text-xs hover:cursor-pointer"
+                      onClick={() => handleSelect(index)}
+                      key={index}
+                    >
+                      {pool.title}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="text-edenGray-700 mb-[10px] text-[10px] leading-[14px]">
+              If you are a hiring manager login{" "}
+              <Link
+                href={"/developer-dao/jobs"}
+                className="hover:text-edenGray-500 underline"
+              >
+                here
+              </Link>
+            </p>
+            <Button
+              disabled={selectedCollective === -1}
+              className="flex h-[34px] items-center"
+              onClick={() => {
+                // signIn("google", { callbackUrl: router.asPath });
+                if (selectedCollective > -1)
+                  router.push(HARDCODED_POOLS[selectedCollective].url);
+              }}
+            >
+              Join the oasis
+            </Button>
+          </div>
+          <div className=" relative mt-4  ">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-edenPink-500  font-Moret
+            -ml-4 flex  rounded-md text-2xl font-bold focus:outline-none"
+            >
+              <div className="flex items-center justify-center">
+                {!isOpen ? (
+                  <BiChevronRight className="text-edenPink-500" size={"3rem"} />
+                ) : (
+                  <BiChevronDown className="text-edenPink-500" size={"3rem"} />
+                )}
+                <h1>What is a talent oasis?</h1>{" "}
+              </div>
+            </button>
+
+            {isOpen && (
+              <div className=" absolute z-10  mt-2  rounded-md ">
+                <div className="text-edenPink-400 p-4">
+                  <p className="mb-4">
+                    The Eden talent collectives are an AI-managed & curated
+                    talent pool that helps you apply, shine for & land your
+                    dream opportunities.
+                  </p>
+                  <p>
+                    By joining the oasis, our AI will actively pitch your
+                    profile to hiring managers.
+                  </p>
+                  <ul className="list-disc pl-5">
+                    <li>
+                      Be discovered by hiring managers before anyone else.
+                    </li>
+                    <li>
+                      Get constant feedback on your current profile, application
+                      & interview style.
+                    </li>
+                    <li>
+                      Ask for career advice: given your profile & the current
+                      market, what could be your next move?
+                    </li>
+                  </ul>
+                </div>
               </div>
             )}
-          </div>
-          <p className="text-edenGray-700 mb-[10px] text-[10px] leading-[14px]">
-            If you are a hiring manager login{" "}
-            <Link
-              href={"/developer-dao/jobs"}
-              className="hover:text-edenGray-500 underline"
-            >
-              here
-            </Link>
-          </p>
-          <Button
-            disabled={selectedCollective === -1}
-            className="flex h-[34px] items-center"
-            onClick={() => {
-              // signIn("google", { callbackUrl: router.asPath });
-              if (selectedCollective > -1)
-                router.push(HARDCODED_POOLS[selectedCollective].url);
-            }}
-          >
-            Join the oasis
-          </Button>
-        </div>
-        <div className="flex w-[604px] flex-col pt-8">
-          <h1 className="text-edenPink-500">{"What is a talent oasis?"}</h1>
-          <div className="text-edenPink-400 font-Unica mt-[13px] text-base font-normal tracking-[-1.9%]">
-            <p>
-              {
-                "The Eden talent collectives are an AI-managed & curated talent pool that helps you apply, shine for & land your dream opportunities."
-              }
-            </p>
-            <br />
-            <p>
-              {
-                "By joining the oasis, our AI will actively pitch your profile to hiring managers."
-              }
-            </p>
-            <p className="pl-[2px]">
-              {"1. Be discovered by hiring managers before anyone else."}
-            </p>
-            <p className="pl-[2px]">
-              {
-                "2. Get constant feedback on your current profile, application & interview style."
-              }
-            </p>
-            <p className="pl-[2px]">
-              {
-                "3. Ask for career advice: given your profile & the current market, what could be your"
-              }
-            </p>
-            <p className="pl-4">{"next move?"}</p>
           </div>
         </div>
       </div>
