@@ -326,7 +326,7 @@ const HomePage: NextPageWithLayout = () => {
         <div
           className={`font-poppins bg-white p-8 text-center text-3xl font-semibold text-gray-600`}
         >
-          Coming Soon
+          Coming Soon!
         </div>
       </Modal>
       <ExploreCommunitiesModal
@@ -378,7 +378,7 @@ const HomePage: NextPageWithLayout = () => {
           </div>
           <div className="scrollbar-hide col-span-6 h-full overflow-y-auto bg-white px-[7%]">
             <h1 className="text-edenGreen-600 mb-10">Your Opportunities</h1>
-            <div className=" grid grid-cols-2 gap-x-[8%] gap-y-6">
+            <div className="grid grid-cols-2 gap-x-[8%] gap-y-6">
               <div
                 className="flex min-h-[200px] flex-col items-center rounded-lg bg-[url('/new-opportunity.png')] bg-cover bg-no-repeat p-3 align-baseline opacity-70 hover:cursor-pointer hover:opacity-80 hover:shadow-lg"
                 onClick={handleCreatePosition}

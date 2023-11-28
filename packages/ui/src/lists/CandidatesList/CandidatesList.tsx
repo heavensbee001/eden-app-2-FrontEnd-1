@@ -25,6 +25,7 @@ export type CandidatesListProps = {
   fetchIsLoading: boolean;
   // eslint-disable-next-line no-unused-vars
   setRowObjectData: (candidate: CandidateTypeSkillMatch) => void;
+  topic: string;
   listMode?: ListModeEnum;
   candidateIDRowSelected?: string | null;
   // eslint-disable-next-line no-unused-vars
@@ -87,6 +88,7 @@ export const CandidatesList = ({
   candidatesList,
   candidateIDRowSelected,
   setRowObjectData,
+  topic,
 }: CandidatesListProps) => {
   const handleObjectDataSelection = (candidate: CandidateTypeSkillMatch) => {
     setRowObjectData(candidate);
@@ -118,7 +120,8 @@ export const CandidatesList = ({
             />
           </span>
           <ColumnStyled textColor="text-fuchsia-600 text-center w-14 h-8">
-            {candidate.scoreCardTotal &&
+            {topic === "Eden's faves" &&
+              candidate.scoreCardTotal &&
               candidate.scoreCardTotal.score != null && (
                 <div className="m-auto flex h-6 w-8 items-center justify-center rounded-md bg-white pb-px">
                   <span
@@ -128,6 +131,78 @@ export const CandidatesList = ({
                     )}
                   >
                     {getGrade(candidate.scoreCardTotal.score * 100).letter}
+                  </span>
+                </div>
+              )}
+            {topic === "Industry veterans" &&
+              candidate.scoreCardTotal &&
+              candidate.scoreCardTotal.score != null && (
+                <div className="m-auto flex h-6 w-8 items-center justify-center rounded-md bg-white pb-px">
+                  <span
+                    className={classNames(
+                      getGrade(candidate.scoreCardTotal.score * 100).color,
+                      "text-md"
+                    )}
+                  >
+                    {getGrade(candidate.scoreCardTotal.score * 100).letter}
+                  </span>
+                </div>
+              )}
+            {topic === "Hidden gems" &&
+              candidate.scoreCardTotal &&
+              candidate.scoreCardTotal.score != null && (
+                <div className="m-auto flex h-6 w-8 items-center justify-center rounded-md bg-white pb-px">
+                  <span
+                    className={classNames(
+                      getGrade(candidate.scoreCardTotal.score * 100).color,
+                      "text-md"
+                    )}
+                  >
+                    {getGrade(candidate.scoreCardTotal.score * 100).letter}
+                  </span>
+                </div>
+              )}
+            {topic === "Top Culture Fits" &&
+              candidate &&
+              candidate.scoreCardCategoryMemories &&
+              candidate.scoreCardCategoryMemories[2] !== null &&
+              candidate.scoreCardCategoryMemories[2].score && (
+                <div className="m-auto flex h-6 w-8 items-center justify-center rounded-md bg-white pb-px">
+                  <span
+                    className={classNames(
+                      getGrade(
+                        candidate.scoreCardCategoryMemories[2].score * 100
+                      ).color,
+                      "text-md"
+                    )}
+                  >
+                    {
+                      getGrade(
+                        candidate.scoreCardCategoryMemories[2].score * 100
+                      ).letter
+                    }
+                  </span>
+                </div>
+              )}
+            {topic === "Top Skill Fits" &&
+              candidate &&
+              candidate.scoreCardCategoryMemories &&
+              candidate.scoreCardCategoryMemories[0] !== null &&
+              candidate.scoreCardCategoryMemories[0].score && (
+                <div className="m-auto flex h-6 w-8 items-center justify-center rounded-md bg-white pb-px">
+                  <span
+                    className={classNames(
+                      getGrade(
+                        candidate.scoreCardCategoryMemories[0].score * 100
+                      ).color,
+                      "text-md"
+                    )}
+                  >
+                    {
+                      getGrade(
+                        candidate.scoreCardCategoryMemories[0].score * 100
+                      ).letter
+                    }
                   </span>
                 </div>
               )}
