@@ -326,7 +326,7 @@ const HomePage: NextPageWithLayout = () => {
         <div
           className={`font-poppins bg-white p-8 text-center text-3xl font-semibold text-gray-600`}
         >
-          Coming Soon
+          Coming Soon!
         </div>
       </Modal>
       <ExploreCommunitiesModal

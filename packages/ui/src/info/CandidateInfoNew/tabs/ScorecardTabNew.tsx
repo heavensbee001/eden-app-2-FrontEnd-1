@@ -12,7 +12,7 @@ import {
 } from "@eden/package-ui";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaThumbsUp } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
@@ -61,12 +61,14 @@ const FIND_POSITION_CANDIDATE = gql`
 
 type Props = {
   candidate?: CandidateTypeSkillMatch;
+  scoreCardState: any;
 };
 
-export const ScorecardTabNew: FC<Props> = ({ candidate }) => {
+export const ScorecardTabNew: FC<Props> = ({ candidate, scoreCardState }) => {
   const router = useRouter();
   const { positionID } = router.query;
 
+  const { setScoreCardLoading } = scoreCardState;
   const {
     data: findPositionCandidateData,
     loading: findPositionCandidateDataLoading,
@@ -77,8 +79,15 @@ export const ScorecardTabNew: FC<Props> = ({ candidate }) => {
         userID: candidate?.user?._id,
       },
     },
+    onCompleted: () => {
+      setScoreCardLoading(false);
+    },
     skip: !positionID,
   });
+
+  useEffect(() => {
+    setScoreCardLoading(true);
+  }, []);
 
   const [expandID, setExpandID] = useState<null | string>(null);
 
