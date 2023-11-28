@@ -104,7 +104,7 @@ const ApplicationStepContainer = ({
               onClick={() =>
                 setOpenSections({
                   ...openSections,
-                  areasToImprove: !openSections.areasToImprove,
+                  areasToImprove: openSections.areasToImprove,
                 })
               }
             >
