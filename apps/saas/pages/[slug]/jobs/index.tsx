@@ -13,7 +13,6 @@ import {
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 // import { IconPickerItem } from "react-fa-icon-picker";
 import ReactTooltip from "react-tooltip";
@@ -38,6 +37,7 @@ export const FIND_POSITIONS_OF_COMMUNITY = gql`
       company {
         _id
         name
+        slug
         imageUrl
       }
     }
@@ -133,30 +133,27 @@ const HomePage: NextPageWithLayout = () => {
   );
 
   const handlePostJobClick = async () => {
+    setLoadingSpinner(true);
     if (!currentUser) {
-      signIn("google", {
-        callbackUrl: router.asPath,
-      });
+      router.push(`/redirect-page/post-job?community=${company?._id}`);
     } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
       currentUser?.companies[0].company?.slug
     ) {
-      setLoadingSpinner(true);
       await router.push(
         `/${currentUser?.companies[0].company?.slug}/dashboard`
       );
-      setLoadingSpinner(false);
     } else {
-      console.log("2222222");
       router.push(`/pricing?community=${company?._id}`);
     }
+    setLoadingSpinner(false);
   };
 
   const handlePickJobs = async (pos: any) => {
-    console.log("ahahahaha");
+    console.log("ahahahaha", pos);
     setLoadingSpinner(true);
-    await router.push(`/eden/jobs/${pos._id}`);
+    await router.push(`/${pos.company.slug}/jobs/${pos._id}`);
     setLoadingSpinner(false);
   };
 
@@ -196,7 +193,7 @@ const HomePage: NextPageWithLayout = () => {
           }}
         />
       </Head>
-      <div className="mb-4 h-[335px] w-full bg-[url('/banner-job-board.png')] pt-12">
+      <div className="mx-auto mb-4 h-[335px] max-w-6xl bg-[url('/banner-job-board.png')] pt-12">
         <section className="mx-auto mb-4 max-w-6xl px-4">
           <h1 className="text-edenPink-400 text-4xl font-bold leading-[50.4px]">
             {"Opportunity awaits in "}

@@ -186,14 +186,16 @@ export const LeftToggleNav = ({
     router.pathname.includes("/subscription") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/create-company") ||
-    router.pathname.includes("/train-eden-ai");
+    router.pathname.includes("/train-eden-ai") ||
+    router.pathname.includes("/redirect-page");
 
   const hideTalentPools =
     router.pathname.includes("/jobs") ||
     router.pathname.includes("/subscription") ||
     router.pathname.includes("/interview/") ||
     router.pathname.includes("/create-company") ||
-    router.pathname.includes("/train-eden-ai");
+    router.pathname.includes("/train-eden-ai") ||
+    router.pathname.includes("/redirect-page");
 
   return (
     <nav

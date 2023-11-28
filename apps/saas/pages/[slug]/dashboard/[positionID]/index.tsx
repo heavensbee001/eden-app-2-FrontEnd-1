@@ -1296,13 +1296,22 @@ const PositionCRM: NextPageWithLayout = () => {
                 <li
                   className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
                   onClick={() => {
+                    router.push(`/${slug}/jobs/${positionID}?edit=true`);
+                  }}
+                >
+                  <BsFillGearFill size={16} className="mb-1 mr-1 inline" />
+                  Configure Job Page
+                </li>
+                <li
+                  className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+                  onClick={() => {
                     router.push(
                       `/${slug}/dashboard/${positionID}/train-eden-ai`
                     );
                   }}
                 >
-                  <BsFillGearFill size={16} className="mb-1 mr-1 inline" />
-                  Configure opportunity
+                  <BsFillMicFill size={16} className="mb-1 mr-1 inline" />
+                  Configure Interview
                 </li>
                 <li
                   className="text-utilityRed hover:bg-edenGreen-100 group cursor-pointer px-4 py-1 text-sm"
@@ -2044,7 +2053,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
-import { BsFillGearFill } from "react-icons/bs";
+import { BsFillGearFill, BsFillMicFill } from "react-icons/bs";
 import { GiHeartWings } from "react-icons/gi";
 import { TbTrashXFilled } from "react-icons/tb";
 

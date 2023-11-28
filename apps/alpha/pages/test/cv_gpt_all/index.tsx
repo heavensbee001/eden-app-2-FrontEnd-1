@@ -158,7 +158,7 @@ const HolisticCvGPT = () => {
         <div className="flex flex-col space-y-4">
           <div className="ml-2 mt-2 w-fit rounded-md border-2 border-black pl-6 pr-4 ">
             <label htmlFor="ul" className="text-right text-lg font-bold">
-              CV Summary:
+              Resume Summary:
             </label>
             <ul className="list-outside list-disc space-y-[3px] ">
               {summaryList}

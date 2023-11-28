@@ -1,11 +1,8 @@
-// import { Members } from "@eden/package-graphql/generated";
 import {
   Badge,
   CandidateTypeSkillMatch,
   EdenIconExclamation,
-  // LongText,
   NodeList,
-  // SocialMediaComp,
   UserBackground,
 } from "@eden/package-ui";
 import { FC, useState } from "react";
@@ -55,19 +52,6 @@ export const InfoTabNew: FC<Props> = ({
             </div>
           </div>
         )}
-
-      {/* ---- Bio ---- */}
-      {/* <div className="mb-6">
-        <div className="border-edenGreen-300 mb-4 border-b px-4">
-          <h3 className="text-edenGreen-500 mb-3">Bio</h3>
-        </div>
-        <LongText
-          cutText={600}
-          text={(member?.user?.bio as string) || ""}
-          className={`text-edenGray-900 w-full whitespace-pre-wrap px-4 text-sm`}
-          maxHeight={"10rem"}
-        />
-      </div> */}
 
       {/* ---- Background ---- */}
       {member?.user?.previousProjects &&
@@ -188,9 +172,6 @@ export const InfoTabNew: FC<Props> = ({
                   <Badge
                     text={node?.nameRelevantNode || ""}
                     key={index}
-                    // className={`bg-soilPurple/20 py-px text-xs`}
-                    // className={`px-2 py-1 text-white rounded ${getBackgroundColorClass(node.score)}`}
-                    // className={`px-2 py-1 text-white rounded bg-purple-400`}
                     cutText={100}
                   />
                 ))}

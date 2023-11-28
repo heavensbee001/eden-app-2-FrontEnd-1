@@ -235,8 +235,8 @@ export const CVUploadGPT = ({
         toast.error(
           <div className="flex flex-col justify-center space-y-1">
             <div className="text-lg text-black">
-              Please upload a different CV we didn&apos;t identify any text on
-              this one
+              Please upload a different Resume we didn&apos;t identify any text
+              on this one
             </div>
             <div className="text-sm">
               *Also, feel free to continue without uploading your Resume
@@ -356,7 +356,7 @@ export const CVUploadGPT = ({
             <div className="bg-edenGreen-600 text-edenPink-200 mb-2 flex h-8 w-8 items-center justify-center rounded-full pb-px pl-px">
               <AiOutlineFile size={"1.2rem"} />
             </div>
-            <p>Upload Your CV</p>
+            <p>Upload Your Resume</p>
             <p className="text-edenGray-700 text-sm">
               {/* Select or Drag & drop a PDF, DOC or PNG */}
               Select or Drag & drop a PDF
@@ -382,7 +382,7 @@ export const CVUploadGPT = ({
         {/* {uploading && <Loading title="uploading" />} */}
         <EdenAiProcessingModal
           open={uploading}
-          title="Eden is processing your CV"
+          title="Eden is processing your Resume"
         >
           <p className="text-center">
             Please wait.

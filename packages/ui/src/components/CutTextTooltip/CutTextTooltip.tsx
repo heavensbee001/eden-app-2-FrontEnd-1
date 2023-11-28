@@ -35,7 +35,7 @@ export const CutTextTooltip = ({ text, className }: CutTextTooltipProps) => {
       <div
         data-tip={text}
         data-for={`badgeTip-${text}`}
-        className={`${className} text-truncate font-Moret text-edenGreen-600 text-center text-2xl font-bold leading-[34px]`}
+        className={`${className} text-truncate font-Moret text-edenGreen-600 text-2xl font-bold leading-[34px]`}
         ref={elementRef}
       >
         {text}

@@ -4,6 +4,7 @@ import { Position } from "@eden/package-graphql/generated";
 import {
   Button,
   EdenAiProcessingModal,
+  Modal,
   SaasUserLayout,
 } from "@eden/package-ui";
 // import axios from "axios";
@@ -12,6 +13,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { useContext, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { BiPlus } from "react-icons/bi";
 import { v4 as uuidv4 } from "uuid";
 
@@ -44,9 +46,108 @@ const FIND_COMPANY_FROM_SLUG = gql`
   }
 `;
 
+const BULK_UPDATE_POSITION = gql`
+  mutation (
+    $fieldsUpdatePosition: updatePositionInput!
+    $fieldsWebsiteToMemoryCompany: websiteToMemoryCompanyInput!
+  ) {
+    updatePosition(fields: $fieldsUpdatePosition) {
+      _id
+    }
+    websiteToMemoryCompany(fields: $fieldsWebsiteToMemoryCompany) {
+      report
+      interviewQuestionsForPosition {
+        originalQuestionID
+        originalContent
+        personalizedContent
+      }
+    }
+  }
+`;
+
+const AUTO_UPDATE_POSITION = gql`
+  mutation autoUpdatePositionCompInformation_V2(
+    $fields: autoUpdatePositionCompInformationInput
+  ) {
+    autoUpdatePositionCompInformation_V2(fields: $fields) {
+      _id
+      name
+      whoYouAre
+      company {
+        _id
+        name
+        description
+        mission
+        whatsToLove
+      }
+    }
+  }
+`;
+
+export interface CreatePositionModalProps {
+  open: boolean;
+  onClose: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSubmit: (data: any) => void;
+}
+
+const CreatePositionModal = ({
+  open,
+  onClose,
+  onSubmit,
+}: CreatePositionModalProps) => {
+  const { register, handleSubmit } = useForm<any>({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
+
+  return (
+    <Modal open={open} onClose={onClose} closeOnEsc>
+      <h2 className="text-edenGreen-600 mb-4 text-center">
+        Launch opportunity
+      </h2>
+      <form>
+        <div className="mb-4">
+          <label className="text-edenGray-700 mb-1 block text-sm">
+            Title of your opportunity
+          </label>
+          <input
+            type="text"
+            {...register("name")}
+            placeholder="Write a title"
+            className="border-edenGray-500 block w-full rounded-md border bg-transparent px-3 py-2 focus:outline-none"
+          />
+        </div>
+        <div className="mb-8">
+          <label className="text-edenGray-700 mb-1 block text-sm">
+            {
+              "Paste your job description below. Don't worry about making it look pretty, we'll fix all that in a bit."
+            }
+          </label>
+          <textarea
+            {...register("description")}
+            rows={5}
+            placeholder="This is a sample text..."
+            className="border-edenGray-500 block w-full rounded-md border bg-transparent px-3 py-2 focus:outline-none"
+          />
+        </div>
+        <Button
+          onClick={handleSubmit((data) => onSubmit(data))}
+          variant="secondary"
+          className="mx-auto block"
+        >
+          Submit
+        </Button>
+      </form>
+    </Modal>
+  );
+};
+
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
-  const { getCompanyFunc } = useContext(CompanyContext);
+  const { company, getCompanyFunc } = useContext(CompanyContext);
   const [companyLoading, setCompanyLoading] = useState(true);
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
@@ -66,6 +167,50 @@ const HomePage: NextPageWithLayout = () => {
       }
     },
   });
+
+  const [autoUpdatePosition] = useMutation(AUTO_UPDATE_POSITION, {
+    onCompleted(autoUpdatePositionData) {
+      getCompanyFunc();
+      router.push(
+        `/${company?.slug}/jobs/${autoUpdatePositionData.autoUpdatePositionCompInformation_V2._id}?edit=true`
+      );
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const [bulkUpdatePosition] = useMutation(BULK_UPDATE_POSITION, {
+    onCompleted() {
+      autoUpdatePosition({
+        variables: {
+          fields: {
+            positionID: newPositionId,
+          },
+        },
+      });
+    },
+    onError() {
+      setUpdatePositionLoading(false);
+    },
+  });
+
+  const handleSubmitCreatePosition = (data: any) => {
+    setUpdatePositionLoading(true);
+
+    bulkUpdatePosition({
+      variables: {
+        fieldsUpdatePosition: {
+          _id: newPositionId,
+          name: data.name,
+        },
+        fieldsWebsiteToMemoryCompany: {
+          positionID: newPositionId,
+          message: data.description,
+        },
+      },
+    });
+  };
 
   useMemo(() => {
     if (
@@ -87,16 +232,23 @@ const HomePage: NextPageWithLayout = () => {
     }
   }, [findCompanyData?.findCompanyFromSlug?.positions]);
 
+  const [newPositionId, setNewPositionId] = useState<string | null>(null);
+  const [createPositionOpen, setCreatePositionOpen] = useState<boolean>(false);
+
   const [updatePosition] = useMutation(UPDATE_POSITION, {
     onCompleted(updatePositionData) {
       getCompanyFunc();
-      router
-        .push(
-          `/${findCompanyData?.findCompanyFromSlug?.slug}/dashboard/${updatePositionData.updatePosition._id}/train-eden-ai`
-        )
-        .then(() => {
-          setUpdatePositionLoading(false);
-        });
+      setNewPositionId(updatePositionData.updatePosition._id);
+      setUpdatePositionLoading(false);
+      setCreatePositionOpen(true);
+
+      // router
+      //   .push(
+      //     `/${findCompanyData?.findCompanyFromSlug?.slug}/dashboard/${updatePositionData.updatePosition._id}/train-eden-ai`
+      //   )
+      //   .then(() => {
+      //     setUpdatePositionLoading(false);
+      //   });
     },
     onError() {
       setUpdatePositionLoading(false);
@@ -104,6 +256,7 @@ const HomePage: NextPageWithLayout = () => {
   });
 
   const handleCreatePosition = () => {
+    // console.log("hashafdhfadhadfs")
     const randId = uuidv4();
 
     setUpdatePositionLoading(true);
@@ -136,6 +289,11 @@ const HomePage: NextPageWithLayout = () => {
           }}
         />
       </Head>
+      <CreatePositionModal
+        onClose={() => setCreatePositionOpen(false)}
+        open={createPositionOpen}
+        onSubmit={handleSubmitCreatePosition}
+      />
       {!companyLoading && (
         <div className="mx-auto max-w-4xl pt-20 text-center">
           <h1 className="text-edenGreen-500 mb-4">Welcome to Eden</h1>

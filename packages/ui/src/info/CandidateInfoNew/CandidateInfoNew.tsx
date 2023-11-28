@@ -6,10 +6,7 @@ import {
 } from "@eden/package-graphql/generated";
 import {
   Avatar,
-  Badge,
-  Button,
   CandidateTypeSkillMatch,
-  EdenAiLetter,
   EdenChatTabNew,
   InfoTabNew,
   ListModeEnum,
@@ -62,29 +59,11 @@ export const CandidateInfoNew = ({
   memberID,
   mostRelevantMemberNode,
   candidate,
-  listMode = ListModeEnum.edit,
-  talentListsAvailables,
-  handleAddCandidatesToList,
 }: ICandidateInfoNewProps) => {
   const [index, setIndex] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
   const [tabClicked, setTabClicked] = useState(false);
-
-  const [letterType, setLetterType] = useState<
-    "rejection" | "nextInterviewInvite" | ""
-  >("");
-
-  const handleRejectionLetter = () => {
-    setLetterType("rejection");
-    setIsOpen(true);
-  };
-
+  const [scoreCardLoading, setScoreCardLoading] = useState(false);
   const tabRef = useRef<HTMLDivElement | null>(null);
-
-  const handleSecondInterviewLetter = () => {
-    setLetterType("nextInterviewInvite");
-    setIsOpen(true);
-  };
 
   const { data: dataMember } = useQuery(FIND_MEMBER, {
     variables: {
@@ -116,7 +95,12 @@ export const CandidateInfoNew = ({
     },
     {
       tab: "Scorecard",
-      Content: () => <ScorecardTabNew candidate={candidate} />,
+      Content: () => (
+        <ScorecardTabNew
+          candidate={candidate}
+          scoreCardState={{ scoreCardLoading, setScoreCardLoading }}
+        />
+      ),
     },
     {
       tab: "Transcript",
@@ -163,12 +147,19 @@ export const CandidateInfoNew = ({
   };
 
   useEffect(() => {
-    if (tabClicked) {
-      if (index === 1) setTimeout(() => ScrollToTop(), 1000);
-      else ScrollToTop();
+    if (tabClicked && index !== 1) {
+      ScrollToTop();
       setTabClicked(false);
     }
-  }, [index]);
+  }, [index, tabClicked]);
+
+  useEffect(() => {
+    console.log(scoreCardLoading);
+    if (tabClicked && !scoreCardLoading) {
+      ScrollToTop();
+      setTabClicked(false);
+    }
+  }, [scoreCardLoading]);
 
   const ScrollToTop = () => {
     if (tabRef.current) {
@@ -178,7 +169,7 @@ export const CandidateInfoNew = ({
 
   return (
     <div className="relative h-full">
-      <div className="scrollbar-hide eden-green-200 h-full	overflow-y-scroll overscroll-y-contain">
+      <div className="scrollbar-hide eden-green-200 h-full overflow-y-scroll overscroll-y-contain">
         <section className="w-full flex-col">
           {/* ---- Header ---- */}
           <div>
@@ -323,7 +314,7 @@ export const CandidateInfoNew = ({
                     </div>
                   </div>
                   <div className="bg-edenPink-100 mt-4 flex h-[101px] min-w-[426px] flex-col rounded-lg p-4">
-                    <div className="font-Moret text-edenGreen-600 flex flex-row text-base font-bold">
+                    <div className="font-Moret text-edenGreen-600 mb-2 flex flex-row text-base font-bold">
                       <div className="bg-edenGreen-300 mr-2 flex h-6 w-6 items-center justify-around rounded-full">
                         <svg
                           width="17"
@@ -515,7 +506,7 @@ export const CandidateInfoNew = ({
               ))}
             </Tab.List>
             <Tab.Panels>
-              <div className="">
+              <div className="w-full">
                 {tabs.map(({ Content }, index) => (
                   <Tab.Panel key={index}>
                     <div className="px-8 py-4">
@@ -528,81 +519,6 @@ export const CandidateInfoNew = ({
           </Tab.Group>
         </section>
       </div>
-      {dataMember?.findMember && (
-        <section className="border-edenGray-100 absolute bottom-2 right-0 flex w-full items-center gap-4 border-t-2 px-4 pt-2">
-          {!candidate?.status ? (
-            <>
-              {listMode !== ListModeEnum.list && (
-                <Button
-                  variant="secondary"
-                  onClick={handleSecondInterviewLetter}
-                >
-                  Schedule 2nd interview
-                </Button>
-              )}
-
-              {listMode !== ListModeEnum.list && (
-                <Button
-                  variant="tertiary"
-                  className="bg-utilityRed text-utilityRed hover:bg-utilityRed bg-opacity-10 hover:bg-opacity-100 hover:text-white"
-                  onClick={handleRejectionLetter}
-                >
-                  Reject candidate
-                </Button>
-              )}
-            </>
-          ) : (
-            <>
-              {candidate?.status === "ACCEPTED" && (
-                <Badge
-                  text="accepted"
-                  className="!bg-edenGreen-400 text-white"
-                  tooltip={false}
-                />
-              )}
-              {candidate?.status === "REJECTED" && (
-                <Badge
-                  text="rejected"
-                  className="!bg-utilityRed text-white"
-                  tooltip={false}
-                />
-              )}
-            </>
-          )}
-
-          {/* ask eden chat */}
-          {/* {dataMember?.findMember && showAskEden && (
-            <AskEdenPopUp
-              memberID={dataMember?.findMember._id}
-              service={AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION}
-              placeholder='Ask me any question about the Candidate'
-              title={`Ask Eden about ${dataMember?.findMember?.discordName}`}
-            />
-          )} */}
-        </section>
-      )}
-
-      {isOpen && letterType && (
-        <EdenAiLetter
-          member={dataMember?.findMember}
-          isModalOpen={isOpen}
-          letterType={letterType}
-          onClose={() => {
-            setIsOpen(false);
-          }}
-          onSubmit={() => {
-            handleAddCandidatesToList!(
-              (letterType === "rejection"
-                ? talentListsAvailables!.find(
-                    (list) => list.name === "Rejected"
-                  )!._id
-                : talentListsAvailables!.find(
-                    (list) => list.name === "Accepted"
-                  )!._id)!
-            );
-          }}
-        />
-      )}
     </div>
   );
 };
