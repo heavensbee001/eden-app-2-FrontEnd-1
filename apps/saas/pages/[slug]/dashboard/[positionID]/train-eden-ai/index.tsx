@@ -33,8 +33,8 @@ import { CreateQuestions } from "@/components/TrainEdenAiSteps/CreateQuestionsCo
 import { FinalFormContainer } from "@/components/TrainEdenAiSteps/FinalFormContainer";
 import { InterviewEdenAIContainer } from "@/components/TrainEdenAiSteps/InterviewEdenAIContainer";
 import { PrioritiesAndTradeOffsContainer } from "@/components/TrainEdenAiSteps/PrioritiesAndTradeOffsContainer";
-import { ProfileQuestionsContainer } from "@/components/TrainEdenAiSteps/ProfileQuestionsContainer";
 
+// import { ProfileQuestionsContainer } from "@/components/TrainEdenAiSteps/ProfileQuestionsContainer";
 import type { NextPageWithLayout } from "../../../../_app";
 
 export const WEBPAGE_TO_MEMORY = gql`
@@ -137,7 +137,10 @@ const UPDATE_POSITION_GENERAL_DETAILS = gql`
         startDate
         visaRequired
         officePolicy
-        yearlySalary
+        yearlySalary {
+          min
+          max
+        }
         socials {
           portfolio
           linkedin
@@ -213,7 +216,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
   const [interviewEnded, setInterviewEnded] = useState(false);
   const [createQuestionsEnded, setCreateQuestionsEnded] = useState(false);
-  const [alignmentEnded, setAlignmentEnded] = useState(false);
+  // const [alignmentEnded, setAlignmentEnded] = useState(false);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [step, setStep] = useState<number>(0);
 
@@ -398,31 +401,31 @@ const TrainAiPage: NextPageWithLayout = () => {
 
   // ------ ALIGNMENT STEP ------
 
-  const [
-    positionTextAndConvoToReportCriteria,
-    { loading: loadingUpdateReportToPosition },
-  ] = useMutation(POSITION_TEXT_CONVO_TO_REPORT, {
-    // eslint-disable-next-line no-unused-vars
-    onCompleted({ positionTextAndConvoToReportCriteria }) {
-      setStep(step + 1);
-    },
-    onError() {
-      // setScraping(false);
-    },
-  });
+  // const [
+  //   positionTextAndConvoToReportCriteria,
+  //   { loading: loadingUpdateReportToPosition },
+  // ] = useMutation(POSITION_TEXT_CONVO_TO_REPORT, {
+  //   // eslint-disable-next-line no-unused-vars
+  //   onCompleted({ positionTextAndConvoToReportCriteria }) {
+  //     setStep(step + 1);
+  //   },
+  //   onError() {
+  //     // setScraping(false);
+  //   },
+  // });
 
-  const handleSubmitAlignment = () => {
-    // setScraping(true);
+  // const handleSubmitAlignment = () => {
+  //   // setScraping(true);
 
-    positionTextAndConvoToReportCriteria({
-      variables: {
-        fields: {
-          positionID: positionID,
-          updatedReport: getValues("position.positionsRequirements.content"),
-        },
-      },
-    });
-  };
+  //   positionTextAndConvoToReportCriteria({
+  //     variables: {
+  //       fields: {
+  //         positionID: positionID,
+  //         updatedReport: getValues("position.positionsRequirements.content"),
+  //       },
+  //     },
+  //   });
+  // };
 
   // ------ QUESTIONS STEP ------
 
@@ -710,7 +713,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   </div>
                 </WizardStep>
 
-                <WizardStep
+                {/* <WizardStep
                   label={"Alignment"}
                   navigationDisabled={!panda}
                   nextButton={
@@ -735,12 +738,6 @@ const TrainAiPage: NextPageWithLayout = () => {
                   }
                 >
                   <div className="mx-auto h-full max-w-2xl">
-                    {/* <h2 className="mb-4">Complete Checks & Balances List</h2>
-                    <p className="text-edenGray-500 mb-8 text-sm">
-                      {
-                        "Here’s a list of all the must & nice to have. Feel free to edit any line "
-                      }
-                    </p> */}
                     <ProfileQuestionsContainer
                       onChange={(val) => {
                         setValue("position.positionsRequirements.content", val);
@@ -762,7 +759,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                       </EdenAiProcessingModal>
                     )}
                   </div>
-                </WizardStep>
+                </WizardStep> */}
 
                 <WizardStep
                   label={"Eden Suggestions"}
