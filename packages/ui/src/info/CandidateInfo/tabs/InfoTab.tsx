@@ -175,7 +175,7 @@ export const InfoTab: FC<Props> = ({
             <div className="border-edenGreen-300 mb-2 border-b px-4">
               <h3 className="text-edenGreen-500 mb-1">Notice</h3>
             </div>
-            <p className="px-4">2 Weeks {`(hardcoded)`}</p>
+            <p className="px-4">2 Weeks {}</p>
           </section>
         </div>
       </section>
