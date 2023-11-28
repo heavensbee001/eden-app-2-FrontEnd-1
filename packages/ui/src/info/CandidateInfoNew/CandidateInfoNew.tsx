@@ -59,9 +59,6 @@ export const CandidateInfoNew = ({
   memberID,
   mostRelevantMemberNode,
   candidate,
-  listMode = ListModeEnum.edit,
-  talentListsAvailables,
-  handleAddCandidatesToList,
 }: ICandidateInfoNewProps) => {
   const [index, setIndex] = useState(0);
   const [tabClicked, setTabClicked] = useState(false);

@@ -378,7 +378,7 @@ const HomePage: NextPageWithLayout = () => {
           </div>
           <div className="scrollbar-hide col-span-6 h-full overflow-y-auto bg-white px-[7%]">
             <h1 className="text-edenGreen-600 mb-10">Your Opportunities</h1>
-            <div className=" grid grid-cols-2 gap-x-[8%] gap-y-6">
+            <div className="grid grid-cols-2 gap-x-[8%] gap-y-6">
               <div
                 className="flex min-h-[200px] flex-col items-center rounded-lg bg-[url('/new-opportunity.png')] bg-cover bg-no-repeat p-3 align-baseline opacity-70 hover:cursor-pointer hover:opacity-80 hover:shadow-lg"
                 onClick={handleCreatePosition}
@@ -733,80 +733,80 @@ export default HomePage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  // const session = await getSession(ctx);
 
   const url = ctx.req.url;
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/?redirect=${url}`,
-        permanent: false,
-      },
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: `/?redirect=${url}`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  if (session.accessLevel === 5) {
-    return {
-      props: { key: url },
-    };
-  }
+  // if (session.accessLevel === 5) {
+  //   return {
+  //     props: { key: url },
+  //   };
+  // }
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        userID: session.user!.id,
-        companySlug: ctx.query.slug,
-      }),
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  // const res = await fetch(
+  //   `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       userID: session.user!.id,
+  //       companySlug: ctx.query.slug,
+  //     }),
+  //     headers: { "Content-Type": "application/json" },
+  //   }
+  // );
 
-  console.log(res.status);
+  // console.log(res.status);
 
-  if (res.status === 401) {
-    return {
-      redirect: {
-        destination: `/request-access?company=${ctx.query.slug}`,
-        permanent: false,
-      },
-    };
-  }
+  // if (res.status === 401) {
+  //   return {
+  //     redirect: {
+  //       destination: `/request-access?company=${ctx.query.slug}`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  if (res.status === 404) {
-    return {
-      redirect: {
-        destination: `/create-company`,
-        permanent: false,
-      },
-    };
-  }
+  // if (res.status === 404) {
+  //   return {
+  //     redirect: {
+  //       destination: `/create-company`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  const _companyAuth = await res.json();
+  // const _companyAuth = await res.json();
 
-  if (
-    res.status === 200 &&
-    _companyAuth.company.type !== "COMMUNITY" &&
-    (!_companyAuth.company.stripe ||
-      !_companyAuth.company.stripe.product ||
-      !_companyAuth.company.stripe.product.ID)
-  ) {
-    return {
-      redirect: {
-        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
-        permanent: false,
-      },
-    };
-  }
+  // if (
+  //   res.status === 200 &&
+  //   _companyAuth.company.type !== "COMMUNITY" &&
+  //   (!_companyAuth.company.stripe ||
+  //     !_companyAuth.company.stripe.product ||
+  //     !_companyAuth.company.stripe.product.ID)
+  // ) {
+  //   return {
+  //     redirect: {
+  //       destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   return {
     props: { key: url },

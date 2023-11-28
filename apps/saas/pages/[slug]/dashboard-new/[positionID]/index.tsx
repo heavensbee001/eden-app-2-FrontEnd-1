@@ -1081,8 +1081,8 @@ const PositionCRM: NextPageWithLayout = () => {
               className="border-edenGreen-400 relative mb-2 border-b pb-2 text-center hover:cursor-pointer"
               onClick={handleAIListMenuOpen}
             >
-              <button
-                className="absolute left-0 top-3"
+              <div
+                className="absolute left-0 top-3 hover:cursor-pointer"
                 onClick={handleAIListMenuOpen}
               >
                 <svg
@@ -1096,7 +1096,7 @@ const PositionCRM: NextPageWithLayout = () => {
                     className="fill-edenGreen-600 hover:fill-edenGreen-400 hover:shadow-md"
                   />
                 </svg>
-              </button>
+              </div>
               <h1 className="text-edenGreen-600 hover:text-edenGreen-500">
                 {topic}
               </h1>
@@ -1148,7 +1148,7 @@ const PositionCRM: NextPageWithLayout = () => {
             {findPositionData && (
               <div className="flex w-full flex-col items-center">
                 <div className="relative mb-2 w-full pb-2 text-center">
-                  <button className="absolute left-0 top-3">
+                  <div className="absolute left-0 top-3 hover:cursor-pointer">
                     <svg
                       width="19"
                       height="11"
@@ -1161,7 +1161,7 @@ const PositionCRM: NextPageWithLayout = () => {
                         className="fill-edenGreen-600 hover:fill-edenGreen-400 hover:shadow-md"
                       />
                     </svg>
-                  </button>
+                  </div>
 
                   <h1 className="text-edenGreen-600 border-edenGreen-400 border-b pl-8 pr-4">
                     <CutTextTooltip
@@ -1275,8 +1275,9 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
             <div className="relative">
               <input
-                id="meetingink"
+                id="meetinglink"
                 type="text"
+                title="meetinglink"
                 value={secondMeetingLink}
                 onChange={handleSecondMeetingLinkChange}
                 className="border-edenGray-500 bg-edenPink-200 h-8 w-52 rounded-lg border p-2 pl-8"
@@ -1346,7 +1347,7 @@ const PositionCRM: NextPageWithLayout = () => {
                 </div>
               ) : (
                 <button
-                  className="border-edenGreen-600 my-2 flex flex-row items-center justify-between border-b px-4 py-2"
+                  className="border-edenGreen-600 my-2 flex w-full flex-row items-center justify-between border-b px-4 py-2"
                   key={`interviewmeeting${index}`}
                   onClick={() =>
                     setSelectedInvitationCandidateID(candidate.user?._id || "")
@@ -1452,80 +1453,80 @@ import { CompanyContext } from "@eden/package-context";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  // const session = await getSession(ctx);
 
   const url = ctx.req.url;
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/?redirect=${url}`,
-        permanent: false,
-      },
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: `/?redirect=${url}`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  if (session.accessLevel === 5) {
-    return {
-      props: { key: url },
-    };
-  }
+  // if (session.accessLevel === 5) {
+  //   return {
+  //     props: { key: url },
+  //   };
+  // }
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        userID: session.user!.id,
-        companySlug: ctx.query.slug,
-      }),
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  // const res = await fetch(
+  //   `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       userID: session.user!.id,
+  //       companySlug: ctx.query.slug,
+  //     }),
+  //     headers: { "Content-Type": "application/json" },
+  //   }
+  // );
 
-  console.log(res.status);
+  // console.log(res.status);
 
-  if (res.status === 401) {
-    return {
-      redirect: {
-        destination: `/request-access?company=${ctx.query.slug}`,
-        permanent: false,
-      },
-    };
-  }
+  // if (res.status === 401) {
+  //   return {
+  //     redirect: {
+  //       destination: `/request-access?company=${ctx.query.slug}`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  if (res.status === 404) {
-    return {
-      redirect: {
-        destination: `/create-company`,
-        permanent: false,
-      },
-    };
-  }
+  // if (res.status === 404) {
+  //   return {
+  //     redirect: {
+  //       destination: `/create-company`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  const _companyAuth = await res.json();
+  // const _companyAuth = await res.json();
 
-  if (
-    res.status === 200 &&
-    _companyAuth.company.type !== "COMMUNITY" &&
-    (!_companyAuth.company.stripe ||
-      !_companyAuth.company.stripe.product ||
-      !_companyAuth.company.stripe.product.ID)
-  ) {
-    return {
-      redirect: {
-        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
-        permanent: false,
-      },
-    };
-  }
+  // if (
+  //   res.status === 200 &&
+  //   _companyAuth.company.type !== "COMMUNITY" &&
+  //   (!_companyAuth.company.stripe ||
+  //     !_companyAuth.company.stripe.product ||
+  //     !_companyAuth.company.stripe.product.ID)
+  // ) {
+  //   return {
+  //     redirect: {
+  //       destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   return {
     props: { key: url },
