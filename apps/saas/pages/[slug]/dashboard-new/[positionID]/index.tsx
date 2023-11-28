@@ -1118,6 +1118,7 @@ const PositionCRM: NextPageWithLayout = () => {
               <Button
                 className="w-60 text-center"
                 variant="primary"
+                disabled={!selectedUserId}
                 onClick={handleRejectionLetter}
               >
                 Gracefully Reject Candidate
@@ -1186,6 +1187,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       approvedTalentListCandidatesList[0].user?._id || ""
                     );
                   }}
+                  disabled={approvedTalentListCandidatesList.length < 1}
                 >
                   Invite all for 2nd interview
                 </Button>
@@ -1207,6 +1209,7 @@ const PositionCRM: NextPageWithLayout = () => {
             <div className="bg-edenGreen-600 absolute bottom-0 flex w-full justify-around px-6 py-2">
               <Button
                 className="w-56 border-white text-center text-white"
+                disabled={!selectedUserId}
                 onClick={handleAddToList}
               >
                 Add to list

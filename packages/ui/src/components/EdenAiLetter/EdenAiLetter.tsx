@@ -155,7 +155,7 @@ export const EdenAiLetter = ({
     }
   };
   const editInputClasses =
-    "inline-block bg-transparent -my-[2px] -mx-2 h-fit w-[40rem] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none whitespace-pre-line";
+    "overflow-y-auto scrollbar-hide inline-block bg-transparent -my-[2px] -mx-2 h-fit w-[40rem] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none whitespace-pre-line";
 
   useEffect(() => {
     if (isModalOpen) {
@@ -196,16 +196,16 @@ export const EdenAiLetter = ({
   return (
     <>
       <Modal open={isModalOpen} onClose={onClose}>
-        <div className="flex flex-col items-center justify-end gap-10 space-y-6 ">
-          <div className="w-full  font-medium">
+        <div className="flex flex-col items-center justify-end gap-2 space-y-6 ">
+          <div className="w-full font-medium">
             {letterType === "rejection" ? (
               <>
-                <h2 className=" text-xl  font-bold">
+                <h2 className="text-edenGreen-600 text-xl font-bold">
                   Personalized Rejection Message
                 </h2>
                 <p className="text-sm font-medium text-gray-500">
                   {member &&
-                    `Copy/Paste the following personalized message to gracefully reject ${member.discordName}.`}
+                    `Please review the following personalized message to gracefully reject ${member.discordName}.`}
                 </p>
               </>
             ) : (
@@ -213,13 +213,13 @@ export const EdenAiLetter = ({
                 <h2 className="text-xl font-bold">Personalized Invite</h2>
                 <p className="text-sm font-medium text-gray-500">
                   {member &&
-                    `Copy/Paste the following personalized message to invite ${member.discordName} for a second interview.`}
+                    `Please review the following personalized message to invite ${member.discordName} for a second interview.`}
                 </p>
               </>
             )}
           </div>
 
-          <div className="w- h-[86hv] border-2 bg-white px-4 pb-4 pt-2">
+          <div className="scrollbar-hide max-h-80 overflow-y-auto rounded-md border-2 bg-white px-4 pb-4 pt-2">
             {letterContent ? (
               <div>
                 <div id="text-to-copy" className="h-fit w-full ">
