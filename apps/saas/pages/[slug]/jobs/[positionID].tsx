@@ -659,6 +659,7 @@ const PositionPage: NextPageWithLayout = ({
                         {getValues("whoYouAre") &&
                           getValues("whoYouAre")
                             .split("\n")
+                            .filter((line: any) => line.trim() !== "")
                             .map((line: any, index: any) => (
                               <li className="mb-4" key={index}>
                                 {line}
@@ -686,6 +687,7 @@ const PositionPage: NextPageWithLayout = ({
                         {getValues("whatTheJobInvolves") &&
                           getValues("whatTheJobInvolves")
                             .split("\n")
+                            .filter((line: any) => line.trim() !== "")
                             .map((line: any, index: any) => (
                               <li className="mb-4" key={index}>
                                 {line}
@@ -844,48 +846,52 @@ const PositionPage: NextPageWithLayout = ({
                 )}
 
                 {/* ---- WIDGETS ---- */}
-                <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                  <h3 className="text-edenGreen-600 mb-4">Widgets</h3>
+                {(editMode ||
+                  (position?.company?.funding &&
+                    position?.company?.funding?.length > 0)) && (
+                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                    {/* <h3 className="text-edenGreen-600 mb-4">Widgets</h3> */}
 
-                  {/* ---- FUNDING ---- */}
-                  {(editMode || position?.company?.funding) && (
+                    {/* ---- FUNDING ---- */}
                     <FundingWidget
                       control={control}
                       getValues={getValues}
                       register={register}
                       editMode={editMode}
                     />
-                  )}
-                  {/* ---- CULTURE ---- */}
-                  {position?.company?.culture && (
+                    {/* ---- CULTURE ---- */}
+                    {/* {position?.company?.culture && (
                     <div className="mb-4 last:mb-0">
-                      <h3 className="text-edenGreen-600 mb-2">
-                        AI culture summary
-                      </h3>
-                      <div className="bg-edenGreen-300 rounded-md p-4">
-                        <div className="mb-2 text-center">
-                          {position?.company?.culture.tags &&
-                            position?.company?.culture.tags?.map(
-                              (tag, index) => (
-                                <div
-                                  key={index}
-                                  className="bg-edenGreen-600 text-edenPink-400 font-Moret mr-2 inline inline rounded-md px-4 py-1 last:mr-0"
+                    <h3 className="text-edenGreen-600 mb-2">
+                    AI culture summary
+                    </h3>
+                    <div className="bg-edenGreen-300 rounded-md p-4">
+                    <div className="mb-2 text-center">
+                    {position?.company?.culture.tags &&
+                      position?.company?.culture.tags?.map(
+                        (tag, index) => (
+                          <div
+                          key={index}
+                          className="bg-edenGreen-600 text-edenPink-400 font-Moret mr-2 inline inline rounded-md px-4 py-1 last:mr-0"
                                 >
-                                  {tag}
+                                {tag}
                                 </div>
-                              )
-                            )}
-                        </div>
-                        <p className="text-sm text-white">
-                          {position.company.culture.description}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                                )
+                                )}
+                                </div>
+                                <p className="text-sm text-white">
+                                {position.company.culture.description}
+                                </p>
+                                </div>
+                                </div>
+                              )} */}
+                  </div>
+                )}
 
                 {/* ---- BENEFITS ---- */}
-                {(editMode || position?.company?.benefits) && (
+                {(editMode ||
+                  (position?.company?.benefits &&
+                    getValues("company.founders") != "N/A")) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">Benefits & perks</h3>
                     <p className="text-xs">
@@ -901,6 +907,7 @@ const PositionPage: NextPageWithLayout = ({
                         <ul className="text-edenGray-900 list-disc pl-4 ">
                           {getValues("company.benefits")
                             .split("\n")
+                            .filter((line: any) => line.trim() !== "")
                             .map((line: any, index: any) => (
                               <li className="mb-4" key={index}>
                                 {line}
@@ -913,7 +920,9 @@ const PositionPage: NextPageWithLayout = ({
                 )}
 
                 {/* ---- COMPANY VALUES ---- */}
-                {(editMode || position?.company?.values) && (
+                {(editMode ||
+                  (position?.company?.values &&
+                    getValues("company.founders") != "N/A")) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">Company Values</h3>
                     <p className="text-xs">
@@ -929,6 +938,7 @@ const PositionPage: NextPageWithLayout = ({
                         <ul className="text-edenGray-900 list-disc pl-4 ">
                           {getValues("company.values")
                             .split("\n")
+                            .filter((line: any) => line.trim() !== "")
                             .map((line: any, index: any) => (
                               <li className="mb-4" key={index}>
                                 {line}
@@ -941,7 +951,9 @@ const PositionPage: NextPageWithLayout = ({
                 )}
 
                 {/* ---- FOUNDERS ---- */}
-                {(editMode || position?.company?.founders) && (
+                {(editMode ||
+                  (position?.company?.founders &&
+                    getValues("company.founders") != "N/A")) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">Founders</h3>
                     <p className="text-xs">

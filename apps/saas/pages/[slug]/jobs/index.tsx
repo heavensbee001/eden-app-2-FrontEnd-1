@@ -133,24 +133,21 @@ const HomePage: NextPageWithLayout = () => {
   );
 
   const handlePostJobClick = async () => {
+    setLoadingSpinner(true);
     if (!currentUser) {
-      setLoadingSpinner(true);
       router.push(`/redirect-page/post-job?community=${company?._id}`);
-      setLoadingSpinner(false);
     } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
       currentUser?.companies[0].company?.slug
     ) {
-      setLoadingSpinner(true);
       await router.push(
         `/${currentUser?.companies[0].company?.slug}/dashboard`
       );
-      setLoadingSpinner(false);
     } else {
-      console.log("2222222");
       router.push(`/pricing?community=${company?._id}`);
     }
+    setLoadingSpinner(false);
   };
 
   const handlePickJobs = async (pos: any) => {
