@@ -9,15 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
-export const POSITION_TEXT_CONVO_TO_REPORT = gql`
-  mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
-    positionTextAndConvoToReportCriteria(fields: $fields) {
-      success
-      report
-    }
-  }
-`;
-
 export const FIND_SCORE_CARDS = gql`
   query FindCardMemories($fields: findCardMemoriesInput) {
     findCardMemories(fields: $fields) {
@@ -29,38 +20,6 @@ export const FIND_SCORE_CARDS = gql`
       }
       type
       priority
-    }
-  }
-`;
-
-export const EDIT_SCORE_CARD = gql`
-  mutation EditCardMemory($fields: editCardMemoryInput) {
-    editCardMemory(fields: $fields) {
-      _id
-      content
-      scoreCriteria
-      connectedCards {
-        card {
-          _id
-          content
-        }
-      }
-    }
-  }
-`;
-
-export const ADD_SCORE_CARD = gql`
-  mutation EditCardMemory($fields: editCardMemoryInput) {
-    editCardMemory(fields: $fields) {
-      _id
-      content
-      scoreCriteria
-      connectedCards {
-        card {
-          _id
-          content
-        }
-      }
     }
   }
 `;
@@ -425,6 +384,7 @@ export const ProfileQuestionsContainer = ({
                       >
                         <textarea
                           name="content"
+                          title="content"
                           disabled={editQuestionIndex !== __index}
                           value={question.content.toString()}
                           onChange={(e) => handleQuestionChange(e)}

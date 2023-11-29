@@ -194,7 +194,7 @@ const FLOW_TITLES = [
       "This is the list of topics we'll use to benchmark all the candidates. Feel free to edit, add or delete.",
   },
   {
-    title: "And here’s my list of not-to-miss questions.",
+    title: "And here's my list of not-to-miss questions.",
     subtitle:
       "These questions get adapted in realtime based on the context of the candidate & rest of the interview.",
   },
