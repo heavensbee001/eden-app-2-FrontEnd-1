@@ -33,8 +33,8 @@ import { CreateQuestions } from "@/components/TrainEdenAiSteps/CreateQuestionsCo
 import { FinalFormContainer } from "@/components/TrainEdenAiSteps/FinalFormContainer";
 import { InterviewEdenAIContainer } from "@/components/TrainEdenAiSteps/InterviewEdenAIContainer";
 import { PrioritiesAndTradeOffsContainer } from "@/components/TrainEdenAiSteps/PrioritiesAndTradeOffsContainer";
+import { ProfileQuestionsContainer } from "@/components/TrainEdenAiSteps/ProfileQuestionsContainer";
 
-// import { ProfileQuestionsContainer } from "@/components/TrainEdenAiSteps/ProfileQuestionsContainer";
 import type { NextPageWithLayout } from "../../../../_app";
 
 export const WEBPAGE_TO_MEMORY = gql`
@@ -194,7 +194,7 @@ const FLOW_TITLES = [
       "This is the list of topics we'll use to benchmark all the candidates. Feel free to edit, add or delete.",
   },
   {
-    title: "And here’s my list of not-to-miss questions.",
+    title: "And here's my list of not-to-miss questions.",
     subtitle:
       "These questions get adapted in realtime based on the context of the candidate & rest of the interview.",
   },
@@ -216,7 +216,7 @@ const TrainAiPage: NextPageWithLayout = () => {
 
   const [interviewEnded, setInterviewEnded] = useState(false);
   const [createQuestionsEnded, setCreateQuestionsEnded] = useState(false);
-  // const [alignmentEnded, setAlignmentEnded] = useState(false);
+  const [alignmentEnded, setAlignmentEnded] = useState(false);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [step, setStep] = useState<number>(0);
 
@@ -401,31 +401,31 @@ const TrainAiPage: NextPageWithLayout = () => {
 
   // ------ ALIGNMENT STEP ------
 
-  // const [
-  //   positionTextAndConvoToReportCriteria,
-  //   { loading: loadingUpdateReportToPosition },
-  // ] = useMutation(POSITION_TEXT_CONVO_TO_REPORT, {
-  //   // eslint-disable-next-line no-unused-vars
-  //   onCompleted({ positionTextAndConvoToReportCriteria }) {
-  //     setStep(step + 1);
-  //   },
-  //   onError() {
-  //     // setScraping(false);
-  //   },
-  // });
+  const [
+    positionTextAndConvoToReportCriteria,
+    { loading: loadingUpdateReportToPosition },
+  ] = useMutation(POSITION_TEXT_CONVO_TO_REPORT, {
+    // eslint-disable-next-line no-unused-vars
+    onCompleted({ positionTextAndConvoToReportCriteria }) {
+      setStep(step + 1);
+    },
+    onError() {
+      // setScraping(false);
+    },
+  });
 
-  // const handleSubmitAlignment = () => {
-  //   // setScraping(true);
+  const handleSubmitAlignment = () => {
+    // setScraping(true);
 
-  //   positionTextAndConvoToReportCriteria({
-  //     variables: {
-  //       fields: {
-  //         positionID: positionID,
-  //         updatedReport: getValues("position.positionsRequirements.content"),
-  //       },
-  //     },
-  //   });
-  // };
+    positionTextAndConvoToReportCriteria({
+      variables: {
+        fields: {
+          positionID: positionID,
+          updatedReport: getValues("position.positionsRequirements.content"),
+        },
+      },
+    });
+  };
 
   // ------ QUESTIONS STEP ------
 
@@ -713,7 +713,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                   </div>
                 </WizardStep>
 
-                {/* <WizardStep
+                <WizardStep
                   label={"Alignment"}
                   navigationDisabled={!panda}
                   nextButton={
@@ -759,7 +759,7 @@ const TrainAiPage: NextPageWithLayout = () => {
                       </EdenAiProcessingModal>
                     )}
                   </div>
-                </WizardStep> */}
+                </WizardStep>
 
                 <WizardStep
                   label={"Eden Suggestions"}
