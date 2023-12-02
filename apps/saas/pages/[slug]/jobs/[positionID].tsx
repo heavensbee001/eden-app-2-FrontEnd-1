@@ -16,6 +16,7 @@ import {
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
@@ -269,22 +270,27 @@ const PositionPage: NextPageWithLayout = ({
 
   return (
     <>
-      <SEO
-        title={position?.company?.name || ""}
-        description={position?.name || ""}
-        image={position?.company?.imageUrl || ""}
-      />
-      <div>
-        <section
-          className="flex w-full justify-center py-24"
-          style={{
-            backgroundImage: "url(/banner.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="relative grid w-4/5 max-w-4xl grid-cols-12 rounded-md bg-white p-10">
-            {/* {editMode && (
+      <Head>
+        <meta
+          property="og:image"
+          content="https://eden-saas-develop.vercel.app/api/static"
+        />
+        <SEO
+          title={position?.company?.name || ""}
+          description={position?.name || ""}
+          image={position?.company?.imageUrl || ""}
+        />
+        <div>
+          <section
+            className="flex w-full justify-center py-24"
+            style={{
+              backgroundImage: "url(/banner.png)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="relative grid w-4/5 max-w-4xl grid-cols-12 rounded-md bg-white p-10">
+              {/* {editMode && (
               <button
                 className="bg-edenGray-500 text-utilityOrange border-utilityOrange disabled:text-edenGray-700 disabled:border-edenGray-700 absolute right-4 top-4 flex items-center whitespace-nowrap rounded-md border px-2"
                 onClick={() => {
@@ -295,149 +301,25 @@ const PositionPage: NextPageWithLayout = ({
                 Edit
               </button>
             )} */}
-            <div className="col-span-5">
-              <div className="mb-10">
-                <h1 className="text-edenGreen-600 mb-2">
+              <div className="col-span-5">
+                <div className="mb-10">
+                  <h1 className="text-edenGreen-600 mb-2">
+                    {editMode && editCompany ? (
+                      <>
+                        <input
+                          {...register("name")}
+                          className={classNames(editInputClasses, "")}
+                        />
+                        {`, ${position?.company?.name}`}
+                      </>
+                    ) : (
+                      `${getValues("name")}, ${position?.company?.name}`
+                    )}
+                  </h1>
                   {editMode && editCompany ? (
-                    <>
-                      <input
-                        {...register("name")}
-                        className={classNames(editInputClasses, "")}
-                      />
-                      {`, ${position?.company?.name}`}
-                    </>
-                  ) : (
-                    `${getValues("name")}, ${position?.company?.name}`
-                  )}
-                </h1>
-                {editMode && editCompany ? (
-                  <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
-                    <select
-                      {...register("generalDetails.contractType")}
-                      disabled={!(editMode && editCompany)}
-                      className={classNames(
-                        editInputClasses,
-                        "disabled:border-0 disabled:opacity-100"
-                      )}
-                    >
-                      <option value={""} disabled hidden>
-                        Select an option...
-                      </option>
-                      <option value="Full-time">Full-time</option>
-                      <option value="Part-time">Part-time</option>
-                      <option value="Contractor">Contractor</option>
-                    </select>
-                  </div>
-                ) : (
-                  <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
-                    {getValues("generalDetails.contractType")}
-                  </div>
-                )}
-              </div>
-
-              {editMode && editCompany ? (
-                <div className="mb-4">
-                  <TbMoneybag
-                    size={24}
-                    className="text-edenGreen-600 mr-3 inline-block"
-                  />
-                  <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
-                    {`$ `}
-                    <input
-                      type="number"
-                      placeholder="min salary"
-                      {...register("generalDetails.yearlySalary.min", {
-                        valueAsNumber: true,
-                      })}
-                      className={classNames(editInputClasses, "ml-0 mr-1 w-20")}
-                    />
-                    {` -  $`}
-                    <input
-                      type="number"
-                      placeholder="max salary"
-                      {...register("generalDetails.yearlySalary.max", {
-                        valueAsNumber: true,
-                      })}
-                      className={classNames(editInputClasses, "ml-1 w-20")}
-                    />
-                  </div>
-                </div>
-              ) : getValues("generalDetails.yearlySalary.min") ||
-                getValues("generalDetails.yearlySalary.min") === 0 ||
-                getValues("generalDetails.yearlySalary.max") ||
-                getValues("generalDetails.yearlySalary.max") === 0 ? (
-                <div className="mb-4">
-                  <TbMoneybag
-                    size={24}
-                    className="text-edenGreen-600 mr-3 inline-block"
-                  />
-                  <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
-                    {`${
-                      getValues("generalDetails.yearlySalary.min") ||
-                      getValues("generalDetails.yearlySalary.min") === 0
-                        ? `$ ${formattedSalary(
-                            getValues("generalDetails.yearlySalary.min")
-                          )}`
-                        : ""
-                    }${
-                      (getValues("generalDetails.yearlySalary.min") ||
-                        getValues("generalDetails.yearlySalary.min") === 0) &&
-                      (getValues("generalDetails.yearlySalary.max") ||
-                        getValues("generalDetails.yearlySalary.max") === 0)
-                        ? `  -  `
-                        : ""
-                    }${
-                      getValues("generalDetails.yearlySalary.max") ||
-                      getValues("generalDetails.yearlySalary.max") === 0
-                        ? `$ ${formattedSalary(
-                            getValues("generalDetails.yearlySalary.max")
-                          )}`
-                        : ""
-                    }`}
-                  </div>
-                </div>
-              ) : null}
-              <div className="mb-4 flex items-center">
-                <BsStar
-                  size={24}
-                  className="text-edenGreen-600 mr-3 inline-block"
-                />
-                <div className="text-edenGray-600 border-edenGray-300 ml-1 mr-3 flex items-center justify-center rounded-md border px-6 py-1.5">
-                  <h4 className="text-lg">?</h4>
-                </div>
-                <div>
-                  <div className="flex flex-nowrap items-center">
-                    <h3 className="text-edenGreen-600">Matchstimate{"  "}</h3>
-                    <Tooltip className="inline">
-                      This helps candidates understand if this opportunity is a
-                      match for them.
-                    </Tooltip>
-                  </div>
-                  <p className="text-edenGray-500 text-xs">
-                    <a
-                      href="#"
-                      onClick={() => handleInterviewNav()}
-                      className="cursor-pointer text-blue-500 underline"
-                    >
-                      Upload your resume
-                    </a>{" "}
-                    to unlock
-                  </p>
-                </div>
-              </div>
-
-              {(getValues("generalDetails.officeLocation") ||
-                getValues("generalDetails.officePolicy") ||
-                (editMode && editCompany)) && (
-                <div className="mb-4">
-                  <SlLocationPin
-                    size={24}
-                    className="text-edenGreen-600 mr-3 inline-block"
-                  />
-                  {editMode && editCompany ? (
-                    <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+                    <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
                       <select
-                        {...register("generalDetails.officePolicy")}
+                        {...register("generalDetails.contractType")}
                         disabled={!(editMode && editCompany)}
                         className={classNames(
                           editInputClasses,
@@ -447,420 +329,554 @@ const PositionPage: NextPageWithLayout = ({
                         <option value={""} disabled hidden>
                           Select an option...
                         </option>
-                        <option value="on-site">On site</option>
-                        <option value="remote">Remote</option>
-                        <option value="hybrid-1-day-office">
-                          Hybrid - 1 day office
-                        </option>
-                        <option value="hybrid-2-day-office">
-                          Hybrid - 2 day office
-                        </option>
-                        <option value="hybrid-3-day-office">
-                          Hybrid - 3 day office
-                        </option>
-                        <option value="hybrid-4-day-office">
-                          Hybrid - 4 day office
-                        </option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contractor">Contractor</option>
                       </select>
                     </div>
                   ) : (
-                    getValues("generalDetails.officePolicy") && (
-                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
-                        {parseOfficePolicy(
-                          getValues("generalDetails.officePolicy")
-                        )}
-                      </div>
-                    )
-                  )}
-                  {editMode && editCompany ? (
-                    <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
-                      <input
-                        {...register("generalDetails.officeLocation")}
-                        className={classNames(editInputClasses, "")}
-                      />
+                    <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
+                      {getValues("generalDetails.contractType")}
                     </div>
-                  ) : (
-                    getValues("generalDetails.officeLocation") && (
-                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
-                        {getValues("generalDetails.officeLocation")}
-                      </div>
-                    )
                   )}
                 </div>
-              )}
 
-              <div
-                className={classNames(
-                  "border-edenGreen-600 hover:bg-edenGreen-100 relative mt-12 flex h-[calc(2.5rem+4px)] w-[calc(100%-1.5rem)] cursor-pointer items-center justify-between overflow-hidden rounded-full border-2 bg-white pl-4 drop-shadow-sm transition-all ease-in-out"
-                )}
-                onClick={() => setOpenAskEden(true)}
-              >
-                <span className="text-edenGreen-600 font-Moret mr-4">
-                  {"Ask Eden about this opportunity"}
-                </span>
-                <div
-                  className={classNames(
-                    "bg-edenPink-400 absolute right-0 float-right flex h-10 w-10 transform cursor-pointer items-center justify-center rounded-full transition-all ease-in-out"
-                  )}
-                >
-                  <EdenIconExclamationAndQuestion className="h-6 w-6" />
-                </div>
-              </div>
-            </div>
-            <div className="border-edenGreen-300 col-span-7 border-l-2 pl-4">
-              {editMode && editCompany ? (
-                <label
-                  htmlFor="file-upload"
-                  className={classNames(
-                    "relative block w-fit cursor-pointer rounded-md hover:bg-black hover:bg-opacity-20",
-                    editMode
-                      ? "border-utilityOrange -my-[2px] mb-1 border-2"
-                      : ""
-                  )}
-                >
-                  {uploadingCompanyImage && (
-                    <div className="pointer-events-none absolute left-0 top-0 h-full w-full">
-                      <Loading title="" />
-                    </div>
-                  )}
-                  <img
-                    src={getValues("company.imageUrl") || ""}
-                    className="mb-2 h-20"
-                    alt={position?.company?.name || ""}
-                  />
-                  <HiPencil
-                    size={20}
-                    className="text-utilityOrange absolute bottom-1 right-1 opacity-60"
-                  />
-                  <input
-                    id="file-upload"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    ref={fileInput}
-                    type="file"
-                    accept=".png"
-                  ></input>
-                </label>
-              ) : (
-                // <img
-                //   src={getValues("company.imageUrl") || ""}
-                //   className="mb-2 h-20"
-                //   alt={position?.company?.name || ""}
-                // />
-                <Image
-                  width="180"
-                  height="180"
-                  className="mb-6"
-                  src={`${
-                    position?.company?.imageUrl
-                      ? position?.company?.imageUrl
-                      : "/default-company-image.svg"
-                  }`}
-                  alt={`${position?.company?.name} company image`}
-                />
-              )}
-              <p className="text-edenGray-900 mb-2 text-sm">
                 {editMode && editCompany ? (
-                  <>
-                    <textarea
-                      rows={2}
-                      {...register("company.description")}
-                      className={classNames(editInputClasses, "w-full")}
+                  <div className="mb-4">
+                    <TbMoneybag
+                      size={24}
+                      className="text-edenGreen-600 mr-3 inline-block"
                     />
-                  </>
-                ) : (
-                  `${getValues("company.description")}`
-                )}
-              </p>
-
-              {(getValues("company.employeesNumber") ||
-                getValues("company.employeesNumber") === 0 ||
-                (editMode && editCompany)) && (
-                <p className="text-edenGray-900 mb-2 text-sm">
-                  <HiOutlineUsers
-                    size={20}
-                    className="text-edenGreen-600 mr-2 inline-block"
-                  />
-                  {editMode && editCompany ? (
-                    <>
+                    <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
+                      {`$ `}
                       <input
                         type="number"
-                        {...register("company.employeesNumber", {
+                        placeholder="min salary"
+                        {...register("generalDetails.yearlySalary.min", {
                           valueAsNumber: true,
                         })}
-                        className={classNames(editInputClasses, "w-20")}
+                        className={classNames(
+                          editInputClasses,
+                          "ml-0 mr-1 w-20"
+                        )}
                       />
-                      {` employees`}
+                      {` -  $`}
+                      <input
+                        type="number"
+                        placeholder="max salary"
+                        {...register("generalDetails.yearlySalary.max", {
+                          valueAsNumber: true,
+                        })}
+                        className={classNames(editInputClasses, "ml-1 w-20")}
+                      />
+                    </div>
+                  </div>
+                ) : getValues("generalDetails.yearlySalary.min") ||
+                  getValues("generalDetails.yearlySalary.min") === 0 ||
+                  getValues("generalDetails.yearlySalary.max") ||
+                  getValues("generalDetails.yearlySalary.max") === 0 ? (
+                  <div className="mb-4">
+                    <TbMoneybag
+                      size={24}
+                      className="text-edenGreen-600 mr-3 inline-block"
+                    />
+                    <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
+                      {`${
+                        getValues("generalDetails.yearlySalary.min") ||
+                        getValues("generalDetails.yearlySalary.min") === 0
+                          ? `$ ${formattedSalary(
+                              getValues("generalDetails.yearlySalary.min")
+                            )}`
+                          : ""
+                      }${
+                        (getValues("generalDetails.yearlySalary.min") ||
+                          getValues("generalDetails.yearlySalary.min") === 0) &&
+                        (getValues("generalDetails.yearlySalary.max") ||
+                          getValues("generalDetails.yearlySalary.max") === 0)
+                          ? `  -  `
+                          : ""
+                      }${
+                        getValues("generalDetails.yearlySalary.max") ||
+                        getValues("generalDetails.yearlySalary.max") === 0
+                          ? `$ ${formattedSalary(
+                              getValues("generalDetails.yearlySalary.max")
+                            )}`
+                          : ""
+                      }`}
+                    </div>
+                  </div>
+                ) : null}
+                <div className="mb-4 flex items-center">
+                  <BsStar
+                    size={24}
+                    className="text-edenGreen-600 mr-3 inline-block"
+                  />
+                  <div className="text-edenGray-600 border-edenGray-300 ml-1 mr-3 flex items-center justify-center rounded-md border px-6 py-1.5">
+                    <h4 className="text-lg">?</h4>
+                  </div>
+                  <div>
+                    <div className="flex flex-nowrap items-center">
+                      <h3 className="text-edenGreen-600">Matchstimate{"  "}</h3>
+                      <Tooltip className="inline">
+                        This helps candidates understand if this opportunity is
+                        a match for them.
+                      </Tooltip>
+                    </div>
+                    <p className="text-edenGray-500 text-xs">
+                      <a
+                        href="#"
+                        onClick={() => handleInterviewNav()}
+                        className="cursor-pointer text-blue-500 underline"
+                      >
+                        Upload your resume
+                      </a>{" "}
+                      to unlock
+                    </p>
+                  </div>
+                </div>
+
+                {(getValues("generalDetails.officeLocation") ||
+                  getValues("generalDetails.officePolicy") ||
+                  (editMode && editCompany)) && (
+                  <div className="mb-4">
+                    <SlLocationPin
+                      size={24}
+                      className="text-edenGreen-600 mr-3 inline-block"
+                    />
+                    {editMode && editCompany ? (
+                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+                        <select
+                          {...register("generalDetails.officePolicy")}
+                          disabled={!(editMode && editCompany)}
+                          className={classNames(
+                            editInputClasses,
+                            "disabled:border-0 disabled:opacity-100"
+                          )}
+                        >
+                          <option value={""} disabled hidden>
+                            Select an option...
+                          </option>
+                          <option value="on-site">On site</option>
+                          <option value="remote">Remote</option>
+                          <option value="hybrid-1-day-office">
+                            Hybrid - 1 day office
+                          </option>
+                          <option value="hybrid-2-day-office">
+                            Hybrid - 2 day office
+                          </option>
+                          <option value="hybrid-3-day-office">
+                            Hybrid - 3 day office
+                          </option>
+                          <option value="hybrid-4-day-office">
+                            Hybrid - 4 day office
+                          </option>
+                        </select>
+                      </div>
+                    ) : (
+                      getValues("generalDetails.officePolicy") && (
+                        <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+                          {parseOfficePolicy(
+                            getValues("generalDetails.officePolicy")
+                          )}
+                        </div>
+                      )
+                    )}
+                    {editMode && editCompany ? (
+                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+                        <input
+                          {...register("generalDetails.officeLocation")}
+                          className={classNames(editInputClasses, "")}
+                        />
+                      </div>
+                    ) : (
+                      getValues("generalDetails.officeLocation") && (
+                        <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
+                          {getValues("generalDetails.officeLocation")}
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
+
+                <div
+                  className={classNames(
+                    "border-edenGreen-600 hover:bg-edenGreen-100 relative mt-12 flex h-[calc(2.5rem+4px)] w-[calc(100%-1.5rem)] cursor-pointer items-center justify-between overflow-hidden rounded-full border-2 bg-white pl-4 drop-shadow-sm transition-all ease-in-out"
+                  )}
+                  onClick={() => setOpenAskEden(true)}
+                >
+                  <span className="text-edenGreen-600 font-Moret mr-4">
+                    {"Ask Eden about this opportunity"}
+                  </span>
+                  <div
+                    className={classNames(
+                      "bg-edenPink-400 absolute right-0 float-right flex h-10 w-10 transform cursor-pointer items-center justify-center rounded-full transition-all ease-in-out"
+                    )}
+                  >
+                    <EdenIconExclamationAndQuestion className="h-6 w-6" />
+                  </div>
+                </div>
+              </div>
+              <div className="border-edenGreen-300 col-span-7 border-l-2 pl-4">
+                {editMode && editCompany ? (
+                  <label
+                    htmlFor="file-upload"
+                    className={classNames(
+                      "relative block w-fit cursor-pointer rounded-md hover:bg-black hover:bg-opacity-20",
+                      editMode
+                        ? "border-utilityOrange -my-[2px] mb-1 border-2"
+                        : ""
+                    )}
+                  >
+                    {uploadingCompanyImage && (
+                      <div className="pointer-events-none absolute left-0 top-0 h-full w-full">
+                        <Loading title="" />
+                      </div>
+                    )}
+                    <img
+                      src={getValues("company.imageUrl") || ""}
+                      className="mb-2 h-20"
+                      alt={position?.company?.name || ""}
+                    />
+                    <HiPencil
+                      size={20}
+                      className="text-utilityOrange absolute bottom-1 right-1 opacity-60"
+                    />
+                    <input
+                      id="file-upload"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      ref={fileInput}
+                      type="file"
+                      accept=".png"
+                    ></input>
+                  </label>
+                ) : (
+                  // <img
+                  //   src={getValues("company.imageUrl") || ""}
+                  //   className="mb-2 h-20"
+                  //   alt={position?.company?.name || ""}
+                  // />
+                  <Image
+                    width="180"
+                    height="180"
+                    className="mb-6"
+                    src={`${
+                      position?.company?.imageUrl
+                        ? position?.company?.imageUrl
+                        : "/default-company-image.svg"
+                    }`}
+                    alt={`${position?.company?.name} company image`}
+                  />
+                )}
+                <p className="text-edenGray-900 mb-2 text-sm">
+                  {editMode && editCompany ? (
+                    <>
+                      <textarea
+                        rows={2}
+                        {...register("company.description")}
+                        className={classNames(editInputClasses, "w-full")}
+                      />
                     </>
                   ) : (
-                    `${getValues("company.employeesNumber")} employees`
+                    `${getValues("company.description")}`
                   )}
                 </p>
-              )}
-              {(editMode || !!position?.company?.tags?.length) && (
-                <p className="mb-2 text-sm">
-                  <GoTag
-                    size={24}
-                    className="text-edenGreen-600 mr-2 inline-block"
-                  />
-                  <CompanyTagsField
-                    control={control}
-                    getValues={getValues}
-                    register={register}
-                    editMode={editMode && editCompany}
-                  />
-                </p>
-              )}
 
-              <div className="bg-edenPink-100 rounded-md p-4 text-sm">
-                <div className="mb-2 flex">
-                  <div className="bg-edenGreen-300 mr-2 flex h-6 w-6 items-center justify-center rounded-full">
-                    <HiOutlineHeart size={16} className="text-edenGreen-600" />
-                  </div>
-                  <h3 className="text-edenGreen-600">What&apos;s to love?</h3>
-                </div>
-                <p className="text-edenGray-700 text-xs">
-                  {editMode && editCompany ? (
-                    <textarea
-                      {...register("company.whatsToLove")}
-                      className={classNames(editInputClasses, "w-full")}
+                {(getValues("company.employeesNumber") ||
+                  getValues("company.employeesNumber") === 0 ||
+                  (editMode && editCompany)) && (
+                  <p className="text-edenGray-900 mb-2 text-sm">
+                    <HiOutlineUsers
+                      size={20}
+                      className="text-edenGreen-600 mr-2 inline-block"
                     />
-                  ) : (
-                    getValues("company.whatsToLove")
-                  )}
-                </p>
+                    {editMode && editCompany ? (
+                      <>
+                        <input
+                          type="number"
+                          {...register("company.employeesNumber", {
+                            valueAsNumber: true,
+                          })}
+                          className={classNames(editInputClasses, "w-20")}
+                        />
+                        {` employees`}
+                      </>
+                    ) : (
+                      `${getValues("company.employeesNumber")} employees`
+                    )}
+                  </p>
+                )}
+                {(editMode || !!position?.company?.tags?.length) && (
+                  <p className="mb-2 text-sm">
+                    <GoTag
+                      size={24}
+                      className="text-edenGreen-600 mr-2 inline-block"
+                    />
+                    <CompanyTagsField
+                      control={control}
+                      getValues={getValues}
+                      register={register}
+                      editMode={editMode && editCompany}
+                    />
+                  </p>
+                )}
+
+                <div className="bg-edenPink-100 rounded-md p-4 text-sm">
+                  <div className="mb-2 flex">
+                    <div className="bg-edenGreen-300 mr-2 flex h-6 w-6 items-center justify-center rounded-full">
+                      <HiOutlineHeart
+                        size={16}
+                        className="text-edenGreen-600"
+                      />
+                    </div>
+                    <h3 className="text-edenGreen-600">What&apos;s to love?</h3>
+                  </div>
+                  <p className="text-edenGray-700 text-xs">
+                    {editMode && editCompany ? (
+                      <textarea
+                        {...register("company.whatsToLove")}
+                        className={classNames(editInputClasses, "w-full")}
+                      />
+                    ) : (
+                      getValues("company.whatsToLove")
+                    )}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-        <div className="mx-auto grid w-4/5 max-w-4xl grid-cols-12 gap-x-8 px-4 py-16">
-          {/* ---- POSITION DETAILS ---- */}
-          <div className="col-span-12 md:col-span-6">
-            <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
-              <div className="bg-edenPink-300 px-6 py-4">
-                <h2 className="text-edenGreen-600">Role</h2>
-              </div>
-              <div className="border-edenGreen-300 px-6 py-4">
-                <div className="border-edenGreen-300 mb-4 border-b-2">
-                  <h3 className="text-edenGreen-600 mb-2 font-semibold">
-                    Who you are
-                  </h3>
-                  <p className="mb-4 text-xs">
-                    {editMode ? (
-                      <>
-                        <textarea
-                          rows={8}
-                          {...register("whoYouAre")}
-                          className={classNames(editInputClasses, "w-full")}
-                        />
-                      </>
-                    ) : (
-                      <ul className="text-edenGray-900 list-disc pl-4 ">
-                        {getValues("whoYouAre") &&
-                          getValues("whoYouAre")
-                            .split("\n")
-                            .filter((line: any) => line.trim() !== "")
-                            .map((line: any, index: any) => (
-                              <li className="mb-4" key={index}>
-                                {line}
-                              </li>
-                            ))}
-                      </ul>
-                    )}
-                  </p>
+          </section>
+          <div className="mx-auto grid w-4/5 max-w-4xl grid-cols-12 gap-x-8 px-4 py-16">
+            {/* ---- POSITION DETAILS ---- */}
+            <div className="col-span-12 md:col-span-6">
+              <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
+                <div className="bg-edenPink-300 px-6 py-4">
+                  <h2 className="text-edenGreen-600">Role</h2>
                 </div>
-                <div className="">
-                  <h3 className="text-edenGreen-600 mb-2 font-semibold">
-                    What the job involves
-                  </h3>
-                  <p className="text-xs">
-                    {editMode ? (
-                      <>
-                        <textarea
-                          rows={8}
-                          {...register("whatTheJobInvolves")}
-                          className={classNames(editInputClasses, "w-full")}
-                        />
-                      </>
-                    ) : (
-                      <ul className="text-edenGray-900 list-disc pl-4 ">
-                        {getValues("whatTheJobInvolves") &&
-                          getValues("whatTheJobInvolves")
-                            .split("\n")
-                            .filter((line: any) => line.trim() !== "")
-                            .map((line: any, index: any) => (
-                              <li className="mb-4" key={index}>
-                                {line}
-                              </li>
-                            ))}
-                      </ul>
-                    )}
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {/* ---- SHARE & REPORT ---- */}
-            <section className="bg-edenPink-100 mb-8 grid grid-cols-2 gap-4 overflow-hidden rounded-md px-4 py-4">
-              <div
-                className="group col-span-1 flex w-fit cursor-pointer items-center"
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `https://edenprotocol.app/${position.company?.slug}/jobs/${position._id}`
-                  );
-                  toast.success("Job link copied");
-                }}
-              >
-                <HiOutlineShare
-                  size={20}
-                  className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
-                />
-                <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
-                  Share this job
-                </span>
-              </div>
-              <div className="group col-span-1 flex w-fit cursor-pointer items-center">
-                <HiFlag
-                  size={20}
-                  className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
-                />
-                <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
-                  <a href="mailto:tom@joineden.xyz">
-                    Report a problem with this job
-                  </a>
-                </span>
-              </div>
-              <div className="group col-span-1 flex w-fit cursor-pointer items-center">
-                <AiOutlineUserAdd
-                  size={20}
-                  className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
-                />
-                <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
-                  <a href="mailto:tom@joineden.xyz">Refer someone & get paid</a>
-                </span>
-              </div>
-            </section>
-          </div>
-
-          <div className="col-span-12 md:col-span-6">
-            {/* ---- YOU & THE ROLE ---- */}
-            <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
-              <div className="bg-edenPink-300 px-6 py-4">
-                <h2 className="text-edenGreen-600">You & the role</h2>
-              </div>
-              <div className="px-6 py-4">
-                <div className="bg-edenPink-300 mx-auto flex h-8 w-8 items-center justify-center rounded-md">
-                  <AiOutlineEyeInvisible size={"1.4rem"} />
-                </div>
-                <h3 className="text-edenGreen-600 mb-4 text-center font-semibold">
-                  Upload your resume to unlock:
-                </h3>
-                <ul className="text-edenGray-900 list-disc pl-4 text-sm">
-                  <li className="mb-2"> If you’d be a good fit</li>
-                  <li className="mb-2">
-                    What your strengths are for this opportunity
-                  </li>
-                  <li className="mb-2">
-                    What your weaknesses are for this opportunity
-                  </li>
-                </ul>
-
-                <div className="mt-4 flex justify-center">
-                  <Button
-                    variant="secondary"
-                    // onClick={() => {
-                    //   router.push(`/interview/${position._id}`);
-                    // }}
-                    onClick={() => {
-                      handleInterviewNav();
-                    }}
-                  >
-                    Upload Your Resume
-                  </Button>
-                </div>
-              </div>
-            </section>
-
-            {/* ---- COMPANY DETAILS ---- */}
-            <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
-              <div className="bg-edenPink-300 px-6 py-4">
-                <h2 className="text-edenGreen-600">Company</h2>
-              </div>
-              <div className="px-6">
-                {/* ---- MISSION ---- */}
-                {(position?.company?.mission || editMode) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">About the company</h3>
+                <div className="border-edenGreen-300 px-6 py-4">
+                  <div className="border-edenGreen-300 mb-4 border-b-2">
+                    <h3 className="text-edenGreen-600 mb-2 font-semibold">
+                      Who you are
+                    </h3>
+                    <p className="mb-4 text-xs">
+                      {editMode ? (
+                        <>
+                          <textarea
+                            rows={8}
+                            {...register("whoYouAre")}
+                            className={classNames(editInputClasses, "w-full")}
+                          />
+                        </>
+                      ) : (
+                        <ul className="text-edenGray-900 list-disc pl-4 ">
+                          {getValues("whoYouAre") &&
+                            getValues("whoYouAre")
+                              .split("\n")
+                              .filter((line: any) => line.trim() !== "")
+                              .map((line: any, index: any) => (
+                                <li className="mb-4" key={index}>
+                                  {line}
+                                </li>
+                              ))}
+                        </ul>
+                      )}
+                    </p>
+                  </div>
+                  <div className="">
+                    <h3 className="text-edenGreen-600 mb-2 font-semibold">
+                      What the job involves
+                    </h3>
                     <p className="text-xs">
                       {editMode ? (
                         <>
                           <textarea
                             rows={8}
-                            {...register("company.mission")}
+                            {...register("whatTheJobInvolves")}
                             className={classNames(editInputClasses, "w-full")}
                           />
                         </>
                       ) : (
-                        getValues("company.mission")
+                        <ul className="text-edenGray-900 list-disc pl-4 ">
+                          {getValues("whatTheJobInvolves") &&
+                            getValues("whatTheJobInvolves")
+                              .split("\n")
+                              .filter((line: any) => line.trim() !== "")
+                              .map((line: any, index: any) => (
+                                <li className="mb-4" key={index}>
+                                  {line}
+                                </li>
+                              ))}
+                        </ul>
                       )}
                     </p>
                   </div>
-                )}
+                </div>
+              </section>
 
-                {/* ---- INSIGHTS ---- */}
-                {position?.company?.insights &&
-                  position?.company?.insights.length > 0 && (
+              {/* ---- SHARE & REPORT ---- */}
+              <section className="bg-edenPink-100 mb-8 grid grid-cols-2 gap-4 overflow-hidden rounded-md px-4 py-4">
+                <div
+                  className="group col-span-1 flex w-fit cursor-pointer items-center"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `https://edenprotocol.app/${position.company?.slug}/jobs/${position._id}`
+                    );
+                    toast.success("Job link copied");
+                  }}
+                >
+                  <HiOutlineShare
+                    size={20}
+                    className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
+                  />
+                  <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
+                    Share this job
+                  </span>
+                </div>
+                <div className="group col-span-1 flex w-fit cursor-pointer items-center">
+                  <HiFlag
+                    size={20}
+                    className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
+                  />
+                  <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
+                    <a href="mailto:tom@joineden.xyz">
+                      Report a problem with this job
+                    </a>
+                  </span>
+                </div>
+                <div className="group col-span-1 flex w-fit cursor-pointer items-center">
+                  <AiOutlineUserAdd
+                    size={20}
+                    className="text-edenGreen-600 group-hover:text-edenGreen-400 mr-2 inline"
+                  />
+                  <span className="group-hover:text-edenGray-500 whitespace-nowrap text-xs group-hover:underline">
+                    <a href="mailto:tom@joineden.xyz">
+                      Refer someone & get paid
+                    </a>
+                  </span>
+                </div>
+              </section>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
+              {/* ---- YOU & THE ROLE ---- */}
+              <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
+                <div className="bg-edenPink-300 px-6 py-4">
+                  <h2 className="text-edenGreen-600">You & the role</h2>
+                </div>
+                <div className="px-6 py-4">
+                  <div className="bg-edenPink-300 mx-auto flex h-8 w-8 items-center justify-center rounded-md">
+                    <AiOutlineEyeInvisible size={"1.4rem"} />
+                  </div>
+                  <h3 className="text-edenGreen-600 mb-4 text-center font-semibold">
+                    Upload your resume to unlock:
+                  </h3>
+                  <ul className="text-edenGray-900 list-disc pl-4 text-sm">
+                    <li className="mb-2"> If you’d be a good fit</li>
+                    <li className="mb-2">
+                      What your strengths are for this opportunity
+                    </li>
+                    <li className="mb-2">
+                      What your weaknesses are for this opportunity
+                    </li>
+                  </ul>
+
+                  <div className="mt-4 flex justify-center">
+                    <Button
+                      variant="secondary"
+                      // onClick={() => {
+                      //   router.push(`/interview/${position._id}`);
+                      // }}
+                      onClick={() => {
+                        handleInterviewNav();
+                      }}
+                    >
+                      Upload Your Resume
+                    </Button>
+                  </div>
+                </div>
+              </section>
+
+              {/* ---- COMPANY DETAILS ---- */}
+              <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
+                <div className="bg-edenPink-300 px-6 py-4">
+                  <h2 className="text-edenGreen-600">Company</h2>
+                </div>
+                <div className="px-6">
+                  {/* ---- MISSION ---- */}
+                  {(position?.company?.mission || editMode) && (
                     <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                      <h3 className="text-edenGreen-600">Insights</h3>
-                      <div className="relative flex w-full flex-wrap">
-                        {position?.company?.insights?.map((insight, index) => (
-                          <div
-                            key={index}
-                            className="mt-2 flex min-w-[50%] items-center"
-                          >
-                            <div className="bg-edenPink-300 mr-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
-                              <span
-                                className={classNames(
-                                  // getGrade(_category!.score! * 100).color,
-                                  "text-md"
-                                )}
-                              >
-                                {insight?.letter}
-                              </span>
-                            </div>
-                            <p className="text-2xs text-edenGray-700">
-                              {insight?.text}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
+                      <h3 className="text-edenGreen-600">About the company</h3>
+                      <p className="text-xs">
+                        {editMode ? (
+                          <>
+                            <textarea
+                              rows={8}
+                              {...register("company.mission")}
+                              className={classNames(editInputClasses, "w-full")}
+                            />
+                          </>
+                        ) : (
+                          getValues("company.mission")
+                        )}
+                      </p>
                     </div>
                   )}
 
-                {/* ---- EDEN'S TAKE ---- */}
-                {position?.company?.edenTake && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Eden&apos;s Take</h3>
-                    <p className="text-xs">{position.company.edenTake}</p>
-                  </div>
-                )}
+                  {/* ---- INSIGHTS ---- */}
+                  {position?.company?.insights &&
+                    position?.company?.insights.length > 0 && (
+                      <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                        <h3 className="text-edenGreen-600">Insights</h3>
+                        <div className="relative flex w-full flex-wrap">
+                          {position?.company?.insights?.map(
+                            (insight, index) => (
+                              <div
+                                key={index}
+                                className="mt-2 flex min-w-[50%] items-center"
+                              >
+                                <div className="bg-edenPink-300 mr-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                                  <span
+                                    className={classNames(
+                                      // getGrade(_category!.score! * 100).color,
+                                      "text-md"
+                                    )}
+                                  >
+                                    {insight?.letter}
+                                  </span>
+                                </div>
+                                <p className="text-2xs text-edenGray-700">
+                                  {insight?.text}
+                                </p>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
 
-                {/* ---- WIDGETS ---- */}
-                {(editMode ||
-                  (position?.company?.funding &&
-                    position?.company?.funding?.length > 0)) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    {/* <h3 className="text-edenGreen-600 mb-4">Widgets</h3> */}
+                  {/* ---- EDEN'S TAKE ---- */}
+                  {position?.company?.edenTake && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      <h3 className="text-edenGreen-600">Eden&apos;s Take</h3>
+                      <p className="text-xs">{position.company.edenTake}</p>
+                    </div>
+                  )}
 
-                    {/* ---- FUNDING ---- */}
-                    <FundingWidget
-                      control={control}
-                      getValues={getValues}
-                      register={register}
-                      editMode={editMode}
-                    />
-                    {/* ---- CULTURE ---- */}
-                    {/* {position?.company?.culture && (
+                  {/* ---- WIDGETS ---- */}
+                  {(editMode ||
+                    (position?.company?.funding &&
+                      position?.company?.funding?.length > 0)) && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      {/* <h3 className="text-edenGreen-600 mb-4">Widgets</h3> */}
+
+                      {/* ---- FUNDING ---- */}
+                      <FundingWidget
+                        control={control}
+                        getValues={getValues}
+                        register={register}
+                        editMode={editMode}
+                      />
+                      {/* ---- CULTURE ---- */}
+                      {/* {position?.company?.culture && (
                     <div className="mb-4 last:mb-0">
                     <h3 className="text-edenGreen-600 mb-2">
                     AI culture summary
@@ -885,251 +901,254 @@ const PositionPage: NextPageWithLayout = ({
                                 </div>
                                 </div>
                               )} */}
-                  </div>
-                )}
+                    </div>
+                  )}
 
-                {/* ---- BENEFITS ---- */}
-                {(editMode ||
-                  (position?.company?.benefits &&
-                    getValues("company.founders") != "N/A")) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Benefits & perks</h3>
-                    <p className="text-xs">
-                      {editMode ? (
-                        <>
-                          <textarea
-                            rows={8}
-                            {...register("company.benefits")}
-                            className={classNames(editInputClasses, "w-full")}
-                          />
-                        </>
-                      ) : (
-                        <ul className="text-edenGray-900 list-disc pl-4 ">
-                          {getValues("company.benefits")
-                            .split("\n")
-                            .filter((line: any) => line.trim() !== "")
-                            .map((line: any, index: any) => (
-                              <li className="mb-4" key={index}>
-                                {line}
-                              </li>
-                            ))}
-                        </ul>
-                      )}
-                    </p>
-                  </div>
-                )}
+                  {/* ---- BENEFITS ---- */}
+                  {(editMode ||
+                    (position?.company?.benefits &&
+                      getValues("company.founders") != "N/A")) && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      <h3 className="text-edenGreen-600">Benefits & perks</h3>
+                      <p className="text-xs">
+                        {editMode ? (
+                          <>
+                            <textarea
+                              rows={8}
+                              {...register("company.benefits")}
+                              className={classNames(editInputClasses, "w-full")}
+                            />
+                          </>
+                        ) : (
+                          <ul className="text-edenGray-900 list-disc pl-4 ">
+                            {getValues("company.benefits")
+                              .split("\n")
+                              .filter((line: any) => line.trim() !== "")
+                              .map((line: any, index: any) => (
+                                <li className="mb-4" key={index}>
+                                  {line}
+                                </li>
+                              ))}
+                          </ul>
+                        )}
+                      </p>
+                    </div>
+                  )}
 
-                {/* ---- COMPANY VALUES ---- */}
-                {(editMode ||
-                  (position?.company?.values &&
-                    getValues("company.founders") != "N/A")) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Company Values</h3>
-                    <p className="text-xs">
-                      {editMode ? (
-                        <>
-                          <textarea
-                            rows={8}
-                            {...register("company.values")}
-                            className={classNames(editInputClasses, "w-full")}
-                          />
-                        </>
-                      ) : (
-                        <ul className="text-edenGray-900 list-disc pl-4 ">
-                          {getValues("company.values")
-                            .split("\n")
-                            .filter((line: any) => line.trim() !== "")
-                            .map((line: any, index: any) => (
-                              <li className="mb-4" key={index}>
-                                {line}
-                              </li>
-                            ))}
-                        </ul>
-                      )}
-                    </p>
-                  </div>
-                )}
+                  {/* ---- COMPANY VALUES ---- */}
+                  {(editMode ||
+                    (position?.company?.values &&
+                      getValues("company.founders") != "N/A")) && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      <h3 className="text-edenGreen-600">Company Values</h3>
+                      <p className="text-xs">
+                        {editMode ? (
+                          <>
+                            <textarea
+                              rows={8}
+                              {...register("company.values")}
+                              className={classNames(editInputClasses, "w-full")}
+                            />
+                          </>
+                        ) : (
+                          <ul className="text-edenGray-900 list-disc pl-4 ">
+                            {getValues("company.values")
+                              .split("\n")
+                              .filter((line: any) => line.trim() !== "")
+                              .map((line: any, index: any) => (
+                                <li className="mb-4" key={index}>
+                                  {line}
+                                </li>
+                              ))}
+                          </ul>
+                        )}
+                      </p>
+                    </div>
+                  )}
 
-                {/* ---- FOUNDERS ---- */}
-                {(editMode ||
-                  (position?.company?.founders &&
-                    getValues("company.founders") != "N/A")) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Founders</h3>
-                    <p className="text-xs">
-                      {editMode ? (
-                        <>
-                          <textarea
-                            rows={8}
-                            {...register("company.founders")}
-                            className={classNames(editInputClasses, "w-full")}
-                          />
-                        </>
-                      ) : (
-                        getValues("company.founders")
-                      )}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </section>
+                  {/* ---- FOUNDERS ---- */}
+                  {(editMode ||
+                    (position?.company?.founders &&
+                      getValues("company.founders") != "N/A")) && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      <h3 className="text-edenGreen-600">Founders</h3>
+                      <p className="text-xs">
+                        {editMode ? (
+                          <>
+                            <textarea
+                              rows={8}
+                              {...register("company.founders")}
+                              className={classNames(editInputClasses, "w-full")}
+                            />
+                          </>
+                        ) : (
+                          getValues("company.founders")
+                        )}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </div>
           </div>
-        </div>
 
-        {/* ---- FOOTER APPLY ---- */}
-        <footer className="bg-edenGreen-600 fixed bottom-0 left-0 flex h-16 w-full items-center justify-center">
-          {!editMode ? (
-            <>
-              <Button
-                className="border-edenPink-400 !text-edenPink-400"
-                onClick={() => {
-                  handleInterviewNav();
-                }}
-              >
-                Apply with AI
-              </Button>
-              {currentUser?._id && (
-                <AskEdenPopUp
-                  memberID={currentUser?._id}
-                  service={
-                    AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW
-                  }
-                  title="Ask Eden about this opportunity"
-                  className="!bottom-[0.35rem] !right-2"
-                  forceOpen={openAskEden}
-                  onClose={() => {
-                    setOpenAskEden(false);
+          {/* ---- FOOTER APPLY ---- */}
+          <footer className="bg-edenGreen-600 fixed bottom-0 left-0 flex h-16 w-full items-center justify-center">
+            {!editMode ? (
+              <>
+                <Button
+                  className="border-edenPink-400 !text-edenPink-400"
+                  onClick={() => {
+                    handleInterviewNav();
                   }}
-                />
-              )}
-            </>
-          ) : (
-            <>
-              <Button
-                onClick={handleSubmit((data) =>
-                  onSubmit({ ...data, status: PositionStatus.Unpublished })
-                )}
-                className="border-edenPink-400 !text-edenPink-400 mr-4"
-              >
-                Save as draft
-              </Button>
-              <Button
-                onClick={() => {
-                  setPublishModalOpen(true);
-                  setRedirectDevDAO(true);
-                }}
-                className="border-edenPink-400 !text-edenPink-400"
-              >
-                Publish to Developer DAO
-              </Button>
-
-              <Modal open={bulkUpdateLoading} closeOnEsc={false}>
-                <div className="h-80">
-                  <Loading title={"Updating position"} />
-                </div>
-              </Modal>
-
-              <div
-                className={`pointer-events-none fixed left-0 top-0 z-50 h-screen w-screen	`}
-                ref={ref}
-              >
-                <Confetti
-                  width={width}
-                  height={height}
-                  numberOfPieces={confettiRun ? 250 : 0}
-                  colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
-                />
-              </div>
-              <Modal open={publishModalOpen} closeOnEsc={false}>
-                <div className="flex flex-col items-center justify-center px-28 py-8 text-center">
-                  <EdenIconExclamationAndQuestion className="mb-2 h-16" />
-                  <h2 className="text-edenGreen-600 mb-4">Ready to publish?</h2>
-                  <p className="mb-12">
-                    Soon after you publish Eden will start recruiting in the
-                    community & put the magic into magic job-post.
-                  </p>
-                  <div className="flex justify-center gap-8">
-                    <Button
-                      onClick={() => {
-                        setPublishModalOpen(false);
-                        // handleSubmit((data) =>
-                        //   onSubmit({
-                        //     ...data,
-                        //     status: PositionStatus.Unpublished,
-                        //   })
-                        // );
-                      }}
-                    >
-                      Not done yet
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={handleSubmit((data) =>
-                        onSubmit({ ...data, status: PositionStatus.Active })
-                      )}
-                    >
-                      Let&apos;s do it!
-                    </Button>
-                  </div>
-                </div>
-              </Modal>
-
-              <Modal open={trainAiModalOpen} closeOnEsc={false}>
-                <div className="flex flex-col items-center justify-center px-8 py-8 pt-2 text-center">
-                  <div
-                    className={
-                      "text-edenGreen-600 bg-edenPink-100 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
+                >
+                  Apply with AI
+                </Button>
+                {currentUser?._id && (
+                  <AskEdenPopUp
+                    memberID={currentUser?._id}
+                    service={
+                      AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW
                     }
-                  >
-                    <BsLightningFill size={"2rem"} />
+                    title="Ask Eden about this opportunity"
+                    className="!bottom-[0.35rem] !right-2"
+                    forceOpen={openAskEden}
+                    onClose={() => {
+                      setOpenAskEden(false);
+                    }}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={handleSubmit((data) =>
+                    onSubmit({ ...data, status: PositionStatus.Unpublished })
+                  )}
+                  className="border-edenPink-400 !text-edenPink-400 mr-4"
+                >
+                  Save as draft
+                </Button>
+                <Button
+                  onClick={() => {
+                    setPublishModalOpen(true);
+                    setRedirectDevDAO(true);
+                  }}
+                  className="border-edenPink-400 !text-edenPink-400"
+                >
+                  Publish to Developer DAO
+                </Button>
+
+                <Modal open={bulkUpdateLoading} closeOnEsc={false}>
+                  <div className="h-80">
+                    <Loading title={"Updating position"} />
                   </div>
-                  <h2 className="text-edenGreen-600 mb-4">
-                    One last thing: should we configure the AI-interview for
-                    you?
-                  </h2>
-                  <p className="mb-4">
-                    The way talent applies to your opportunity is through an
-                    AI-powered interview.
-                  </p>
-                  <p className="mb-8">
-                    Think of this like the screening interview that a recruiter
-                    would do built into the job board.
-                  </p>
-                  <div className="flex justify-center gap-8">
-                    <Button
-                      onClick={() => {
-                        if (redirectDevDAO == true) {
-                          router.push(`/developer-dao/jobs`);
-                        } else {
-                          router.push(
-                            `/${position.company?.slug}/dashboard/${position._id}`
-                          );
-                        }
-                      }}
-                    >
-                      Auto-configure the AI-interview for me
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        router.push(
-                          `/${position.company?.slug}/dashboard/${position._id}/train-eden-ai`
-                        );
-                      }}
-                    >
-                      Let me configure the AI-interview
-                    </Button>
-                  </div>
+                </Modal>
+
+                <div
+                  className={`pointer-events-none fixed left-0 top-0 z-50 h-screen w-screen	`}
+                  ref={ref}
+                >
+                  <Confetti
+                    width={width}
+                    height={height}
+                    numberOfPieces={confettiRun ? 250 : 0}
+                    colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
+                  />
                 </div>
-              </Modal>
-            </>
-          )}
-        </footer>
-      </div>
-      <EdenAiProcessingModal
-        title="This will be exciting"
-        open={loadingSpinner}
-      />
+                <Modal open={publishModalOpen} closeOnEsc={false}>
+                  <div className="flex flex-col items-center justify-center px-28 py-8 text-center">
+                    <EdenIconExclamationAndQuestion className="mb-2 h-16" />
+                    <h2 className="text-edenGreen-600 mb-4">
+                      Ready to publish?
+                    </h2>
+                    <p className="mb-12">
+                      Soon after you publish Eden will start recruiting in the
+                      community & put the magic into magic job-post.
+                    </p>
+                    <div className="flex justify-center gap-8">
+                      <Button
+                        onClick={() => {
+                          setPublishModalOpen(false);
+                          // handleSubmit((data) =>
+                          //   onSubmit({
+                          //     ...data,
+                          //     status: PositionStatus.Unpublished,
+                          //   })
+                          // );
+                        }}
+                      >
+                        Not done yet
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={handleSubmit((data) =>
+                          onSubmit({ ...data, status: PositionStatus.Active })
+                        )}
+                      >
+                        Let&apos;s do it!
+                      </Button>
+                    </div>
+                  </div>
+                </Modal>
+
+                <Modal open={trainAiModalOpen} closeOnEsc={false}>
+                  <div className="flex flex-col items-center justify-center px-8 py-8 pt-2 text-center">
+                    <div
+                      className={
+                        "text-edenGreen-600 bg-edenPink-100 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
+                      }
+                    >
+                      <BsLightningFill size={"2rem"} />
+                    </div>
+                    <h2 className="text-edenGreen-600 mb-4">
+                      One last thing: should we configure the AI-interview for
+                      you?
+                    </h2>
+                    <p className="mb-4">
+                      The way talent applies to your opportunity is through an
+                      AI-powered interview.
+                    </p>
+                    <p className="mb-8">
+                      Think of this like the screening interview that a
+                      recruiter would do built into the job board.
+                    </p>
+                    <div className="flex justify-center gap-8">
+                      <Button
+                        onClick={() => {
+                          if (redirectDevDAO == true) {
+                            router.push(`/developer-dao/jobs`);
+                          } else {
+                            router.push(
+                              `/${position.company?.slug}/dashboard/${position._id}`
+                            );
+                          }
+                        }}
+                      >
+                        Auto-configure the AI-interview for me
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          router.push(
+                            `/${position.company?.slug}/dashboard/${position._id}/train-eden-ai`
+                          );
+                        }}
+                      >
+                        Let me configure the AI-interview
+                      </Button>
+                    </div>
+                  </div>
+                </Modal>
+              </>
+            )}
+          </footer>
+        </div>
+        <EdenAiProcessingModal
+          title="This will be exciting"
+          open={loadingSpinner}
+        />
+      </Head>
     </>
   );
 };
