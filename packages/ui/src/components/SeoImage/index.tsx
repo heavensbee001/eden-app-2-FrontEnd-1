@@ -1,3 +1,5 @@
+// components/OgImageTemplate.tsx
+
 import React from "react";
 
 interface OgImageTemplateProps {
@@ -10,10 +12,42 @@ const OgImageTemplate: React.FC<OgImageTemplateProps> = ({
   company,
 }) => {
   return (
-    <div className="flex h-[630px] w-[1200px] items-center justify-center bg-blue-500">
-      <div className="text-center">
-        <h1 className="text-6xl text-white">{title}</h1>
-        <p className="text-3xl text-gray-300">{company}</p>
+    <div
+      style={{
+        display: "flex", // Explicitly setting display to flex
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#3b82f6",
+        width: "1200px",
+        height: "630px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex", // Explicitly setting display to flex
+          flexDirection: "column",
+          textAlign: "center",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "4rem",
+            color: "white",
+            margin: 0, // Resetting default margin
+          }}
+        >
+          {title}
+        </h1>
+        <p
+          style={{
+            fontSize: "1.875rem",
+            color: "#d1d5db",
+            margin: 0, // Resetting default margin
+          }}
+        >
+          {company}
+        </p>
       </div>
     </div>
   );
