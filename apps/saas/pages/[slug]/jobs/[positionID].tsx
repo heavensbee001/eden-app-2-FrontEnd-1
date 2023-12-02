@@ -10,7 +10,7 @@ import {
   EdenIconExclamationAndQuestion,
   Loading,
   Modal,
-  SEO,
+  // SEO,
   Tooltip,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
