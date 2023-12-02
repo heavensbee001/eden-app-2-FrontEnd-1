@@ -16,7 +16,7 @@ import {
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
-import Head from "next/head";
+// import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
