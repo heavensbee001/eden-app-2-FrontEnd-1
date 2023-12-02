@@ -270,18 +270,18 @@ const PositionPage: NextPageWithLayout = ({
 
   return (
     <>
-      <Head>
-        <meta
-          property="og:image"
-          content="https://eden-saas-develop.vercel.app/api/og/route"
-        />
-      </Head>
-
       <SEO
         title={position?.company?.name || ""}
         description={position?.name || ""}
         image={position?.company?.imageUrl || ""}
       />
+      <Head>
+        <title>Testing 123</title>
+        <meta
+          property="og:image"
+          content="https://eden-saas-develop.vercel.app/api/og/route"
+        />
+      </Head>
       <div>
         <section
           className="flex w-full justify-center py-24"
