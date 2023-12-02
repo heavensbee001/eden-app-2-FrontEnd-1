@@ -270,11 +270,11 @@ const PositionPage: NextPageWithLayout = ({
 
   return (
     <>
-      <SEO
+      {/* <SEO
         title={position?.company?.name || ""}
         description={position?.name || ""}
         image={position?.company?.imageUrl || ""}
-      />
+      /> */}
       <Head>
         <title>Testing 123</title>
         <meta
