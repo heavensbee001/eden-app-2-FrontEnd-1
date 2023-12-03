@@ -276,10 +276,10 @@ const PositionPage: NextPageWithLayout = ({
         image={position?.company?.imageUrl || ""}
       /> */}
       <Head>
-        <title>Testing 123</title>
+        <title>{position.name}</title>
         <meta
           property="og:image"
-          content="https://eden-saas-develop.vercel.app/api/og/route"
+          content={`https://yourdomain.com/api/og-image?jobId=${position?._id}&companyName=${position?.company?.name}`}
         />
       </Head>
       <div>
