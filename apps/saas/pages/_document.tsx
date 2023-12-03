@@ -6,13 +6,13 @@ import Document, {
   NextScript,
 } from "next/document";
 
-const appUrl =
-  process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
-    ? `https://eden-foundation-develop.vercel.app/`
-    : `https://edenprotocol.app/`;
-const title = process.env.NEXT_PUBLIC_ENV_BRANCH
-  ? `Eden protocol - ${process.env.NEXT_PUBLIC_ENV_BRANCH}`
-  : `Eden protocol`;
+// const appUrl =
+//   process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
+//     ? `https://eden-foundation-develop.vercel.app/`
+//     : `https://edenprotocol.app/`;
+// const title = process.env.NEXT_PUBLIC_ENV_BRANCH
+//   ? `Eden protocol - ${process.env.NEXT_PUBLIC_ENV_BRANCH}`
+//   : `Eden protocol`;
 const description = `Together, let's build the perfect breeding ground for everyone to do work they love. Eden's talent coordination protocol is how.`;
 
 class MyDocument extends Document {
