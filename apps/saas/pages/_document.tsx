@@ -6,13 +6,13 @@ import Document, {
   NextScript,
 } from "next/document";
 
-// const appUrl =
-//   process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
-//     ? `https://eden-foundation-develop.vercel.app/`
-//     : `https://edenprotocol.app/`;
-// const title = process.env.NEXT_PUBLIC_ENV_BRANCH
-//   ? `Eden protocol - ${process.env.NEXT_PUBLIC_ENV_BRANCH}`
-//   : `Eden protocol`;
+const appUrl =
+  process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
+    ? `https://eden-foundation-develop.vercel.app/`
+    : `https://edenprotocol.app/`;
+const title = process.env.NEXT_PUBLIC_ENV_BRANCH
+  ? `Eden protocol - ${process.env.NEXT_PUBLIC_ENV_BRANCH}`
+  : `Eden protocol`;
 const description = `Together, let's build the perfect breeding ground for everyone to do work they love. Eden's talent coordination protocol is how.`;
 
 class MyDocument extends Document {
@@ -31,7 +31,7 @@ class MyDocument extends Document {
           <link rel="icon" type="image/png" sizes="16x16" href="/logo16.png" />
           <meta name="description" content={description} />
 
-          {/* Open Graph / Facebook Meta Tags
+          {/* Open Graph / Facebook Meta Tags */}
           <meta property="og:type" content="website" />
           <meta property="og:url" content={appUrl} />
           <meta property="og:title" content={title} />
@@ -39,17 +39,17 @@ class MyDocument extends Document {
           <meta
             property="og:image"
             content="https://pbs.twimg.com/profile_images/1563942271170617344/4Tpfr8SY_400x400.jpg"
-          /> */}
+          />
 
           {/* Twitter Meta Tags */}
-          {/* <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content={appUrl} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={description} />
           <meta
             property="twitter:image"
             content="https://pbs.twimg.com/profile_images/1563942271170617344/4Tpfr8SY_400x400.jpg"
-          /> */}
+          />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"

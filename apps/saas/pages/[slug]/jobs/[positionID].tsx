@@ -10,7 +10,7 @@ import {
   EdenIconExclamationAndQuestion,
   Loading,
   Modal,
-  // SEO,
+  SEO,
   Tooltip,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
@@ -270,20 +270,25 @@ const PositionPage: NextPageWithLayout = ({
 
   return (
     <>
-      {/* <SEO
+      <SEO
         title={position?.company?.name || ""}
         description={position?.name || ""}
         image={position?.company?.imageUrl || ""}
-      /> */}
+      />
       <Head>
         <title>{position?.name}</title>
+        <meta
+          name="description"
+          content={`${position?.company?.description}`}
+        />
+
         <meta
           property="og:description"
           content={`${position?.company?.description}`}
         />
 
         <meta
-          property="og:image"
+          property="image"
           content={`https://eden-saas-develop.vercel.app/api/og/route`}
         />
       </Head>
