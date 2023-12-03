@@ -276,7 +276,11 @@ const PositionPage: NextPageWithLayout = ({
         image={position?.company?.imageUrl || ""}
       /> */}
       <Head>
-        <meta property="og:title" content={`${position?.name}`} />
+        <title>{position?.name}</title>
+        <meta
+          property="og:description"
+          content={`${position?.company?.description}`}
+        />
 
         <meta
           property="og:image"
