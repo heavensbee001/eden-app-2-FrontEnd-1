@@ -42,14 +42,14 @@ class MyDocument extends Document {
           /> */}
 
           {/* Twitter Meta Tags */}
-          <meta property="twitter:card" content="summary_large_image" />
+          {/* <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content={appUrl} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={description} />
           <meta
             property="twitter:image"
             content="https://pbs.twimg.com/profile_images/1563942271170617344/4Tpfr8SY_400x400.jpg"
-          />
+          /> */}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"
