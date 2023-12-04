@@ -15,7 +15,7 @@ import {
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, Metadata } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -71,6 +71,20 @@ const BULK_UPDATE = gql`
     }
   }
 `;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Position;
+}): Promise<Metadata> {
+  return {
+    title: "hi",
+    description: "",
+    openGraph: {
+      images: [],
+    },
+  };
+}
 
 const editInputClasses =
   "inline-block bg-transparent -my-[2px] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none";
@@ -283,14 +297,11 @@ const PositionPage: NextPageWithLayout = ({
         />
 
         <meta
-          property="og:description"
-          content={`${position?.company?.description}`}
-        />
-
-        <meta
           property="image"
           content={`https://eden-saas-develop.vercel.app/api/og/route`}
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
       </Head>
       <div>
         <section
