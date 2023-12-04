@@ -72,19 +72,19 @@ const BULK_UPDATE = gql`
   }
 `;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Position;
-}): Promise<Metadata> {
-  return {
-    title: "hi",
-    description: "",
-    openGraph: {
-      images: [],
-    },
-  };
-}
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: Position;
+// }): Promise<Metadata> {
+//   return {
+//     title: "hi",
+//     description: "",
+//     openGraph: {
+//       images: [],
+//     },
+//   };
+// }
 
 const editInputClasses =
   "inline-block bg-transparent -my-[2px] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none";
