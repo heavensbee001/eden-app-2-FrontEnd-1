@@ -300,7 +300,7 @@ const PositionPage: NextPageWithLayout = ({
         />
 
         <meta
-          property="image"
+          property="og:image"
           content={`https://eden-saas-develop.vercel.app/api/og/route`}
         />
         <meta property="og:image:width" content="1200" />
