@@ -15,7 +15,10 @@ import {
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
-import { GetServerSidePropsContext, Metadata } from "next";
+import {
+  GetServerSidePropsContext,
+  // Metadata
+} from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
