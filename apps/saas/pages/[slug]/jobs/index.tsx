@@ -152,7 +152,7 @@ const HomePage: NextPageWithLayout = () => {
 
   const handlePickJobs = async (pos: any) => {
     setLoadingSpinner(true);
-    await router.push(`/eden/jobs/${pos._id}`);
+    await router.push(`/${pos.company?.slug}/jobs/${pos._id}`);
     setLoadingSpinner(false);
   };
 
