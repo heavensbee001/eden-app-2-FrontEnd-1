@@ -129,8 +129,23 @@ const HomePage: NextPageWithLayout = () => {
           slug: router.query.slug,
         },
       },
+      skip: company?.type !== "COMMUNITY",
     }
   );
+
+  const positions: Position[] =
+    (company?.type === "COMMUNITY"
+      ? findPositionsOfCommunityData?.findPositionsOfCommunity
+      : company?.positions?.map((item) => {
+          //this map avoids having to fetch company again inside each position in backend
+          item!.company = {
+            _id: company._id,
+            name: company.name,
+            slug: company.slug,
+            imageUrl: company.imageUrl,
+          };
+          return item;
+        })) || [];
 
   const handlePostJobClick = async () => {
     if (
@@ -152,7 +167,7 @@ const HomePage: NextPageWithLayout = () => {
 
   const handlePickJobs = async (pos: any) => {
     setLoadingSpinner(true);
-    await router.push(`/eden/jobs/${pos._id}`);
+    await router.push(`/${pos.company?.slug}/jobs/${pos._id}`);
     setLoadingSpinner(false);
   };
 
@@ -162,7 +177,7 @@ const HomePage: NextPageWithLayout = () => {
     setLoadingSpinner(false);
   };
 
-  const positions = [
+  const positionsList = [
     "Frontend Development",
     "Backend Development",
     "AI",
@@ -217,7 +232,7 @@ const HomePage: NextPageWithLayout = () => {
           }}
         ></div>
       </section> */}
-      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-4">
+      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-4 pb-16">
         <div className="col-span-8 px-4">
           {/* {!currentUser && ( */}
           <section className="bg-edenPink-100 mb-4 rounded-md p-4">
@@ -243,10 +258,11 @@ const HomePage: NextPageWithLayout = () => {
           <section className="">
             <h3 className="mb-2">Open opportunities</h3>
             <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-              {findPositionsOfCommunityData
-                ?.findPositionsOfCommunity!.filter(
+              {positions!
+                .filter(
                   (_position: Position) =>
                     _position?.status !== "ARCHIVED" &&
+                    _position?.status !== "UNPUBLISHED" &&
                     _position?.status !== "DELETED"
                 )
                 ?.map((position: Maybe<Position>, index: number) => {
@@ -358,14 +374,14 @@ const HomePage: NextPageWithLayout = () => {
           </section>
         </div>
         <div className="relative col-span-4">
-          <section className="bg-edenGreen-100 -mt-40 rounded-md p-4">
+          <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4">
             {company && (
               <div className="flex flex-row items-center justify-between">
                 {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
                 {/* also src should be company.imageUrl */}
 
                 <Image
-                  className="rounded-full"
+                  className="rounded-md"
                   width="68"
                   height="68"
                   src={`${
@@ -453,7 +469,7 @@ const HomePage: NextPageWithLayout = () => {
             ).length > 6 && (
               <p className="text-edenGray-500 text-xs">and more...</p>
             )} */}
-              {positions.map((position, index) => (
+              {positionsList.map((position, index) => (
                 <Badge
                   key={index}
                   text={position || ""}
