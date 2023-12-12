@@ -233,27 +233,30 @@ const HomePage: NextPageWithLayout = () => {
         ></div>
       </section> */}
       <div className="mx-auto grid max-w-6xl grid-cols-12 gap-4 pb-16">
-        <div className="col-span-8 px-4">
+        {company?.type !== "COMMUNITY" && <div className="col-span-2"></div>}
+        <div className={"col-span-8 px-4"}>
           {/* {!currentUser && ( */}
-          <section className="bg-edenPink-100 mb-4 rounded-md p-4">
-            <h2 className="text-edenGreen-600 mb-2">
-              Use AI to leverage the {company?.name} network & land your dream
-              gig.
-            </h2>
-            <p className="text-edenGray-900 mb-4 text-sm">
-              {
-                "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
-              }
-            </p>
-            <Button
-              onClick={() => {
-                // signIn("google", { callbackUrl: router.asPath });
-                handleOasisClick();
-              }}
-            >
-              Join the oasis
-            </Button>
-          </section>
+          {company?.type === "COMMUNITY" && (
+            <section className="bg-edenPink-100 mb-4 rounded-md p-4">
+              <h2 className="text-edenGreen-600 mb-2">
+                Use AI to leverage the {company?.name} network & land your dream
+                gig.
+              </h2>
+              <p className="text-edenGray-900 mb-4 text-sm">
+                {
+                  "By joining the Oasis you'll have access to your personal AI-powered career coach who helps you apply, shine & land."
+                }
+              </p>
+              <Button
+                onClick={() => {
+                  // signIn("google", { callbackUrl: router.asPath });
+                  handleOasisClick();
+                }}
+              >
+                Join the oasis
+              </Button>
+            </section>
+          )}
           {/* )} */}
           <section className="">
             <h3 className="mb-2">Open opportunities</h3>
@@ -373,80 +376,86 @@ const HomePage: NextPageWithLayout = () => {
             </div>
           </section>
         </div>
-        <div className="relative col-span-4">
-          <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4">
-            {company && (
-              <div className="flex flex-row items-center justify-between">
-                {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
-                {/* also src should be company.imageUrl */}
+        {company?.type !== "COMMUNITY" && <div className="col-span-2"></div>}
+        {company?.type === "COMMUNITY" && (
+          <div className="relative col-span-4">
+            <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4">
+              {company && (
+                <div className="flex flex-row items-center justify-between">
+                  {/* added this validation bc it was breaking the build. Please make Image more stable.*/}
+                  {/* also src should be company.imageUrl */}
 
-                <Image
-                  className="rounded-md"
-                  width="68"
-                  height="68"
-                  src={`${
-                    company.imageUrl
-                      ? company.imageUrl
-                      : "/default-company-image.svg"
-                  }`}
-                  alt={`${company.name} company image`}
-                />
+                  <Image
+                    className="rounded-md"
+                    width="68"
+                    height="68"
+                    src={`${
+                      company.imageUrl
+                        ? company.imageUrl
+                        : "/default-company-image.svg"
+                    }`}
+                    alt={`${company.name} company image`}
+                  />
 
-                <Button
-                  variant="secondary"
-                  className="float-right"
-                  onClick={handlePostJobClick}
-                >
-                  Post a magic job
-                </Button>
-              </div>
-            )}
-            <div className="pt-2">
-              <div className="mb-4">
-                {company?.name ? (
-                  <h2 className="text-edenGreen-600 mb-2">{company?.name}</h2>
-                ) : (
-                  <h2 className="text-edenGreen-600 mb-2">
-                    Community talent oasis
-                  </h2>
-                )}
+                  <Button
+                    variant="secondary"
+                    className="float-right"
+                    onClick={handlePostJobClick}
+                  >
+                    Post a magic job
+                  </Button>
+                </div>
+              )}
+              <div className="pt-2">
+                <div className="mb-4">
+                  {company?.name ? (
+                    <h2 className="text-edenGreen-600 mb-2">{company?.name}</h2>
+                  ) : (
+                    <h2 className="text-edenGreen-600 mb-2">
+                      Community talent oasis
+                    </h2>
+                  )}
 
-                {!!company?.description && (
-                  <p className="mb-4 whitespace-pre-wrap text-sm">
-                    {company?.description}
-                  </p>
-                )}
-                {/* <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
+                  {!!company?.description && (
+                    <p className="mb-4 whitespace-pre-wrap text-sm">
+                      {company?.description}
+                    </p>
+                  )}
+                  {/* <div className="text-edenGray-700 mr-2 inline-block rounded-md bg-white px-3 py-2 leading-none">
               <p className="text-xs">Pre-vetted Candidates</p>
               <span className="text-edenGray-900 text-sm font-medium leading-none">
                 {company?.candidatesNum}
               </span>
             </div> */}
-                <div className="flex flex-row gap-[7px]">
-                  <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
-                    <p className="text-edenGray-700 text-xs leading-[16.8px]">
-                      Pre-vetted Candidates
-                    </p>
-                    <p className="text-sm font-medium leading-[19.6px]">273</p>
-                  </div>
-                  <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
-                    <p className="text-edenGray-700 text-xs leading-[16.8px]">
-                      Combined Skills
-                    </p>
-                    <p className="text-sm font-medium leading-[19.6px]">982</p>
+                  <div className="flex flex-row gap-[7px]">
+                    <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
+                      <p className="text-edenGray-700 text-xs leading-[16.8px]">
+                        Pre-vetted Candidates
+                      </p>
+                      <p className="text-sm font-medium leading-[19.6px]">
+                        273
+                      </p>
+                    </div>
+                    <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
+                      <p className="text-edenGray-700 text-xs leading-[16.8px]">
+                        Combined Skills
+                      </p>
+                      <p className="text-sm font-medium leading-[19.6px]">
+                        982
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* {company?.description && (
+                {/* {company?.description && (
             <div className="mb-4">
               <h3>About us</h3>
               <p className="text-xs">{company?.description}</p>
             </div>
           )} */}
 
-              <h2 className="text-edenGreen-600">Talent Pools active</h2>
-              {/* {company?.positions
+                <h2 className="text-edenGreen-600">Talent Pools active</h2>
+                {/* {company?.positions
             ?.filter(
               (_position) =>
                 _position?.status !== "ARCHIVED" &&
@@ -469,21 +478,22 @@ const HomePage: NextPageWithLayout = () => {
             ).length > 6 && (
               <p className="text-edenGray-500 text-xs">and more...</p>
             )} */}
-              {positionsList.map((position, index) => (
-                <Badge
-                  key={index}
-                  text={position || ""}
-                  cutText={22}
-                  className="border-edenGray-500 text-edenGreen-600 border"
+                {positionsList.map((position, index) => (
+                  <Badge
+                    key={index}
+                    text={position || ""}
+                    cutText={22}
+                    className="border-edenGray-500 text-edenGreen-600 border"
+                  />
+                ))}
+                <EdenAiProcessingModal
+                  title="Getting things ready for you"
+                  open={loadingSpinner}
                 />
-              ))}
-              <EdenAiProcessingModal
-                title="Getting things ready for you"
-                open={loadingSpinner}
-              />
-            </div>
-          </section>
-        </div>
+              </div>
+            </section>
+          </div>
+        )}
       </div>
     </>
   );
