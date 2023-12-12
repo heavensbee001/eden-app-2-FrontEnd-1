@@ -148,21 +148,21 @@ const HomePage: NextPageWithLayout = () => {
         })) || [];
 
   const handlePostJobClick = async () => {
-    if (
+    setLoadingSpinner(true);
+    if (!currentUser) {
+      await router.push(`/redirect-page/post-job?community=${company?._id}`);
+    } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
       currentUser?.companies[0].company?.slug
     ) {
-      setLoadingSpinner(true);
       await router.push(
         `/${currentUser?.companies[0].company?.slug}/dashboard`
       );
-      setLoadingSpinner(false);
     } else {
-      setLoadingSpinner(true);
       await router.push(`/pricing?community=${company?._id}`);
-      setLoadingSpinner(false);
     }
+    setLoadingSpinner(false);
   };
 
   const handlePickJobs = async (pos: any) => {
