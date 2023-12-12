@@ -1,9 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import {
-  CompanyContext,
-  DiscoverActionKind,
-  UserContext,
-} from "@eden/package-context";
+import { CompanyContext, UserContext } from "@eden/package-context";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
   AppUserLayout,
