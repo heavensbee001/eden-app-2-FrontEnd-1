@@ -11,6 +11,7 @@ const FIND_COMPANY_FROM_SLUG = gql`
     findCompanyFromSlug(fields: $fields) {
       _id
       name
+      type
       slug
       description
       imageUrl
@@ -29,14 +30,19 @@ const FIND_COMPANY_FROM_SLUG = gql`
           _id
           name
         }
-        company {
-          _id
-          name
-          imageUrl
-        }
         generalDetails {
           officePolicy
           contractType
+          yearlySalary {
+            min
+            max
+          }
+        }
+        company {
+          _id
+          name
+          slug
+          imageUrl
         }
       }
       employees {

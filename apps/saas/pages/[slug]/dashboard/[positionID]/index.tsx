@@ -1592,7 +1592,7 @@ const PositionCRM: NextPageWithLayout = () => {
 
               <div
                 className={classNames(
-                  "scrollbar-hide scrollbar-hide overflow-x-scroll transition-all ease-in-out",
+                  "scrollbar-hide overflow-x-scroll transition-all ease-in-out",
                   bestPicksOpen ? "max-h-[30vh] pt-4" : "max-h-0 pt-0"
                 )}
               >
@@ -1763,7 +1763,7 @@ const PositionCRM: NextPageWithLayout = () => {
                       {addToListOpen && (
                         <div
                           className={classNames(
-                            "scrollbar-hide scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
+                            "scrollbar-hide absolute left-0 top-6 z-40 max-h-[120px] w-[140px] overflow-y-scroll rounded-md border border-gray-200 bg-white hover:text-gray-600",
                             addToListOpen ? "" : "h-0"
                           )}
                         >
@@ -1959,7 +1959,7 @@ const PositionCRM: NextPageWithLayout = () => {
         >
           {router.query.candidate1 && router.query.candidate2 && (
             <>
-              <div className="scrollbar-hide scrollbar-hide border-box relative h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
+              <div className="scrollbar-hide border-box relative h-screen w-1/2 overflow-y-scroll border-r border-gray-300 bg-white">
                 {/* {router.query.candidate1 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate1 as string) || ""}
@@ -1992,7 +1992,7 @@ const PositionCRM: NextPageWithLayout = () => {
             </div>
           )} */}
               </div>
-              <div className="scrollbar-hide scrollbar-hide relative h-screen w-1/2 overflow-y-scroll bg-white">
+              <div className="scrollbar-hide relative h-screen w-1/2 overflow-y-scroll bg-white">
                 {/* {router.query.candidate2 ? ( */}
                 <CandidateInfo
                   key={(router.query.candidate2 as string) || ""}

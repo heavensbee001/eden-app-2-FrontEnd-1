@@ -1,30 +1,79 @@
 "use-client";
 
-import { gql, useMutation } from "@apollo/client";
-import { Button, EdenAiProcessingModal } from "@eden/package-ui";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { Button, EdenAiProcessingModal, Modal } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
-export const POSITION_TEXT_CONVO_TO_REPORT = gql`
-  mutation ($fields: positionTextAndConvoToReportCriteriaInput!) {
-    positionTextAndConvoToReportCriteria(fields: $fields) {
-      success
-      report
+export const FIND_SCORE_CARDS = gql`
+  query FindCardMemories($fields: findCardMemoriesInput) {
+    findCardMemories(fields: $fields) {
+      _id
+      content
+      scoreCriteria
+      authorCard {
+        userID
+      }
+      type
+      priority
+    }
+  }
+`;
+
+export const ADD_EDIT_SCORE_CARDS = gql`
+  mutation EditCardMemory($fields: editCardMemoryInput) {
+    editCardMemory(fields: $fields) {
+      _id
+      content
+      scoreCriteria
+      connectedCards {
+        card {
+          _id
+          content
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_SCORE_CARD = gql`
+  mutation DeleteCardMemory($fields: deleteCardMemoryInput) {
+    deleteCardMemory(fields: $fields) {
+      _id
+      content
     }
   }
 `;
 
 type QuestionSuggest = {
-  question: String;
-  IDCriteria?: String;
+  content: string;
+  authorCard?: { userID: string };
+  scoreCriteria?: string;
+  priority: number;
+  type: string;
+  _id: string;
 };
+
 type QuestionGroupedByCategory = {
   [category: string]: QuestionSuggest[];
 };
+
+type BatchCardType = {
+  cardMemoryID?: string;
+  content: string;
+  scoreCriteria: string;
+  type?: string;
+  priority?: number;
+};
+
+interface Category {
+  name: string;
+  bullets: string[];
+}
 
 interface IProfileQuestionsContainerProps {
   // eslint-disable-next-line no-unused-vars
@@ -41,110 +90,126 @@ export const ProfileQuestionsContainer = ({
   // eslint-disable-next-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
+  const editTextareaRef = useRef(null);
 
-  const [scraping, setScraping] = useState<boolean>(false);
+  const types = ["TECHNICAL_SKILLS", "BEHAVIOR", "EXPERIENCE", "CORE_VALUES"];
+
   const [index, setIndex] = useState<number>(0);
   const [editQuestionIndex, setEditQuestionIndex] = useState<number | null>(
     null
   );
+  const [isAddQuestion, setIsAddQuestion] = useState<boolean>(false);
+  const [deleteQuestionIndex, setDeleteQuestionIndex] = useState<number | null>(
+    null
+  );
   const [questions, setQuestions] = useState<QuestionGroupedByCategory>({});
+  const [originalQuestions, setOriginalQuestions] =
+    useState<QuestionGroupedByCategory>({});
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   const [categories, setCategories] = useState<Category[]>([]);
-  // const [scrapingSave, setScrapingSave] = useState<boolean>(false);
-
-  // const { register, watch, control, setValue, getValues } = useForm<Members>({
-  //   defaultValues: { ...currentUser },
-  // });
 
   const { positionID } = router.query;
 
-  const [positionTextAndConvoToReportCriteria] = useMutation(
-    POSITION_TEXT_CONVO_TO_REPORT,
-    {
-      onCompleted({ positionTextAndConvoToReportCriteria }) {
-        // console.log(
-        //   "positionTextAndConvoToReportCriteria = ",
-        //   positionTextAndConvoToReportCriteria
-        // );
+  const [deleteScoreCardMutation] = useMutation(DELETE_SCORE_CARD);
+  const [addEditScoreCardsMutation] = useMutation(ADD_EDIT_SCORE_CARDS, {
+    onCompleted: () => {
+      setSubmitting(false);
+      console.log("Success");
+      setIndex(index + 1);
+    },
+    onError: () => {
+      setIndex(index + 1);
+      console.log("Failure");
+      setSubmitting(false);
+    },
+  });
 
-        setScraping(false);
+  const useOutside = (ref: any, callback: any) => {
+    useEffect(() => {
+      const handleClickOutside = (event: { target: any }) => {
+        if (ref.current && !ref.current.contains(event.target)) callback();
+      };
 
-        // setScrapingSave(false);
+      document.addEventListener("mousedown", handleClickOutside);
 
-        let jobDescription =
-          positionTextAndConvoToReportCriteria.report.replace(/<|>/g, "");
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [callback, ref]);
+  };
 
-        //Change - to •
-        jobDescription = jobDescription.replace(/-\s/g, "• ");
+  useOutside(editTextareaRef, () => {
+    if (isAddQuestion && editQuestionIndex) {
+      const _newArr = [...questions[types[index]]];
 
-        const resConvert = convertTextCategoriesToObj(jobDescription);
+      if (_newArr[editQuestionIndex].content === "") {
+        _newArr.splice(editQuestionIndex, 1);
 
-        // setQuestions(convertTextCategoriesToObj(jobDescription));
-        setQuestions(resConvert.categoriesObj);
-        setCategories(resConvert.categories);
-      },
-      onError() {
-        setScraping(false);
-      },
+        setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
+          ...prevQuestions,
+          [types[index]]: _newArr,
+        }));
+      }
     }
-  );
+    setEditQuestionIndex(null);
+  });
 
-  // const handleClick = () => {
-  //   console.log("change =");
+  const { loading: findScorecardsLoading } = useQuery(FIND_SCORE_CARDS, {
+    variables: {
+      fields: {
+        positionID: positionID,
+      },
+    },
+    skip: !positionID,
+    onCompleted: (data) => {
+      const categoriesObj: QuestionGroupedByCategory = {};
 
-  //   setScraping(true);
+      types.map((type) =>
+        (categoriesObj[type] = data?.findCardMemories?.filter(
+          (cardMemory: QuestionSuggest) => cardMemory.type === type
+        )).sort(
+          (a: QuestionSuggest, b: QuestionSuggest) => a.priority - b.priority
+        )
+      );
 
-  //   positionTextAndConvoToReportCriteria({
-  //     variables: {
-  //       // fields: { message: textResponse, userID: currentUser?._id },
-  //       fields: {
-  //         positionID: positionID,
-  //       },
-  //     },
-  //   });
-  // };
+      const categories: Category[] = [];
+
+      types.map((type) =>
+        categories.push({
+          name: type,
+          bullets: categoriesObj[type].map((question) => question.content),
+        })
+      );
+      setCategories(categories);
+      setQuestions(categoriesObj);
+      setOriginalQuestions(categoriesObj);
+    },
+  });
 
   useEffect(() => {
     setEditQuestionIndex(null);
   }, [index]);
 
-  useEffect(() => {
-    if (scraping == false) {
-      setScraping(true);
-
-      positionTextAndConvoToReportCriteria({
-        variables: {
-          // fields: { message: textResponse, userID: currentUser?._id },
-          fields: {
-            positionID: positionID,
-          },
-        },
-      });
-      return () => {
-        setScraping(false);
-      };
-    }
-  }, []);
-
   const handleQuestionChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-    index: number,
-    category: string
+    e: React.ChangeEvent<HTMLTextAreaElement>
   ): void => {
-    const { name, value } = event.target;
+    const { name, value } = e.target;
 
     setQuestions((prevQuestions) => {
       const newQuestions: QuestionGroupedByCategory = { ...prevQuestions };
 
-      newQuestions[category] = newQuestions[category].map((question, i) => {
-        if (i === index) {
-          return {
-            ...question,
-            [name]: value,
-          };
+      newQuestions[types[index]] = newQuestions[types[index]].map(
+        (question, i) => {
+          if (i === editQuestionIndex) {
+            return {
+              ...question,
+              [name]: value,
+            };
+          }
+          return question;
         }
-        return question;
-      });
+      );
 
       return newQuestions;
     });
@@ -157,40 +222,83 @@ export const ProfileQuestionsContainer = ({
       [category]: [
         ...prevQuestions[category],
         {
-          question: "",
-          IDCriteria: `b${prevQuestions[category].length + 1}`,
+          content: "",
+          scoreCriteria: `b${prevQuestions[category].length + 1}`,
+          authorCard: { userID: "string" },
+          priority: 3,
+          type: category,
+          _id: "",
         },
       ],
     }));
   };
 
-  const handleDeleteQuestion = (category: string, position: number) => {
-    const _newArr = [...questions[category]];
+  const handleDeleteQuestion = () => {
+    if (deleteQuestionIndex !== null) {
+      const _newArr = [...questions[types[index]]];
 
-    _newArr.splice(position, 1);
+      _newArr.splice(deleteQuestionIndex, 1);
 
-    setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
-      ...prevQuestions,
-      [category]: _newArr,
-    }));
+      setQuestions((prevQuestions: QuestionGroupedByCategory) => ({
+        ...prevQuestions,
+        [types[index]]: _newArr,
+      }));
+      deleteScoreCardMutation({
+        variables: {
+          fields: {
+            _id: questions[types[index]][deleteQuestionIndex]._id,
+          },
+        },
+      });
+
+      setIsDeleteModalOpen(false);
+      setDeleteQuestionIndex(null);
+    }
   };
 
   const handleEditQuestion = (position: number) => {
     setEditQuestionIndex(position);
   };
 
-  // const handleSaveChanges = () => {
-  //   setScrapingSave(true);
+  const handleSaveChanges = () => {
+    if (!submitting) {
+      setSubmitting(true);
+      const batchCards: BatchCardType[] = [];
 
-  //   positionTextAndConvoToReportCriteria({
-  //     variables: {
-  //       fields: {
-  //         positionID: positionID,
-  //         updatedReport: convertCategoryToText(categories, questions),
-  //       },
-  //     },
-  //   });
-  // };
+      questions[types[index]].map((question) => {
+        if (question._id === "") {
+          batchCards.push({
+            content: question.content,
+            scoreCriteria: "",
+            type: types[index],
+            priority: 3,
+          });
+        } else if (
+          originalQuestions[types[index]].filter(
+            (oriQuestion) =>
+              oriQuestion._id === question._id &&
+              oriQuestion.content !== question.content
+          ).length > 0
+        ) {
+          batchCards.push({
+            cardMemoryID: question._id,
+            content: question.content,
+            scoreCriteria: "",
+          });
+        }
+      });
+
+      addEditScoreCardsMutation({
+        variables: {
+          fields: {
+            positionID,
+            updateCandidatesPosition: true,
+            batchCards,
+          },
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     onChange(convertCategoryToText(categories, questions));
@@ -206,9 +314,9 @@ export const ProfileQuestionsContainer = ({
 
   return (
     <div className="relative mt-6 w-full pt-3">
-      {scraping && (
+      {findScorecardsLoading && (
         <EdenAiProcessingModal
-          open={scraping}
+          open={findScorecardsLoading}
           title="Compiling candidate checklist"
         >
           <div className="text-center">
@@ -216,7 +324,30 @@ export const ProfileQuestionsContainer = ({
           </div>
         </EdenAiProcessingModal>
       )}
-      {!scraping && questions && (
+      <Modal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        closeOnEsc
+      >
+        <p className="text-md">
+          Are you sure you want to delete this question?
+        </p>
+        <div className="flex flex-row justify-end gap-3">
+          <Button
+            variant="default"
+            onClick={() => {
+              setIsDeleteModalOpen(false);
+              setDeleteQuestionIndex(null);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={() => handleDeleteQuestion()}>
+            Delete
+          </Button>
+        </div>
+      </Modal>
+      {!findScorecardsLoading && questions && (
         <div className="whitespace-pre-wrap">
           <Tab.Group
             defaultIndex={0}
@@ -252,18 +383,22 @@ export const ProfileQuestionsContainer = ({
                         className="relative mb-3 flex"
                       >
                         <textarea
-                          name="question"
+                          name="content"
+                          title="content"
                           disabled={editQuestionIndex !== __index}
-                          value={question.question.toString()}
-                          onChange={(event) =>
-                            handleQuestionChange(event, __index, category)
-                          }
+                          value={question.content.toString()}
+                          onChange={(e) => handleQuestionChange(e)}
                           className={classNames(
                             "w-10/12 resize-none bg-transparent px-2",
                             editQuestionIndex === __index
                               ? "border-edenGray-200 border-box rounded-md border"
                               : ""
                           )}
+                          ref={
+                            editQuestionIndex === __index
+                              ? editTextareaRef
+                              : null
+                          }
                         />
                         <Button
                           variant="tertiary"
@@ -276,8 +411,12 @@ export const ProfileQuestionsContainer = ({
                         </Button>
                         <Button
                           variant="tertiary"
-                          onClick={() =>
-                            handleDeleteQuestion(category, __index)
+                          onClick={
+                            () => {
+                              setDeleteQuestionIndex(__index);
+                              setIsDeleteModalOpen(true);
+                            }
+                            // handleDeleteQuestion(category, __index)
                           }
                           className="!bg-edenPink-300 text-utilityRed ml-2 flex h-6 w-6 items-center justify-center rounded-md !p-0 hover:opacity-60"
                         >
@@ -288,7 +427,10 @@ export const ProfileQuestionsContainer = ({
                   </div>
                   <Button
                     variant="tertiary"
-                    onClick={() => handleAddQuestion(category)}
+                    onClick={() => {
+                      setIsAddQuestion(true);
+                      handleAddQuestion(category);
+                    }}
                     className="float-right text-sm"
                   >
                     + Add a Question
@@ -311,10 +453,11 @@ export const ProfileQuestionsContainer = ({
         <div className={"pointer-events-none fixed bottom-0 w-full max-w-2xl"}>
           <Button
             variant={"primary"}
+            // disabled={submitting}
             className={"bg-bgColor pointer-events-auto mx-auto block"}
-            onClick={() => setIndex(index + 1)}
+            onClick={handleSaveChanges}
           >
-            Continue
+            {submitting ? "Saving..." : "Continue"}
           </Button>
         </div>
       )}
@@ -322,15 +465,10 @@ export const ProfileQuestionsContainer = ({
   );
 };
 
-interface Category {
-  name: string;
-  bullets: string[];
-}
-
-function convertCategoryToText(
+const convertCategoryToText = (
   categories: Category[],
   categoriesObj: QuestionGroupedByCategory
-) {
+) => {
   let content = "";
 
   let idx = 0;
@@ -345,64 +483,64 @@ function convertCategoryToText(
     for (const bullet of bullets) {
       bulletIdx += 1;
 
-      content += `- b${bulletIdx}: ${bullet.question}\n`;
+      content += `- b${bulletIdx}: ${bullet.content}\n`;
     }
   }
 
   return content;
-}
+};
 
-function convertTextCategoriesToObj(text: string) {
-  // function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
-  const categories: Category[] = [];
+// function convertTextCategoriesToObj(text: string) {
+//   // function convertTextCategoriesToObj(text: string): QuestionGroupedByCategory {
+//   const categories: Category[] = [];
 
-  // Split the text into lines
+//   // Split the text into lines
 
-  const lines = text.split("\n");
+//   const lines = text.split("\n");
 
-  let currentCategory: Category | null = null;
+//   let currentCategory: Category | null = null;
 
-  // Process each line
-  lines.forEach((line) => {
-    // Remove leading/trailing white spaces and colons
-    const trimmedLine = line.trim();
+//   // Process each line
+//   lines.forEach((line) => {
+//     // Remove leading/trailing white spaces and colons
+//     const trimmedLine = line.trim();
 
-    // Check if it's a category line
-    if (trimmedLine.startsWith("Category")) {
-      const categoryName = trimmedLine
-        .substring(trimmedLine.indexOf(":") + 1)
-        .trim();
+//     // Check if it's a category line
+//     if (trimmedLine.startsWith("Category")) {
+//       const categoryName = trimmedLine
+//         .substring(trimmedLine.indexOf(":") + 1)
+//         .trim();
 
-      currentCategory = { name: categoryName, bullets: [] };
-      categories.push(currentCategory);
-    }
+//       currentCategory = { name: categoryName, bullets: [] };
+//       categories.push(currentCategory);
+//     }
 
-    // Check if it's a bullet point line
-    if (trimmedLine.startsWith("•")) {
-      if (currentCategory) {
-        const bulletText = trimmedLine
-          .replace("•", "")
-          .substring(trimmedLine.indexOf(":") + 1)
-          .trim();
+//     // Check if it's a bullet point line
+//     if (trimmedLine.startsWith("•")) {
+//       if (currentCategory) {
+//         const bulletText = trimmedLine
+//           .replace("•", "")
+//           .substring(trimmedLine.indexOf(":") + 1)
+//           .trim();
 
-        currentCategory.bullets.push(bulletText);
-      }
-    }
-  });
+//         currentCategory.bullets.push(bulletText);
+//       }
+//     }
+//   });
 
-  const categoriesObj: QuestionGroupedByCategory = categories.reduce(
-    (acc, category) => {
-      acc[category.name] = category.bullets.map((bullet) => ({
-        question: bullet,
-      }));
+//   const categoriesObj: QuestionGroupedByCategory = categories.reduce(
+//     (acc, category) => {
+//       acc[category.name] = category.bullets.map((bullet) => ({
+//         question: bullet,
+//       }));
 
-      return acc;
-    },
-    {} as QuestionGroupedByCategory
-  );
+//       return acc;
+//     },
+//     {} as QuestionGroupedByCategory
+//   );
 
-  return {
-    categoriesObj: categoriesObj,
-    categories: categories,
-  };
-}
+//   return {
+//     categoriesObj: categoriesObj,
+//     categories: categories,
+//   };
+// }

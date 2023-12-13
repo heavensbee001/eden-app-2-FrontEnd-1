@@ -37,6 +37,7 @@ export * from "./SearchEdenAI";
 export * from "./SendMessageToChampion";
 export * from "./SendMessageToUser";
 export * from "./SendMessageUserToUser";
+export * from "./SeoImage";
 export * from "./ServerFilter";
 export * from "./SkillSelector";
 export * from "./SocialMediaComponent";
