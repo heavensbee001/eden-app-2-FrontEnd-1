@@ -294,6 +294,7 @@ export const getStaticProps = async (context: any) => {
     };
   } catch (error) {
     console.log(error);
+    return { notFound: true };
   }
 };
 
@@ -334,7 +335,7 @@ export const getStaticPaths = (async () => {
     console.log(error);
     return {
       paths: [],
-      fallback: false,
+      fallback: true,
     };
   }
 }) satisfies GetStaticPaths;
