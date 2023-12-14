@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import { gql, useQuery } from "@apollo/client";
+// eslint-disable-next-line no-unused-vars
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Company, Maybe, Position } from "@eden/package-graphql/generated";
 import {
@@ -10,6 +12,8 @@ import {
   EdenTooltip,
   SEO,
 } from "@eden/package-ui";
+import axios from "axios";
+import { GetStaticPaths, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -21,58 +25,21 @@ import {
   useRef,
   useState,
 } from "react";
-// import { IconPickerItem } from "react-fa-icon-picker";
 import ReactTooltip from "react-tooltip";
 
 import type { NextPageWithLayout } from "../../_app";
 
-export const FIND_POSITIONS_OF_COMMUNITY = gql`
-  query Query($fields: findPositionsOfCommunityInput) {
-    findPositionsOfCommunity(fields: $fields) {
-      _id
-      name
-      status
-      icon
-      generalDetails {
-        officePolicy
-        contractType
-        yearlySalary {
-          min
-          max
-        }
-      }
-      company {
-        _id
-        name
-        slug
-        imageUrl
-      }
-    }
-  }
-`;
-
-const JobsPage: NextPageWithLayout = () => {
+const JobsPage: NextPageWithLayout = ({
+  company,
+  positions,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
-  const { company } = useContext(CompanyContext);
-
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
-  const { data: findPositionsOfCommunityData } = useQuery(
-    FIND_POSITIONS_OF_COMMUNITY,
-    {
-      variables: {
-        fields: {
-          slug: router.query.slug,
-        },
-      },
-      skip: company?.type !== "COMMUNITY",
-    }
-  );
-
-  const positions: Position[] =
-    (company?.type === "COMMUNITY"
-      ? findPositionsOfCommunityData?.findPositionsOfCommunity
-      : company?.positions?.map((item) => {
+  const _positions: Position[] =
+    (company.type === "COMMUNITY"
+      ? positions
+      : positions?.map((item: any) => {
           //this map avoids having to fetch company again inside each position in backend
           item!.company = {
             _id: company._id,
@@ -155,22 +122,15 @@ const JobsPage: NextPageWithLayout = () => {
           <section className="">
             <h3 className="mb-2">Open opportunities</h3>
             <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-              {positions!
-                .filter(
-                  (_position: Position) =>
-                    _position?.status !== "ARCHIVED" &&
-                    _position?.status !== "UNPUBLISHED" &&
-                    _position?.status !== "DELETED"
-                )
-                ?.map((position: Maybe<Position>, index: number) => {
-                  return (
-                    <PositionCard
-                      position={position!}
-                      setLoadingSpinner={setLoadingSpinner}
-                      key={index}
-                    />
-                  );
-                })}
+              {_positions?.map((position: Maybe<Position>, index: number) => {
+                return (
+                  <PositionCard
+                    position={position!}
+                    setLoadingSpinner={setLoadingSpinner}
+                    key={index}
+                  />
+                );
+              })}
             </div>
           </section>
         </div>
@@ -195,6 +155,174 @@ const JobsPage: NextPageWithLayout = () => {
 };
 
 JobsPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+
+export const getStaticProps = async (context: any) => {
+  const companyRes = await axios.post(
+    process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+    {
+      headers: {
+        "Access-Control-Allow-Origin": `*`,
+      },
+      variables: { fields: { slug: context.params.slug } },
+      query: `
+      query ($fields: findCompanyFromSlugInput) {
+        findCompanyFromSlug(fields: $fields) {
+          _id
+          name
+          type
+          slug
+          description
+          imageUrl
+          mission
+          description
+          benefits
+          values
+          founders
+          whatsToLove
+          positions {
+            _id
+            name
+            icon
+            status
+            talentList {
+              _id
+              name
+            }
+            generalDetails {
+              officePolicy
+              contractType
+              yearlySalary {
+                min
+                max
+              }
+            }
+            company {
+              _id
+              name
+              slug
+              imageUrl
+            }
+          }
+          employees {
+            status
+            typeT
+            user {
+              _id
+              discordName
+              discordAvatar
+            }
+          }
+          # candidatesNum
+          skillsNum
+        }
+      }
+    `,
+    }
+  );
+
+  const company = companyRes.data.data.findCompanyFromSlug;
+  let positions;
+
+  if (company.type === "COMMUNITY") {
+    const communityPositions = await axios.post(
+      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `*`,
+        },
+        variables: {
+          fields: { slug: context.params.slug },
+        },
+        query: `
+        query Query($fields: findPositionsOfCommunityInput) {
+          findPositionsOfCommunity(fields: $fields) {
+            _id
+            name
+            status
+            icon
+            generalDetails {
+              officePolicy
+              contractType
+              yearlySalary {
+                min
+                max
+              }
+            }
+            company {
+              _id
+              name
+              slug
+              imageUrl
+            }
+          }
+        }
+      `,
+      }
+    );
+
+    positions = communityPositions.data.data.findPositionsOfCommunity;
+  } else {
+    positions = company.positions;
+    positions?.map((item: any) => {
+      //this map avoids having to fetch company again inside each position in backend
+      item!.company = {
+        _id: company._id,
+        name: company.name,
+        slug: company.slug,
+        imageUrl: company.imageUrl,
+      };
+      return item;
+    });
+  }
+
+  const filteredPositions = positions.filter(
+    (_position: Position) =>
+      _position?.status !== "ARCHIVED" &&
+      _position?.status !== "UNPUBLISHED" &&
+      _position?.status !== "DELETED"
+  );
+
+  return {
+    props: {
+      company,
+      positions: filteredPositions,
+    },
+    // 10 min to rebuild all paths
+    // (this means new data will show up after 10 min of being added)
+    revalidate: 600,
+  };
+};
+
+export const getStaticPaths = (async () => {
+  const res = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL as string, {
+    headers: {
+      "Access-Control-Allow-Origin": `*`,
+    },
+    variables: { fields: [] },
+    query: `
+      query FindCompanies($fields: findCompaniesInput) {
+        findCompanies(fields: $fields) {
+          _id
+          slug
+        }
+      }
+    `,
+  });
+
+  const paths = res.data.data.findCompanies
+    .filter((_comp: any) => !!_comp.slug)
+    .map((_comp: any) => ({
+      params: { slug: _comp.slug },
+    }));
+
+  console.log("getStaticPaths --- ", paths);
+
+  // { fallback: false } means other routes should 404
+  return {
+    paths,
+    fallback: false,
+  };
+}) satisfies GetStaticPaths;
 
 export default JobsPage;
 
