@@ -157,14 +157,15 @@ const JobsPage: NextPageWithLayout = ({
 JobsPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export const getStaticProps = async (context: any) => {
-  const companyRes = await axios.post(
-    process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
-    {
-      headers: {
-        "Access-Control-Allow-Origin": `*`,
-      },
-      variables: { fields: { slug: context.params.slug } },
-      query: `
+  try {
+    const companyRes = await axios.post(
+      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `*`,
+        },
+        variables: { fields: { slug: context.params.slug } },
+        query: `
       query ($fields: findCompanyFromSlugInput) {
         findCompanyFromSlug(fields: $fields) {
           _id
@@ -217,23 +218,23 @@ export const getStaticProps = async (context: any) => {
         }
       }
     `,
-    }
-  );
+      }
+    );
 
-  const company = companyRes.data.data.findCompanyFromSlug;
-  let positions;
+    const company = companyRes.data.data.findCompanyFromSlug;
+    let positions;
 
-  if (company.type === "COMMUNITY") {
-    const communityPositions = await axios.post(
-      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
-      {
-        headers: {
-          "Access-Control-Allow-Origin": `*`,
-        },
-        variables: {
-          fields: { slug: context.params.slug },
-        },
-        query: `
+    if (company.type === "COMMUNITY") {
+      const communityPositions = await axios.post(
+        process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": `*`,
+          },
+          variables: {
+            fields: { slug: context.params.slug },
+          },
+          query: `
         query Query($fields: findPositionsOfCommunityInput) {
           findPositionsOfCommunity(fields: $fields) {
             _id
@@ -257,49 +258,55 @@ export const getStaticProps = async (context: any) => {
           }
         }
       `,
-      }
+        }
+      );
+
+      positions = communityPositions.data.data.findPositionsOfCommunity;
+    } else {
+      positions = company.positions;
+      positions?.map((item: any) => {
+        //this map avoids having to fetch company again inside each position in backend
+        item!.company = {
+          _id: company._id,
+          name: company.name,
+          slug: company.slug,
+          imageUrl: company.imageUrl,
+        };
+        return item;
+      });
+    }
+
+    const filteredPositions = positions.filter(
+      (_position: Position) =>
+        _position?.status !== "ARCHIVED" &&
+        _position?.status !== "UNPUBLISHED" &&
+        _position?.status !== "DELETED"
     );
 
-    positions = communityPositions.data.data.findPositionsOfCommunity;
-  } else {
-    positions = company.positions;
-    positions?.map((item: any) => {
-      //this map avoids having to fetch company again inside each position in backend
-      item!.company = {
-        _id: company._id,
-        name: company.name,
-        slug: company.slug,
-        imageUrl: company.imageUrl,
-      };
-      return item;
-    });
+    return {
+      props: {
+        company,
+        positions: filteredPositions,
+      },
+      // 10 min to rebuild all paths
+      // (this means new data will show up after 10 min of being added)
+      revalidate: 600,
+    };
+  } catch (error) {
+    console.log(error);
   }
-
-  const filteredPositions = positions.filter(
-    (_position: Position) =>
-      _position?.status !== "ARCHIVED" &&
-      _position?.status !== "UNPUBLISHED" &&
-      _position?.status !== "DELETED"
-  );
-
-  return {
-    props: {
-      company,
-      positions: filteredPositions,
-    },
-    // 10 min to rebuild all paths
-    // (this means new data will show up after 10 min of being added)
-    revalidate: 600,
-  };
 };
 
 export const getStaticPaths = (async () => {
-  const res = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL as string, {
-    headers: {
-      "Access-Control-Allow-Origin": `*`,
-    },
-    variables: { fields: [] },
-    query: `
+  try {
+    const res = await axios.post(
+      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `*`,
+        },
+        variables: { fields: [] },
+        query: `
       query FindCompanies($fields: findCompaniesInput) {
         findCompanies(fields: $fields) {
           _id
@@ -307,21 +314,29 @@ export const getStaticPaths = (async () => {
         }
       }
     `,
-  });
+      }
+    );
 
-  const paths = res.data.data.findCompanies
-    .filter((_comp: any) => !!_comp.slug)
-    .map((_comp: any) => ({
-      params: { slug: _comp.slug },
-    }));
+    const paths = res.data.data.findCompanies
+      .filter((_comp: any) => !!_comp.slug)
+      .map((_comp: any) => ({
+        params: { slug: _comp.slug },
+      }));
 
-  console.log("getStaticPaths --- ", paths);
+    console.log("getStaticPaths --- ", paths);
 
-  // { fallback: false } means other routes should 404
-  return {
-    paths,
-    fallback: false,
-  };
+    // { fallback: false } means other routes should 404
+    return {
+      paths,
+      fallback: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      paths: [],
+      fallback: false,
+    };
+  }
 }) satisfies GetStaticPaths;
 
 export default JobsPage;
