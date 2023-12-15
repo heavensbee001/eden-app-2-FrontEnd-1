@@ -10,7 +10,7 @@ import {
   EdenIconExclamationAndQuestion,
   Loading,
   Modal,
-  SEO,
+  SEOPosition,
   Tooltip,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
@@ -287,10 +287,14 @@ const PositionPage: NextPageWithLayout = ({
 
   return (
     <>
-      <SEO
+      <SEOPosition
         title={position?.company?.name || ""}
         description={position?.name || ""}
         image={position?.company?.imageUrl || ""}
+        salaryMax={position.generalDetails?.yearlySalary?.max!}
+        salaryMin={position.generalDetails?.yearlySalary?.min!}
+        officePolicy={position.generalDetails?.officePolicy!}
+        location={position.generalDetails?.officeLocation!}
       />
       <Head>
         <title>{position?.name}</title>
