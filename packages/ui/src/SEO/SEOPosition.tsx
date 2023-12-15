@@ -56,7 +56,7 @@ export const SEOPosition: FC<SEOPositionProps> = ({
   }
 
   const ogImage = process.env.VERCEL_URL
-    ? "https://" + process.env.VERCEL_URL + apiUrl
+    ? process.env.VERCEL_URL + apiUrl
     : "" + apiUrl;
 
   return (

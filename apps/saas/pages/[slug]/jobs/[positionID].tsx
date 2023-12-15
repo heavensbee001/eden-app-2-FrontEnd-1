@@ -19,7 +19,6 @@ import {
   GetServerSidePropsContext,
   // Metadata
 } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
@@ -288,16 +287,16 @@ const PositionPage: NextPageWithLayout = ({
   return (
     <>
       <SEOPosition
-        title={position?.company?.name || ""}
-        description={position?.name || ""}
+        title={`${position?.name} @ ${position.company?.name}`}
+        description={position?.company?.description || ""}
         image={position?.company?.imageUrl || ""}
+        position={position?.name!}
         salaryMax={position.generalDetails?.yearlySalary?.max!}
         salaryMin={position.generalDetails?.yearlySalary?.min!}
         officePolicy={position.generalDetails?.officePolicy!}
         location={position.generalDetails?.officeLocation!}
       />
-      <Head>
-        <title>{position?.name}</title>
+      {/* <title>{position?.name}</title>
         <meta
           name="description"
           content={`${position?.company?.description}`}
@@ -308,8 +307,7 @@ const PositionPage: NextPageWithLayout = ({
           content={`https://eden-saas-develop.vercel.app/api/og/route`}
         />
         <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-      </Head>
+        <meta property="og:image:height" content="630" /> */}
       <div>
         <section
           className="flex w-full justify-center py-24"
