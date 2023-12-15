@@ -37,10 +37,23 @@ export const SEOPosition: FC<SEOPositionProps> = ({
   // console.log("image", image);
 
   // const apiUrl = `/api/og/position?image=${imageSrc}&position=${position}`;
-  const apiUrl = `/api/og/position??image=${imageSrc}&position=${position}&salaryMin=${salaryMin}&salaryMax=${salaryMax}&officePolicy=${officePolicy}&location=${location}`;
-  //   const apiUrl = `/api/og/position?image=${imageSrc}`;
+  let apiUrl = `/api/og/position?image=${imageSrc}`;
 
-  // console.log("apiUrl", apiUrl);
+  if (position) {
+    apiUrl = apiUrl + `&position=${position}`;
+  }
+  if (salaryMin) {
+    apiUrl = apiUrl + `&salaryMin=${salaryMin}`;
+  }
+  if (salaryMax) {
+    apiUrl = apiUrl + `&salaryMax=${salaryMax}`;
+  }
+  if (officePolicy) {
+    apiUrl = apiUrl + `&officePolicy=${officePolicy}`;
+  }
+  if (location) {
+    apiUrl = apiUrl + `&location=${location}`;
+  }
 
   const ogImage = process.env.VERCEL_URL
     ? "https://" + process.env.VERCEL_URL + apiUrl
