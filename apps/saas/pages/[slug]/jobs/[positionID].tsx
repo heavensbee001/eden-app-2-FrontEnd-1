@@ -1322,7 +1322,11 @@ const PositionPage: NextPageWithLayout = ({
 //   };
 // }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const getStaticProps = async (context: any) => {
+  await delay(200);
+
   try {
     const positionID = context.params?.positionID;
 
