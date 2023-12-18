@@ -15,7 +15,7 @@ export default async function handler(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
 
-    const params = getParamsFromUrl(req.url);
+    const params = getParamsFromUrl(req.url.replaceAll("+", "%20"));
 
     const imageSrc = searchParams.get("image") ?? DEFAULT_IMAGE;
 
@@ -41,9 +41,14 @@ export default async function handler(req: NextRequest) {
           }}
         >
           <EdenIconExclamationAndQuestion />
-          <h2 tw="text-[6rem] text-[#F5C7DE] leading-[5rem]">know a great</h2>
-          <h2 tw="text-[8rem] -mt-6 text-[#F5C7DE] mb-8">
-            {params?.position}
+
+          <h2 tw="text-[5rem] text-[#F5C7DE] leading-[4rem]">know a great</h2>
+          <h2 tw="flex flex-wrap text-[6rem] text-[#F5C7DE] mb-8 leading-[5rem]">
+            {params?.position?.split(" ").map((word, index) => (
+              <span tw="mr-3" key={index}>
+                {word}
+              </span>
+            ))}
             <QuestionSVG />
           </h2>
 
@@ -203,8 +208,8 @@ const QuestionSVG = () => {
       data-name="Layer 1"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 4.02 8.06"
-      height={"6rem"}
-      style={{ marginTop: "2rem" }}
+      height={"5rem"}
+      style={{ marginTop: "0.5rem" }}
     >
       <path
         d="m.73,4.37c0-.52.29-.92.67-1.38.49-.58,1.24-1.42,1.24-1.98,0-.23-.11-.31-.28-.31-.48,0-1.25.72-1.83,2.11L0,.46c.3-.17,1-.46,1.93-.46,1.32,0,2.09.55,2.09,1.73s-.71,1.75-1.51,2.4c-.61.5-1.19.94-1.22,1.64-.36-.53-.55-1-.55-1.4Zm-.4,2.72c0-.52.41-.97,1.01-.97s1.03.46,1.03.97-.42.97-1.03.97-1.01-.46-1.01-.97Z"
