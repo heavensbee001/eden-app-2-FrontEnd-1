@@ -1,4 +1,10 @@
-import { ApolloClient, gql, InMemoryCache, useMutation } from "@apollo/client";
+import {
+  ApolloClient,
+  gql,
+  HttpLink,
+  InMemoryCache,
+  useMutation,
+} from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { Position, PositionStatus } from "@eden/package-graphql/generated";
 import {
@@ -1171,7 +1177,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { edit } = ctx.query;
 
   const client = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+    ssrMode: typeof window === "undefined",
+    link: new HttpLink({
+      uri: process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+      credentials: "same-origin",
+    }),
     cache: new InMemoryCache(),
   });
 
