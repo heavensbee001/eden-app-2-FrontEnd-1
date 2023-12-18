@@ -16,12 +16,12 @@ import {
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import {
-  GetServerSidePropsContext,
+  GetStaticPaths,
   // Metadata
 } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import {
@@ -1168,159 +1168,283 @@ const PositionPage: NextPageWithLayout = ({
   );
 };
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const positionID = ctx.params?.positionID;
-  const { edit } = ctx.query;
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   const positionID = ctx.params?.positionID;
+//   const { edit } = ctx.query;
 
-  const client = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-    cache: new InMemoryCache(),
-  });
+//   const client = new ApolloClient({
+//     uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+//     cache: new InMemoryCache(),
+//   });
 
-  const { data } = await client.query({
-    query: gql`
-      query ($fields: findPositionInput!) {
-        findPosition(fields: $fields) {
-          _id
-          name
-          status
-          whoYouAre
-          whatTheJobInvolves
-          company {
+//   const { data } = await client.query({
+//     query: gql`
+//       query ($fields: findPositionInput!) {
+//         findPosition(fields: $fields) {
+//           _id
+//           name
+//           status
+//           whoYouAre
+//           whatTheJobInvolves
+//           company {
+//             _id
+//             name
+//             slug
+//             imageUrl
+//             description
+//             benefits
+//             employeesNumber
+//             tags
+//             whatsToLove
+//             mission
+//             insights {
+//               letter
+//               text
+//             }
+//             edenTake
+//             funding {
+//               name
+//               date
+//               amount
+//             }
+//             culture {
+//               tags
+//               description
+//             }
+//             benefits
+//             values
+//             founders
+//             glassdoor
+//           }
+//           generalDetails {
+//             yearlySalary {
+//               min
+//               max
+//             }
+//             contractType
+//             officePolicy
+//             officeLocation
+//           }
+//         }
+//       }
+//     `,
+//     variables: {
+//       fields: {
+//         _id: positionID,
+//       },
+//     },
+//   });
+
+//   // if not edit mode don't authenticate, allow
+//   if (edit !== "true") {
+//     return {
+//       props: { position: data.findPosition || null },
+//     };
+//   }
+
+//   const session = await getSession(ctx);
+
+//   // if not session ask for login
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/?redirect=${ctx.req.url}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   // if operator access, allow
+//   if (session?.accessLevel === 5) {
+//     return {
+//       props: { position: data.findPosition || null },
+//     };
+//   }
+
+//   const res = await fetch(
+//     `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
+//     {
+//       method: "POST",
+//       body: JSON.stringify({
+//         userID: session?.user!.id,
+//         companySlug: ctx.query.slug,
+//       }),
+//       headers: { "Content-Type": "application/json" },
+//     }
+//   );
+
+//   console.log(res.status);
+
+//   // if not authorised, redirect to request-access
+//   if (res.status === 401) {
+//     return {
+//       redirect: {
+//         destination: `/request-access?company=${ctx.query.slug}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   // if company does not exist, redirect to create-company
+//   //@TODO maybe we need a 404 page for this
+//   if (res.status === 404) {
+//     return {
+//       redirect: {
+//         destination: `/create-company`,
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   const _companyAuth = await res.json();
+
+//   // if company is not a community (bc communities don't pay)
+//   // and company is not subscribed to any stripe products
+//   // redirect to dasboard subscription
+//   if (
+//     res.status === 200 &&
+//     _companyAuth.company.type !== "COMMUNITY" &&
+//     (!_companyAuth.company.stripe ||
+//       !_companyAuth.company.stripe.product ||
+//       !_companyAuth.company.stripe.product.ID)
+//   ) {
+//     return {
+//       redirect: {
+//         destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   // default allow
+//   return {
+//     props: { position: data.findPosition || null },
+//   };
+// }
+
+export const getStaticProps = async (context: any) => {
+  try {
+    const positionID = context.params?.positionID;
+
+    const client = new ApolloClient({
+      uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+      cache: new InMemoryCache(),
+    });
+
+    const { data } = await client.query({
+      query: gql`
+        query ($fields: findPositionInput!) {
+          findPosition(fields: $fields) {
             _id
             name
-            slug
-            imageUrl
-            description
-            benefits
-            employeesNumber
-            tags
-            whatsToLove
-            mission
-            insights {
-              letter
-              text
-            }
-            edenTake
-            funding {
+            status
+            whoYouAre
+            whatTheJobInvolves
+            company {
+              _id
               name
-              date
-              amount
-            }
-            culture {
-              tags
+              slug
+              imageUrl
               description
+              benefits
+              employeesNumber
+              tags
+              whatsToLove
+              mission
+              insights {
+                letter
+                text
+              }
+              edenTake
+              funding {
+                name
+                date
+                amount
+              }
+              culture {
+                tags
+                description
+              }
+              benefits
+              values
+              founders
+              glassdoor
             }
-            benefits
-            values
-            founders
-            glassdoor
-          }
-          generalDetails {
-            yearlySalary {
-              min
-              max
+            generalDetails {
+              yearlySalary {
+                min
+                max
+              }
+              contractType
+              officePolicy
+              officeLocation
             }
-            contractType
-            officePolicy
-            officeLocation
           }
         }
+      `,
+      variables: {
+        fields: {
+          _id: positionID,
+        },
+      },
+    });
+
+    return {
+      props: { position: data.findPosition || null },
+      revalidate: 600,
+    };
+  } catch (error) {
+    console.log(error);
+    return { notFound: true };
+  }
+};
+
+export const getStaticPaths = (async () => {
+  try {
+    const res = await axios.post(
+      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `*`,
+        },
+        variables: { fields: [] },
+        query: `
+          query FindPositions($fields: findPositionsInput) {
+            findPositions(fields: $fields) {
+              _id
+              company
+                {
+                  slug
+                }
+            }
+          }
+        `,
       }
-    `,
-    variables: {
-      fields: {
-        _id: positionID,
-      },
-    },
-  });
+    );
 
-  // if not edit mode don't authenticate, allow
-  if (edit !== "true") {
+    const paths = res.data.data.findPositions
+      .filter((_pos: any) => {
+        return !!_pos.company && !!_pos.company.slug;
+      })
+      .map((_pos: any) => ({
+        params: { positionID: _pos._id, slug: _pos.company.slug },
+      }));
+
+    console.log("getStaticPaths --- ", paths);
+
+    // { fallback: false } means other routes should 404
     return {
-      props: { position: data.findPosition || null },
+      paths,
+      fallback: true,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      paths: [],
+      fallback: false,
     };
   }
-
-  const session = await getSession(ctx);
-
-  // if not session ask for login
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/?redirect=${ctx.req.url}`,
-        permanent: false,
-      },
-    };
-  }
-
-  // if operator access, allow
-  if (session?.accessLevel === 5) {
-    return {
-      props: { position: data.findPosition || null },
-    };
-  }
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        userID: session?.user!.id,
-        companySlug: ctx.query.slug,
-      }),
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-
-  console.log(res.status);
-
-  // if not authorised, redirect to request-access
-  if (res.status === 401) {
-    return {
-      redirect: {
-        destination: `/request-access?company=${ctx.query.slug}`,
-        permanent: false,
-      },
-    };
-  }
-
-  // if company does not exist, redirect to create-company
-  //@TODO maybe we need a 404 page for this
-  if (res.status === 404) {
-    return {
-      redirect: {
-        destination: `/create-company`,
-        permanent: false,
-      },
-    };
-  }
-
-  const _companyAuth = await res.json();
-
-  // if company is not a community (bc communities don't pay)
-  // and company is not subscribed to any stripe products
-  // redirect to dasboard subscription
-  if (
-    res.status === 200 &&
-    _companyAuth.company.type !== "COMMUNITY" &&
-    (!_companyAuth.company.stripe ||
-      !_companyAuth.company.stripe.product ||
-      !_companyAuth.company.stripe.product.ID)
-  ) {
-    return {
-      redirect: {
-        destination: `/${_companyAuth.company.slug}/dashboard/subscription`,
-        permanent: false,
-      },
-    };
-  }
-
-  // default allow
-  return {
-    props: { position: data.findPosition || null },
-  };
-}
+}) satisfies GetStaticPaths;
 
 PositionPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
