@@ -15,7 +15,7 @@ const ProfilePage = ({
   return (
     <>
       <SEOProfile
-        handle={position.company?.name || ""}
+        handle={"==== TEST NAME ===="}
         image={position.company?.imageUrl || ""}
         role={position.name || ""}
       />
