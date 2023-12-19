@@ -30,7 +30,6 @@ const client = new ApolloClient({
   ssrMode: typeof window === "undefined",
   link: new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
-    credentials: "same-origin",
   }),
   cache: new InMemoryCache(),
 });
