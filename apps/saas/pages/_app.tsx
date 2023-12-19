@@ -46,9 +46,8 @@ const App = ({
         <ApolloProvider client={apolloClient}>
           <UserProvider>
             <CompanyProvider>
-              <AppDeviceLayout>
-                {getLayout(<Component {...pageProps} />)}
-              </AppDeviceLayout>
+              <AppDeviceLayout />
+              {getLayout(<Component {...pageProps} />)}
             </CompanyProvider>
           </UserProvider>
           <ToastContainer />

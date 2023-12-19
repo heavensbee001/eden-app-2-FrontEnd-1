@@ -1,6 +1,6 @@
 import { ApolloClient, gql, HttpLink, InMemoryCache } from "@apollo/client";
 import { Position } from "@eden/package-graphql/generated";
-import { Missing404Section } from "@eden/package-ui";
+import { Missing404Section, SEOProfile } from "@eden/package-ui";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 
@@ -11,20 +11,16 @@ const ProfilePage = ({
   position: Position;
   error: string;
 }) => {
+  debugger;
   if (error) return <Missing404Section />;
 
   return (
     <>
-      {/* <SEOProfile
-        handle={"==== TEST NAME ===="}
+      <SEOProfile
+        handle={position.company?.name || ""}
         image={position.company?.imageUrl || ""}
         role={position.name || ""}
-      /> */}
-      <Head>
-        <meta property="og:site_name" content={`Eden protocol - alpha`} />
-        <meta property="og:title" content="this is a title" />
-        <meta property="og:description" content="this is a description" />
-      </Head>
+      />
       <div>{`${position.name} @ ${position.company?.name}`}</div>
     </>
   );
