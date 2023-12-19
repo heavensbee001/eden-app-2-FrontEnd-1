@@ -10,7 +10,6 @@ const ProfilePage = ({
   position: Position;
   error: string;
 }) => {
-  debugger;
   if (error) return <Missing404Section />;
 
   return (
