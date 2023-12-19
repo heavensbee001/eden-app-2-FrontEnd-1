@@ -1,6 +1,6 @@
 import { ApolloClient, gql, HttpLink, InMemoryCache } from "@apollo/client";
 import { Position } from "@eden/package-graphql/generated";
-import { Missing404Section, SEOProfile } from "@eden/package-ui";
+import { Missing404Section } from "@eden/package-ui";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 
