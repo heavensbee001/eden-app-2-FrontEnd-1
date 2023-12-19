@@ -1,12 +1,10 @@
-import {
-  ApolloClient,
-  gql,
-  HttpLink,
-  InMemoryCache,
-  useMutation,
-} from "@apollo/client";
+import { ApolloClient, gql, HttpLink, InMemoryCache } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
-import { Position, PositionStatus } from "@eden/package-graphql/generated";
+import {
+  CompanyFoundRoundType,
+  Maybe,
+  Position,
+} from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
@@ -14,37 +12,20 @@ import {
   Button,
   EdenAiProcessingModal,
   EdenIconExclamationAndQuestion,
-  Loading,
-  Modal,
   SEOPosition,
   Tooltip,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
-import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 // import { getSession } from "next-auth/react";
-import { useContext, useEffect, useRef, useState } from "react";
-import Confetti from "react-confetti";
-import {
-  Control,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-  UseFormGetValues,
-  UseFormRegister,
-} from "react-hook-form";
+import { useContext, useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineUserAdd } from "react-icons/ai";
-import { BsLightningFill, BsStar } from "react-icons/bs";
+import { BsStar } from "react-icons/bs";
 import { GoTag } from "react-icons/go";
-import {
-  HiOutlineHeart,
-  HiOutlineShare,
-  HiOutlineUsers,
-  HiPencil,
-} from "react-icons/hi";
+import { HiOutlineHeart, HiOutlineShare, HiOutlineUsers } from "react-icons/hi";
 import { HiFlag } from "react-icons/hi2";
 import { SlLocationPin } from "react-icons/sl";
 import { TbMoneybag } from "react-icons/tb";
@@ -52,200 +33,15 @@ import { toast } from "react-toastify";
 
 import type { NextPageWithLayout } from "../../_app";
 
-const BULK_UPDATE = gql`
-  mutation (
-    $fieldsCompany: updateCompanyDetailsInput!
-    $fieldsPosition: updatePositionInput!
-    $fieldsPositionDetails: updatePositionGeneralDetailsInput!
-  ) {
-    updateCompanyDetails(fields: $fieldsCompany) {
-      _id
-      name
-      slug
-      description
-    }
-
-    updatePosition(fields: $fieldsPosition) {
-      _id
-      status
-      whoYouAre
-      whatTheJobInvolves
-    }
-
-    updatePositionGeneralDetails(fields: $fieldsPositionDetails) {
-      _id
-    }
-  }
-`;
-
-// export async function generateMetadata({
-//   params,
-// }: {
-//   params: Position;
-// }): Promise<Metadata> {
-//   return {
-//     title: "hi",
-//     description: "",
-//     openGraph: {
-//       images: [],
-//     },
-//   };
-// }
-
-const editInputClasses =
-  "inline-block bg-transparent -my-[2px] border-2 border-utilityOrange px-1 rounded-md outline-utilityYellow remove-arrow focus:outline-none";
-
 const PositionPage: NextPageWithLayout = ({
   position,
 }: {
   position: Position;
 }) => {
   const router = useRouter();
-  const { edit } = router.query;
-  const editMode = edit === "true";
 
   const { currentUser } = useContext(UserContext);
-
-  const [editCompany] = useState(true);
-  const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
-  const [publishModalOpen, setPublishModalOpen] = useState(false);
-  const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
-  const [redirectDevDAO, setRedirectDevDAO] = useState(false);
   const [openAskEden, setOpenAskEden] = useState(false);
-
-  const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
-    {
-      defaultValues: {
-        name: position.name || "",
-        //Removes -
-        whoYouAre: position.whoYouAre?.replace(/- /g, "") || "",
-        whatTheJobInvolves:
-          position.whatTheJobInvolves?.replace(/- /g, "") || "",
-        generalDetails: {
-          yearlySalary: {
-            min: position.generalDetails?.yearlySalary?.min,
-            max: position.generalDetails?.yearlySalary?.max,
-          },
-          contractType: position.generalDetails?.contractType || "",
-          officeLocation: position.generalDetails?.officeLocation || "",
-          officePolicy: position.generalDetails?.officePolicy || "",
-        },
-        company: {
-          description: position.company?.description,
-          imageUrl: position.company?.imageUrl,
-          employeesNumber: position.company?.employeesNumber,
-          tags: position.company?.tags || [],
-          mission: position.company?.mission,
-          funding:
-            position.company?.funding?.map((round) => ({
-              date: round?.date,
-              amount: round?.amount,
-              name: round?.name,
-            })) || [],
-          benefits: position.company?.benefits?.replace(/- /g, ""),
-          values: position.company?.values?.replace(/^\s*-\s*/gm, ""),
-          founders: position.company?.founders,
-          glassdoor: position.company?.glassdoor,
-          whatsToLove: position.company?.whatsToLove,
-        },
-      },
-    }
-  );
-
-  const fileInput = useRef<HTMLInputElement | null>(null);
-
-  const [bulkUpdate, { loading: bulkUpdateLoading }] = useMutation(
-    BULK_UPDATE,
-    {
-      onCompleted() {
-        console.log("completed update");
-
-        setPublishModalOpen(false);
-        setTrainAiModalOpen(true);
-        // router.push(
-        //   `/${position.company?.name}/dashboard/${position._id}/train-eden-ai`
-        // );
-      },
-      onError() {
-        toast.error("An error occurred while submitting");
-      },
-    }
-  );
-
-  const onSubmit: SubmitHandler<Position> = (_position: Position) => {
-    bulkUpdate({
-      variables: {
-        fieldsCompany: {
-          slug: position.company?.slug,
-          ..._position.company,
-        },
-        fieldsPosition: {
-          _id: position._id,
-          name: _position.name,
-          status: _position.status,
-          whoYouAre: _position.whoYouAre,
-          whatTheJobInvolves: _position.whatTheJobInvolves,
-        },
-        fieldsPositionDetails: {
-          _id: position._id,
-          ...getValues("generalDetails"),
-        },
-      },
-    });
-    setPublishModalOpen(false);
-    setConfettiRun(true);
-  };
-
-  const handleFileChange = async (e: any) => {
-    if (e.target.files && e.target.files[0]) {
-      setUploadingCompanyImage(true);
-      try {
-        if (e.target.files[0] > 1 * 1024 * 1024) {
-          // setSizeErr(true);
-          setUploadingCompanyImage(false);
-          return;
-        }
-
-        const postid = `${position.company?._id}_${Math.floor(
-          100000 + Math.random() * 900000
-        )}`;
-        const blob = e.target.files[0].slice(
-          0,
-          e.target.files[0].size,
-          "application/png"
-        );
-
-        const newFile = new File([blob], `${postid}.png`, {
-          type: "application/png",
-        });
-
-        const formData = new FormData();
-
-        formData.append("imgfile", newFile);
-
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_AUTH_URL}/storage/store-image` as string,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*",
-            },
-          }
-        );
-        setValue(
-          "company.imageUrl",
-          `https://storage.googleapis.com/eden_companies_images/${postid}.png`
-        );
-        setUploadingCompanyImage(false);
-      } catch (error) {
-        setUploadingCompanyImage(false);
-        // toast.error(error);
-      }
-    }
-  };
-
-  console.log("publishModalOpen", publishModalOpen);
 
   const parseOfficePolicy = (_officePolicy: string) => {
     if (_officePolicy === "on-site") return "On site";
@@ -264,23 +60,7 @@ const PositionPage: NextPageWithLayout = ({
     return salary;
   };
 
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
-  const [confettiRun, setConfettiRun] = useState(false);
   const [loadingSpinner, setLoadingSpinner] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (confettiRun) {
-      // @ts-ignore
-      setWidth(ref.current?.clientWidth || 0);
-      // @ts-ignore
-      setHeight(ref.current?.clientHeight || 0);
-      setTimeout(() => {
-        setConfettiRun(false);
-      }, 2500);
-    }
-  }, [confettiRun]);
 
   const handleInterviewNav = async () => {
     setLoadingSpinner(true);
@@ -300,18 +80,7 @@ const PositionPage: NextPageWithLayout = ({
         officePolicy={position.generalDetails?.officePolicy!}
         location={position.generalDetails?.officeLocation!}
       />
-      {/* <title>{position?.name}</title>
-        <meta
-          name="description"
-          content={`${position?.company?.description}`}
-        />
 
-        <meta
-          property="og:image"
-          content={`https://eden-saas-develop.vercel.app/api/og/route`}
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" /> */}
       <div>
         <section
           className="flex w-full justify-center py-24"
@@ -336,74 +105,19 @@ const PositionPage: NextPageWithLayout = ({
             <div className="col-span-5">
               <div className="mb-10">
                 <h1 className="text-edenGreen-600 mb-2">
-                  {editMode && editCompany ? (
-                    <>
-                      <input
-                        {...register("name")}
-                        className={classNames(editInputClasses, "")}
-                      />
-                      {`, ${position?.company?.name}`}
-                    </>
-                  ) : (
-                    `${getValues("name")}, ${position?.company?.name}`
-                  )}
+                  {`${position?.name}, ${position?.company?.name}`}
                 </h1>
-                {editMode && editCompany ? (
+                {
                   <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
-                    <select
-                      {...register("generalDetails.contractType")}
-                      disabled={!(editMode && editCompany)}
-                      className={classNames(
-                        editInputClasses,
-                        "disabled:border-0 disabled:opacity-100"
-                      )}
-                    >
-                      <option value={""} disabled hidden>
-                        Select an option...
-                      </option>
-                      <option value="Full-time">Full-time</option>
-                      <option value="Part-time">Part-time</option>
-                      <option value="Contractor">Contractor</option>
-                    </select>
+                    {position?.generalDetails?.contractType}
                   </div>
-                ) : (
-                  <div className="bg-edenGray-100 w-fit rounded-md px-2 text-sm">
-                    {getValues("generalDetails.contractType")}
-                  </div>
-                )}
+                }
               </div>
 
-              {editMode && editCompany ? (
-                <div className="mb-4">
-                  <TbMoneybag
-                    size={24}
-                    className="text-edenGreen-600 mr-3 inline-block"
-                  />
-                  <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
-                    {`$ `}
-                    <input
-                      type="number"
-                      placeholder="min salary"
-                      {...register("generalDetails.yearlySalary.min", {
-                        valueAsNumber: true,
-                      })}
-                      className={classNames(editInputClasses, "ml-0 mr-1 w-20")}
-                    />
-                    {` -  $`}
-                    <input
-                      type="number"
-                      placeholder="max salary"
-                      {...register("generalDetails.yearlySalary.max", {
-                        valueAsNumber: true,
-                      })}
-                      className={classNames(editInputClasses, "ml-1 w-20")}
-                    />
-                  </div>
-                </div>
-              ) : getValues("generalDetails.yearlySalary.min") ||
-                getValues("generalDetails.yearlySalary.min") === 0 ||
-                getValues("generalDetails.yearlySalary.max") ||
-                getValues("generalDetails.yearlySalary.max") === 0 ? (
+              {position?.generalDetails?.yearlySalary?.min ||
+              position?.generalDetails?.yearlySalary?.min === 0 ||
+              position?.generalDetails?.yearlySalary?.max ||
+              position?.generalDetails?.yearlySalary?.max === 0 ? (
                 <div className="mb-4">
                   <TbMoneybag
                     size={24}
@@ -411,24 +125,24 @@ const PositionPage: NextPageWithLayout = ({
                   />
                   <div className="bg-edenGreen-600 text-edenPink-300 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
                     {`${
-                      getValues("generalDetails.yearlySalary.min") ||
-                      getValues("generalDetails.yearlySalary.min") === 0
+                      position?.generalDetails.yearlySalary.min ||
+                      position?.generalDetails.yearlySalary.min === 0
                         ? `$ ${formattedSalary(
-                            getValues("generalDetails.yearlySalary.min")
+                            position?.generalDetails.yearlySalary.min
                           )}`
                         : ""
                     }${
-                      (getValues("generalDetails.yearlySalary.min") ||
-                        getValues("generalDetails.yearlySalary.min") === 0) &&
-                      (getValues("generalDetails.yearlySalary.max") ||
-                        getValues("generalDetails.yearlySalary.max") === 0)
+                      (position?.generalDetails.yearlySalary.min ||
+                        position?.generalDetails.yearlySalary.min === 0) &&
+                      (position?.generalDetails.yearlySalary.max ||
+                        position?.generalDetails.yearlySalary.max === 0)
                         ? `  -  `
                         : ""
                     }${
-                      getValues("generalDetails.yearlySalary.max") ||
-                      getValues("generalDetails.yearlySalary.max") === 0
+                      position?.generalDetails.yearlySalary.max ||
+                      position?.generalDetails.yearlySalary.max === 0
                         ? `$ ${formattedSalary(
-                            getValues("generalDetails.yearlySalary.max")
+                            position?.generalDetails.yearlySalary.max
                           )}`
                         : ""
                     }`}
@@ -464,65 +178,24 @@ const PositionPage: NextPageWithLayout = ({
                 </div>
               </div>
 
-              {(getValues("generalDetails.officeLocation") ||
-                getValues("generalDetails.officePolicy") ||
-                (editMode && editCompany)) && (
+              {(position?.generalDetails?.officeLocation ||
+                position?.generalDetails?.officePolicy) && (
                 <div className="mb-4">
                   <SlLocationPin
                     size={24}
                     className="text-edenGreen-600 mr-3 inline-block"
                   />
-                  {editMode && editCompany ? (
+                  {position?.generalDetails?.officePolicy && (
                     <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
-                      <select
-                        {...register("generalDetails.officePolicy")}
-                        disabled={!(editMode && editCompany)}
-                        className={classNames(
-                          editInputClasses,
-                          "disabled:border-0 disabled:opacity-100"
-                        )}
-                      >
-                        <option value={""} disabled hidden>
-                          Select an option...
-                        </option>
-                        <option value="on-site">On site</option>
-                        <option value="remote">Remote</option>
-                        <option value="hybrid-1-day-office">
-                          Hybrid - 1 day office
-                        </option>
-                        <option value="hybrid-2-day-office">
-                          Hybrid - 2 day office
-                        </option>
-                        <option value="hybrid-3-day-office">
-                          Hybrid - 3 day office
-                        </option>
-                        <option value="hybrid-4-day-office">
-                          Hybrid - 4 day office
-                        </option>
-                      </select>
+                      {parseOfficePolicy(
+                        position?.generalDetails?.officePolicy
+                      )}
                     </div>
-                  ) : (
-                    getValues("generalDetails.officePolicy") && (
-                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mb-1 mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
-                        {parseOfficePolicy(
-                          getValues("generalDetails.officePolicy")
-                        )}
-                      </div>
-                    )
                   )}
-                  {editMode && editCompany ? (
+                  {position?.generalDetails?.officeLocation && (
                     <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
-                      <input
-                        {...register("generalDetails.officeLocation")}
-                        className={classNames(editInputClasses, "")}
-                      />
+                      {position?.generalDetails?.officeLocation}
                     </div>
-                  ) : (
-                    getValues("generalDetails.officeLocation") && (
-                      <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
-                        {getValues("generalDetails.officeLocation")}
-                      </div>
-                    )
                   )}
                 </div>
               )}
@@ -546,107 +219,38 @@ const PositionPage: NextPageWithLayout = ({
               </div>
             </div>
             <div className="border-edenGreen-300 col-span-7 border-l-2 pl-4">
-              {editMode && editCompany ? (
-                <label
-                  htmlFor="file-upload"
-                  className={classNames(
-                    "relative block w-fit cursor-pointer rounded-md hover:bg-black hover:bg-opacity-20",
-                    editMode
-                      ? "border-utilityOrange -my-[2px] mb-1 border-2"
-                      : ""
-                  )}
-                >
-                  {uploadingCompanyImage && (
-                    <div className="pointer-events-none absolute left-0 top-0 h-full w-full">
-                      <Loading title="" />
-                    </div>
-                  )}
-                  <img
-                    src={getValues("company.imageUrl") || ""}
-                    className="mb-2 h-20"
-                    alt={position?.company?.name || ""}
-                  />
-                  <HiPencil
-                    size={20}
-                    className="text-utilityOrange absolute bottom-1 right-1 opacity-60"
-                  />
-                  <input
-                    id="file-upload"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    ref={fileInput}
-                    type="file"
-                    accept=".png"
-                  ></input>
-                </label>
-              ) : (
-                // <img
-                //   src={getValues("company.imageUrl") || ""}
-                //   className="mb-2 h-20"
-                //   alt={position?.company?.name || ""}
-                // />
-                <Image
-                  width="180"
-                  height="180"
-                  className="mb-6"
-                  src={`${
-                    position?.company?.imageUrl
-                      ? position?.company?.imageUrl
-                      : "/default-company-image.svg"
-                  }`}
-                  alt={`${position?.company?.name} company image`}
-                />
-              )}
+              <Image
+                width="180"
+                height="180"
+                className="mb-6"
+                src={`${
+                  position?.company?.imageUrl
+                    ? position?.company?.imageUrl
+                    : "/default-company-image.svg"
+                }`}
+                alt={`${position?.company?.name} company image`}
+              />
               <p className="text-edenGray-900 mb-2 text-sm">
-                {editMode && editCompany ? (
-                  <>
-                    <textarea
-                      rows={2}
-                      {...register("company.description")}
-                      className={classNames(editInputClasses, "w-full")}
-                    />
-                  </>
-                ) : (
-                  `${getValues("company.description")}`
-                )}
+                {`${position?.company?.description}`}
               </p>
 
-              {(getValues("company.employeesNumber") ||
-                getValues("company.employeesNumber") === 0 ||
-                (editMode && editCompany)) && (
-                <p className="text-edenGray-900 mb-2 text-sm">
-                  <HiOutlineUsers
-                    size={20}
-                    className="text-edenGreen-600 mr-2 inline-block"
-                  />
-                  {editMode && editCompany ? (
-                    <>
-                      <input
-                        type="number"
-                        {...register("company.employeesNumber", {
-                          valueAsNumber: true,
-                        })}
-                        className={classNames(editInputClasses, "w-20")}
-                      />
-                      {` employees`}
-                    </>
-                  ) : (
-                    `${getValues("company.employeesNumber")} employees`
-                  )}
-                </p>
-              )}
-              {(editMode || !!position?.company?.tags?.length) && (
+              {position?.company?.employeesNumber ||
+                (position?.company?.employeesNumber === 0 && (
+                  <p className="text-edenGray-900 mb-2 text-sm">
+                    <HiOutlineUsers
+                      size={20}
+                      className="text-edenGreen-600 mr-2 inline-block"
+                    />
+                    {`${position?.company?.employeesNumber} employees`}
+                  </p>
+                ))}
+              {!!position?.company?.tags?.length && (
                 <p className="mb-2 text-sm">
                   <GoTag
                     size={24}
                     className="text-edenGreen-600 mr-2 inline-block"
                   />
-                  <CompanyTagsField
-                    control={control}
-                    getValues={getValues}
-                    register={register}
-                    editMode={editMode && editCompany}
-                  />
+                  <CompanyTagsField tags={position?.company?.tags} />
                 </p>
               )}
 
@@ -658,14 +262,7 @@ const PositionPage: NextPageWithLayout = ({
                   <h3 className="text-edenGreen-600">What&apos;s to love?</h3>
                 </div>
                 <p className="text-edenGray-700 text-xs">
-                  {editMode && editCompany ? (
-                    <textarea
-                      {...register("company.whatsToLove")}
-                      className={classNames(editInputClasses, "w-full")}
-                    />
-                  ) : (
-                    getValues("company.whatsToLove")
-                  )}
+                  {position?.company?.whatsToLove}
                 </p>
               </div>
             </div>
@@ -684,18 +281,10 @@ const PositionPage: NextPageWithLayout = ({
                     Who you are
                   </h3>
                   <p className="mb-4 text-xs">
-                    {editMode ? (
-                      <>
-                        <textarea
-                          rows={8}
-                          {...register("whoYouAre")}
-                          className={classNames(editInputClasses, "w-full")}
-                        />
-                      </>
-                    ) : (
+                    {
                       <ul className="text-edenGray-900 list-disc pl-4 ">
-                        {getValues("whoYouAre") &&
-                          getValues("whoYouAre")
+                        {position?.whoYouAre &&
+                          position?.whoYouAre
                             .split("\n")
                             .filter((line: any) => line.trim() !== "")
                             .map((line: any, index: any) => (
@@ -704,7 +293,7 @@ const PositionPage: NextPageWithLayout = ({
                               </li>
                             ))}
                       </ul>
-                    )}
+                    }
                   </p>
                 </div>
                 <div className="">
@@ -712,18 +301,10 @@ const PositionPage: NextPageWithLayout = ({
                     What the job involves
                   </h3>
                   <p className="text-xs">
-                    {editMode ? (
-                      <>
-                        <textarea
-                          rows={8}
-                          {...register("whatTheJobInvolves")}
-                          className={classNames(editInputClasses, "w-full")}
-                        />
-                      </>
-                    ) : (
+                    {
                       <ul className="text-edenGray-900 list-disc pl-4 ">
-                        {getValues("whatTheJobInvolves") &&
-                          getValues("whatTheJobInvolves")
+                        {position?.whatTheJobInvolves &&
+                          position?.whatTheJobInvolves
                             .split("\n")
                             .filter((line: any) => line.trim() !== "")
                             .map((line: any, index: any) => (
@@ -732,7 +313,7 @@ const PositionPage: NextPageWithLayout = ({
                               </li>
                             ))}
                       </ul>
-                    )}
+                    }
                   </p>
                 </div>
               </div>
@@ -826,22 +407,10 @@ const PositionPage: NextPageWithLayout = ({
               </div>
               <div className="px-6">
                 {/* ---- MISSION ---- */}
-                {(position?.company?.mission || editMode) && (
+                {position?.company?.mission && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">About the company</h3>
-                    <p className="text-xs">
-                      {editMode ? (
-                        <>
-                          <textarea
-                            rows={8}
-                            {...register("company.mission")}
-                            className={classNames(editInputClasses, "w-full")}
-                          />
-                        </>
-                      ) : (
-                        getValues("company.mission")
-                      )}
-                    </p>
+                    <p className="text-xs">{position?.company?.mission}</p>
                   </div>
                 )}
 
@@ -884,21 +453,15 @@ const PositionPage: NextPageWithLayout = ({
                 )}
 
                 {/* ---- WIDGETS ---- */}
-                {(editMode ||
-                  (position?.company?.funding &&
-                    position?.company?.funding?.length > 0)) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    {/* <h3 className="text-edenGreen-600 mb-4">Widgets</h3> */}
+                {position?.company?.funding &&
+                  position?.company?.funding?.length > 0 && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      {/* <h3 className="text-edenGreen-600 mb-4">Widgets</h3> */}
 
-                    {/* ---- FUNDING ---- */}
-                    <FundingWidget
-                      control={control}
-                      getValues={getValues}
-                      register={register}
-                      editMode={editMode}
-                    />
-                    {/* ---- CULTURE ---- */}
-                    {/* {position?.company?.culture && (
+                      {/* ---- FUNDING ---- */}
+                      <FundingWidget founding={position.company.funding} />
+                      {/* ---- CULTURE ---- */}
+                      {/* {position?.company?.culture && (
                     <div className="mb-4 last:mb-0">
                     <h3 className="text-edenGreen-600 mb-2">
                     AI culture summary
@@ -923,92 +486,61 @@ const PositionPage: NextPageWithLayout = ({
                                 </div>
                                 </div>
                               )} */}
-                  </div>
-                )}
+                    </div>
+                  )}
 
                 {/* ---- BENEFITS ---- */}
-                {(editMode ||
-                  (position?.company?.benefits &&
-                    getValues("company.founders") != "N/A")) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Benefits & perks</h3>
-                    <p className="text-xs">
-                      {editMode ? (
-                        <>
-                          <textarea
-                            rows={8}
-                            {...register("company.benefits")}
-                            className={classNames(editInputClasses, "w-full")}
-                          />
-                        </>
-                      ) : (
-                        <ul className="text-edenGray-900 list-disc pl-4 ">
-                          {getValues("company.benefits")
-                            .split("\n")
-                            .filter((line: any) => line.trim() !== "")
-                            .map((line: any, index: any) => (
-                              <li className="mb-4" key={index}>
-                                {line}
-                              </li>
-                            ))}
-                        </ul>
-                      )}
-                    </p>
-                  </div>
-                )}
+                {position?.company?.benefits &&
+                  position?.company.benefits != "N/A" && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      <h3 className="text-edenGreen-600">Benefits & perks</h3>
+                      <p className="text-xs">
+                        {
+                          <ul className="text-edenGray-900 list-disc pl-4 ">
+                            {position?.company.benefits
+                              .split("\n")
+                              .filter((line: any) => line.trim() !== "")
+                              .map((line: any, index: any) => (
+                                <li className="mb-4" key={index}>
+                                  {line}
+                                </li>
+                              ))}
+                          </ul>
+                        }
+                      </p>
+                    </div>
+                  )}
 
                 {/* ---- COMPANY VALUES ---- */}
-                {(editMode ||
-                  (position?.company?.values &&
-                    getValues("company.founders") != "N/A")) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Company Values</h3>
-                    <p className="text-xs">
-                      {editMode ? (
-                        <>
-                          <textarea
-                            rows={8}
-                            {...register("company.values")}
-                            className={classNames(editInputClasses, "w-full")}
-                          />
-                        </>
-                      ) : (
-                        <ul className="text-edenGray-900 list-disc pl-4 ">
-                          {getValues("company.values")
-                            .split("\n")
-                            .filter((line: any) => line.trim() !== "")
-                            .map((line: any, index: any) => (
-                              <li className="mb-4" key={index}>
-                                {line}
-                              </li>
-                            ))}
-                        </ul>
-                      )}
-                    </p>
-                  </div>
-                )}
+                {position?.company?.values &&
+                  position?.company.values != "N/A" && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      <h3 className="text-edenGreen-600">Company Values</h3>
+                      <p className="text-xs">
+                        {
+                          <ul className="text-edenGray-900 list-disc pl-4 ">
+                            {position?.company.values
+                              .split("\n")
+                              .filter((line: any) => line.trim() !== "")
+                              .map((line: any, index: any) => (
+                                <li className="mb-4" key={index}>
+                                  {line}
+                                </li>
+                              ))}
+                          </ul>
+                        }
+                      </p>
+                    </div>
+                  )}
 
                 {/* ---- FOUNDERS ---- */}
-                {(editMode ||
-                  (position?.company?.founders &&
-                    getValues("company.founders") != "N/A")) && (
-                  <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
-                    <h3 className="text-edenGreen-600">Founders</h3>
-                    <p className="text-xs">
-                      {editMode ? (
-                        <>
-                          <textarea
-                            rows={8}
-                            {...register("company.founders")}
-                            className={classNames(editInputClasses, "w-full")}
-                          />
-                        </>
-                      ) : (
-                        getValues("company.founders")
-                      )}
-                    </p>
-                  </div>
-                )}
+                {position?.company?.founders &&
+                  position?.company.founders != "N/A" && (
+                    <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
+                      <h3 className="text-edenGreen-600">Founders</h3>
+                      <p className="text-xs">{position?.company.founders}</p>
+                    </div>
+                  )}
               </div>
             </section>
           </div>
@@ -1016,151 +548,27 @@ const PositionPage: NextPageWithLayout = ({
 
         {/* ---- FOOTER APPLY ---- */}
         <footer className="bg-edenGreen-600 fixed bottom-0 left-0 flex h-16 w-full items-center justify-center">
-          {!editMode ? (
-            <>
-              <Button
-                className="border-edenPink-400 !text-edenPink-400"
-                onClick={() => {
-                  handleInterviewNav();
-                }}
-              >
-                Apply with AI
-              </Button>
-              {currentUser?._id && (
-                <AskEdenPopUp
-                  memberID={currentUser?._id}
-                  service={
-                    AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW
-                  }
-                  title="Ask Eden about this opportunity"
-                  className="!bottom-[0.35rem] !right-2"
-                  forceOpen={openAskEden}
-                  onClose={() => {
-                    setOpenAskEden(false);
-                  }}
-                />
-              )}
-            </>
-          ) : (
-            <>
-              <Button
-                onClick={handleSubmit((data) =>
-                  onSubmit({ ...data, status: PositionStatus.Unpublished })
-                )}
-                className="border-edenPink-400 !text-edenPink-400 mr-4"
-              >
-                Save as draft
-              </Button>
-              <Button
-                onClick={() => {
-                  setPublishModalOpen(true);
-                  setRedirectDevDAO(true);
-                }}
-                className="border-edenPink-400 !text-edenPink-400"
-              >
-                Publish to Developer DAO
-              </Button>
-
-              <Modal open={bulkUpdateLoading} closeOnEsc={false}>
-                <div className="h-80">
-                  <Loading title={"Updating position"} />
-                </div>
-              </Modal>
-
-              <div
-                className={`pointer-events-none fixed left-0 top-0 z-50 h-screen w-screen	`}
-                ref={ref}
-              >
-                <Confetti
-                  width={width}
-                  height={height}
-                  numberOfPieces={confettiRun ? 250 : 0}
-                  colors={["#F0F4F2", "#19563F", "#FCEEF5", "#F5C7DE"]}
-                />
-              </div>
-              <Modal open={publishModalOpen} closeOnEsc={false}>
-                <div className="flex flex-col items-center justify-center px-28 py-8 text-center">
-                  <EdenIconExclamationAndQuestion className="mb-2 h-16" />
-                  <h2 className="text-edenGreen-600 mb-4">Ready to publish?</h2>
-                  <p className="mb-12">
-                    Soon after you publish Eden will start recruiting in the
-                    community & put the magic into magic job-post.
-                  </p>
-                  <div className="flex justify-center gap-8">
-                    <Button
-                      onClick={() => {
-                        setPublishModalOpen(false);
-                        // handleSubmit((data) =>
-                        //   onSubmit({
-                        //     ...data,
-                        //     status: PositionStatus.Unpublished,
-                        //   })
-                        // );
-                      }}
-                    >
-                      Not done yet
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={handleSubmit((data) =>
-                        onSubmit({ ...data, status: PositionStatus.Active })
-                      )}
-                    >
-                      Let&apos;s do it!
-                    </Button>
-                  </div>
-                </div>
-              </Modal>
-
-              <Modal open={trainAiModalOpen} closeOnEsc={false}>
-                <div className="flex flex-col items-center justify-center px-8 py-8 pt-2 text-center">
-                  <div
-                    className={
-                      "text-edenGreen-600 bg-edenPink-100 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
-                    }
-                  >
-                    <BsLightningFill size={"2rem"} />
-                  </div>
-                  <h2 className="text-edenGreen-600 mb-4">
-                    One last thing: should we configure the AI-interview for
-                    you?
-                  </h2>
-                  <p className="mb-4">
-                    The way talent applies to your opportunity is through an
-                    AI-powered interview.
-                  </p>
-                  <p className="mb-8">
-                    Think of this like the screening interview that a recruiter
-                    would do built into the job board.
-                  </p>
-                  <div className="flex justify-center gap-8">
-                    <Button
-                      onClick={() => {
-                        if (redirectDevDAO == true) {
-                          router.push(`/developer-dao/jobs`);
-                        } else {
-                          router.push(
-                            `/${position.company?.slug}/dashboard/${position._id}`
-                          );
-                        }
-                      }}
-                    >
-                      Auto-configure the AI-interview for me
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        router.push(
-                          `/${position.company?.slug}/dashboard/${position._id}/train-eden-ai`
-                        );
-                      }}
-                    >
-                      Let me configure the AI-interview
-                    </Button>
-                  </div>
-                </div>
-              </Modal>
-            </>
+          <Button
+            className="border-edenPink-400 !text-edenPink-400"
+            onClick={() => {
+              handleInterviewNav();
+            }}
+          >
+            Apply with AI
+          </Button>
+          {currentUser?._id && (
+            <AskEdenPopUp
+              memberID={currentUser?._id}
+              service={
+                AI_INTERVIEW_SERVICES.ASK_EDEN_USER_POSITION_AFTER_INTERVIEW
+              }
+              title="Ask Eden about this opportunity"
+              className="!bottom-[0.35rem] !right-2"
+              forceOpen={openAskEden}
+              onClose={() => {
+                setOpenAskEden(false);
+              }}
+            />
           )}
         </footer>
       </div>
@@ -1463,154 +871,48 @@ PositionPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 export default PositionPage;
 
 export interface IFundingWidget {
-  control: Control;
-  register: UseFormRegister<any>;
-  getValues: UseFormGetValues<any>;
-  editMode: boolean;
+  founding: Maybe<CompanyFoundRoundType>[];
 }
 
-const FundingWidget = ({
-  control,
-  register,
-  getValues,
-  editMode,
-}: IFundingWidget) => {
-  const { fields, append, remove } = useFieldArray({
-    control, // control props comes from useForm
-    name: "company.funding", // unique name for your Field Array
-  });
-
+const FundingWidget = ({ founding }: IFundingWidget) => {
   return (
     <div className="mb-4 last:mb-0">
       <h3 className="text-edenGreen-600 mb-2">Funding</h3>
-      <div
-        className={classNames(
-          "bg-edenGreen-300 rounded-md p-4",
-          editMode ? "px-1" : ""
-        )}
-      >
-        {fields.map((field, index) => (
+      <div className={classNames("bg-edenGreen-300 rounded-md p-4")}>
+        {founding.map((field, index: number) => (
           <div
-            key={field.id}
+            key={index}
             className="relative mb-2 flex items-center justify-between last:mb-0"
           >
-            <span className="text-white">
-              {editMode ? (
-                <input
-                  placeholder="date"
-                  {...register(`company.funding.${index}.date`)}
-                  className={classNames(editInputClasses, "mx-0 w-full")}
-                />
-              ) : (
-                getValues(`company.funding.${index}.date`)
-              )}
-            </span>
+            <span className="text-white">{field?.date}</span>
             <div className="bg-edenPink-400 mx-1 h-2 w-2 rounded-full px-1"></div>
-            <span className="text-white">
-              {editMode ? (
-                <input
-                  placeholder="amount"
-                  {...register(`company.funding.${index}.amount`)}
-                  className={classNames(editInputClasses, "mx-0 w-full")}
-                />
-              ) : (
-                getValues(`company.funding.${index}.amount`)
-              )}
-            </span>
+            <span className="text-white">{field?.amount}</span>
             <div className="bg-edenGreen-600 text-edenPink-400 font-Moret inline-block rounded-xl px-3 py-0.5 font-bold">
-              {editMode ? (
-                <input
-                  placeholder="series"
-                  {...register(`company.funding.${index}.name`)}
-                  className={classNames(editInputClasses, "mx-0 w-full")}
-                />
-              ) : (
-                getValues(`company.funding.${index}.name`)
-              )}
+              {field?.name}
             </div>
-            {editMode && (
-              <div
-                className="bg-edenGray-500 text-utilityRed border-utilityRed hover:text-edenGray-500 hover:bg-utilityRed absolute -right-6 mx-auto flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 pb-1 text-xl font-bold"
-                onClick={() => remove(index)}
-              >
-                -
-              </div>
-            )}
           </div>
         ))}
-        {editMode && (
-          <div
-            className="bg-edenGray-500 text-utilityOrange border-utilityOrange hover:text-edenGray-500 hover:bg-utilityOrange mx-auto flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-2 pb-1 text-xl font-bold"
-            onClick={() => append({ date: "", amount: "", name: "" })}
-          >
-            +
-          </div>
-        )}
       </div>
     </div>
   );
 };
 
 export interface ICompanyTagsField {
-  control: Control;
-  register: UseFormRegister<any>;
-  getValues: UseFormGetValues<any>;
-  editMode: boolean;
+  tags: Maybe<string>[];
 }
 
-const CompanyTagsField = ({
-  control,
-  register,
-  getValues,
-  editMode,
-}: IFundingWidget) => {
-  const { fields, append, remove } = useFieldArray({
-    control, // control props comes from useForm
-    name: "company.tags", // unique name for your Field Array
-  });
-
-  console.log(fields);
-
+const CompanyTagsField = ({ tags }: ICompanyTagsField) => {
   return (
     <div className="inline">
-      {fields.map((field, index) => (
-        <div
-          key={field.id}
-          className="bg-edenGray-100 relative mb-2 mr-2 inline-block max-w-[28%] rounded-md px-2 pb-1"
-        >
-          <span className="">
-            {editMode ? (
-              <input
-                placeholder="date"
-                {...register(`company.tags.${index}`)}
-                className={classNames(
-                  "-mx-2 w-[calc(100%+1rem)] px-0",
-                  editInputClasses
-                )}
-              />
-            ) : (
-              getValues(`company.tags.${index}`)
-            )}
-          </span>
-          {editMode && (
-            <div
-              className="bg-edenGray-500 text-utilityRed border-utilityRed hover:text-edenGray-500 hover:bg-utilityRed absolute -right-2 -top-2 mx-auto flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 pb-1 text-xl font-bold"
-              onClick={() => remove(index)}
-            >
-              -
-            </div>
-          )}
-        </div>
-      ))}
-      {editMode && (
-        <div
-          className="bg-edenGray-500 text-utilityOrange border-utilityOrange hover:text-edenGray-500 hover:bg-utilityOrange ml-2 inline-block h-6 w-6 cursor-pointer rounded-full border-2 pb-1 text-xl font-bold"
-          onClick={() => append("")}
-        >
-          <div className="flex h-full w-full items-center justify-center">
-            +
+      {tags.map((tag: Maybe<string>, index: number) =>
+        tag ? (
+          <div
+            key={index}
+            className="bg-edenGray-100 relative mb-2 mr-2 inline-block max-w-[28%] rounded-md px-2 pb-1"
+          >
+            <span className="">{tag}</span>
           </div>
-        </div>
+        ) : null
       )}
     </div>
   );
