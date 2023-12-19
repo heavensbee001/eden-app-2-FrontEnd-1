@@ -291,7 +291,7 @@ export const CandidateInfo = ({
       </div>
       {dataMember?.findMember && (
         <section className="border-edenGray-100 absolute bottom-0 right-0 flex h-20 w-full items-center gap-4 border-t-2 bg-white px-4">
-          {/* ------- schedule 2nd interview button ------- */}
+          {/* ------- schedule live interview button ------- */}
           {!candidate?.status ? (
             <>
               {listMode !== ListModeEnum.list && (
@@ -299,7 +299,7 @@ export const CandidateInfo = ({
                   variant="secondary"
                   onClick={handleSecondInterviewLetter}
                 >
-                  Schedule 2nd interview
+                  Schedule live interview
                 </Button>
               )}
 

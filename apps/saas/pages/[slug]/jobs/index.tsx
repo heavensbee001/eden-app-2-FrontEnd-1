@@ -254,6 +254,7 @@ export const getStaticProps = async (context: any) => {
               name
               slug
               imageUrl
+              whatsToLove
             }
           }
         }
@@ -403,8 +404,8 @@ const PositionCard = ({ position, setLoadingSpinner }: PositionCardProps) => {
         <EdenTooltip
           id={`${position?._id}`}
           innerTsx={
-            <div className="w-60">
-              <p>This is Eden</p>
+            <div className="w-80">
+              <p>{position.company?.whatsToLove}</p>
             </div>
           }
           place="top"
