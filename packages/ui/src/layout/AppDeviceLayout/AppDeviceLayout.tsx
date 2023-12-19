@@ -1,12 +1,10 @@
 import { MdMobileOff } from "react-icons/md";
 
 interface IAppDeviceLayoutProps {
-  children: any;
+  // children?: any;
 }
 
-export const AppDeviceLayout = ({ children }: IAppDeviceLayoutProps) => {
-  console.log(children);
-
+export const AppDeviceLayout = ({}: IAppDeviceLayoutProps) => {
   const UA = navigator.userAgent;
   const isMobile = Boolean(
     UA.match(
@@ -18,7 +16,7 @@ export const AppDeviceLayout = ({ children }: IAppDeviceLayoutProps) => {
     return (
       <>
         {isMobile && (
-          <section className="fixed top-0 left-0 z-50 flex h-screen w-screen flex-col items-center justify-center bg-white">
+          <section className="fixed left-0 top-0 z-50 flex h-screen w-screen flex-col items-center justify-center bg-white">
             <h1 className="text-edenGreen-600">Eden</h1>
             <p className="mb-2 text-center">
               Mobile site is
@@ -30,9 +28,8 @@ export const AppDeviceLayout = ({ children }: IAppDeviceLayoutProps) => {
         )}
       </>
     );
-  } else {
-    return children;
   }
+  return null;
 };
 
 export default AppDeviceLayout;
