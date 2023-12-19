@@ -6,6 +6,11 @@ import Document, {
   NextScript,
 } from "next/document";
 
+const appUrl =
+  process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
+    ? `https://eden-saas-develop.vercel.app/`
+    : `https://edenprotocol.app/`;
+
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
     const initialProps = await Document.getInitialProps(ctx);
@@ -20,6 +25,7 @@ class MyDocument extends Document {
           <link rel="apple-touch-icon" sizes="192x192" href="/logo192.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/logo32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/logo16.png" />
+          <meta property="og:url" content={appUrl} />
 
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
