@@ -580,18 +580,18 @@ const PositionPage: NextPageWithLayout = ({
   );
 };
 
+const client = new ApolloClient({
+  ssrMode: typeof window === "undefined",
+  link: new HttpLink({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+    credentials: "same-origin",
+  }),
+  cache: new InMemoryCache(),
+});
+
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const positionID = ctx.params?.positionID;
   const { edit } = ctx.query;
-
-  const client = new ApolloClient({
-    ssrMode: typeof window === "undefined",
-    link: new HttpLink({
-      uri: process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
-      credentials: "same-origin",
-    }),
-    cache: new InMemoryCache(),
-  });
 
   const { data } = await client.query({
     query: gql`
@@ -648,6 +648,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       fields: {
         _id: positionID,
       },
+      ssr: true,
     },
   });
 
