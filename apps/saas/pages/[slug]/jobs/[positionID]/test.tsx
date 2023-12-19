@@ -94,6 +94,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         fields: {
           _id: positionID,
         },
+        ssr: true,
       },
     });
 
