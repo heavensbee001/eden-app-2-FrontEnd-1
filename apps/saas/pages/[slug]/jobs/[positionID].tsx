@@ -110,7 +110,6 @@ const PositionPage: NextPageWithLayout = ({
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
-  const [redirectDevDAO, setRedirectDevDAO] = useState(false);
   const [openAskEden, setOpenAskEden] = useState(false);
 
   const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
@@ -1042,11 +1041,10 @@ const PositionPage: NextPageWithLayout = ({
               <Button
                 onClick={() => {
                   setPublishModalOpen(true);
-                  setRedirectDevDAO(true);
                 }}
                 className="border-edenPink-400 !text-edenPink-400"
               >
-                Publish to Developer DAO
+                Publish
               </Button>
 
               <Modal open={bulkUpdateLoading} closeOnEsc={false}>
@@ -1124,13 +1122,9 @@ const PositionPage: NextPageWithLayout = ({
                   <div className="flex justify-center gap-8">
                     <Button
                       onClick={() => {
-                        if (redirectDevDAO == true) {
-                          router.push(`/developer-dao/jobs`);
-                        } else {
-                          router.push(
-                            `/${position.company?.slug}/dashboard/${position._id}`
-                          );
-                        }
+                        router.push(
+                          `/${position.company?.slug}/dashboard/${position._id}`
+                        );
                       }}
                     >
                       Auto-configure the AI-interview for me
