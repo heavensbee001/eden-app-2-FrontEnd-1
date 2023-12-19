@@ -38,7 +38,6 @@ const PositionPage: NextPageWithLayout = ({
 }: {
   position: Position;
 }) => {
-  debugger;
   const router = useRouter();
 
   const { currentUser } = useContext(UserContext);
