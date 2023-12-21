@@ -1,4 +1,10 @@
-import { ApolloClient, gql, InMemoryCache, useMutation } from "@apollo/client";
+import {
+  ApolloClient,
+  gql,
+  HttpLink,
+  InMemoryCache,
+  useMutation,
+} from "@apollo/client";
 import { UserContext } from "@eden/package-context";
 import { Position, PositionStatus } from "@eden/package-graphql/generated";
 import {
@@ -10,19 +16,16 @@ import {
   EdenIconExclamationAndQuestion,
   Loading,
   Modal,
-  SEO,
+  SEOPosition,
   Tooltip,
 } from "@eden/package-ui";
 import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
-import {
-  GetServerSidePropsContext,
-  // Metadata
-} from "next";
-import Head from "next/head";
+import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import {
@@ -107,7 +110,6 @@ const PositionPage: NextPageWithLayout = ({
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
-  const [redirectDevDAO, setRedirectDevDAO] = useState(false);
   const [openAskEden, setOpenAskEden] = useState(false);
 
   const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
@@ -287,25 +289,16 @@ const PositionPage: NextPageWithLayout = ({
 
   return (
     <>
-      <SEO
-        title={position?.company?.name || ""}
-        description={position?.name || ""}
+      <SEOPosition
+        title={`${position?.name} @ ${position.company?.name}`}
+        description={position?.company?.description || ""}
         image={position?.company?.imageUrl || ""}
+        position={position?.name!}
+        salaryMax={position.generalDetails?.yearlySalary?.max!}
+        salaryMin={position.generalDetails?.yearlySalary?.min!}
+        officePolicy={position.generalDetails?.officePolicy!}
+        location={position.generalDetails?.officeLocation!}
       />
-      <Head>
-        <title>{position?.name}</title>
-        <meta
-          name="description"
-          content={`${position?.company?.description}`}
-        />
-
-        <meta
-          property="og:image"
-          content={`https://eden-saas-develop.vercel.app/api/og/route`}
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-      </Head>
       <div>
         <section
           className="flex w-full justify-center py-24"
@@ -1048,11 +1041,10 @@ const PositionPage: NextPageWithLayout = ({
               <Button
                 onClick={() => {
                   setPublishModalOpen(true);
-                  setRedirectDevDAO(true);
                 }}
                 className="border-edenPink-400 !text-edenPink-400"
               >
-                Publish to Developer DAO
+                Publish
               </Button>
 
               <Modal open={bulkUpdateLoading} closeOnEsc={false}>
@@ -1130,13 +1122,9 @@ const PositionPage: NextPageWithLayout = ({
                   <div className="flex justify-center gap-8">
                     <Button
                       onClick={() => {
-                        if (redirectDevDAO == true) {
-                          router.push(`/developer-dao/jobs`);
-                        } else {
-                          router.push(
-                            `/${position.company?.slug}/dashboard/${position._id}`
-                          );
-                        }
+                        router.push(
+                          `/${position.company?.slug}/dashboard/${position._id}`
+                        );
                       }}
                     >
                       Auto-configure the AI-interview for me
@@ -1166,14 +1154,18 @@ const PositionPage: NextPageWithLayout = ({
   );
 };
 
+const client = new ApolloClient({
+  ssrMode: typeof window === "undefined",
+  link: new HttpLink({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+    credentials: "same-origin",
+  }),
+  cache: new InMemoryCache(),
+});
+
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const positionID = ctx.params?.positionID;
   const { edit } = ctx.query;
-
-  const client = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-    cache: new InMemoryCache(),
-  });
 
   const { data } = await client.query({
     query: gql`
@@ -1230,6 +1222,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       fields: {
         _id: positionID,
       },
+      ssr: true,
     },
   });
 
@@ -1253,11 +1246,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   // if operator access, allow
-  if (session?.accessLevel === 5) {
-    return {
-      props: { position: data.findPosition || null },
-    };
-  }
+  // if (session?.accessLevel === 5) {
+  //   return {
+  //     props: { position: data.findPosition || null },
+  //   };
+  // }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
@@ -1319,6 +1312,134 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     props: { position: data.findPosition || null },
   };
 }
+
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// export const getStaticProps = async (context: any) => {
+//   await delay(200);
+
+//   try {
+//     const positionID = context.params?.positionID;
+
+//     const client = new ApolloClient({
+//       uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+//       cache: new InMemoryCache(),
+//     });
+
+//     const { data } = await client.query({
+//       query: gql`
+//         query ($fields: findPositionInput!) {
+//           findPosition(fields: $fields) {
+//             _id
+//             name
+//             status
+//             whoYouAre
+//             whatTheJobInvolves
+//             company {
+//               _id
+//               name
+//               slug
+//               imageUrl
+//               description
+//               benefits
+//               employeesNumber
+//               tags
+//               whatsToLove
+//               mission
+//               insights {
+//                 letter
+//                 text
+//               }
+//               edenTake
+//               funding {
+//                 name
+//                 date
+//                 amount
+//               }
+//               culture {
+//                 tags
+//                 description
+//               }
+//               benefits
+//               values
+//               founders
+//               glassdoor
+//             }
+//             generalDetails {
+//               yearlySalary {
+//                 min
+//                 max
+//               }
+//               contractType
+//               officePolicy
+//               officeLocation
+//             }
+//           }
+//         }
+//       `,
+//       variables: {
+//         fields: {
+//           _id: positionID,
+//         },
+//       },
+//     });
+
+//     return {
+//       props: { position: data.findPosition || null },
+//       revalidate: 600,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return { notFound: true };
+//   }
+// };
+
+// export const getStaticPaths = (async () => {
+//   try {
+//     const res = await axios.post(
+//       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+//       {
+//         headers: {
+//           "Access-Control-Allow-Origin": `*`,
+//         },
+//         variables: { fields: [] },
+//         query: `
+//           query FindPositions($fields: findPositionsInput) {
+//             findPositions(fields: $fields) {
+//               _id
+//               company
+//                 {
+//                   slug
+//                 }
+//             }
+//           }
+//         `,
+//       }
+//     );
+
+//     const paths = res.data.data.findPositions
+//       .filter((_pos: any) => {
+//         return !!_pos.company && !!_pos.company.slug;
+//       })
+//       .map((_pos: any) => ({
+//         params: { positionID: _pos._id, slug: _pos.company.slug },
+//       }));
+
+//     console.log("getStaticPaths --- ", paths);
+
+//     // { fallback: false } means other routes should 404
+//     return {
+//       paths,
+//       fallback: true,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       paths: [],
+//       fallback: false,
+//     };
+//   }
+// }) satisfies GetStaticPaths;
 
 PositionPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 

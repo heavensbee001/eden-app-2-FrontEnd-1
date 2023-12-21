@@ -262,11 +262,11 @@ export async function getServerSideProps(ctx: {
     };
   }
 
-  if (session.accessLevel === 5) {
-    return {
-      props: { key: url },
-    };
-  }
+  // if (session.accessLevel === 5) {
+  //   return {
+  //     props: { key: url },
+  //   };
+  // }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
