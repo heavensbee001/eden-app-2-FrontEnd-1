@@ -395,7 +395,6 @@ export async function getServerSideProps(ctx: {
 }) {
   const session = await getSession(ctx);
 
-
   const url = ctx.req.url;
 
   if (!session) {
@@ -407,11 +406,11 @@ export async function getServerSideProps(ctx: {
     };
   }
 
-  if (session.accessLevel === 5) {
-    return {
-      props: { key: url },
-    };
-  }
+  // if (session.accessLevel === 5) {
+  //   return {
+  //     props: { key: url },
+  //   };
+  // }
 
   return {
     props: { key: url },
