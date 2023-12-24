@@ -55,9 +55,17 @@ export const SEOPosition: FC<SEOPositionProps> = ({
     apiUrl = apiUrl + `&location=${location}`;
   }
 
-  const ogImage = process.env.VERCEL_URL
-    ? "https://" + process.env.VERCEL_URL + apiUrl
-    : "" + apiUrl;
+  // const ogImage = process.env.VERCEL_URL
+  //   ? "https://" + process.env.VERCEL_URL + apiUrl
+  //   : "" + apiUrl;
+
+  let ogImage = "https://edenprotocol.app" + apiUrl;
+
+  if (process.env.NEXT_PUBLIC_ENV_BRANCH === "develop") {
+    ogImage = "https://eden-saas-develop.app" + apiUrl;
+  } else if (process.env.NEXT_PUBLIC_ENV_BRANCH === "localhost") {
+    ogImage = apiUrl;
+  }
 
   return (
     <Head>
