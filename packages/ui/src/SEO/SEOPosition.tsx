@@ -55,16 +55,27 @@ export const SEOPosition: FC<SEOPositionProps> = ({
     apiUrl = apiUrl + `&location=${location}`;
   }
 
-  const ogImage = process.env.VERCEL_URL
-    ? "https://" + process.env.VERCEL_URL + apiUrl
-    : "" + apiUrl;
+  // const ogImage = process.env.VERCEL_URL
+  //   ? "https://" + process.env.VERCEL_URL + apiUrl
+  //   : "" + apiUrl;
+
+  let ogImage = "https://edenprotocol.app" + apiUrl;
+
+  if (process.env.NEXT_PUBLIC_ENV_BRANCH === "develop") {
+    ogImage = "https://eden-saas-develop.vercel.app" + apiUrl;
+  } else if (process.env.NEXT_PUBLIC_ENV_BRANCH === "localhost") {
+    ogImage = apiUrl;
+  }
 
   return (
     <Head>
       <meta property="og:site_name" content={`Eden protocol`} />
       <meta property="og:title" content={appTitle} />
       <meta property="og:description" content={appDescription} />
-      <meta property="og:image" content={encodeURI(ogImage)} />
+      <meta
+        property="og:image"
+        content={encodeURI(ogImage).replace(/&amp;/g, "&")}
+      />
       <meta property="og:image:width" content="800" />
       <meta property="og:image:height" content="400" />
 
@@ -72,7 +83,10 @@ export const SEOPosition: FC<SEOPositionProps> = ({
       <meta property="twitter:site" content={`Eden protocol`} />
       <meta property="twitter:title" content={appTitle} />
       <meta property="twitter:description" content={appDescription} />
-      <meta property="twitter:image:src" content={encodeURI(ogImage)} />
+      <meta
+        property="twitter:image:src"
+        content={encodeURI(ogImage).replace(/&amp;/g, "&")}
+      />
       <meta property="twitter:image:width" content="800" />
       <meta property="twitter:image:height" content="400" />
       <meta property="twitter:creator" content={`Eden protocol`} />
