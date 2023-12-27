@@ -14,6 +14,8 @@ import {
 } from "@eden/package-ui";
 import axios from "axios";
 import { GetStaticPaths, InferGetStaticPropsType } from "next";
+// import ReactTooltip from "react-tooltip";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -25,9 +27,11 @@ import {
   useRef,
   useState,
 } from "react";
-import ReactTooltip from "react-tooltip";
 
 import type { NextPageWithLayout } from "../../_app";
+const ReactTooltip = dynamic<any>(() => import("react-tooltip"), {
+  ssr: false,
+});
 
 const JobsPage: NextPageWithLayout = ({
   company,
@@ -366,7 +370,7 @@ const PositionCard = ({ position, setLoadingSpinner }: PositionCardProps) => {
     >
       <div className="flex w-full flex-row items-center pr-14">
         <div className="flex h-[60px] w-[60px] items-center justify-around rounded-md">
-          <Image
+          <img
             width="48"
             height="48"
             src={`${

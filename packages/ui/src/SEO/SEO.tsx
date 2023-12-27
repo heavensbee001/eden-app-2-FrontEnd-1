@@ -2,8 +2,8 @@ import Head from "next/head";
 import React, { FC } from "react";
 
 const DEFAULT_TITLE = process.env.NEXT_PUBLIC_ENV_BRANCH
-  ? `Eden protocol - alpha - ${process.env.NEXT_PUBLIC_ENV_BRANCH}`
-  : `Eden protocol - alpha`;
+  ? `Eden protocol - ${process.env.NEXT_PUBLIC_ENV_BRANCH}`
+  : `Eden protocol`;
 const DEFAULT_DESCRIPTION = `Together, let's build the perfect breeding ground for everyone to do work they love. Eden's talent coordination protocol is how.`;
 
 const DEFAULT_IMAGE = `https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg`;

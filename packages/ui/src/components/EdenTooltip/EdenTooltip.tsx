@@ -1,5 +1,9 @@
+import dynamic from "next/dynamic";
 import { FC } from "react";
-import ReactTooltip, { TooltipProps } from "react-tooltip";
+import { TooltipProps } from "react-tooltip";
+const ReactTooltip = dynamic<any>(() => import("react-tooltip"), {
+  ssr: false,
+});
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
