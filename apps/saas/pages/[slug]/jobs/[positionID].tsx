@@ -6,7 +6,11 @@ import {
   useMutation,
 } from "@apollo/client";
 import { UserContext } from "@eden/package-context";
-import { Position, PositionStatus } from "@eden/package-graphql/generated";
+import {
+  CandidateType,
+  Position,
+  PositionStatus,
+} from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
   AppUserLayout,
@@ -97,8 +101,12 @@ const editInputClasses =
 
 const PositionPage: NextPageWithLayout = ({
   position,
+  submitted,
+  matchstimate,
 }: {
   position: Position;
+  submitted?: boolean;
+  matchstimate?: number;
 }) => {
   const router = useRouter();
   const { edit } = router.query;
@@ -287,6 +295,26 @@ const PositionPage: NextPageWithLayout = ({
     setLoadingSpinner(false);
   };
 
+  const getGrade = (percentage: number) => {
+    let grade = { letter: "", color: "" };
+
+    if (percentage >= 70) {
+      grade = { letter: "A", color: "text-utilityGreen" };
+    } else if (percentage >= 50) {
+      grade = { letter: "B", color: "text-utilityYellow" };
+    } else if (percentage >= 30) {
+      grade = { letter: "C", color: "text-utilityOrange" };
+      // if (mainColumn) grade = { letter: "C", color: "text-orange-300" };
+      // else grade = { letter: "C", color: "text-black" };
+    } else {
+      grade = { letter: "D", color: "text-utilityRed" };
+      // if (mainColumn) grade = { letter: "D", color: "text-red-300" };
+      // else grade = { letter: "D", color: "text-black" };
+    }
+
+    return grade;
+  };
+
   return (
     <>
       <SEOPosition
@@ -428,7 +456,27 @@ const PositionPage: NextPageWithLayout = ({
                   className="text-edenGreen-600 mr-3 inline-block"
                 />
                 <div className="text-edenGray-600 border-edenGray-300 ml-1 mr-3 flex items-center justify-center rounded-md border px-6 py-1.5">
-                  <h4 className="text-lg">?</h4>
+                  {submitted ? (
+                    typeof matchstimate === "number" ? (
+                      <h4
+                        className={classNames(
+                          "text-lg",
+                          getGrade(matchstimate).color
+                        )}
+                      >
+                        {getGrade(matchstimate).letter}
+                      </h4>
+                    ) : (
+                      <div
+                        className="h-8 w-8"
+                        style={{ animation: "spin 2s ease-in-out infinite" }}
+                      >
+                        <EdenIconExclamationAndQuestion className="h-full w-full" />
+                      </div>
+                    )
+                  ) : (
+                    <h4 className="text-lg">?</h4>
+                  )}
                 </div>
                 <div>
                   <div className="flex flex-nowrap items-center">
@@ -439,14 +487,20 @@ const PositionPage: NextPageWithLayout = ({
                     </Tooltip>
                   </div>
                   <p className="text-edenGray-500 text-xs">
-                    <a
-                      href="#"
-                      onClick={() => handleInterviewNav()}
-                      className="cursor-pointer text-blue-500 underline"
-                    >
-                      Upload your resume
-                    </a>{" "}
-                    to unlock
+                    {!submitted ? (
+                      <>
+                        <a
+                          href="#"
+                          onClick={() => handleInterviewNav()}
+                          className="cursor-pointer text-blue-500 underline"
+                        >
+                          Upload your resume
+                        </a>{" "}
+                        to unlock
+                      </>
+                    ) : typeof matchstimate !== "number" ? (
+                      <>Your score is being processed</>
+                    ) : null}
                   </p>
                 </div>
               </div>
@@ -769,42 +823,44 @@ const PositionPage: NextPageWithLayout = ({
 
           <div className="col-span-12 md:col-span-6">
             {/* ---- YOU & THE ROLE ---- */}
-            <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
-              <div className="bg-edenPink-300 px-6 py-4">
-                <h2 className="text-edenGreen-600">You & the role</h2>
-              </div>
-              <div className="px-6 py-4">
-                <div className="bg-edenPink-300 mx-auto flex h-8 w-8 items-center justify-center rounded-md">
-                  <AiOutlineEyeInvisible size={"1.4rem"} />
+            {!submitted && (
+              <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
+                <div className="bg-edenPink-300 px-6 py-4">
+                  <h2 className="text-edenGreen-600">You & the role</h2>
                 </div>
-                <h3 className="text-edenGreen-600 mb-4 text-center font-semibold">
-                  Upload your resume to unlock:
-                </h3>
-                <ul className="text-edenGray-900 list-disc pl-4 text-sm">
-                  <li className="mb-2"> If you’d be a good fit</li>
-                  <li className="mb-2">
-                    What your strengths are for this opportunity
-                  </li>
-                  <li className="mb-2">
-                    What your weaknesses are for this opportunity
-                  </li>
-                </ul>
+                <div className="px-6 py-4">
+                  <div className="bg-edenPink-300 mx-auto flex h-8 w-8 items-center justify-center rounded-md">
+                    <AiOutlineEyeInvisible size={"1.4rem"} />
+                  </div>
+                  <h3 className="text-edenGreen-600 mb-4 text-center font-semibold">
+                    Upload your resume to unlock:
+                  </h3>
+                  <ul className="text-edenGray-900 list-disc pl-4 text-sm">
+                    <li className="mb-2"> If you’d be a good fit</li>
+                    <li className="mb-2">
+                      What your strengths are for this opportunity
+                    </li>
+                    <li className="mb-2">
+                      What your weaknesses are for this opportunity
+                    </li>
+                  </ul>
 
-                <div className="mt-4 flex justify-center">
-                  <Button
-                    variant="secondary"
-                    // onClick={() => {
-                    //   router.push(`/interview/${position._id}`);
-                    // }}
-                    onClick={() => {
-                      handleInterviewNav();
-                    }}
-                  >
-                    Upload Your Resume
-                  </Button>
+                  <div className="mt-4 flex justify-center">
+                    <Button
+                      variant="secondary"
+                      // onClick={() => {
+                      //   router.push(`/interview/${position._id}`);
+                      // }}
+                      onClick={() => {
+                        handleInterviewNav();
+                      }}
+                    >
+                      Upload Your Resume
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
 
             {/* ---- COMPANY DETAILS ---- */}
             <section className="bg-edenPink-100 mb-8 overflow-hidden rounded-md">
@@ -1005,14 +1061,22 @@ const PositionPage: NextPageWithLayout = ({
         <footer className="bg-edenGreen-600 fixed bottom-0 left-0 flex h-16 w-full items-center justify-center">
           {!editMode ? (
             <>
-              <Button
-                className="border-edenPink-400 !text-edenPink-400"
-                onClick={() => {
-                  handleInterviewNav();
-                }}
-              >
-                Apply with AI
-              </Button>
+              {!submitted ? (
+                <Button
+                  className={classNames(
+                    "border-edenPink-400 !text-edenPink-400"
+                  )}
+                  onClick={() => {
+                    handleInterviewNav();
+                  }}
+                >
+                  Apply with AI
+                </Button>
+              ) : (
+                <div className="bg-edenGreen-300 text-edenGreen-600 font-Moret cursor-not-allowed rounded-md px-4 py-2 text-lg font-bold">
+                  You applied to this position
+                </div>
+              )}
               {currentUser?._id && (
                 <AskEdenPopUp
                   memberID={currentUser?._id}
@@ -1215,6 +1279,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
             officePolicy
             officeLocation
           }
+          candidates {
+            submitted
+            overallScore
+            user {
+              _id
+            }
+          }
         }
       }
     `,
@@ -1226,14 +1297,31 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     },
   });
 
+  const session = await getSession(ctx);
+  const userApplied = data.findPosition.candidates.find(
+    (_cand: CandidateType) => _cand.user?._id === session?.user?.id
+  );
+
+  let submitted = false;
+  let matchstimate = null;
+
+  if (userApplied) submitted = true;
+  if (
+    typeof userApplied?.overallScore === "number" &&
+    userApplied?.overallScore >= 0
+  )
+    matchstimate = userApplied?.overallScore;
+
   // if not edit mode don't authenticate, allow
   if (edit !== "true") {
     return {
-      props: { position: data.findPosition || null },
+      props: {
+        position: data.findPosition || null,
+        submitted: submitted,
+        matchstimate: matchstimate,
+      },
     };
   }
-
-  const session = await getSession(ctx);
 
   // if not session ask for login
   if (!session) {
@@ -1551,8 +1639,6 @@ const CompanyTagsField = ({
     control, // control props comes from useForm
     name: "company.tags", // unique name for your Field Array
   });
-
-  console.log(fields);
 
   return (
     <div className="inline">
