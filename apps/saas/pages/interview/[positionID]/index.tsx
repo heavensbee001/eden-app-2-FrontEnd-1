@@ -23,12 +23,21 @@ import DatePicker from "react-datepicker";
 import { toast } from "react-toastify";
 
 import ApplicationStepContainer from "@/components/interview/ApplicationContainer";
-import ConnectTelegramContainer from "@/components/interview/ConnectTelegramContainer";
+// import ConnectTelegramContainer from "@/components/interview/ConnectTelegramContainer";
 import InterviewEdenAIStepContainer from "@/components/interview/InterviewContainer";
 import ProfileQuestionsContainer from "@/components/interview/ProfileQuestions";
 import UploadCVContainer from "@/components/interview/UploadCVContainer";
 
 import type { NextPageWithLayout } from "../../_app";
+
+const SUBMIT_CANDIDATE_POSITION = gql`
+  mutation SubmitCandidatePosition($fields: submitCandidatePositionInput) {
+    submitCandidatePosition(fields: $fields) {
+      _id
+      name
+    }
+  }
+`;
 
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
@@ -41,6 +50,8 @@ const HomePage: NextPageWithLayout = () => {
   const [insightsChecked, setInsightsChecked] = useState<Boolean>(false);
   const [step, setStep] = useState<number>(0);
   const [showStartInterviewModal, setShowStartInterviewModal] =
+    useState<boolean>(false);
+  const [submittingGeneralDetails, setSubmittingGeneralDetails] =
     useState<boolean>(false);
   const [showInterviewModal, setShowInterviewModal] = useState<boolean>(false);
   const [titleRole, setTitleRole] = useState<string>("");
@@ -87,18 +98,32 @@ const HomePage: NextPageWithLayout = () => {
     setInterviewEnded(true);
   };
 
-  const [updateMember, { loading: submittingGeneralDetails }] = useMutation(
-    UPDATE_MEMBER,
-    {
-      onCompleted({ updateMember }: Mutation) {
-        if (!updateMember) console.log("updateMember is null");
-        setStep(step + 1);
-      },
-      onError: () => {
-        toast.error("Server error");
-      },
-    }
-  );
+  const [submitCandidatePosition, {}] = useMutation(SUBMIT_CANDIDATE_POSITION, {
+    onCompleted({}: Mutation) {
+      setSubmittingGeneralDetails(false);
+      setStep(step + 1);
+    },
+    onError: () => {
+      toast.error("Server error");
+      setSubmittingGeneralDetails(false);
+    },
+  });
+
+  const [updateMember] = useMutation(UPDATE_MEMBER, {
+    onCompleted({}: Mutation) {
+      // if (!updateMember) console.log("updateMember is null");
+      // setStep(step + 1);
+      submitCandidatePosition({
+        variables: {
+          fields: { candidateID: currentUser?._id, positionID: positionID },
+        },
+      });
+    },
+    onError: () => {
+      toast.error("Server error");
+      setSubmittingGeneralDetails(false);
+    },
+  });
 
   const handleGeneralDetailsSubmit = () => {
     const fields: UpdateMemberInput = {};
@@ -128,6 +153,8 @@ const HomePage: NextPageWithLayout = () => {
         : {
             years: +generalDetails?.experienceLevel?.years,
           };
+
+    setSubmittingGeneralDetails(true);
 
     updateMember({
       variables: {
@@ -459,7 +486,6 @@ const HomePage: NextPageWithLayout = () => {
                   nextButton={
                     <Button
                       variant="secondary"
-                      // type="submit"
                       className="mx-auto"
                       onClick={() => {
                         handleGeneralDetailsSubmit();
@@ -477,7 +503,7 @@ const HomePage: NextPageWithLayout = () => {
                         )
                       }
                     >
-                      Save & Continue
+                      Submit Application
                     </Button>
                   }
                 >
@@ -499,13 +525,19 @@ const HomePage: NextPageWithLayout = () => {
                   )}
                 </WizardStep>
                 <WizardStep navigationDisabled={!panda} label={"ALL DONE"}>
-                  {/* <FinalContainer /> */}
+                  <ConfirmEmailContainer
+                    email={currentUser.conduct?.email || ""}
+                    position={findPositionData?.findPosition!}
+                  />
+                </WizardStep>
+                {/* <WizardStep navigationDisabled={!panda} label={"ALL DONE"}>
+                  <FinalContainer />
                   <ConnectTelegramContainer
                     candidateTelegramID={
                       currentUser.conduct?.telegramChatID || undefined
                     }
                   />
-                </WizardStep>
+                </WizardStep> */}
 
                 {/* <WizardStep label={"end"}>
               <section className="flex h-full flex-col items-center justify-center">
@@ -538,6 +570,8 @@ export default HomePage;
 
 import { IncomingMessage, ServerResponse } from "http";
 import { getSession } from "next-auth/react";
+
+import ConfirmEmailContainer from "@/components/interview/ConfirmEmailContainer";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;

@@ -46,7 +46,7 @@ const SignupCommunity: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[url('/oasis-bg.png')] bg-cover bg-no-repeat">
+      <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center bg-[url('/oasis-bg.png')] bg-cover bg-no-repeat overflow-y-scroll pb-16">
         <div>
           <div className="mx-auto flex h-[236px] w-[604px] flex-col items-center justify-center rounded-lg bg-white">
             <div className="font-Moret text-edenGreen-600 text-2xl font-bold leading-[33.6px]">
@@ -75,8 +75,8 @@ const SignupCommunity: NextPageWithLayout = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2.3}
-                  stroke="currentColor"
-                  className="h-6 w-6"
+                  stroke="#393939"
+                  className="h-4 w-4 -mb-px"
                 >
                   <path
                     strokeLinecap="round"
@@ -86,10 +86,10 @@ const SignupCommunity: NextPageWithLayout = () => {
                 </svg>
               </div>
               {showOptions && (
-                <div className="border-edenGray-500 bg-edenPink-200 absolute left-0 top-full w-[204px] translate-y-1 rounded-md border">
+                <div className="z-10 border-edenGray-500 bg-edenPink-200 absolute left-0 top-full w-[204px] translate-y-1 rounded-md border">
                   {HARDCODED_POOLS.map((pool, index) => (
                     <div
-                      className="hover:bg-edenPink-400 pl-4 text-xs hover:cursor-pointer"
+                      className="hover:bg-edenPink-400 pl-4 text-xs hover:cursor-pointer py-2"
                       onClick={() => handleSelect(index)}
                       key={index}
                     >
@@ -120,25 +120,30 @@ const SignupCommunity: NextPageWithLayout = () => {
               Join the oasis
             </Button>
           </div>
-          <div className=" relative mt-4  ">
+          <div className="relative mt-4">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-edenPink-500  font-Moret
-            -ml-4 flex  rounded-md text-2xl font-bold focus:outline-none"
+              className="text-edenPink-500 font-Moret -ml-4 flex rounded-md text-2xl font-bold focus:outline-none"
             >
               <div className="flex items-center justify-center">
                 {!isOpen ? (
-                  <BiChevronRight className="text-edenPink-500" size={"3rem"} />
+                  <BiChevronRight
+                    className="text-edenPink-500"
+                    size={"2.4rem"}
+                  />
                 ) : (
-                  <BiChevronDown className="text-edenPink-500" size={"3rem"} />
+                  <BiChevronDown
+                    className="text-edenPink-500"
+                    size={"2.4rem"}
+                  />
                 )}
                 <h1>What is a talent oasis?</h1>{" "}
               </div>
             </button>
 
             {isOpen && (
-              <div className=" absolute z-10  mt-2  rounded-md ">
-                <div className="text-edenPink-400 p-4">
+              <div className="absolute z-10 rounded-md">
+                <div className="text-edenPink-400 px-4">
                   <p className="mb-4">
                     The Eden talent collectives are an AI-managed & curated
                     talent pool that helps you apply, shine for & land your

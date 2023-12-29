@@ -22,6 +22,7 @@ export const FIND_CURRENTUSER = gql`
       }
       conduct {
         telegramChatID
+        email
       }
       budget {
         perHour
