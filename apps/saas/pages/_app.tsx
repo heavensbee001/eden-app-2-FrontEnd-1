@@ -12,7 +12,7 @@ import type { ReactElement, ReactNode } from "react";
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 
-// import { IS_DEVELOPMENT } from "../constants";
+import Mixpanel from "@/components/tools/mixpanel";
 
 const AppDeviceLayout = dynamic(
   () => import(`@eden/package-ui/src/layout/AppDeviceLayout/AppDeviceLayout`),
@@ -46,6 +46,7 @@ const App = ({
         <ApolloProvider client={apolloClient}>
           <UserProvider>
             <CompanyProvider>
+              <Mixpanel />
               <AppDeviceLayout />
               {getLayout(<Component {...pageProps} />)}
             </CompanyProvider>
