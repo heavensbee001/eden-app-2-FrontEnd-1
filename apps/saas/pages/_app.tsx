@@ -46,7 +46,7 @@ const App = ({
         <ApolloProvider client={apolloClient}>
           <UserProvider>
             <CompanyProvider>
-              <Mixpanel />
+              {process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && <Mixpanel />}
               <AppDeviceLayout />
               {getLayout(<Component {...pageProps} />)}
             </CompanyProvider>
