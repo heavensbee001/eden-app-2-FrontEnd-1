@@ -24,11 +24,14 @@ const ThanksPage: NextPageWithLayout = ({
   return (
     <>
       <div className="flex min-h-[calc(100vh-4rem)] w-full flex-col justify-center p-8">
-        <div className="mx-auto max-w-lg text-center">
-          <h2 className="text-edenGreen-600 mb-8 font-medium">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-edenGreen-600 mb-3">
             🎉 Application for {position.name} at {position.company?.name}
             confirmed! 🎉
           </h2>
+          <h3 className="text-edenGreen-600 mb-8 font-medium">
+            🤞 Good luck 🤞
+          </h3>
           <p className="text-edenGray-500 mb-20">
             Most Hiring managers get back to you <u>within 2 weeks</u> so keep
             an eye on your e-mails for additional questions / an invite for the
