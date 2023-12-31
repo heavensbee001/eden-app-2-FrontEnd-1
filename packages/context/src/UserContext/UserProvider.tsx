@@ -96,12 +96,14 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   // ----- MIXPANEL ------
   useMemo(() => {
-    if (id) {
-      // ----- Identify user ------
-      mixpanel.identify(id);
-    } else {
-      // ----- Reset Id ------
-      mixpanel.reset();
+    if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN) {
+      if (id) {
+        // ----- Identify user ------
+        mixpanel.identify(id);
+      } else {
+        // ----- Reset Id ------
+        mixpanel.reset();
+      }
     }
   }, [id]);
 
