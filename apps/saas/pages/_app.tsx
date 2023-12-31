@@ -12,7 +12,7 @@ import type { ReactElement, ReactNode } from "react";
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 
-// import { IS_DEVELOPMENT } from "../constants";
+import mixpanelConfig from "../utils/tools/mixpanel";
 
 const AppDeviceLayout = dynamic(
   () => import(`@eden/package-ui/src/layout/AppDeviceLayout/AppDeviceLayout`),
@@ -39,6 +39,7 @@ const App = ({
   const getLayout = Component.getLayout ?? ((page) => page);
 
   // console.log(IS_DEVELOPMENT ? "development" : "production");
+  mixpanelConfig();
 
   return (
     <>
