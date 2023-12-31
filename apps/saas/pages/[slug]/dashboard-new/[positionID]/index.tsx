@@ -146,9 +146,8 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const [isTopicListMenuOpen, setIsTopicListMenuOpen] = useState(true);
 
-  const [letterType, setLetterType] = useState<
-    "rejection" | "nextInterviewInvite" | ""
-  >("");
+  const [letterType, setLetterType] =
+    useState<"rejection" | "nextInterviewInvite" | "">("");
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -1476,11 +1475,14 @@ export async function getServerSideProps(ctx: {
     };
   }
 
-  // if (session.accessLevel === 5) {
-  //   return {
-  //     props: { key: url },
-  //   };
-  // }
+  if (
+    session.accessLevel === 5 &&
+    session.user?.id !== "113589215262737174259"
+  ) {
+    return {
+      props: { key: url },
+    };
+  }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
