@@ -12,7 +12,7 @@ import type { ReactElement, ReactNode } from "react";
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 
-import Mixpanel from "@/components/tools/mixpanel";
+import mixpanelConfig from "../utils/tools/mixpanel";
 
 const AppDeviceLayout = dynamic(
   () => import(`@eden/package-ui/src/layout/AppDeviceLayout/AppDeviceLayout`),
@@ -39,6 +39,7 @@ const App = ({
   const getLayout = Component.getLayout ?? ((page) => page);
 
   // console.log(IS_DEVELOPMENT ? "development" : "production");
+  mixpanelConfig();
 
   return (
     <>
@@ -46,7 +47,6 @@ const App = ({
         <ApolloProvider client={apolloClient}>
           <UserProvider>
             <CompanyProvider>
-              {process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && <Mixpanel />}
               <AppDeviceLayout />
               {getLayout(<Component {...pageProps} />)}
             </CompanyProvider>

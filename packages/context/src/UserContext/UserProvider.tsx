@@ -1,6 +1,7 @@
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { FIND_CURRENTUSER, FIND_CURRENTUSER_SUB } from "@eden/package-graphql";
 import { ServerTemplate } from "@eden/package-graphql/generated";
+import mixpanel from "mixpanel-browser";
 import { useSession } from "next-auth/react";
 import React, { useMemo, useState } from "react";
 
@@ -92,6 +93,17 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       console.log(`==== ----------- ====`);
     }
   }, [dataMember]);
+
+  // ----- MIXPANEL ------
+  useMemo(() => {
+    if (id) {
+      // ----- Identify user ------
+      mixpanel.identify(id);
+    } else {
+      // ----- Reset Id ------
+      mixpanel.reset();
+    }
+  }, [id]);
 
   const injectContext = {
     currentUser: dataMember?.findMember || undefined,
