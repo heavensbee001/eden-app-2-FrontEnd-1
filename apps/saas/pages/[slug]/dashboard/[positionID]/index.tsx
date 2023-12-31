@@ -149,9 +149,8 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -2075,11 +2074,14 @@ export async function getServerSideProps(ctx: {
     };
   }
 
-  // if (session.accessLevel === 5) {
-  //   return {
-  //     props: { key: url },
-  //   };
-  // }
+  if (
+    session.accessLevel === 5 &&
+    session.user?.id !== "113589215262737174259"
+  ) {
+    return {
+      props: { key: url },
+    };
+  }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
