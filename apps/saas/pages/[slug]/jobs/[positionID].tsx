@@ -1281,7 +1281,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
           }
           candidates {
             submitted
-            overallScore
+            scoreCardTotal {
+              score
+            }
             user {
               _id
             }
@@ -1307,10 +1309,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   if (userApplied) submitted = true;
   if (
-    typeof userApplied?.overallScore === "number" &&
-    userApplied?.overallScore >= 0
+    userApplied?.scoreCardTotal &&
+    typeof userApplied?.scoreCardTotal?.score === "number" &&
+    userApplied?.scoreCardTotal?.score >= 0
   )
-    matchstimate = userApplied?.overallScore;
+    matchstimate = userApplied?.scoreCardTotal?.score * 100;
 
   // if not edit mode don't authenticate, allow
   if (edit !== "true") {
