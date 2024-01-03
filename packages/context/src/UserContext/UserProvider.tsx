@@ -97,15 +97,19 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   // ----- MIXPANEL ------
   useMemo(() => {
     if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN) {
-      if (id) {
+      if (dataMember?.findMember._id) {
         // ----- Identify user ------
-        mixpanel.identify(id);
+        mixpanel.identify(dataMember?.findMember._id);
+        mixpanel.people.set({
+          $name: dataMember?.findMember.discordName,
+          $email: dataMember?.findMember.conduct?.email,
+        });
       } else {
         // ----- Reset Id ------
         mixpanel.reset();
       }
     }
-  }, [id]);
+  }, [dataMember?.findMember._id]);
 
   const injectContext = {
     currentUser: dataMember?.findMember || undefined,
