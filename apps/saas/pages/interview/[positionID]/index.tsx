@@ -100,6 +100,7 @@ const HomePage: NextPageWithLayout = () => {
 
   const [submitCandidatePosition, {}] = useMutation(SUBMIT_CANDIDATE_POSITION, {
     onCompleted({}: Mutation) {
+      mixpanel.track("Application submitted");
       setSubmittingGeneralDetails(false);
       setStep(step + 1);
     },
@@ -569,6 +570,7 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 export default HomePage;
 
 import { IncomingMessage, ServerResponse } from "http";
+import mixpanel from "mixpanel-browser";
 import { getSession } from "next-auth/react";
 
 import ConfirmEmailContainer from "@/components/interview/ConfirmEmailContainer";
