@@ -1654,7 +1654,7 @@ const CompanyTagsField = ({
           <span className="">
             {editMode ? (
               <input
-                placeholder="date"
+                placeholder="tag"
                 {...register(`company.tags.${index}`)}
                 className={classNames(
                   "-mx-2 w-[calc(100%+1rem)] px-0",
