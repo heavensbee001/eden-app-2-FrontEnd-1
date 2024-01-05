@@ -1,5 +1,4 @@
 import { gql, useQuery } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
 import { Members } from "@eden/package-graphql/generated";
 import {
   AI_INTERVIEW_SERVICES,
@@ -9,7 +8,7 @@ import {
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { FC, useContext, useState } from "react";
+import { FC, useState } from "react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
@@ -93,9 +92,9 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
     useState<MessageObject>({ message: "", sentMessage: false, user: "" });
 
   // --------- Position and User ------------
-  const { currentUser } = useContext(UserContext);
+  // const { currentUser } = useContext(UserContext);
 
-  console.log("currentUser = ", currentUser?._id);
+  // console.log("currentUser = ", currentUser?._id);
 
   const router = useRouter();
   const { positionID } = router.query;

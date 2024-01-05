@@ -555,6 +555,7 @@ const PositionPage: NextPageWithLayout = ({
                     <div className="bg-edenGreen-600 text-edenPink-300 font-Moret mr-2 inline-block rounded-xl px-3 py-0.5 font-bold">
                       <input
                         {...register("generalDetails.officeLocation")}
+                        placeholder="Office location"
                         className={classNames(editInputClasses, "")}
                       />
                     </div>
@@ -1653,7 +1654,7 @@ const CompanyTagsField = ({
           <span className="">
             {editMode ? (
               <input
-                placeholder="date"
+                placeholder="tag"
                 {...register(`company.tags.${index}`)}
                 className={classNames(
                   "-mx-2 w-[calc(100%+1rem)] px-0",

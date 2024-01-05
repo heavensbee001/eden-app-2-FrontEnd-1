@@ -1,7 +1,6 @@
 import { TalentListType } from "@eden/package-graphql/generated";
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/outline";
-import { CheckIcon } from "@heroicons/react/solid";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
 export interface ISelectListProps {
@@ -71,20 +70,15 @@ export const SelectList = ({
                   value={item}
                 >
                   {({ selected }) => (
-                    <>
-                      <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal"
-                        }`}
-                      >
-                        {item.name}
-                      </span>
-                      {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
-                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                        </span>
-                      ) : null}
-                    </>
+                    <span
+                      className={`block truncate ${
+                        selected
+                          ? "font-medium bg-edenGray-100 -mx-4 -my-2 py-2 px-4 text-black"
+                          : "font-normal"
+                      }`}
+                    >
+                      {item.name}
+                    </span>
                   )}
                 </Listbox.Option>
               ))}

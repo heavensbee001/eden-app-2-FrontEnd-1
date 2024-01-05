@@ -11,6 +11,7 @@ interface UploadCVContainerProps {
   setContent: Dispatch<SetStateAction<any>>;
   handleCvEnd: () => void;
   position: Position;
+  editMode: boolean;
 }
 
 const UploadCVContainer = ({
@@ -20,6 +21,7 @@ const UploadCVContainer = ({
   handleCvEnd,
   // eslint-disable-next-line no-unused-vars
   position,
+  editMode,
 }: UploadCVContainerProps) => {
   const router = useRouter();
   const { positionID } = router.query;
@@ -87,7 +89,7 @@ const UploadCVContainer = ({
         </div>
       </section> */}
       <section className="mb-4 flex h-[25vh] w-full flex-col items-center justify-center rounded-md p-4">
-        {!recaptcha && ReCAPTCHA ? (
+        {!recaptcha && ReCAPTCHA && !editMode ? (
           <ReCAPTCHA
             sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY || ""}
             onChange={(val: any) => {
