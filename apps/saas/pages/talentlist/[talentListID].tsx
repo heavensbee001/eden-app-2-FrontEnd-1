@@ -55,9 +55,8 @@ const TalentListPublicPage: NextPageWithLayout = () => {
   // const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
-    null
-  );
+  const [selectedUserScore, setSelectedUserScore] =
+    useState<number | null>(null);
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -145,11 +144,11 @@ const TalentListPublicPage: NextPageWithLayout = () => {
             };
           }
 
-          console.log(
-            "candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore = ",
-            candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore
-          );
-          console.log("letterAndColor = ", letterAndColor);
+          // console.log(
+          //   "candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore = ",
+          //   candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore
+          // );
+          // console.log("letterAndColor = ", letterAndColor);
 
           totalMatchPerc = totalMatchPerc / totalMatchPercCount;
 
@@ -168,10 +167,10 @@ const TalentListPublicPage: NextPageWithLayout = () => {
           };
         });
 
-      console.log(
-        "candidatesListWithSkillMatch = ",
-        candidatesListWithSkillMatch
-      );
+      // console.log(
+      //   "candidatesListWithSkillMatch = ",
+      //   candidatesListWithSkillMatch
+      // );
 
       // sort the candidatesList by the totalMatchPerc
       const sortedCandidatesList = candidatesListWithSkillMatch.sort(
