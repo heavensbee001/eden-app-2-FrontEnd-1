@@ -1,7 +1,6 @@
 import { TalentListType } from "@eden/package-graphql/generated";
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/outline";
-import { CheckIcon } from "@heroicons/react/solid";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
 export interface ISelectListProps {
