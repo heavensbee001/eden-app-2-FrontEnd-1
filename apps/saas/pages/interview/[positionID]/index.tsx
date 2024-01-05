@@ -314,6 +314,7 @@ const HomePage: NextPageWithLayout = () => {
                     setContent={setContent}
                     handleCvEnd={handleCvEnd}
                     position={findPositionData?.findPosition}
+                    editMode={!!panda}
                   />
                 </WizardStep>
                 <WizardStep
