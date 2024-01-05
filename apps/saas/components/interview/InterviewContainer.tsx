@@ -85,7 +85,7 @@ const InterviewEdenAIStepContainer = ({
   // --------- Position and User ------------
   const { currentUser } = useContext(UserContext);
 
-  console.log("currentUser = ", currentUser?._id);
+  // console.log("currentUser = ", currentUser?._id);
 
   const router = useRouter();
   const { positionID } = router.query;

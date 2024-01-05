@@ -229,15 +229,15 @@ const HomePage: NextPageWithLayout = () => {
 
   const ExampleCustomInput = forwardRef<HTMLButtonElement, CustomInputProps>(
     ({ value, onClick }, ref) => (
-      <h1 className=" text-lg">
+      <h3 className="whitespace-nowrap">
         <button
-          className="bg-edenPink-400 text-edenGreen-500  h-8 w-52 min-w-fit rounded-lg border border-neutral-400 py-[0.16rem] pl-10 pr-6 "
+          className="bg-edenPink-300 text-edenGreen-500  h-8 w-52 min-w-fit rounded-lg border border-neutral-400 py-[0.16rem] pl-10 pr-6 "
           onClick={onClick}
           ref={ref}
         >
           {value}
         </button>
-      </h1>
+      </h3>
     )
   );
 
@@ -314,6 +314,7 @@ const HomePage: NextPageWithLayout = () => {
                     setContent={setContent}
                     handleCvEnd={handleCvEnd}
                     position={findPositionData?.findPosition}
+                    editMode={!!panda}
                   />
                 </WizardStep>
                 <WizardStep
@@ -389,31 +390,33 @@ const HomePage: NextPageWithLayout = () => {
                     )}
                     {scheduleState === "second" && (
                       <div className="mt-7 flex flex-col items-center justify-center py-48  ">
-                        <div className="mb-2 flex flex-col items-center">
+                        <div className="mb-4 flex flex-col items-center">
                           <h1 className=" text-edenGreen-600 text-3xl font-bold">
-                            Pick a date.{" "}
+                            Pick a date.
                           </h1>
                         </div>
 
-                        <DatePicker
-                          className=" rounded-md border border-black pl-3"
-                          selected={startDate}
-                          onChange={(date: any) => setStartDate(date)}
-                          timeInputLabel="Time:"
-                          dateFormat="MM/dd/yyyy h:mm aa"
-                          showTimeSelect
-                          timeIntervals={15}
-                          popperPlacement="top-start"
-                          customInput={<ExampleCustomInput />}
-                          showIcon
-                        />
+                        <div className="mb-12">
+                          <DatePicker
+                            className=" rounded-md border border-black pl-3"
+                            selected={startDate}
+                            onChange={(date: any) => setStartDate(date)}
+                            timeInputLabel="Time:"
+                            dateFormat="MM/dd/yyyy h:mm aa"
+                            showTimeSelect
+                            timeIntervals={15}
+                            popperPlacement="top-start"
+                            customInput={<ExampleCustomInput />}
+                            showIcon
+                          />
+                        </div>
                         {!startDate ? (
-                          <Button className="mt-3" variant="secondary" disabled>
+                          <Button className="" variant="secondary" disabled>
                             add to calendar{" "}
                           </Button>
                         ) : (
                           <Button
-                            className="mt-3"
+                            className=""
                             variant="secondary"
                             onClick={constructLink}
                           >

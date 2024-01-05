@@ -309,12 +309,12 @@ const PositionCRM: NextPageWithLayout = () => {
               };
             }
 
-            console.log(
-              "candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore = ",
-              candidate?.compareCandidatePosition
-                ?.CV_ConvoToPositionAverageScore
-            );
-            console.log("letterAndColor = ", letterAndColor);
+            // console.log(
+            //   "candidate?.compareCandidatePosition?.CV_ConvoToPositionAverageScore = ",
+            //   candidate?.compareCandidatePosition
+            //     ?.CV_ConvoToPositionAverageScore
+            // );
+            // console.log("letterAndColor = ", letterAndColor);
 
             totalMatchPerc = totalMatchPerc / totalMatchPercCount;
 
@@ -335,15 +335,15 @@ const PositionCRM: NextPageWithLayout = () => {
           }
         );
 
-        console.log(
-          "candidatesListWithSkillMatch = ",
-          candidatesListWithSkillMatch
-        );
+        // console.log(
+        //   "candidatesListWithSkillMatch = ",
+        //   candidatesListWithSkillMatch
+        // );
 
-        console.log(
-          "candidatesListWithSkillMatch = ",
-          candidatesListWithSkillMatch
-        );
+        // console.log(
+        //   "candidatesListWithSkillMatch = ",
+        //   candidatesListWithSkillMatch
+        // );
 
         // sort the candidatesList by the totalMatchPerc
         const sortedCandidatesList = candidatesListWithSkillMatch.sort(
@@ -1002,12 +1002,20 @@ const PositionCRM: NextPageWithLayout = () => {
     toast.success("Candidates removed from list");
   };
 
-  const handleCopyLink = () => {
+  const handleCopyJobLink = () => {
+    // const url = window.location.href;
+    const url = `${window.location.origin}/${company?.slug}/jobs/${positionID}`;
+
+    navigator.clipboard.writeText(url);
+    toast.success("Job link copied!");
+  };
+
+  const handleCopyInterviewLink = () => {
     // const url = window.location.href;
     const url = window.location.origin + "/interview/" + positionID;
 
     navigator.clipboard.writeText(url);
-    toast.success("Link copied!");
+    toast.success("Interview link copied!");
   };
 
   const [updatePosition, { loading: updatePositionLoading }] = useMutation(
@@ -1280,7 +1288,14 @@ const PositionCRM: NextPageWithLayout = () => {
               <MenuDropdown>
                 <li
                   className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
-                  onClick={handleCopyLink}
+                  onClick={handleCopyJobLink}
+                >
+                  <HiOutlineLink size={14} className="mb-1 mr-1 inline" />
+                  Copy job link
+                </li>
+                <li
+                  className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+                  onClick={handleCopyInterviewLink}
                 >
                   <HiOutlineLink size={14} className="mb-1 mr-1 inline" />
                   Copy interview link

@@ -296,10 +296,10 @@ const PositionCRM: NextPageWithLayout = () => {
               };
             });
 
-          console.log(
-            "candidatesListWithSkillMatch = ",
-            candidatesListWithSkillMatch
-          );
+          // console.log(
+          //   "candidatesListWithSkillMatch = ",
+          //   candidatesListWithSkillMatch
+          // );
           // sort the candidatesList by the totalMatchPerc
           const sortedCandidatesList = candidatesListWithSkillMatch.sort(
             (a: any, b: any) => {

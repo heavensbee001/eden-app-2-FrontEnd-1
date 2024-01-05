@@ -86,9 +86,8 @@ export const LeftToggleNav = ({
 
   const [updatePositionLoading, setUpdatePositionLoading] =
     useState<boolean>(false);
-  const [unwrappedPosition, setUnwrappedPosition] = useState<string | null>(
-    null
-  );
+  const [unwrappedPosition, setUnwrappedPosition] =
+    useState<string | null>(null);
   const [createPositionOpen, setCreatePositionOpen] = useState<boolean>(false);
   const [newPositionId, setNewPositionId] = useState<string | null>(null);
 
@@ -207,14 +206,15 @@ export const LeftToggleNav = ({
       {/* ---- Eden logo section ---- */}
       <section className="border-edenPink-500 relative flex h-[4.5rem] items-center border-b p-4">
         {unwrapped ? (
-          <span
-            className="text-edenGreen-600 font-Moret cursor-pointer text-2xl font-bold"
+          <img
+            src="/eden-imagotype.png"
+            alt="Eden Protocol"
+            width={68}
+            className="cursor-pointer"
             onClick={() => {
               router.push(logoLink);
             }}
-          >
-            Eden
-          </span>
+          />
         ) : (
           <Image
             src="/eden-logo.png"

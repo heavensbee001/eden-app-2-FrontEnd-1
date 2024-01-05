@@ -1,8 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
-import { UserContext } from "@eden/package-context";
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { classNames } from "../../../utils";
 import {
@@ -68,9 +67,9 @@ export const AskEdenPopUp = ({
     useState<MessageObject>({ message: "", sentMessage: false, user: "" });
 
   // --------- Position and User ------------
-  const { currentUser } = useContext(UserContext);
+  // const { currentUser } = useContext(UserContext);
 
-  console.log("currentUser = ", currentUser?._id);
+  // console.log("currentUser = ", currentUser?._id);
 
   const router = useRouter();
   const { positionID } = router.query;

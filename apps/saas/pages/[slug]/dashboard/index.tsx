@@ -216,7 +216,10 @@ const HomePage: NextPageWithLayout = () => {
     if (
       companyLoading &&
       findCompanyData?.findCompanyFromSlug?.positions &&
-      findCompanyData?.findCompanyFromSlug?.positions?.length > 0
+      findCompanyData?.findCompanyFromSlug?.positions?.filter(
+        (_position: Position) =>
+          _position?.status !== "ARCHIVED" && _position?.status !== "DELETED"
+      ).length > 0
     ) {
       router.push(
         `/${findCompanyData?.findCompanyFromSlug?.slug}/dashboard/${
