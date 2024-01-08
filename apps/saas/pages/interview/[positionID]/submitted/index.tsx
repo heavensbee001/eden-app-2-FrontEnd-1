@@ -7,10 +7,11 @@ import {
   AskEdenPopUp,
   Button,
 } from "@eden/package-ui";
+import mixpanel from "mixpanel-browser";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { getSession } from "next-auth/react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import type { NextPageWithLayout } from "../../../_app";
 
@@ -20,6 +21,10 @@ const ThanksPage: NextPageWithLayout = ({
   position: Position;
 }) => {
   const { currentUser } = useContext(UserContext);
+
+  useEffect(() => {
+    mixpanel.track("Interview > Email confirmed");
+  }, []);
 
   return (
     <>
