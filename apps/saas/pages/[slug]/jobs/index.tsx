@@ -13,7 +13,7 @@ import {
   SEO,
 } from "@eden/package-ui";
 import axios from "axios";
-import { GetStaticPaths, InferGetStaticPropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 // import ReactTooltip from "react-tooltip";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -303,7 +303,7 @@ export const getStaticProps = async (context: any) => {
   }
 };
 
-export const getStaticPaths = (async () => {
+export const getStaticPaths = async () => {
   try {
     const res = await axios.post(
       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
@@ -343,7 +343,7 @@ export const getStaticPaths = (async () => {
       fallback: false,
     };
   }
-}) satisfies GetStaticPaths;
+};
 
 export default JobsPage;
 
@@ -542,7 +542,7 @@ const PostJobToCommunityCard = ({
   ];
 
   return (
-    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4">
+    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4 overflow-hidden">
       {company && (
         <div className="flex flex-row items-center justify-between">
           <Image
@@ -584,12 +584,12 @@ const PostJobToCommunityCard = ({
               </p>
               <p className="text-sm font-medium leading-[19.6px]">273</p>
             </div>
-            <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
+            {/* <div className="border-1 border-edenGray-100 rounded-lg bg-white px-3 py-2">
               <p className="text-edenGray-700 text-xs leading-[16.8px]">
                 Combined Skills
               </p>
               <p className="text-sm font-medium leading-[19.6px]">982</p>
-            </div>
+            </div> */}
           </div>
         </div>
 
