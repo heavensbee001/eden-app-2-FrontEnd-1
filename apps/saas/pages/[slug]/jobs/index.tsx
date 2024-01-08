@@ -542,7 +542,7 @@ const PostJobToCommunityCard = ({
   ];
 
   return (
-    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4">
+    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4 overflow-hidden">
       {company && (
         <div className="flex flex-row items-center justify-between">
           <Image
