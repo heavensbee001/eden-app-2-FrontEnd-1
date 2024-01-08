@@ -18,7 +18,7 @@ import {
 import { classNames } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { forwardRef, useContext, useState } from "react";
+import { forwardRef, useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { toast } from "react-toastify";
 
@@ -87,9 +87,14 @@ const HomePage: NextPageWithLayout = () => {
     skip: !positionID,
   });
 
+  useEffect(() => {
+    mixpanel.track("Interview > Start");
+  }, []);
+
   const handleCvEnd = () => {
     // console.log("cv end");
     setCvEnded(true);
+    mixpanel.track("Interview > CV Uploaded");
     setStep(1);
   };
 
@@ -100,7 +105,7 @@ const HomePage: NextPageWithLayout = () => {
 
   const [submitCandidatePosition, {}] = useMutation(SUBMIT_CANDIDATE_POSITION, {
     onCompleted({}: Mutation) {
-      mixpanel.track("Application submitted");
+      mixpanel.track("Interview > Application submitted");
       setSubmittingGeneralDetails(false);
       setStep(step + 1);
     },
@@ -380,6 +385,7 @@ const HomePage: NextPageWithLayout = () => {
                             variant="secondary"
                             onClick={() => {
                               setShowStartInterviewModal(false);
+                              mixpanel.track("Interview > Start AI Interview");
                               setStep(step + 1);
                             }}
                           >
@@ -474,6 +480,7 @@ const HomePage: NextPageWithLayout = () => {
                           variant="secondary"
                           onClick={() => {
                             setShowInterviewModal(false);
+                            mixpanel.track("Interview > End AI Interview");
                             setStep(step + 1);
                           }}
                         >
