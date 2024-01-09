@@ -866,9 +866,9 @@ const TrainAiPage: NextPageWithLayout = () => {
                         variant={"secondary"}
                         className="mx-auto"
                         loading={loadingUpdatePositionGeneralDetails}
-                        onClick={() => handleSaveGeneralDetails(false)}
+                        onClick={() => handleSaveGeneralDetails(true)}
                       >
-                        Save & continue to dashboard
+                        Publish & continue to dashboard
                       </Button>
                       {/* <Button
                         variant={"primary"}
