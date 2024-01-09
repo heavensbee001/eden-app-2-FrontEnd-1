@@ -79,7 +79,7 @@ const ProfileQuestionsContainer = ({
               id="budget"
               className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               required
-              {...register("budget.perHour")}
+              // {...register("budget.perHour")}
             />
             <div className="border-edenGray-100 ml-auto border-l px-3">
               <span>$/year</span>
@@ -97,7 +97,7 @@ const ProfileQuestionsContainer = ({
               id="hoursPerWeek"
               className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               required
-              {...register("hoursPerWeek")}
+              // {...register("hoursPerWeek")}
             />
             <div className="border-edenGray-100 ml-auto border-l px-3">
               <span>hours/week</span>
@@ -200,14 +200,14 @@ const ProfileQuestionsContainer = ({
                     id="experienceLevel"
                     className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none"
                     required
-                    onChange={(e) => {
-                      const _val = {
-                        ...getValues("experienceLevel"),
-                        total: +e.target.value,
-                      };
+                    // onChange={(e) => {
+                    //   const _val = {
+                    //     ...getValues("experienceLevel"),
+                    //     total: +e.target.value,
+                    //   };
 
-                      setValue("experienceLevel", _val);
-                    }}
+                    //   // setValue("experienceLevel", _val);
+                    // }}
                     defaultValue={_defaultValue}
                   >
                     <option value={""} disabled hidden>
