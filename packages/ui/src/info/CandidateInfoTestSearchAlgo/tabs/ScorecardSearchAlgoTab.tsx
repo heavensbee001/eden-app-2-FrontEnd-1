@@ -196,32 +196,36 @@ export const ScorecardSearchAlgoTab: FC<Props> = ({
                       {expandID ==
                         card!.nodeInput?.name.replace("_", " ")! + index && (
                         <div>
-                          {item?.nodeOutput?.map((output, outputIndex) => {
-                            const scoreAlignment = output?.scoreTotal;
-                            const percentage =
-                              scoreAlignment != null
-                                ? scoreAlignment * 100
-                                : null;
-                            const { color } = getGrade(percentage);
+                          {item?.nodeOutput?.map(
+                            (output: any, outputIndex: number) => {
+                              const scoreAlignment: number | undefined =
+                                output?.scoreTotal;
+                              const percentage: number | null =
+                                scoreAlignment != null
+                                  ? scoreAlignment * 100
+                                  : null;
+                              const { color }: { color: string } =
+                                getGrade(percentage);
 
-                            return (
-                              <div
-                                key={outputIndex}
-                                className="border-edenGray-100 relative mb-4 flex w-[95%] w-full items-center justify-between rounded-md border p-2"
-                              >
-                                <p className="text-edenGray-700 text-xs">
-                                  {output?.node?.name}
-                                </p>
-                                <div className="border-edenGray-100 relative ml-4 flex h-6 w-8 items-center justify-center rounded-[0.25rem] border">
-                                  <span className={color}>
-                                    {percentage != null
-                                      ? (percentage * 0.01).toFixed(1)
-                                      : ""}
-                                  </span>
+                              return (
+                                <div
+                                  key={outputIndex}
+                                  className="border-edenGray-100 relative mb-4 flex w-[95%] w-full items-center justify-between rounded-md border p-2"
+                                >
+                                  <p className="text-edenGray-700 text-xs">
+                                    {output?.node?.name}
+                                  </p>
+                                  <div className="border-edenGray-100 relative ml-4 flex h-6 w-8 items-center justify-center rounded-[0.25rem] border">
+                                    <span className={color}>
+                                      {percentage != null
+                                        ? (percentage * 0.01).toFixed(1)
+                                        : ""}
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            }
+                          )}
                         </div>
                       )}
                     </li>

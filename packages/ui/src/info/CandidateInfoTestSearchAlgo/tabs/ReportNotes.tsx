@@ -32,7 +32,7 @@ interface ReportNotesData {
   [key: string]: { notes: meetingNotesType; average: string };
 }
 
-export const ReportNotes: FC<Props> = ({ member, candidate }) => {
+const ReportNotes: FC<Props> = ({ member, candidate }) => {
   const router = useRouter();
   const [reportNotesData, setReportNotesData] = useState<ReportNotesData>();
 

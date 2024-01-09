@@ -98,7 +98,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
+const MatchTab: FC<Props> = ({ member, summaryQuestions }) => {
   // eslint-disable-next-line no-unused-vars
   const [dataBarChart, setDataBarChart] = useState<BarChartQuestions[]>([]);
 
@@ -725,7 +725,7 @@ const getPercentageText = (percentage: number) => {
   return text.toUpperCase();
 };
 
-export const LoadingGraphData: FC = () => {
+const LoadingGraphData: FC = () => {
   return (
     <div className="flex w-full flex-col items-center justify-center py-8">
       <GoGraph size={80} color="#e3e3e3" className="" />
@@ -734,7 +734,7 @@ export const LoadingGraphData: FC = () => {
   );
 };
 
-export const NoGraphData: FC = () => {
+const NoGraphData: FC = () => {
   return (
     <div className="flex w-full flex-col items-center justify-center py-8">
       <TbViewfinderOff size={50} color="#e3e3e3" className="" />

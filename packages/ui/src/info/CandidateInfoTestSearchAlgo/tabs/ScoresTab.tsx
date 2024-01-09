@@ -8,7 +8,7 @@ type Props = {
   summaryQuestions: SummaryQuestionType[];
 };
 
-export const ScoresTab: React.FC<Props> = ({
+const ScoresTab: React.FC<Props> = ({
   member,
   percentage,
   summaryQuestions,

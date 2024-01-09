@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { FC, useContext, useState } from "react";
 
-export async function getServerSideProps(ctx: {
+async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
@@ -88,7 +88,7 @@ interface Props {
 // type AskEdenTabType = Category[];
 
 // eslint-disable-next-line no-unused-vars
-export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
+const AskEdenTab: FC<Props> = ({ member, candidate }) => {
   const [sentMessageToEdenAIobj, setSentMessageToEdenAIobj] =
     useState<MessageObject>({ message: "", sentMessage: false, user: "" });
 

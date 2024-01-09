@@ -14,7 +14,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
+const EdenChatTab: React.FC<Props> = ({ conversationID, member }) => {
   const router = useRouter();
   const { positionID } = router.query;
 

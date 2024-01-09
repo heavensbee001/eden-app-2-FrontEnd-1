@@ -29,11 +29,7 @@ interface Props {
   candidate?: any;
 }
 
-export const InfoTab: FC<Props> = ({
-  member,
-  mostRelevantMemberNode,
-  candidate,
-}) => {
+const InfoTab: FC<Props> = ({ member, mostRelevantMemberNode, candidate }) => {
   const [experienceOpen, setExperienceOpen] = useState<number | null>(null);
 
   return (

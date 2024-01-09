@@ -9,7 +9,7 @@ interface Props {
   candidate?: any;
 }
 
-export const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
+const GraphTab: React.FC<Props> = ({ member, candidate }: Props) => {
   if (!member) return null;
 
   return (

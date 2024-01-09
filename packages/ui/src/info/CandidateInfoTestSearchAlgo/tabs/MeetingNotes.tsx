@@ -23,7 +23,7 @@ type Category = {
 
 type meetingNotesType = Category[];
 
-export const MeetingNotes: FC<Props> = ({ member, candidate }) => {
+const MeetingNotes: FC<Props> = ({ member, candidate }) => {
   const [meetingNotesData, setMeetingNotesData] = useState<meetingNotesType>(
     []
   );
