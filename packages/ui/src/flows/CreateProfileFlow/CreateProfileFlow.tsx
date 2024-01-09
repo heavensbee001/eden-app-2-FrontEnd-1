@@ -101,18 +101,18 @@ export const CreateProfileFlow = ({
     },
   });
 
-  // useEffect(() => {
-  //   const subscription = watch((data) => {
-  //     console.log("WATCH ---- data", data);
-  //     if (data) setUserState(data as Members);
-  //   });
+  useEffect(() => {
+    const subscription = watch((data) => {
+      console.log("WATCH ---- data", data);
+      if (data) setUserState(data as Members);
+    });
 
-  //   return () => subscription.unsubscribe();
-  // }, [watch]);
-  // useEffect(() => {
+    return () => subscription.unsubscribe();
+  }, [watch]);
+  //  useEffect(() => {
   //   const subscription = watch((data: any) => {
   //     console.log("WATCH ---- data", data);
-  //     if (data) setUserState({ ...data });
+  //     if (data) setUserState({...data});
   //   });
 
   //   return () => subscription.unsubscribe();
@@ -233,7 +233,7 @@ export const CreateProfileFlow = ({
       });
       console.log("NODES:", _nodes);
 
-      // setValue("nodes", _nodes);
+      setValue("nodes", _nodes);
     },
   });
 
