@@ -2,9 +2,9 @@
 
 import { UserContext } from "@eden/package-context";
 import { Members } from "@eden/package-graphql/generated";
-import { locations } from "@eden/package-ui/utils/locations";
+// import { locations } from "@eden/package-ui/utils/locations";
 import { useContext, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 interface IProfileQuestionsContainerProps {
   // eslint-disable-next-line no-unused-vars
@@ -115,7 +115,7 @@ const ProfileQuestionsContainer = ({
               id="location"
               className="h-[34px] w-full bg-transparent p-2"
               required
-              {...register("location")}
+              // {...register("location")}
             />
           </div>
         </section>
@@ -124,7 +124,7 @@ const ProfileQuestionsContainer = ({
             Your Timezone
           </p>
           <div className="border-EdenGray-100 flex w-full items-center rounded-md border bg-white text-xs">
-            <Controller
+            {/* <Controller
               name={"timeZone"}
               control={control}
               render={() => (
@@ -160,7 +160,7 @@ const ProfileQuestionsContainer = ({
                   ))}
                 </select>
               )}
-            />
+            /> */}
           </div>
         </section>
       </div>
@@ -175,7 +175,7 @@ const ProfileQuestionsContainer = ({
               id="hoursPerWeek"
               className="font-Unica h-full w-full resize-none bg-transparent p-2 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               required
-              {...register("experienceLevel.years")}
+              // {...register("experienceLevel.years")}
             />
             <div className="border-edenGray-100 ml-auto border-l px-3">
               <span>years</span>
@@ -185,7 +185,7 @@ const ProfileQuestionsContainer = ({
         <section className="mb-4 mr-12 inline-block">
           <p className="mb-2 text-xs">Experience Level</p>
           <div className="border-EdenGray-100 flex w-48 items-center rounded-md border bg-white text-xs">
-            <Controller
+            {/* <Controller
               name={"experienceLevel"}
               control={control}
               render={() => {
@@ -219,7 +219,7 @@ const ProfileQuestionsContainer = ({
                   </select>
                 );
               }}
-            />
+            /> */}
           </div>
         </section>
       </div>
