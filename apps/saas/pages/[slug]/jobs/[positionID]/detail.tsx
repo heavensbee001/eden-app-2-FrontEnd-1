@@ -672,11 +672,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   // if operator access, allow
-  // if (session?.accessLevel === 5) {
-  //   return {
-  //     props: { position: data.findPosition || null },
-  //   };
-  // }
+  if (session?.accessLevel === 5) {
+    return {
+      props: { position: data.findPosition || null },
+    };
+  }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/company-auth`,
