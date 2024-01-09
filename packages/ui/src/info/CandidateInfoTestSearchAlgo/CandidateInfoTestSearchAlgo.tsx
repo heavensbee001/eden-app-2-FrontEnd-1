@@ -25,7 +25,7 @@ import { Tab } from "@headlessui/react";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 
-import { ScorecardTab } from "./tabs/ScorecardTab";
+import { ScorecardSearchAlgoTab } from "./tabs/ScorecardSearchAlgoTab";
 
 type NodeDisplay = {
   nameRelevantNode: string;
@@ -40,12 +40,13 @@ type relevantNodeObj = {
   };
 };
 
-export interface ICandidateInfoProps {
+export interface ICandidateInfoTestSearchAlgoProps {
   memberID: string;
   percentage?: number | null;
   summaryQuestions?: SummaryQuestionType[];
   mostRelevantMemberNode?: relevantNodeObj;
   candidate?: CandidateTypeSkillMatch;
+  scoreCardSearch?: any;
   onClose?: () => void;
   // eslint-disable-next-line no-unused-vars
   rejectCandidateFn?: (memberID: string) => void;
@@ -66,11 +67,12 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const CandidateInfo = ({
+export const CandidateInfoTestSearchAlgo = ({
   memberID,
   summaryQuestions,
   mostRelevantMemberNode,
   candidate,
+  scoreCardSearch,
   onClose,
   listMode = ListModeEnum.edit,
   // rejectCandidateFn,
@@ -81,7 +83,7 @@ export const CandidateInfo = ({
   handleAddCandidatesToList,
   // qualified = undefined,
   showAskEden = true,
-}: ICandidateInfoProps) => {
+}: ICandidateInfoTestSearchAlgoProps) => {
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -146,7 +148,12 @@ export const CandidateInfo = ({
     },
     {
       tab: "Scorecard",
-      Content: () => <ScorecardTab candidate={candidate} />,
+      Content: () => (
+        <ScorecardSearchAlgoTab
+          candidate={candidate}
+          scoreCardSearch={scoreCardSearch}
+        />
+      ),
     },
     // {
     //   tab: "Fit",
