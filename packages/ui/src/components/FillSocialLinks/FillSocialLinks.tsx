@@ -85,8 +85,8 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         // { ...(cleanLink("telegram") ?? { name: "telegram", url: "" }) },
         { ...(cleanLink("github") ?? { name: "github", url: "" }) },
         {
-          ...(cleanLink("linkedIn") ?? {
-            name: "linkedIn",
+          ...(cleanLink("linkedin") ?? {
+            name: "linkedin",
             url: "",
           }),
         },
@@ -144,7 +144,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
                 ? `https://www.lensfrens.xyz/${getHandle(link.url)}`
                 : "",
             };
-          case "linkedIn":
+          case "linkedin":
             return {
               name: link.name,
               url: getHandle(link.url) ? `https://${getHandle(link.url)}` : "",
@@ -172,7 +172,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         return "https://";
       case "telegram":
         return "https://t.me/";
-      case "linkedIn":
+      case "linkedin":
         return "https://www.linkedin.com/";
       case "custom":
         return "https://";
@@ -205,7 +205,7 @@ export const FillSocialLinks = ({ links, onChange }: IFillSocialLinksProps) => {
         return <FaGithub size="1rem" color="#333" />;
       case "lens":
         return <LensIcon />;
-      case "linkedIn":
+      case "linkedin":
         return <FaLinkedin size="1rem" color="#0a66c2" />;
       default:
         return <FaQuestionCircle size="1rem" color="#00acee" />;
