@@ -164,11 +164,17 @@ const PositionPage: NextPageWithLayout = ({
   const [bulkUpdate, { loading: bulkUpdateLoading }] = useMutation(
     BULK_UPDATE,
     {
-      onCompleted() {
+      onCompleted(data) {
         console.log("completed update");
+        console.log(data);
 
         setPublishModalOpen(false);
-        setTrainAiModalOpen(true);
+        if (data.updatePosition.status === "ACTIVE") {
+          setTrainAiModalOpen(true);
+        }
+        if (data.updatePosition.status === "UNPUBLISHED") {
+          toast.success("Saved as draft");
+        }
         // router.push(
         //   `/${position.company?.name}/dashboard/${position._id}/train-eden-ai`
         // );
@@ -200,7 +206,10 @@ const PositionPage: NextPageWithLayout = ({
       },
     });
     setPublishModalOpen(false);
-    setConfettiRun(true);
+
+    if (_position.status === "ACTIVE") {
+      setConfettiRun(true);
+    }
   };
 
   const handleFileChange = async (e: any) => {
