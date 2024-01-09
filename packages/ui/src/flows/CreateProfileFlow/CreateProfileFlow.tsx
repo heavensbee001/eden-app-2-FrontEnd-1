@@ -109,6 +109,14 @@ export const CreateProfileFlow = ({
 
     return () => subscription.unsubscribe();
   }, [watch]);
+  //  useEffect(() => {
+  //   const subscription = watch((data: any) => {
+  //     console.log("WATCH ---- data", data);
+  //     if (data) setUserState({...data});
+  //   });
+
+  //   return () => subscription.unsubscribe();
+  // }, [watch]);
 
   const handleSubmit = () => {
     setSubmitting(true);
