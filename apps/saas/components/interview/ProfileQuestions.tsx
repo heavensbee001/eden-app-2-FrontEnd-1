@@ -32,14 +32,14 @@ const ProfileQuestionsContainer = ({
     }
   }, [currentUser]);
 
-  useEffect(() => {
-    const subscription = watch((data: any) => {
-      // console.log("WATCH ---- data", data);
-      if (data) setUserState(data as Members);
-    });
+  // useEffect(() => {
+  //   const subscription = watch((data: any) => {
+  //     // console.log("WATCH ---- data", data);
+  //     if (data) setUserState(data as Members);
+  //   });
 
-    return () => subscription.unsubscribe();
-  }, [watch]);
+  //   return () => subscription.unsubscribe();
+  // }, [watch]);
 
   // useEffect(() => {
   //   if (
