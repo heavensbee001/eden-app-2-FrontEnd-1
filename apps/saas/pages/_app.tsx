@@ -4,7 +4,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { ApolloProvider } from "@apollo/client";
 import { CompanyProvider, UserProvider } from "@eden/package-context";
 import { apolloClient } from "@eden/package-graphql";
-import { AppMaintainanceLayout } from "@eden/package-ui";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
@@ -48,7 +47,7 @@ const App = ({
         <ApolloProvider client={apolloClient}>
           <UserProvider>
             <CompanyProvider>
-              <AppMaintainanceLayout />
+              {/* <AppMaintainanceLayout /> */}
               <AppDeviceLayout />
               {getLayout(<Component {...pageProps} />)}
             </CompanyProvider>
