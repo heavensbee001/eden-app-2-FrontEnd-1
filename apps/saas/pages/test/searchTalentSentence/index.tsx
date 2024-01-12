@@ -42,6 +42,7 @@ export const TEXT_TO_PRIMITIVES_AND_TALENT = gql`
               name
             }
             scoreTotal
+            scoreHop
             scoreNode
             scoreCard
           }
@@ -214,14 +215,20 @@ const SearchTalentSentence: NextPageWithLayout = () => {
     },
   });
 
+  const [pageSize, setPageSize] = useState(4);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [neighborNodeMaxSize, setNeighborNodeMaxSize] = useState(3);
+  const [scoreCardMaxSize, setScoreCardMaxSize] = useState(6);
+
   const handleSearch = () => {
     initTextToPrimitivesAndTalent({
       variables: {
         fields: {
           text: sentence,
-          pageSize: 4,
-          pageNumber: 1,
-          neighborNodeMaxSize: 3,
+          pageSize: pageSize,
+          pageNumber: pageNumber,
+          neighborNodeMaxSize: neighborNodeMaxSize,
+          scoreCardMaxSize: scoreCardMaxSize,
         },
       },
     });
@@ -260,6 +267,43 @@ const SearchTalentSentence: NextPageWithLayout = () => {
               {primitive.name}
             </span>
           ))}
+        </div>
+        <hr className="my-4" />
+        <div className="mb-4">
+          <label>Page Size:</label>
+          <input
+            type="number"
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="ml-2 rounded border p-2"
+          />
+        </div>
+        <div className="mb-4">
+          <label>Page Number:</label>
+          <input
+            type="number"
+            value={pageNumber}
+            onChange={(e) => setPageNumber(Number(e.target.value))}
+            className="ml-2 rounded border p-2"
+          />
+        </div>
+        <div className="mb-4">
+          <label>Neighbor Node Max Size:</label>
+          <input
+            type="number"
+            value={neighborNodeMaxSize}
+            onChange={(e) => setNeighborNodeMaxSize(Number(e.target.value))}
+            className="ml-2 rounded border p-2"
+          />
+        </div>
+        <div className="mb-4">
+          <label>Score Card Max Size:</label>
+          <input
+            type="number"
+            value={scoreCardMaxSize}
+            onChange={(e) => setScoreCardMaxSize(Number(e.target.value))}
+            className="ml-2 rounded border p-2"
+          />
         </div>
       </div>
       <div className="w-2/3 overflow-y-scroll p-4">
