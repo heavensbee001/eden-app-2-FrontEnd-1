@@ -106,8 +106,8 @@ export const ScorecardSearchAlgoTab: FC<Props> = ({
                   {card!.nodeInput?.name}
                 </h3>
                 <div className="text-edenGray-700 flex items-center text-sm">
-                  Average:
-                  <div className="bg-edenPink-300 -mr-2 ml-2 flex h-6 w-8 items-center justify-center rounded-md pb-px">
+                  Score || Normalized - Real:
+                  <div className="bg-edenPink-300 -mr-2 ml-2 flex  items-center justify-center rounded-md pb-px">
                     <span
                       className={classNames(
                         getGrade(card!.score! * 100).color,
@@ -115,7 +115,7 @@ export const ScorecardSearchAlgoTab: FC<Props> = ({
                       )}
                     >
                       {/* {getGrade(card!.score! * 100).letter} */}
-                      {card!.score}
+                      {card!.score} - {card!.scoreReal.toFixed(1)}
                     </span>
                   </div>
                 </div>

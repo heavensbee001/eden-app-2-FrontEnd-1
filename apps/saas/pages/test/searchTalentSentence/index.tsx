@@ -26,6 +26,7 @@ export const TEXT_TO_PRIMITIVES_AND_TALENT = gql`
       }
       primitiveCardMemInput {
         score
+        scoreReal
         nodeInput {
           _id
           name
