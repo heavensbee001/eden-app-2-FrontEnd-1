@@ -41,15 +41,15 @@ const JobsPage: NextPageWithLayout = ({
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
   const _positions: Position[] =
-    (company.type === "COMMUNITY"
+    (company?.type === "COMMUNITY"
       ? positions
       : positions?.map((item: any) => {
           //this map avoids having to fetch company again inside each position in backend
           item!.company = {
-            _id: company._id,
-            name: company.name,
-            slug: company.slug,
-            imageUrl: company.imageUrl,
+            _id: company?._id,
+            name: company?.name,
+            slug: company?.slug,
+            imageUrl: company?.imageUrl,
           };
           return item;
         })) || [];
@@ -228,7 +228,7 @@ export const getStaticProps = async (context: any) => {
     const company = companyRes.data.data.findCompanyFromSlug;
     let positions;
 
-    if (company.type === "COMMUNITY") {
+    if (company?.type === "COMMUNITY") {
       const communityPositions = await axios.post(
         process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
         {
@@ -268,14 +268,14 @@ export const getStaticProps = async (context: any) => {
 
       positions = communityPositions.data.data.findPositionsOfCommunity;
     } else {
-      positions = company.positions;
+      positions = company?.positions;
       positions?.map((item: any) => {
         //this map avoids having to fetch company again inside each position in backend
         item!.company = {
-          _id: company._id,
-          name: company.name,
-          slug: company.slug,
-          imageUrl: company.imageUrl,
+          _id: company?._id,
+          name: company?.name,
+          slug: company?.slug,
+          imageUrl: company?.imageUrl,
         };
         return item;
       });
@@ -550,9 +550,11 @@ const PostJobToCommunityCard = ({
             width="68"
             height="68"
             src={`${
-              company.imageUrl ? company.imageUrl : "/default-company-image.svg"
+              company?.imageUrl
+                ? company?.imageUrl
+                : "/default-company-image.svg"
             }`}
-            alt={`${company.name} company image`}
+            alt={`${company?.name} company image`}
           />
 
           <Button
