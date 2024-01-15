@@ -164,10 +164,6 @@ export const getServerSideProps = async (context: any) => {
       {
         headers: {
           "Access-Control-Allow-Origin": `*`,
-          Referer:
-            process.env.NEXT_PUBLIC_ENV === "production"
-              ? "https://edenprotocol.app"
-              : "https://eden-saas-develop.vercel.app",
         },
         variables: { fields: { slug: context.params.slug } },
         query: `
@@ -235,10 +231,6 @@ export const getServerSideProps = async (context: any) => {
         {
           headers: {
             "Access-Control-Allow-Origin": `*`,
-            Referer:
-              process.env.NEXT_PUBLIC_ENV === "production"
-                ? "https://edenprotocol.app"
-                : "https://eden-saas-develop.vercel.app",
           },
           variables: {
             fields: { slug: context.params.slug },
