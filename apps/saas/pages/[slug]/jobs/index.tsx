@@ -13,7 +13,7 @@ import {
   SEO,
 } from "@eden/package-ui";
 import axios from "axios";
-import { InferGetStaticPropsType } from "next";
+// import { InferGetStaticPropsType } from "next";
 // import ReactTooltip from "react-tooltip";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -33,10 +33,7 @@ const ReactTooltip = dynamic<any>(() => import("react-tooltip"), {
   ssr: false,
 });
 
-const JobsPage: NextPageWithLayout = ({
-  company,
-  positions,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const JobsPage: NextPageWithLayout = ({ company, positions }) => {
   const router = useRouter();
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
@@ -160,7 +157,7 @@ const JobsPage: NextPageWithLayout = ({
 
 JobsPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
-export const getStaticProps = async (context: any) => {
+export const getServerSideProps = async (context: any) => {
   try {
     const companyRes = await axios.post(
       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
@@ -295,7 +292,7 @@ export const getStaticProps = async (context: any) => {
       },
       // 10 min to rebuild all paths
       // (this means new data will show up after 10 min of being added)
-      revalidate: 600,
+      // revalidate: 600,
     };
   } catch (error) {
     console.log(error);
@@ -303,47 +300,47 @@ export const getStaticProps = async (context: any) => {
   }
 };
 
-export const getStaticPaths = async () => {
-  try {
-    const res = await axios.post(
-      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
-      {
-        headers: {
-          "Access-Control-Allow-Origin": `*`,
-        },
-        variables: { fields: [] },
-        query: `
-        query FindCompanies($fields: findCompaniesInput) {
-          findCompanies(fields: $fields) {
-            _id
-            slug
-          }
-        }
-        `,
-      }
-    );
+// export const getStaticPaths = async () => {
+//   try {
+//     const res = await axios.post(
+//       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+//       {
+//         headers: {
+//           "Access-Control-Allow-Origin": `*`,
+//         },
+//         variables: { fields: [] },
+//         query: `
+//         query FindCompanies($fields: findCompaniesInput) {
+//           findCompanies(fields: $fields) {
+//             _id
+//             slug
+//           }
+//         }
+//         `,
+//       }
+//     );
 
-    const paths = res.data.data.findCompanies
-      .filter((_comp: any) => !!_comp.slug)
-      .map((_comp: any) => ({
-        params: { slug: _comp.slug },
-      }));
+//     const paths = res.data.data.findCompanies
+//       .filter((_comp: any) => !!_comp.slug)
+//       .map((_comp: any) => ({
+//         params: { slug: _comp.slug },
+//       }));
 
-    console.log("getStaticPaths --- ", paths);
+//     console.log("getStaticPaths --- ", paths);
 
-    // { fallback: false } means other routes should 404
-    return {
-      paths,
-      fallback: true,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      paths: [],
-      fallback: true,
-    };
-  }
-};
+//     // { fallback: false } means other routes should 404
+//     return {
+//       paths,
+//       fallback: true,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       paths: [],
+//       fallback: true,
+//     };
+//   }
+// };
 
 export default JobsPage;
 
