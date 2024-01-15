@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.5",
+    "@dynamic-labs/ethers-v5": "^1.0.5",
+    "@dynamic-labs/sdk-react-core": "^1.0.5",
+    "@dynamic-labs/wagmi-connector": "^1.0.5",
     "@eden/package-context": "*",
     "@eden/package-graphql": "*",
     "@eden/package-ui": "*",
@@ -32,7 +35,8 @@
     "react-fa-icon-picker": "^1.0.3",
     "react-google-recaptcha": "^3.1.0",
     "react-icons": "^4.6.0",
-    "react-toastify": "^9.1.1"
+    "react-toastify": "^9.1.1",
+    "viem": "^2.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
