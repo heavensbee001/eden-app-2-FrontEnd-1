@@ -313,13 +313,13 @@ export const getStaticPaths = async () => {
         },
         variables: { fields: [] },
         query: `
-      query FindCompanies($fields: findCompaniesInput) {
-        findCompanies(fields: $fields) {
-          _id
-          slug
+        query FindCompanies($fields: findCompaniesInput) {
+          findCompanies(fields: $fields) {
+            _id
+            slug
+          }
         }
-      }
-    `,
+        `,
       }
     );
 
@@ -334,13 +334,13 @@ export const getStaticPaths = async () => {
     // { fallback: false } means other routes should 404
     return {
       paths,
-      fallback: false,
+      fallback: true,
     };
   } catch (error) {
     console.log(error);
     return {
       paths: [],
-      fallback: false,
+      fallback: true,
     };
   }
 };
