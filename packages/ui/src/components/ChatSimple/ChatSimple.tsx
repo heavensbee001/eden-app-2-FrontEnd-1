@@ -77,6 +77,7 @@ export const ChatSimple = ({
   //For Eden voice
   const [recording, setRecording] = useState<boolean>(false);
   const [transcribing, setTranscribing] = useState<boolean>(false);
+  // eslint-disable-next-line no-unused-vars
   const [showEdenVoice, setShowEdenVoice] = useState<boolean>(true);
 
   useEffect(() => {
