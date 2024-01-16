@@ -212,11 +212,11 @@ const PositionCRM: NextPageWithLayout = () => {
     onCompleted: (data: any) => {
       // const talentListsNames: TalentListType[] =
       //   data.findPosition?.talentList.map((list: TalentListType) => list);
-      const talentListsNames: TalentListType[] =
-        data.findPosition?.talentList.filter(
-          (list: TalentListType) =>
-            list.name !== "Accepted" && list.name !== "Rejected"
-        );
+      const talentListsNames: TalentListType[] = data.findPosition?.talentList;
+      // data.findPosition?.talentList.filter(
+      //   (list: TalentListType) =>
+      //     list.name !== "Accepted" && list.name !== "Rejected"
+      // );
 
       setTalentListsAvailables(talentListsNames);
 
@@ -1794,17 +1794,23 @@ const PositionCRM: NextPageWithLayout = () => {
                               New list
                             </p>
                           </div>
-                          {talentListsAvailables.map((list, index) => (
-                            <div
-                              key={index}
-                              className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
-                              onClick={() =>
-                                handleAddCandidatesToList(list._id!)
-                              }
-                            >
-                              <p className="">{list.name}</p>
-                            </div>
-                          ))}
+                          {talentListsAvailables
+                            .filter(
+                              (list: TalentListType) =>
+                                list.name !== "Accepted" &&
+                                list.name !== "Rejected"
+                            )
+                            .map((list, index) => (
+                              <div
+                                key={index}
+                                className="cursor-pointer border-b border-gray-200 p-1 last:border-0 hover:bg-gray-100"
+                                onClick={() =>
+                                  handleAddCandidatesToList(list._id!)
+                                }
+                              >
+                                <p className="">{list.name}</p>
+                              </div>
+                            ))}
                         </div>
                       )}
                     </div>
