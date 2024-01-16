@@ -247,8 +247,8 @@ export const ChatSimple = ({
                                 <span
                                   className={classNames(
                                     chat.user === "01"
-                                      ? "bg-edenPink-300"
-                                      : "bg-edenGray-100",
+                                      ? "bg-edenPink-300 user-2-message"
+                                      : "bg-edenGray-100 user-1-message",
                                     "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
                                   )}
                                 >
