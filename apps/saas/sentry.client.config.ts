@@ -23,7 +23,13 @@ Sentry.init({
   integrations: [
     new Sentry.Replay({
       // Additional Replay configuration goes in here, for example:
+      networkDetailAllowUrls: [
+        window.location.origin,
+        "wss://soil-api-backend-productionai2.up.railway.app/",
+        "https://soil-api-backend-productionai2.up.railway.app/",
+      ],
       maskAllText: false,
+      maskAllInputs: false,
       blockAllMedia: false,
     }),
   ],
