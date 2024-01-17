@@ -29,6 +29,7 @@ Sentry.init({
         "https://soil-api-backend-productionai2.up.railway.app/",
       ],
       maskAllText: false,
+      maskAllInputs: false,
       blockAllMedia: false,
     }),
   ],
