@@ -8,7 +8,7 @@ import Document, {
 
 const appUrl =
   process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
-    ? `https://eden-saas-develop.vercel.app/`
+    ? `https://eden-saas-staging.vercel.app/`
     : `https://edenprotocol.app/`;
 
 class MyDocument extends Document {
