@@ -213,7 +213,8 @@ export const EdenAiLetter = ({
                   <a
                     className="hover:text-edenGray-400 underline"
                     href="https://calendly.com"
-                    about="__blank"
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     calendly
                   </a>
