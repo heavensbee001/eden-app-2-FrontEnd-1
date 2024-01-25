@@ -1,13 +1,14 @@
 import {
   DynamicConnectButton,
   DynamicWidget,
-  useDynamicContext,
 } from "@dynamic-labs/sdk-react-core";
-import { AppUserLayout, SEO } from "@eden/package-ui";
-import { parseCookie } from "@eden/package-ui/utils";
+import { DynamicSessionContext } from "@eden/package-context";
+import { AppUserLayout, EdenAiProcessingModal, SEO } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
-import { ReactElement } from "react";
+import { useRouter } from "next/router";
+import { ReactElement, useContext, useMemo, useState } from "react";
 
 import { NextPageWithLayout } from "../_app";
 
@@ -15,7 +16,16 @@ const LoginPage: NextPageWithLayout = ({
   // eslint-disable-next-line no-unused-vars
   redirect,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const {} = useDynamicContext();
+  const router = useRouter();
+  const { edenSession } = useContext(DynamicSessionContext);
+  const [redirecting, setRedirecting] = useState<boolean>(false);
+
+  useMemo(() => {
+    if (edenSession) {
+      setRedirecting(true);
+      router.push(redirect);
+    }
+  }, [edenSession]);
 
   return (
     <>
@@ -32,61 +42,49 @@ const LoginPage: NextPageWithLayout = ({
           Hey 👋, so good to see you!
         </h1>
         <h2 className="text-bold text-edenGreen-600 mb-12 text-center">
-          ✨ Let’s create some work-you-love-magic! ✨
+          {"✨ Let's create some work-you-love-magic! ✨"}
         </h2>
         <DynamicConnectButton>
           <span>Log in</span>
         </DynamicConnectButton>
+        <EdenAiProcessingModal title="Redirecting" open={redirecting} />
       </div>
     </>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  if (ctx.req.cookies.edenAuthToken) {
-    console.log(
-      ":::::COOKIE DECODED:::::",
-      parseCookie(ctx.req.cookies.edenAuthToken)
-    );
+  const session = getCookieFromContext(ctx);
+  const { redirect } = ctx.query;
+
+  // let redirectUrl = "/";
+
+  // if (
+  //   redirect &&
+  //   typeof redirect === "string" &&
+  //   redirect.startsWith("_next")
+  // ) {
+  //   redirectUrl = "/";
+  // } else if (redirect && typeof redirect === "string") {
+  //   redirectUrl = redirect;
+  // }
+
+  if (session) {
+    return {
+      redirect: {
+        destination: redirect || "/developer-dao/jobs",
+        permanent: false,
+      },
+      props: {},
+    };
   }
+
   return {
     props: {
-      // redirect: redirect || "/developer-dao/jobs",
+      redirect: redirect || "/developer-dao/jobs",
     },
   };
 };
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const session = await getSession(ctx);
-//   const { redirect } = ctx.query;
-
-//   // let redirectUrl = "/";
-
-//   // if (
-//   //   redirect &&
-//   //   typeof redirect === "string" &&
-//   //   redirect.startsWith("_next")
-//   // ) {
-//   //   redirectUrl = "/";
-//   // } else if (redirect && typeof redirect === "string") {
-//   //   redirectUrl = redirect;
-//   // }
-
-//   if (session) {
-//     return {
-//       redirect: {
-//         destination: redirect || "/developer-dao/jobs",
-//         permanent: false,
-//       },
-//       props: {},
-//     };
-//   }
-
-//   return {
-//     props: {
-//       redirect: redirect || "/developer-dao/jobs",
-//     },
-//   };
-// };
 
 LoginPage.getLayout = (page: ReactElement) => (
   <AppUserLayout>{page}</AppUserLayout>

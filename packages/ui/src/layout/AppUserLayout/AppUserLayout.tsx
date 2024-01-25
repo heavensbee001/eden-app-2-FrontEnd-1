@@ -1,7 +1,5 @@
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicSessionContext, UserContext } from "@eden/package-context";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 import { useContext } from "react";
 import { FiLogOut } from "react-icons/fi";
 

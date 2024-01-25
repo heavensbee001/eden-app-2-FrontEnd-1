@@ -88,9 +88,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     }
 
     if (dataMember && process.env.NODE_ENV === "development") {
-      console.log(`==== current USER ====`);
-      console.log(dataMember.findMember);
-      console.log(`==== ----------- ====`);
+      // console.log(`==== current USER ====`);
+      // console.log(dataMember.findMember);
+      // console.log(`==== ----------- ====`);
     }
   }, [dataMember]);
 
