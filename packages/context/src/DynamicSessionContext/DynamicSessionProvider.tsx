@@ -35,6 +35,7 @@ export const DynamicSessionProvider = ({
   const injectContext = {
     fetchingToken,
     edenSession,
+    logOut: handleLogOut,
   };
 
   return (

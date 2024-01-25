@@ -31,7 +31,7 @@ type AppPropsWithLayout = AppProps & {
 
 const App = ({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { ...pageProps },
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
@@ -39,7 +39,7 @@ const App = ({
   mixpanelConfig();
 
   return (
-    <AppProviders session={session}>
+    <AppProviders>
       <>
         {/* <AppMaintainanceLayout /> */}
         <AppDeviceLayout />

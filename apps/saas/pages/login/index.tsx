@@ -1,30 +1,21 @@
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import {
-  AppUserLayout,
-  Button,
-  EdenAiProcessingModal,
-  SEO,
-} from "@eden/package-ui";
+  DynamicConnectButton,
+  DynamicWidget,
+  useDynamicContext,
+} from "@dynamic-labs/sdk-react-core";
+import { AppUserLayout, SEO } from "@eden/package-ui";
 import { parseCookie } from "@eden/package-ui/utils";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 
 import { NextPageWithLayout } from "../_app";
 
 const LoginPage: NextPageWithLayout = ({
+  // eslint-disable-next-line no-unused-vars
   redirect,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const router = useRouter();
-  const [loadingSpinner, setLoadingSpinner] = useState(false);
-
-  const handleSignUp = () => {
-    setLoadingSpinner(true);
-    router.push("/signup");
-    setLoadingSpinner(false);
-  };
+  const {} = useDynamicContext();
 
   return (
     <>
@@ -43,23 +34,10 @@ const LoginPage: NextPageWithLayout = ({
         <h2 className="text-bold text-edenGreen-600 mb-12 text-center">
           ✨ Let’s create some work-you-love-magic! ✨
         </h2>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            signIn("google", { callbackUrl: redirect });
-          }}
-          className="mb-6 w-40"
-        >
-          Log in
-        </Button>
-        <Button onClick={handleSignUp} className="w-40">
-          Sign up
-        </Button>
+        <DynamicConnectButton>
+          <span>Log in</span>
+        </DynamicConnectButton>
       </div>
-      <EdenAiProcessingModal
-        title="Loading signup page"
-        open={loadingSpinner}
-      />
     </>
   );
 };

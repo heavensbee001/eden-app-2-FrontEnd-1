@@ -2,9 +2,9 @@ import { gql, useQuery, useSubscription } from "@apollo/client";
 import { FIND_CURRENTUSER, FIND_CURRENTUSER_SUB } from "@eden/package-graphql";
 import { ServerTemplate } from "@eden/package-graphql/generated";
 import mixpanel from "mixpanel-browser";
-import { useSession } from "next-auth/react";
-import React, { useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 
+import { DynamicSessionContext } from "../DynamicSessionContext";
 // import { isAllServers, isEdenStaff } from "../../data";
 import { UserContext } from "./UserContext";
 
@@ -28,9 +28,9 @@ export interface UserProviderProps {
 }
 
 export const UserProvider = ({ children }: UserProviderProps) => {
-  const { data: session } = useSession();
+  const { edenSession } = useContext(DynamicSessionContext);
 
-  const { id } = session?.user || { id: null };
+  const id = edenSession?._id || null;
 
   const [memberServers, setMemberServers] = useState<ServerTemplate[]>([]);
   const [selectedServerID, setSelectedServerID] = useState<string[]>([]);

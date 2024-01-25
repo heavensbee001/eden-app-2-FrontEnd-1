@@ -1,4 +1,5 @@
-import { UserContext } from "@eden/package-context";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
+import { DynamicSessionContext, UserContext } from "@eden/package-context";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useContext } from "react";
@@ -20,7 +21,6 @@ export const AppUserLayout = ({
 
   return (
     <div className="">
-
       <nav className="fixed left-0 top-0 z-40 h-16 w-screen bg-white">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center px-4">
           <img
@@ -47,10 +47,10 @@ export default AppUserLayout;
 
 const UserButton = () => {
   const { currentUser } = useContext(UserContext);
+  const { logOut } = useContext(DynamicSessionContext);
 
   const handleLogout = () => {
-    signOut();
-    localStorage.removeItem("eden_access_token");
+    logOut();
   };
 
   return currentUser ? (

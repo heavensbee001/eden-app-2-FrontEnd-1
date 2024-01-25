@@ -9,16 +9,9 @@ import {
 import { apolloClient } from "@eden/package-graphql";
 import { parseCookie } from "@eden/package-ui/utils";
 import { deleteCookie, hasCookie, setCookie } from "cookies-next";
-import { SessionProvider } from "next-auth/react";
 import React from "react";
 
-export const AppProviders = ({
-  children,
-  session,
-}: {
-  children: React.ReactNode;
-  session: any;
-}) => {
+export const AppProviders = ({ children }: { children: React.ReactNode }) => {
   const [fetchingToken, setFetchingToken] = React.useState(false);
 
   const onDynamicAuthSuccess = async ({ authToken }: any) => {
@@ -68,13 +61,11 @@ export const AppProviders = ({
       }}
     >
       <DynamicSessionProvider fetchingToken={fetchingToken}>
-        <SessionProvider session={session}>
-          <ApolloProvider client={apolloClient}>
-            <UserProvider>
-              <CompanyProvider>{children}</CompanyProvider>
-            </UserProvider>
-          </ApolloProvider>
-        </SessionProvider>
+        <ApolloProvider client={apolloClient}>
+          <UserProvider>
+            <CompanyProvider>{children}</CompanyProvider>
+          </UserProvider>
+        </ApolloProvider>
       </DynamicSessionProvider>
     </DynamicContextProvider>
   );
