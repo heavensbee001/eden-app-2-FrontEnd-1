@@ -5,10 +5,11 @@ import {
   EdenAiProcessingModal,
   SEO,
 } from "@eden/package-ui";
+import { parseCookie } from "@eden/package-ui/utils";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { ReactElement, useState } from "react";
 
 import { NextPageWithLayout } from "../_app";
@@ -32,14 +33,14 @@ const LoginPage: NextPageWithLayout = ({
         <title>Eden protocol</title>
       </Head>
       <div
-        className={`min-h-[calc(100vh-4rem)] overflow-hidden flex flex-col items-center justify-center pb-16`}
+        className={`flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden pb-16`}
       >
-        <DynamicWidget />
+        <DynamicWidget innerButtonComponent="Log in" />
         {heroImage}
         <h1 className="text-bold text-edenGreen-600 mb-4 flex items-center justify-center text-center text-4xl">
           Hey 👋, so good to see you!
         </h1>
-        <h2 className="text-bold text-edenGreen-600 text-center mb-12">
+        <h2 className="text-bold text-edenGreen-600 mb-12 text-center">
           ✨ Let’s create some work-you-love-magic! ✨
         </h2>
         <Button
@@ -47,7 +48,7 @@ const LoginPage: NextPageWithLayout = ({
           onClick={() => {
             signIn("google", { callbackUrl: redirect });
           }}
-          className="w-40 mb-6"
+          className="mb-6 w-40"
         >
           Log in
         </Button>
@@ -64,37 +65,50 @@ const LoginPage: NextPageWithLayout = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
-  const { redirect } = ctx.query;
-
-  // let redirectUrl = "/";
-
-  // if (
-  //   redirect &&
-  //   typeof redirect === "string" &&
-  //   redirect.startsWith("_next")
-  // ) {
-  //   redirectUrl = "/";
-  // } else if (redirect && typeof redirect === "string") {
-  //   redirectUrl = redirect;
-  // }
-
-  if (session) {
-    return {
-      redirect: {
-        destination: redirect || "/developer-dao/jobs",
-        permanent: false,
-      },
-      props: {},
-    };
+  if (ctx.req.cookies.edenAuthToken) {
+    console.log(
+      ":::::COOKIE DECODED:::::",
+      parseCookie(ctx.req.cookies.edenAuthToken)
+    );
   }
-
   return {
     props: {
-      redirect: redirect || "/developer-dao/jobs",
+      // redirect: redirect || "/developer-dao/jobs",
     },
   };
 };
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   const session = await getSession(ctx);
+//   const { redirect } = ctx.query;
+
+//   // let redirectUrl = "/";
+
+//   // if (
+//   //   redirect &&
+//   //   typeof redirect === "string" &&
+//   //   redirect.startsWith("_next")
+//   // ) {
+//   //   redirectUrl = "/";
+//   // } else if (redirect && typeof redirect === "string") {
+//   //   redirectUrl = redirect;
+//   // }
+
+//   if (session) {
+//     return {
+//       redirect: {
+//         destination: redirect || "/developer-dao/jobs",
+//         permanent: false,
+//       },
+//       props: {},
+//     };
+//   }
+
+//   return {
+//     props: {
+//       redirect: redirect || "/developer-dao/jobs",
+//     },
+//   };
+// };
 
 LoginPage.getLayout = (page: ReactElement) => (
   <AppUserLayout>{page}</AppUserLayout>

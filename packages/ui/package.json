@@ -40,6 +40,9 @@
   },
   "dependencies": {
     "@antv/g6": "^4.8.3",
+    "@dynamic-labs/ethers-v5": "^1.0.6",
+    "@dynamic-labs/sdk-react-core": "^1.0.6",
+    "@dynamic-labs/wagmi-connector": "^1.0.6",
     "@hello-pangea/dnd": "^16.2.0",
     "@types/pdf-parse": "^1.1.1",
     "@types/pdfjs-dist": "^2.10.378",
@@ -61,6 +64,7 @@
     "react-select": "^5.7.2",
     "turbo": "^1.9.3",
     "use-debounce": "^9.0.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "viem": "^2.5.0"
   }
 }
