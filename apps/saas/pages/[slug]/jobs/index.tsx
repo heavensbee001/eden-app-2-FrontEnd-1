@@ -19,6 +19,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import {
   Dispatch,
   SetStateAction,
@@ -514,7 +515,9 @@ const PostJobToCommunityCard = ({
   const handlePostJobClick = async () => {
     setLoadingSpinner(true);
     if (!currentUser) {
-      await router.push(`/redirect-page/post-job?community=${company?._id}`);
+      signIn("google", {
+        callbackUrl: `/redirect-page/post-job?community=${company?._id}`,
+      });
     } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
