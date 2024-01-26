@@ -44,7 +44,7 @@ const LoginPage: NextPageWithLayout = ({
         <h2 className="text-bold text-edenGreen-600 mb-12 text-center">
           {"✨ Let's create some work-you-love-magic! ✨"}
         </h2>
-        <DynamicConnectButton>
+        <DynamicConnectButton buttonClassName="w-40 mb-6 py-2 px-4 font-Moret text-lg rounded-md font-bold bg-edenGreen-600 text-white hover:bg-edenGreen-300 hover:text-edenGreen-600 disabled:!text-edenGray-500 disabled:!bg-edenGray-100">
           <span>Log in</span>
         </DynamicConnectButton>
         <EdenAiProcessingModal title="Redirecting" open={redirecting} />
