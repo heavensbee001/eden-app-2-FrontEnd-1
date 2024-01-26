@@ -19,6 +19,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import {
   Dispatch,
   SetStateAction,
@@ -123,15 +124,17 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
           <section className="">
             <h3 className="mb-2">Open opportunities</h3>
             <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-              {_positions?.map((position: Maybe<Position>, index: number) => {
-                return (
-                  <PositionCard
-                    position={position!}
-                    setLoadingSpinner={setLoadingSpinner}
-                    key={index}
-                  />
-                );
-              })}
+              {_positions
+                ?.reverse()
+                .map((position: Maybe<Position>, index: number) => {
+                  return (
+                    <PositionCard
+                      position={position!}
+                      setLoadingSpinner={setLoadingSpinner}
+                      key={index}
+                    />
+                  );
+                })}
             </div>
           </section>
         </div>
@@ -512,7 +515,9 @@ const PostJobToCommunityCard = ({
   const handlePostJobClick = async () => {
     setLoadingSpinner(true);
     if (!currentUser) {
-      await router.push(`/redirect-page/post-job?community=${company?._id}`);
+      signIn("google", {
+        callbackUrl: `/redirect-page/post-job?community=${company?._id}`,
+      });
     } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
@@ -539,7 +544,7 @@ const PostJobToCommunityCard = ({
   ];
 
   return (
-    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4 overflow-hidden">
+    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 overflow-hidden rounded-md p-4">
       {company && (
         <div className="flex flex-row items-center justify-between">
           <Image
