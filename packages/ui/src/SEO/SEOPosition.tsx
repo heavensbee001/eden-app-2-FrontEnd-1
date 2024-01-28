@@ -88,16 +88,18 @@ export const SEOPosition: FC<SEOPositionProps> = ({
       />
       <meta property="fc:frame:button:1" content="Interview now" />
       {redirectUrl && (
-        <meta
-          property="fc:frame:post_url"
-          content={
-            process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
-              ? `https://eden-saas-staging.vercel.app/api/fc/redirect?redirect=${redirectUrl}`
-              : `https://edenprotocol.app/api/fc/redirect?redirect=${redirectUrl}`
-          }
-        />
+        <>
+          <meta
+            property="fc:frame:post_url"
+            content={
+              process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
+                ? `https://eden-saas-staging.vercel.app/api/fc/redirect?redirect=${redirectUrl}`
+                : `https://edenprotocol.app/api/fc/redirect?redirect=${redirectUrl}`
+            }
+          />
+          <meta property="fc:frame:button:1:action" content="redirect" />
+        </>
       )}
-      {/* <meta property="fc:frame:button:1:action" content="redirect" /> */}
 
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:site" content={`Eden protocol`} />
