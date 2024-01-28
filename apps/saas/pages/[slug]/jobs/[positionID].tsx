@@ -343,7 +343,7 @@ const PositionPage: NextPageWithLayout = ({
         salaryMin={position.generalDetails?.yearlySalary?.min!}
         officePolicy={position.generalDetails?.officePolicy!}
         location={position.generalDetails?.officeLocation!}
-        redirectUrl={redirectUrl}
+        redirectUrl={encodeURI(redirectUrl).replace(/&amp;/g, "&")}
       />
       <div>
         {editMode && (
