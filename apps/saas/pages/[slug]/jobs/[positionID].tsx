@@ -327,6 +327,11 @@ const PositionPage: NextPageWithLayout = ({
     return grade;
   };
 
+  const redirectUrl =
+    process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
+      ? `https://eden-saas-staging.vercel.app/${position.company?.slug}/jobs/${position._id}`
+      : `https://edenprotocol.app/${position.company?.slug}/jobs/${position._id}`;
+
   return (
     <>
       <SEOPosition
@@ -338,6 +343,7 @@ const PositionPage: NextPageWithLayout = ({
         salaryMin={position.generalDetails?.yearlySalary?.min!}
         officePolicy={position.generalDetails?.officePolicy!}
         location={position.generalDetails?.officeLocation!}
+        redirectUrl={redirectUrl}
       />
       <div>
         {editMode && (

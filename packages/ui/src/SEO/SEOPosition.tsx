@@ -17,6 +17,7 @@ export interface SEOPositionProps {
   salaryMax?: string | number;
   officePolicy?: string;
   location?: string;
+  redirectUrl?: string;
 }
 
 export const SEOPosition: FC<SEOPositionProps> = ({
@@ -28,6 +29,7 @@ export const SEOPosition: FC<SEOPositionProps> = ({
   salaryMax,
   officePolicy,
   location,
+  redirectUrl,
 }) => {
   const appTitle = title + ` ` + DEFAULT_TITLE;
   const appDescription = description ? description : DEFAULT_DESCRIPTION;
@@ -85,7 +87,15 @@ export const SEOPosition: FC<SEOPositionProps> = ({
         content={encodeURI(ogImage).replace(/&amp;/g, "&")}
       />
       <meta property="fc:frame:button:1" content="Interview now" />
-      <meta property="fc:frame:button:1:action" content="redirect" />
+      {redirectUrl && (
+        <meta
+          property="fc:frame:post_url"
+          content={`https://edenprotocol.app/api/fc?redirect=${encodeURI(
+            redirectUrl
+          ).replace(/&amp;/g, "&")}`}
+        />
+      )}
+      {/* <meta property="fc:frame:button:1:action" content="redirect" /> */}
 
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:site" content={`Eden protocol`} />
