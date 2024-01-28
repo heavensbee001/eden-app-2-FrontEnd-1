@@ -88,12 +88,7 @@ export const SEOPosition: FC<SEOPositionProps> = ({
       />
       <meta property="fc:frame:button:1" content="Interview now" />
       {redirectUrl && (
-        <meta
-          property="fc:frame:post_url"
-          content={`https://edenprotocol.app/api/fc?redirect=${encodeURI(
-            redirectUrl
-          ).replace(/&amp;/g, "&")}`}
-        />
+        <meta property="fc:frame:post_url" content={redirectUrl} />
       )}
       {/* <meta property="fc:frame:button:1:action" content="redirect" /> */}
 
