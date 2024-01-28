@@ -90,7 +90,11 @@ export const SEOPosition: FC<SEOPositionProps> = ({
       {redirectUrl && (
         <meta
           property="fc:frame:post_url"
-          content={`https://edenprotocol.app/api/fc/redirect?redirect=${redirectUrl}`}
+          content={
+            process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
+              ? `https://eden-saas-staging.vercel.app/api/fc/redirect?redirect=${redirectUrl}`
+              : `https://edenprotocol.app/api/fc/redirect?redirect=${redirectUrl}`
+          }
         />
       )}
       {/* <meta property="fc:frame:button:1:action" content="redirect" /> */}
