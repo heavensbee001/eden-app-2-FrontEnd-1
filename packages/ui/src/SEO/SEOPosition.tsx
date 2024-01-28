@@ -79,6 +79,12 @@ export const SEOPosition: FC<SEOPositionProps> = ({
       <meta property="og:image:width" content="800" />
       <meta property="og:image:height" content="400" />
 
+      <meta property="fc:frame" content="vNext" />
+      <meta
+        property="fc:frame:image"
+        content={encodeURI(ogImage).replace(/&amp;/g, "&")}
+      />
+
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:site" content={`Eden protocol`} />
       <meta property="twitter:title" content={appTitle} />
