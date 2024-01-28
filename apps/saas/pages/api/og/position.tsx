@@ -53,23 +53,27 @@ export default async function handler(req: NextRequest) {
           </h2>
 
           <div tw="relative flex h-[16rem]">
-            <div tw="overflow-hidden w-[22rem] h-[16rem] bg-[#F5C7DE] mr-8 flex justify-center items-center">
-              <img
-                src={imageIsWebp ? DEFAULT_IMAGE : imageSrc}
-                style={{
-                  margin: "0 0px",
-                  width: "80%",
-                }}
-              />
+            <div tw="overflow-hidden w-[22rem] h-[16rem] bg-[#F5C7DE] mr-8 flex justify-center items-center rounded-md">
+              <div tw="overflow-hidden w-[20rem] h-[14rem] flex justify-center items-center">
+                <img
+                  src={imageIsWebp ? DEFAULT_IMAGE : imageSrc}
+                  style={{
+                    margin: "0 0px",
+                    width: "80%",
+                  }}
+                />
+              </div>
             </div>
-            <div tw="flex flex-col justify-between h-full">
+            <div tw="flex flex-col h-full">
               <div></div>
               {params?.salaryMin ||
               params?.salaryMin === 0 ||
               params?.salaryMax ||
               params?.salaryMax === 0 ? (
-                <div tw="flex items-center">
-                  <BagSVG />
+                <div tw="flex items-center mb-8">
+                  <span tw="w-8">
+                    <BagSVG />
+                  </span>
                   <div tw="ml-8 h-[2.6rem] text-[2rem] leading-[2rem] rounded-xl bg-[#F5C7DE] text-[#00462C] px-4 py-2 flex items-center">
                     <span tw="pb-1">
                       {params?.salaryMin || params?.salaryMin === 0 ? (
@@ -101,8 +105,10 @@ export default async function handler(req: NextRequest) {
                 </div>
               ) : null}
               {params?.officePolicy || params?.location ? (
-                <div tw="flex items-center">
-                  <PinSVG />
+                <div tw="flex items-center mb-8">
+                  <span tw="w-8">
+                    <PinSVG />
+                  </span>
                   {params?.officePolicy || params?.location ? (
                     <div tw="ml-8 h-[2.6rem] text-[2rem] leading-[2rem] rounded-xl bg-[#F5C7DE] text-[#00462C] px-4 py-2 flex items-center">
                       <span tw="pb-1">{params?.officePolicy}</span>
@@ -115,8 +121,8 @@ export default async function handler(req: NextRequest) {
                   ) : null}
                 </div>
               ) : null}
-              <h3 tw="text-[5rem] text-[#F5C7DE] h-4 flex items-center">
-                refer/apply with
+              <h3 tw="text-[5rem] text-[#F5C7DE] h-4 flex items-center justify-between mt-auto w-[107.2%]">
+                <span>refer/apply with</span>
                 <DDIcon />
               </h3>
             </div>
@@ -260,8 +266,8 @@ const PinSVG = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="33"
-      height="38"
+      width="35"
+      height="41"
       viewBox="0 0 33 38"
       fill="none"
     >
