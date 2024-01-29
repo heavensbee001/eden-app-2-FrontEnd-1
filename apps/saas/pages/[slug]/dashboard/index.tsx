@@ -366,8 +366,6 @@ export async function getServerSideProps(ctx: {
     }
   );
 
-  console.log(res.status);
-
   if (res.status === 401) {
     return {
       redirect: {

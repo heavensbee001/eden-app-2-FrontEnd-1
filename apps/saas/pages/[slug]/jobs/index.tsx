@@ -10,15 +10,16 @@ import {
   EdenAiProcessingModal,
   EdenIconExclamation,
   EdenTooltip,
-  SEO,
+  SEOJobBoard,
 } from "@eden/package-ui";
 import axios from "axios";
-import { InferGetStaticPropsType } from "next";
+// import { InferGetStaticPropsType } from "next";
 // import ReactTooltip from "react-tooltip";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import {
   Dispatch,
   SetStateAction,
@@ -33,23 +34,20 @@ const ReactTooltip = dynamic<any>(() => import("react-tooltip"), {
   ssr: false,
 });
 
-const JobsPage: NextPageWithLayout = ({
-  company,
-  positions,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const JobsPage: NextPageWithLayout = ({ company, positions }) => {
   const router = useRouter();
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
   const _positions: Position[] =
-    (company.type === "COMMUNITY"
+    (company?.type === "COMMUNITY"
       ? positions
       : positions?.map((item: any) => {
           //this map avoids having to fetch company again inside each position in backend
           item!.company = {
-            _id: company._id,
-            name: company.name,
-            slug: company.slug,
-            imageUrl: company.imageUrl,
+            _id: company?._id,
+            name: company?.name,
+            slug: company?.slug,
+            imageUrl: company?.imageUrl,
           };
           return item;
         })) || [];
@@ -62,7 +60,11 @@ const JobsPage: NextPageWithLayout = ({
 
   return (
     <>
-      <SEO />
+      <SEOJobBoard
+        title={company?.name}
+        description={company.description}
+        company={company}
+      />
       <Head>
         <script
           dangerouslySetInnerHTML={{
@@ -126,15 +128,17 @@ const JobsPage: NextPageWithLayout = ({
           <section className="">
             <h3 className="mb-2">Open opportunities</h3>
             <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-              {_positions?.map((position: Maybe<Position>, index: number) => {
-                return (
-                  <PositionCard
-                    position={position!}
-                    setLoadingSpinner={setLoadingSpinner}
-                    key={index}
-                  />
-                );
-              })}
+              {_positions
+                ?.reverse()
+                .map((position: Maybe<Position>, index: number) => {
+                  return (
+                    <PositionCard
+                      position={position!}
+                      setLoadingSpinner={setLoadingSpinner}
+                      key={index}
+                    />
+                  );
+                })}
             </div>
           </section>
         </div>
@@ -160,7 +164,7 @@ const JobsPage: NextPageWithLayout = ({
 
 JobsPage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
-export const getStaticProps = async (context: any) => {
+export const getServerSideProps = async (context: any) => {
   try {
     const companyRes = await axios.post(
       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
@@ -179,7 +183,6 @@ export const getStaticProps = async (context: any) => {
           description
           imageUrl
           mission
-          description
           benefits
           values
           founders
@@ -228,7 +231,7 @@ export const getStaticProps = async (context: any) => {
     const company = companyRes.data.data.findCompanyFromSlug;
     let positions;
 
-    if (company.type === "COMMUNITY") {
+    if (company?.type === "COMMUNITY") {
       const communityPositions = await axios.post(
         process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
         {
@@ -268,14 +271,14 @@ export const getStaticProps = async (context: any) => {
 
       positions = communityPositions.data.data.findPositionsOfCommunity;
     } else {
-      positions = company.positions;
+      positions = company?.positions;
       positions?.map((item: any) => {
         //this map avoids having to fetch company again inside each position in backend
         item!.company = {
-          _id: company._id,
-          name: company.name,
-          slug: company.slug,
-          imageUrl: company.imageUrl,
+          _id: company?._id,
+          name: company?.name,
+          slug: company?.slug,
+          imageUrl: company?.imageUrl,
         };
         return item;
       });
@@ -295,7 +298,7 @@ export const getStaticProps = async (context: any) => {
       },
       // 10 min to rebuild all paths
       // (this means new data will show up after 10 min of being added)
-      revalidate: 600,
+      // revalidate: 600,
     };
   } catch (error) {
     console.log(error);
@@ -303,47 +306,47 @@ export const getStaticProps = async (context: any) => {
   }
 };
 
-export const getStaticPaths = async () => {
-  try {
-    const res = await axios.post(
-      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
-      {
-        headers: {
-          "Access-Control-Allow-Origin": `*`,
-        },
-        variables: { fields: [] },
-        query: `
-      query FindCompanies($fields: findCompaniesInput) {
-        findCompanies(fields: $fields) {
-          _id
-          slug
-        }
-      }
-    `,
-      }
-    );
+// export const getStaticPaths = async () => {
+//   try {
+//     const res = await axios.post(
+//       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+//       {
+//         headers: {
+//           "Access-Control-Allow-Origin": `*`,
+//         },
+//         variables: { fields: [] },
+//         query: `
+//         query FindCompanies($fields: findCompaniesInput) {
+//           findCompanies(fields: $fields) {
+//             _id
+//             slug
+//           }
+//         }
+//         `,
+//       }
+//     );
 
-    const paths = res.data.data.findCompanies
-      .filter((_comp: any) => !!_comp.slug)
-      .map((_comp: any) => ({
-        params: { slug: _comp.slug },
-      }));
+//     const paths = res.data.data.findCompanies
+//       .filter((_comp: any) => !!_comp.slug)
+//       .map((_comp: any) => ({
+//         params: { slug: _comp.slug },
+//       }));
 
-    console.log("getStaticPaths --- ", paths);
+//     console.log("getStaticPaths --- ", paths);
 
-    // { fallback: false } means other routes should 404
-    return {
-      paths,
-      fallback: false,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      paths: [],
-      fallback: false,
-    };
-  }
-};
+//     // { fallback: false } means other routes should 404
+//     return {
+//       paths,
+//       fallback: true,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       paths: [],
+//       fallback: true,
+//     };
+//   }
+// };
 
 export default JobsPage;
 
@@ -515,7 +518,9 @@ const PostJobToCommunityCard = ({
   const handlePostJobClick = async () => {
     setLoadingSpinner(true);
     if (!currentUser) {
-      await router.push(`/redirect-page/post-job?community=${company?._id}`);
+      signIn("google", {
+        callbackUrl: `/redirect-page/post-job?community=${company?._id}`,
+      });
     } else if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
@@ -542,7 +547,7 @@ const PostJobToCommunityCard = ({
   ];
 
   return (
-    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 rounded-md p-4 overflow-hidden">
+    <section className="bg-edenGreen-100 -ml-2 -mt-40 mr-2 overflow-hidden rounded-md p-4">
       {company && (
         <div className="flex flex-row items-center justify-between">
           <Image
@@ -550,9 +555,11 @@ const PostJobToCommunityCard = ({
             width="68"
             height="68"
             src={`${
-              company.imageUrl ? company.imageUrl : "/default-company-image.svg"
+              company?.imageUrl
+                ? company?.imageUrl
+                : "/default-company-image.svg"
             }`}
-            alt={`${company.name} company image`}
+            alt={`${company?.name} company image`}
           />
 
           <Button

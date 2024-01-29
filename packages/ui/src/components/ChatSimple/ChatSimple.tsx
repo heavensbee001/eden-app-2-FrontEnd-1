@@ -77,6 +77,7 @@ export const ChatSimple = ({
   //For Eden voice
   const [recording, setRecording] = useState<boolean>(false);
   const [transcribing, setTranscribing] = useState<boolean>(false);
+  // eslint-disable-next-line no-unused-vars
   const [showEdenVoice, setShowEdenVoice] = useState<boolean>(true);
 
   useEffect(() => {
@@ -175,7 +176,7 @@ export const ChatSimple = ({
   // };
 
   return (
-     <>
+    <>
       <div className="flex h-full flex-col justify-between">
         <div className="h-full">
           <div className="border-edenGray-100 h-full overflow-hidden rounded-md border bg-white">
@@ -246,8 +247,8 @@ export const ChatSimple = ({
                                 <span
                                   className={classNames(
                                     chat.user === "01"
-                                      ? "bg-edenPink-300"
-                                      : "bg-edenGray-100",
+                                      ? "bg-edenPink-300 user-2-message"
+                                      : "bg-edenGray-100 user-1-message",
                                     "inline-block whitespace-pre-wrap rounded-lg p-4 text-xs"
                                   )}
                                 >
@@ -332,7 +333,7 @@ export const ChatSimple = ({
                   <textarea
                     className={classNames(
                       "transition-height border-edenGray-500 max-height: 200px; height: 24px; overflow-y: hidden; w-11/12 resize-none rounded-md border bg-transparent px-4 py-4 ease-in-out focus:outline-none",
-                      (inputMessage && inputMessage.length) > 58 ||
+                      (inputMessage && inputMessage.length > 58) ||
                         numberOfLines > 1
                         ? "h-[8.6rem]"
                         : "h-[3.6rem]"
