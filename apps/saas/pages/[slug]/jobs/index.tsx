@@ -10,7 +10,7 @@ import {
   EdenAiProcessingModal,
   EdenIconExclamation,
   EdenTooltip,
-  SEO,
+  SEOJobBoard,
 } from "@eden/package-ui";
 import axios from "axios";
 // import { InferGetStaticPropsType } from "next";
@@ -60,7 +60,11 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
 
   return (
     <>
-      <SEO />
+      <SEOJobBoard
+        title={company?.name}
+        description={company.description}
+        company={company}
+      />
       <Head>
         <script
           dangerouslySetInnerHTML={{
@@ -179,7 +183,6 @@ export const getServerSideProps = async (context: any) => {
           description
           imageUrl
           mission
-          description
           benefits
           values
           founders
