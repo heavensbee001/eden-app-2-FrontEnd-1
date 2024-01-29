@@ -92,13 +92,13 @@ export const CompanyProvider = ({ children }: CompanyProviderProps) => {
   );
 
   const getCompanyFunc = () => {
-    // if (router.query.slug) { // removed this bc it wasn't working
     getCompany();
-    // }
   };
 
   useEffect(() => {
-    getCompanyFunc();
+    if (router.query.slug) {
+      getCompanyFunc();
+    }
   }, []);
 
   useMemo(() => {

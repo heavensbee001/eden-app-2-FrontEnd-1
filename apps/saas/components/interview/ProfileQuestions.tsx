@@ -22,7 +22,7 @@ const ProfileQuestionsContainer = ({
   // const [submitting, setSubmitting] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
-  const { register, watch, control, setValue, getValues } = useForm<Members>({
+  const { register, watch, control, setValue, getValues } = useForm<any>({
     defaultValues: { ...currentUser },
   });
 
@@ -39,7 +39,7 @@ const ProfileQuestionsContainer = ({
     });
 
     return () => subscription.unsubscribe();
-  }, [watch]);
+  }, []);
 
   // useEffect(() => {
   //   if (

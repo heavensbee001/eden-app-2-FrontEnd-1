@@ -17,6 +17,7 @@ import {
   AskEdenPopUp,
   Button,
   EdenAiProcessingModal,
+  EdenIconExclamation,
   EdenIconExclamationAndQuestion,
   Loading,
   Modal,
@@ -39,7 +40,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import { AiOutlineEyeInvisible, AiOutlineUserAdd } from "react-icons/ai";
-import { BsLightningFill, BsStar } from "react-icons/bs";
+import { BsChevronLeft, BsLightningFill, BsStar } from "react-icons/bs";
 import { GoTag } from "react-icons/go";
 import {
   HiOutlineHeart,
@@ -114,6 +115,8 @@ const PositionPage: NextPageWithLayout = ({
 
   const [editCompany] = useState(true);
   const [uploadingCompanyImage, setUploadingCompanyImage] = useState(false);
+  const [backToDashboardModalOpen, setBackToDashboardModalOpen] =
+    useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
   const [openAskEden, setOpenAskEden] = useState(false);
@@ -322,6 +325,11 @@ const PositionPage: NextPageWithLayout = ({
     return grade;
   };
 
+  const redirectUrl =
+    process.env.NEXT_PUBLIC_ENV_BRANCH === "develop"
+      ? `https://eden-saas-staging.vercel.app/${position.company?.slug}/jobs/${position._id}`
+      : `https://edenprotocol.app/${position.company?.slug}/jobs/${position._id}`;
+
   return (
     <>
       <SEOPosition
@@ -333,8 +341,59 @@ const PositionPage: NextPageWithLayout = ({
         salaryMin={position.generalDetails?.yearlySalary?.min!}
         officePolicy={position.generalDetails?.officePolicy!}
         location={position.generalDetails?.officeLocation!}
+        redirectUrl={redirectUrl}
       />
       <div>
+        {editMode && (
+          <>
+            <section className="mx-auto flex grid h-16 w-4/5 w-full max-w-4xl items-center px-4">
+              <span
+                onClick={() => {
+                  setBackToDashboardModalOpen(true);
+                }}
+                className="text-edenGreen-400 font-Moret hover:text-edenGreen-300 mr-auto cursor-pointer text-lg"
+              >
+                <BsChevronLeft className="-mt-1 mr-1 inline" size={16} />
+                Go back to dashboard
+              </span>
+            </section>
+            <Modal
+              open={backToDashboardModalOpen}
+              closeOnEsc={true}
+              onClose={() => setBackToDashboardModalOpen(false)}
+            >
+              <div className="flex flex-col items-center justify-center px-28 py-8 text-center">
+                <EdenIconExclamation className="mb-2 h-16" />
+                <h2 className="text-edenGreen-600 mb-4">
+                  Go back to dashboard?
+                </h2>
+                <p className="mb-12">
+                  {"Be careful! Unsaved changes won't be applied"}
+                </p>
+                <div className="flex justify-center gap-8">
+                  <Button
+                    onClick={() => {
+                      setBackToDashboardModalOpen(false);
+                    }}
+                  >
+                    Stay here
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    className="!bg-utilityRed !text-white hover:opacity-75"
+                    onClick={() => {
+                      router.push(
+                        `/${position.company?.slug}/dashboard/${position._id}`
+                      );
+                    }}
+                  >
+                    Go back to dashboard
+                  </Button>
+                </div>
+              </div>
+            </Modal>
+          </>
+        )}
         <section
           className="flex w-full justify-center py-24"
           style={{

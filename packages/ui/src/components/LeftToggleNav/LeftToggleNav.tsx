@@ -400,6 +400,37 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
         _empl?.user?._id === currentUser?._id && _empl?.typeT === "ADMIN"
     );
 
+  const menuItems = userIsAdmin
+    ? [
+        <li
+          key={0}
+          className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+          onClick={() => {
+            router.push(`/${company.slug}/dashboard/pending-requests`);
+          }}
+        >
+          user access requests
+        </li>,
+        <li
+          key={1}
+          className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+          onClick={handleLogout}
+        >
+          <FiLogOut className="inline pb-px" size={16} />
+          {" log out"}
+        </li>,
+      ]
+    : [
+        <li
+          key={1}
+          className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
+          onClick={handleLogout}
+        >
+          <FiLogOut className="inline pb-px" size={16} />
+          {" log out"}
+        </li>,
+      ];
+
   return currentUser ? (
     <div
       className={classNames(
@@ -416,29 +447,7 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
               <Avatar size="xs" src={currentUser.discordAvatar!} />
             }
           >
-            {[
-              userIsAdmin ? (
-                <li
-                  key={0}
-                  className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
-                  onClick={() => {
-                    router.push(`/${company.slug}/dashboard/pending-requests`);
-                  }}
-                >
-                  user access requests
-                </li>
-              ) : (
-                <></>
-              ),
-              <li
-                key={1}
-                className="text-edenGray-700 hover:bg-edenGreen-100 border-edenGray-100 cursor-pointer border-b px-4 py-1 text-sm"
-                onClick={handleLogout}
-              >
-                <FiLogOut className="inline pb-px" size={16} />
-                {" log out"}
-              </li>,
-            ]}
+            {menuItems}
           </MenuDropdown>
         </div>
         {unwrapped && (

@@ -84,10 +84,12 @@ export type CandidateType = {
   keyAttributes?: Maybe<Array<Maybe<AttributeCandidateType>>>;
   notesInterview?: Maybe<Array<Maybe<NotesInterviewType>>>;
   overallScore?: Maybe<Scalars["Float"]>;
+  positionID?: Maybe<Scalars["ID"]>;
   readyToDisplay?: Maybe<Scalars["Boolean"]>;
   scoreCardCategoryMemories?: Maybe<Array<Maybe<ScoreCardCategoryMemoryType>>>;
   scoreCardTotal?: Maybe<ScoreCardTotalType>;
   skillScore?: Maybe<Scalars["Float"]>;
+  submitted?: Maybe<Scalars["Boolean"]>;
   summaryQuestions?: Maybe<Array<Maybe<SummaryQuestionType>>>;
   user?: Maybe<Members>;
 };
@@ -111,12 +113,26 @@ export type CardMemory = {
   futurePotential?: Maybe<Scalars["Boolean"]>;
   keyPriority?: Maybe<Scalars["Boolean"]>;
   pineconeDB?: Maybe<PineconeDbType>;
-  primitives?: Maybe<PrimitivesType>;
+  primitives?: Maybe<Array<Maybe<PrimitivesType>>>;
   priority?: Maybe<Scalars["Int"]>;
   score?: Maybe<ScoreCardMemory>;
   scoreCriteria?: Maybe<Scalars["String"]>;
   tradeOffBoost?: Maybe<Scalars["Int"]>;
   type?: Maybe<TypeCardMemoryEnum>;
+};
+
+export type CardMemoryMemberType = {
+  __typename?: "CardMemoryMemberType";
+  cardMemory?: Maybe<CardMemory>;
+  primitives?: Maybe<Array<Maybe<PrimitiveCardMemType>>>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
+export type CardMemoryOutputType = {
+  __typename?: "CardMemoryOutputType";
+  cardMemory?: Maybe<CardMemory>;
+  nodeOutput?: Maybe<Array<Maybe<NodeOutputType>>>;
+  scoreCardTotal?: Maybe<Scalars["Float"]>;
 };
 
 export enum CategoryEnum {
@@ -223,6 +239,26 @@ export type CompanyInsightType = {
 export type CompanyInsightTypeInput = {
   letter?: InputMaybe<Scalars["String"]>;
   text?: InputMaybe<Scalars["String"]>;
+};
+
+export type ConnectMemoriesToKnowledgeGraph_V2Output = {
+  __typename?: "ConnectMemoriesToKnowledgeGraph_V2Output";
+  node?: Maybe<Node>;
+  positionConnectedToKG?: Maybe<Position>;
+  userConnectedToKG?: Maybe<Members>;
+  usersLeft?: Maybe<Scalars["Int"]>;
+};
+
+export type ConnectedCardMemory = {
+  __typename?: "ConnectedCardMemory";
+  card?: Maybe<CardMemory>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
+export type ConnectedNodes = {
+  __typename?: "ConnectedNodes";
+  node?: Maybe<Node>;
+  score?: Maybe<Scalars["Float"]>;
 };
 
 export type Conversation = {
@@ -375,6 +411,15 @@ export type Graph = {
   combos?: Maybe<Array<Maybe<Combo>>>;
   edges?: Maybe<Array<Maybe<Edge>>>;
   nodesVisual?: Maybe<Array<Maybe<NodeVisual>>>;
+};
+
+export type GraphNeighborType = {
+  __typename?: "GraphNeighborType";
+  hopN?: Maybe<Scalars["Int"]>;
+  node?: Maybe<Node>;
+  score?: Maybe<Scalars["Float"]>;
+  weightSeparate?: Maybe<Array<Maybe<WeightSeparateType>>>;
+  weightTotal?: Maybe<Scalars["Float"]>;
 };
 
 export type Keyword = {
@@ -537,7 +582,8 @@ export type Mutation = {
   calculateScoreCardCandidateToPosition?: Maybe<Array<Maybe<CardMemory>>>;
   changeTeamMember_Phase_Project?: Maybe<Project>;
   checkUsersForTGConnection?: Maybe<UpdateTgOutput>;
-  connectMemoriesToKnowledgeGraph_V2?: Maybe<Node>;
+  connectMemoriesToKnowledgeGraph_V2?: Maybe<ConnectMemoriesToKnowledgeGraph_V2Output>;
+  connectNeighborNodesKG?: Maybe<Array<Maybe<Node>>>;
   conversationCVPositionToReport?: Maybe<ConversationCvPositionToReportOutput>;
   createCardsCandidateForPosition?: Maybe<Array<Maybe<CardMemory>>>;
   createCardsForPosition?: Maybe<Array<Maybe<CardMemory>>>;
@@ -565,6 +611,7 @@ export type Mutation = {
   deleteError?: Maybe<ErrorLog>;
   deleteMember?: Maybe<Members>;
   deleteMemories?: Maybe<Array<Maybe<MemoryPinecone>>>;
+  deleteNodes?: Maybe<Array<Maybe<Node>>>;
   deleteNodesFromMember?: Maybe<Members>;
   deleteNodesFromMemberInRoom?: Maybe<Members>;
   deleteNodesToProjectRole?: Maybe<Project>;
@@ -603,10 +650,17 @@ export type Mutation = {
   saveCoreProductFeatureInteration?: Maybe<Scalars["Boolean"]>;
   saveDailyLogin?: Maybe<Scalars["Boolean"]>;
   secondInterviewLetter?: Maybe<SecondInterviewLetterOutput>;
+  showMembersConnectedToNodes?: Maybe<
+    Array<Maybe<ShowMembersConnectedToNodesOutput>>
+  >;
   storeLongTermMemory?: Maybe<StoreLongTermMemoryOutput>;
   storeLongTermMemorySummary?: Maybe<StoreLongTermMemorySummaryOutput>;
+  submitCandidatePosition?: Maybe<Position>;
   subscribeToCommunity?: Maybe<Company>;
   talkToEdenGeneral_V1?: Maybe<TalkToEdenGeneral_V1Output>;
+  textToPrimitivesAndTalent?: Maybe<
+    Array<Maybe<ShowMembersConnectedToNodesOutput>>
+  >;
   transcribeAudioToText?: Maybe<TranscribeAudioToTextOutput>;
   updateAnalysisEdenAICandidates?: Maybe<Array<Maybe<Position>>>;
   updateChatReply?: Maybe<Chats>;
@@ -799,6 +853,10 @@ export type MutationConnectMemoriesToKnowledgeGraph_V2Args = {
   fields?: InputMaybe<ConnectMemoriesToKnowledgeGraph_V2Input>;
 };
 
+export type MutationConnectNeighborNodesKgArgs = {
+  fields?: InputMaybe<ConnectNeighborNodesKgInput>;
+};
+
 export type MutationConversationCvPositionToReportArgs = {
   fields?: InputMaybe<ConversationCvPositionToReportInput>;
 };
@@ -905,6 +963,10 @@ export type MutationDeleteMemberArgs = {
 
 export type MutationDeleteMemoriesArgs = {
   fields?: InputMaybe<DeleteMemoriesInput>;
+};
+
+export type MutationDeleteNodesArgs = {
+  fields?: InputMaybe<DeleteNodeInput>;
 };
 
 export type MutationDeleteNodesFromMemberArgs = {
@@ -1059,6 +1121,10 @@ export type MutationSecondInterviewLetterArgs = {
   fields?: InputMaybe<SecondInterviewLetterInput>;
 };
 
+export type MutationShowMembersConnectedToNodesArgs = {
+  fields?: InputMaybe<ShowMembersConnectedToNodesInput>;
+};
+
 export type MutationStoreLongTermMemoryArgs = {
   fields?: InputMaybe<StoreLongTermMemoryInput>;
 };
@@ -1067,12 +1133,20 @@ export type MutationStoreLongTermMemorySummaryArgs = {
   fields?: InputMaybe<StoreLongTermMemorySummaryInput>;
 };
 
+export type MutationSubmitCandidatePositionArgs = {
+  fields?: InputMaybe<SubmitCandidatePositionInput>;
+};
+
 export type MutationSubscribeToCommunityArgs = {
   fields?: InputMaybe<SubscribeToCommunityInput>;
 };
 
 export type MutationTalkToEdenGeneral_V1Args = {
   fields?: InputMaybe<TalkToEdenGeneral_V1Input>;
+};
+
+export type MutationTextToPrimitivesAndTalentArgs = {
+  fields?: InputMaybe<TextToPrimitivesAndTalentInput>;
 };
 
 export type MutationTranscribeAudioToTextArgs = {
@@ -1211,11 +1285,23 @@ export type MutationWebsiteToMemoryCompanyArgs = {
   fields?: InputMaybe<WebsiteToMemoryCompanyInput>;
 };
 
+export type NeighborNodeWithMem = {
+  __typename?: "NeighborNodeWithMem";
+  cardMemoryOutput?: Maybe<CardMemory>;
+  nodeOutput?: Maybe<Node>;
+  scoreCard?: Maybe<Scalars["Float"]>;
+  scoreNode?: Maybe<Scalars["Float"]>;
+  scoreTotal?: Maybe<Scalars["Float"]>;
+};
+
 export type Node = {
   __typename?: "Node";
   _id?: Maybe<Scalars["ID"]>;
   aboveNodes?: Maybe<Array<Maybe<Node>>>;
   categoryNodes?: Maybe<Array<Maybe<Node>>>;
+  cleanName?: Maybe<Scalars["String"]>;
+  connectedCardMemories?: Maybe<Array<Maybe<ConnectedCardMemory>>>;
+  connectedNodes?: Maybe<Array<Maybe<ConnectedNodes>>>;
   graphNeighbors?: Maybe<Array<Maybe<GraphNeighborType>>>;
   groupNodes?: Maybe<Array<Maybe<Node>>>;
   level?: Maybe<Scalars["Int"]>;
@@ -1224,6 +1310,7 @@ export type Node = {
   name?: Maybe<Scalars["String"]>;
   node?: Maybe<Scalars["String"]>;
   open?: Maybe<Scalars["Boolean"]>;
+  pineconeID?: Maybe<Scalars["String"]>;
   registeredAt?: Maybe<Scalars["String"]>;
   relatedNodes?: Maybe<Array<Maybe<Node>>>;
   selected?: Maybe<Scalars["Boolean"]>;
@@ -1235,6 +1322,14 @@ export type Node = {
 export type NodeDataType = {
   __typename?: "NodeDataType";
   nodeData?: Maybe<Node>;
+};
+
+export type NodeOutputType = {
+  __typename?: "NodeOutputType";
+  node?: Maybe<Node>;
+  scoreCard?: Maybe<Scalars["Float"]>;
+  scoreNode?: Maybe<Scalars["Float"]>;
+  scoreTotal?: Maybe<Scalars["Float"]>;
 };
 
 export type NodeVisual = {
@@ -1323,6 +1418,26 @@ export enum PositionStatus {
   Deleted = "DELETED",
   Unpublished = "UNPUBLISHED",
 }
+
+export type PrimitiveCardInput = {
+  __typename?: "PrimitiveCardInput";
+  cardMemoryInput?: Maybe<CardMemory>;
+  cardMemoryOutput?: Maybe<Array<Maybe<CardMemoryOutputType>>>;
+  neighborNodeWithMemOutput?: Maybe<Array<Maybe<NeighborNodeWithMem>>>;
+  nodeInput?: Maybe<Node>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
+export type PrimitiveCardMemInput = {
+  importance?: InputMaybe<Scalars["Int"]>;
+  nodeID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type PrimitiveCardMemType = {
+  __typename?: "PrimitiveCardMemType";
+  node?: Maybe<Node>;
+  score?: Maybe<Scalars["Float"]>;
+};
 
 export type PrimitiveInput = {
   score?: InputMaybe<Scalars["Float"]>;
@@ -1417,6 +1532,7 @@ export type Query = {
   findAllProjectsTeamsAnouncments?: Maybe<
     Array<Maybe<FindAllProjectsTeamsAnouncmentsOutput>>
   >;
+  findCandidateInfoForMember?: Maybe<Array<Maybe<CandidateType>>>;
   findCardMemories?: Maybe<Array<Maybe<CardMemory>>>;
   findChat?: Maybe<Chats>;
   findCompanies?: Maybe<Array<Maybe<Company>>>;
@@ -1639,6 +1755,10 @@ export type QueryEvaluateAnswerEdenAiArgs = {
 
 export type QueryFindAllProjectsTeamsAnouncmentsArgs = {
   fields?: InputMaybe<FindAllProjectsTeamsAnouncmentsInput>;
+};
+
+export type QueryFindCandidateInfoForMemberArgs = {
+  fields?: InputMaybe<FindCandidateInfoForMemberInput>;
 };
 
 export type QueryFindCardMemoriesArgs = {
@@ -2116,6 +2236,14 @@ export type ServerTemplate = {
   serverType?: Maybe<Scalars["String"]>;
 };
 
+export type ShowMembersConnectedToNodesOutput = {
+  __typename?: "ShowMembersConnectedToNodesOutput";
+  member?: Maybe<Members>;
+  primitiveCardMemInput?: Maybe<Array<Maybe<PrimitiveCardInput>>>;
+  rank?: Maybe<Scalars["Int"]>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
 export type SkillCategory = {
   __typename?: "SkillCategory";
   _id?: Maybe<Scalars["ID"]>;
@@ -2295,6 +2423,14 @@ export type Team = {
   serverID?: Maybe<Array<Maybe<Scalars["String"]>>>;
 };
 
+export type TextToPrimitivesAndTalentOutput = {
+  __typename?: "TextToPrimitivesAndTalentOutput";
+  member?: Maybe<Members>;
+  primitiveCardMemInput?: Maybe<Array<Maybe<PrimitiveCardInput>>>;
+  rank?: Maybe<Scalars["Int"]>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
 export type User = {
   __typename?: "User";
   _id: Scalars["ID"];
@@ -2354,6 +2490,8 @@ export type AddConvRecruiterToPositionInput = {
 export type AddEmployeesCompanyInput = {
   companyID?: InputMaybe<Scalars["ID"]>;
   employees?: InputMaybe<Array<InputMaybe<EmployeeTypeInput>>>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+  slug?: InputMaybe<Scalars["String"]>;
 };
 
 export type AddEndorsementInput = {
@@ -2771,6 +2909,19 @@ export type CandidatesInput = {
   userID?: InputMaybe<Scalars["ID"]>;
 };
 
+export type CardMemoriesFromInputType = {
+  __typename?: "cardMemoriesFromInputType";
+  cardMemory?: Maybe<CardMemory>;
+  cardMemoryMember?: Maybe<Array<Maybe<CardMemoryMemberType>>>;
+  score?: Maybe<Scalars["Float"]>;
+};
+
+export type CardMemoriesStructureInput = {
+  cardMemoryID?: InputMaybe<Scalars["ID"]>;
+  importance?: InputMaybe<Scalars["Int"]>;
+  primitives?: InputMaybe<Array<InputMaybe<PrimitiveCardMemInput>>>;
+};
+
 export enum CategoryAgentScoreCardEnum {
   Alignment = "ALIGNMENT",
   Consistency = "CONSISTENCY",
@@ -2921,8 +3072,14 @@ export enum ConnectCardTypeEnum {
 }
 
 export type ConnectMemoriesToKnowledgeGraph_V2Input = {
+  createKGconnections?: InputMaybe<Scalars["Boolean"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
+  runAuto?: InputMaybe<RunAutoEnum>;
   userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type ConnectNeighborNodesKgInput = {
+  nodesID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
 export type ConnectedCards = {
@@ -3296,6 +3453,10 @@ export type DeleteMemoriesInput = {
   label?: InputMaybe<Scalars["String"]>;
   positionID?: InputMaybe<Scalars["ID"]>;
   userID?: InputMaybe<Scalars["ID"]>;
+};
+
+export type DeleteNodeInput = {
+  _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
 export type DeleteNodesFromMemberInRoomInput = {
@@ -3704,6 +3865,10 @@ export type FindAllProjectsTeamsAnouncmentsOutput = {
   team?: Maybe<Array<Maybe<TeamsType>>>;
 };
 
+export type FindCandidateInfoForMemberInput = {
+  memberID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+};
+
 export type FindCardMemoriesInput = {
   _id?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
   companyID?: InputMaybe<Scalars["ID"]>;
@@ -4072,14 +4237,6 @@ export type GeneralDetailsType = {
   startDate?: Maybe<Scalars["String"]>;
   visaRequired?: Maybe<Scalars["Boolean"]>;
   yearlySalary?: Maybe<YearlySalaryType>;
-};
-
-export type GraphNeighborType = {
-  __typename?: "graphNeighborType";
-  hopNumTotal?: Maybe<Scalars["Int"]>;
-  node?: Maybe<Node>;
-  weightSeparate?: Maybe<Array<Maybe<WeightSeparateType>>>;
-  weightTotal?: Maybe<Scalars["Float"]>;
 };
 
 export type IdentifyCategoryAndReplyInput = {
@@ -5027,6 +5184,11 @@ export type RoleType = {
   title?: Maybe<Scalars["String"]>;
 };
 
+export enum RunAutoEnum {
+  Member = "MEMBER",
+  Position = "POSITION",
+}
+
 export type SaveActionsPerformedInput = {
   actionType?: InputMaybe<ActionTypeEnum>;
 };
@@ -5148,6 +5310,16 @@ export enum ServerTypeEnum {
   Hackathon = "Hackathon",
   Project = "Project",
 }
+
+export type ShowMembersConnectedToNodesInput = {
+  cardMemoriesStructure?: InputMaybe<
+    Array<InputMaybe<CardMemoriesStructureInput>>
+  >;
+  neighborNodeMaxSize?: InputMaybe<Scalars["Int"]>;
+  nodesID?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  pageNumber?: InputMaybe<Scalars["Int"]>;
+  pageSize?: InputMaybe<Scalars["Int"]>;
+};
 
 export type SkillInput_Member = {
   id?: InputMaybe<Scalars["ID"]>;
@@ -5307,6 +5479,11 @@ export type SubjectConversationInput = {
   userIDs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
 };
 
+export type SubmitCandidatePositionInput = {
+  candidateID?: InputMaybe<Scalars["ID"]>;
+  positionID?: InputMaybe<Scalars["ID"]>;
+};
+
 export type SubscribeToCommunityInput = {
   communityID?: InputMaybe<Scalars["ID"]>;
   companyID?: InputMaybe<Scalars["ID"]>;
@@ -5374,6 +5551,13 @@ export type TeamsType_Garden = {
   __typename?: "teamsType_garden";
   role?: Maybe<Array<Maybe<RoleType_Garden>>>;
   teamData?: Maybe<Team>;
+};
+
+export type TextToPrimitivesAndTalentInput = {
+  neighborNodeMaxSize?: InputMaybe<Scalars["Int"]>;
+  pageNumber?: InputMaybe<Scalars["Int"]>;
+  pageSize?: InputMaybe<Scalars["Int"]>;
+  text?: InputMaybe<Scalars["String"]>;
 };
 
 export type TotalNodeTrustType = {
