@@ -1,6 +1,6 @@
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { UserContext } from "@eden/package-context";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 import { useContext } from "react";
 import { FiLogOut } from "react-icons/fi";
 
@@ -46,9 +46,10 @@ export default AppUserLayoutNew;
 
 const UserButton = () => {
   const { currentUser } = useContext(UserContext);
+  const { handleLogOut } = useDynamicContext();
 
   const handleLogout = () => {
-    signOut();
+    handleLogOut();
     localStorage.removeItem("eden_access_token");
   };
 
