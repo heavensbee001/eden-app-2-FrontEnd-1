@@ -13,7 +13,7 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";

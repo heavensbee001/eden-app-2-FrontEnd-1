@@ -15,7 +15,7 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { forwardRef, useContext, useEffect, useState } from "react";
@@ -579,7 +579,6 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
 
-import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import mixpanel from "mixpanel-browser";
 

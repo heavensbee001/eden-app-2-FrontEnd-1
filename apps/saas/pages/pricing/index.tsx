@@ -8,7 +8,7 @@ import {
   Modal,
   SaasUserLayout,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
