@@ -1,4 +1,4 @@
-import { Company } from "@eden/package-graphql/generated";
+import { Company, Position } from "@eden/package-graphql/generated";
 import Head from "next/head";
 import React, { FC } from "react";
 
@@ -30,8 +30,8 @@ export const SEOJobBoard: FC<SEOJobBoardProps> = ({
   // const apiUrl = `/api/og/position?image=${imageSrc}&position=${position}`;
   let apiUrl = `/api/og/jobs?image=${imageSrc}`;
 
-  if (company?.name) {
-    apiUrl = apiUrl + `&name=${company.name}`;
+  if (title) {
+    apiUrl = apiUrl + `&title=${title}`;
   }
 
   let ogImage = "https://edenprotocol.app" + apiUrl;
@@ -42,9 +42,16 @@ export const SEOJobBoard: FC<SEOJobBoardProps> = ({
     ogImage = apiUrl;
   }
 
+  const _positions = company?.positions?.filter(
+    (_position) =>
+      _position?.status !== "ARCHIVED" &&
+      _position?.status !== "UNPUBLISHED" &&
+      _position?.status !== "DELETED"
+  ) as Position[];
+
   const firstPosition =
-    company?.positions && company.positions.length > 0
-      ? company?.positions[0]?._id
+    _positions && _positions.length > 0
+      ? _positions[_positions.length - 1]?._id
       : "";
 
   return (
