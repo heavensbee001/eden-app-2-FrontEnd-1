@@ -28,7 +28,7 @@ export default async function handler(req: NextRequest) {
       (
         // Modified based on https://tailwindui.com/components/marketing/sections/cta-sections
         <div
-          tw="bg-[#F5C7DE] items-center"
+          tw="bg-[#F5C7DE] items-center justify-center"
           style={{
             height: "100%",
             width: "100%",
