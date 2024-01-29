@@ -130,7 +130,7 @@ const ErrorLogPage: NextPageWithLayout = () => {
             {pageInfo?.totalResults} Total
           </div>
         </div>
-        <Card className={`scrollbar-hide h-75 overflow-scroll scrollbar-hide`}>
+        <Card className={`scrollbar-hide h-75 scrollbar-hide overflow-scroll`}>
           {errorsData &&
             errorsData.map((error: ErrorLog) => (
               <Card
@@ -208,15 +208,15 @@ ErrorLogPage.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
 
 export default ErrorLogPage;
 
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
-import { getSession } from "next-auth/react";
 import { useState } from "react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

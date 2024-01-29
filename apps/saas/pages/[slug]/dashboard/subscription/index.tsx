@@ -1,10 +1,9 @@
 // import { UserContext } from "@eden/package-context";
 import { Button, SaasUserLayout } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 // import { useContext } from "react";
 import { BiCheck, BiInfinite } from "react-icons/bi";
 import {
@@ -342,7 +341,7 @@ export async function getServerSideProps(ctx: {
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

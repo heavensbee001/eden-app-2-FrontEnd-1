@@ -579,9 +579,9 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
 
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import mixpanel from "mixpanel-browser";
-import { getSession } from "next-auth/react";
 
 import ConfirmEmailContainer from "@/components/interview/ConfirmEmailContainer";
 
@@ -589,7 +589,7 @@ export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = (ctx as any).resolvedUrl;
 

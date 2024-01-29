@@ -28,8 +28,6 @@ import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
-// import { getSession } from "next-auth/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import {
@@ -1309,7 +1307,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     },
   });
 
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
   const userApplied = data.findPosition.candidates.find(
     (_cand: CandidateType) => _cand.user?._id === session?.user?.id
   );

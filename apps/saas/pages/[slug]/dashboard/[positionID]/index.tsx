@@ -149,8 +149,9 @@ const PositionCRM: NextPageWithLayout = () => {
   const [nodeIDsPosition, setNodeIDsPosition] = useState<string[]>([]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [selectedUserScore, setSelectedUserScore] =
-    useState<number | null>(null);
+  const [selectedUserScore, setSelectedUserScore] = useState<number | null>(
+    null
+  );
   const [selectedUserSummaryQuestions, setSelectedUserSummaryQuestions] =
     useState<any[]>([]);
 
@@ -2063,10 +2064,10 @@ PositionCRM.getLayout = (page: any) => <SaasUserLayout>{page}</SaasUserLayout>;
 export default PositionCRM;
 
 import { CompanyContext, UserContext } from "@eden/package-context";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
 import { BsFillGearFill, BsFillMicFill } from "react-icons/bs";
 import { GiHeartWings } from "react-icons/gi";
 import { TbTrashXFilled } from "react-icons/tb";
@@ -2076,7 +2077,7 @@ export async function getServerSideProps(ctx: {
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

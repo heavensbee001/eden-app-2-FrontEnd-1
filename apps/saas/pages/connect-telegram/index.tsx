@@ -1,7 +1,7 @@
 import { UserContext } from "@eden/package-context";
 import { SaasUserLayout } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
-import { getSession } from "next-auth/react";
 import { useContext } from "react";
 
 import ConnectTelegramContainer from "@/components/interview/ConnectTelegramContainer";
@@ -28,7 +28,7 @@ export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

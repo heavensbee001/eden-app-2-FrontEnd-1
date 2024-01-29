@@ -7,10 +7,10 @@ import {
   AskEdenPopUp,
   Button,
 } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import mixpanel from "mixpanel-browser";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
-import { getSession } from "next-auth/react";
 import { useContext, useEffect } from "react";
 
 import type { NextPageWithLayout } from "../../../_app";
@@ -100,7 +100,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     },
   });
 
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
   // if not session ask for login
 
   if (!session) {

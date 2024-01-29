@@ -57,22 +57,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = getCookieFromContext(ctx);
   const { redirect } = ctx.query;
 
-  // let redirectUrl = "/";
+  let redirectUrl;
 
-  // if (
-  //   redirect &&
-  //   typeof redirect === "string" &&
-  //   redirect.startsWith("_next")
-  // ) {
-  //   redirectUrl = "/";
-  // } else if (redirect && typeof redirect === "string") {
-  //   redirectUrl = redirect;
-  // }
+  if (
+    redirect &&
+    typeof redirect === "string" &&
+    redirect.startsWith("_next")
+  ) {
+    redirectUrl = "/";
+  } else if (redirect && typeof redirect === "string") {
+    redirectUrl = redirect;
+  }
 
   if (session) {
     return {
       redirect: {
-        destination: redirect || "/developer-dao/jobs",
+        destination: redirectUrl || "/developer-dao/jobs",
         permanent: false,
       },
       props: {},
@@ -81,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      redirect: redirect || "/developer-dao/jobs",
+      redirect: redirectUrl || "/developer-dao/jobs",
     },
   };
 };

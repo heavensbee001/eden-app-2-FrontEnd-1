@@ -413,15 +413,15 @@ const chatEden: NextPageWithLayout = () => {
 
 export default chatEden;
 
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { IncomingMessage, ServerResponse } from "http";
-import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

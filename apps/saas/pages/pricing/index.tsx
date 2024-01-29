@@ -12,7 +12,6 @@ import { classNames } from "@eden/package-ui/utils";
 import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 // import { useContext } from "react";
@@ -216,8 +215,9 @@ const SubscribePage: NextPageWithLayout = () => {
   // const router = useRouter();
 
   // const { currentUser } = useContext(UserContext);
-  const [openCreateCompanyId, setOpenCreateCompanyId] =
-    useState<String | null>(null);
+  const [openCreateCompanyId, setOpenCreateCompanyId] = useState<String | null>(
+    null
+  );
 
   // eslint-disable-next-line no-unused-vars
   const handleSubscribeClick = async (slug: String) => {
@@ -392,7 +392,7 @@ export async function getServerSideProps(ctx: {
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

@@ -20,11 +20,10 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -977,7 +976,7 @@ export async function getServerSideProps(ctx: {
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

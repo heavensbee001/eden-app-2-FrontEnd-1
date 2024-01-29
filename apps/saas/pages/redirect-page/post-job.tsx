@@ -1,9 +1,9 @@
 // import { UserContext } from "@eden/package-context";
 import { UserContext } from "@eden/package-context";
 import { Loading, SaasUserLayout } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { useContext, useEffect } from "react";
 
 // import { useContext } from "react";
@@ -46,7 +46,7 @@ export async function getServerSideProps(ctx: {
   resolvedUrl: string;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 
