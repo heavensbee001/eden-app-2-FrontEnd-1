@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.5",
-    "@dynamic-labs/ethers-v5": "^1.0.5",
-    "@dynamic-labs/sdk-react-core": "^1.0.5",
-    "@dynamic-labs/wagmi-connector": "^1.0.5",
+    "@dynamic-labs/ethers-v5": "^1.0.8",
+    "@dynamic-labs/sdk-react-core": "^1.0.8",
+    "@dynamic-labs/wagmi-connector": "^1.0.8",
     "@eden/package-context": "*",
     "@eden/package-graphql": "*",
     "@eden/package-ui": "*",
@@ -28,7 +28,6 @@
     "lottie-react": "^2.4.0",
     "mixpanel-browser": "^2.48.1",
     "next": "^13.1.5",
-    "next-auth": "^4.18.10",
     "next-axiom": "^0.16.0",
     "react": "^18.2.0",
     "react-datepicker": "^4.21.0",
@@ -37,7 +36,7 @@
     "react-google-recaptcha": "^3.1.0",
     "react-icons": "^4.6.0",
     "react-toastify": "^9.1.1",
-    "viem": "^2.0.6"
+    "viem": "^2.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

@@ -40,9 +40,9 @@
   },
   "dependencies": {
     "@antv/g6": "^4.8.3",
-    "@dynamic-labs/ethers-v5": "^1.0.6",
-    "@dynamic-labs/sdk-react-core": "^1.0.6",
-    "@dynamic-labs/wagmi-connector": "^1.0.6",
+    "@dynamic-labs/ethers-v5": "^1.0.8",
+    "@dynamic-labs/sdk-react-core": "^1.0.8",
+    "@dynamic-labs/wagmi-connector": "^1.0.8",
     "@hello-pangea/dnd": "^16.2.0",
     "@types/pdf-parse": "^1.1.1",
     "@types/pdfjs-dist": "^2.10.378",
