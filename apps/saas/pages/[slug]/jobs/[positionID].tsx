@@ -23,7 +23,7 @@ import {
   SEOPosition,
   Tooltip,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
