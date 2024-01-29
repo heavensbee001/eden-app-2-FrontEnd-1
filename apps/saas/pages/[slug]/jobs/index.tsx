@@ -61,7 +61,7 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
   return (
     <>
       <SEOJobBoard
-        title={company.name}
+        title={company?.name}
         description={company.description}
         company={company}
       />

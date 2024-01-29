@@ -67,7 +67,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         (_pos: Position) => _pos._id === currentJobId
       );
 
-      const newPosition = _positions[positionIndex + 1];
+      const newPosition =
+        _positions[positionIndex - 1] || _positions[_positions.length - 1];
 
       const imageUrl = getImageUrl(newPosition);
 
@@ -82,7 +83,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             <meta property="og:image" content="${imageUrl}">
             <meta name="fc:frame" content="vNext">
             <meta name="fc:frame:image" content="${imageUrl}">
-            <meta name="fc:frame:post_url" content="${baseUrl}/api/next-job?job=${newPosition._id}&community=${community}">
+            <meta name="fc:frame:post_url" content="${baseUrl}/api/fc/next-job?job=${newPosition._id}&community=${community}">
             <meta name="fc:frame:button:1" content="See next job">
           </head>
           <body>
