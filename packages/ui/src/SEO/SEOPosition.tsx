@@ -86,7 +86,7 @@ export const SEOPosition: FC<SEOPositionProps> = ({
         property="fc:frame:image"
         content={encodeURI(ogImage).replace(/&amp;/g, "&")}
       />
-      <meta property="fc:frame:button:1" content="Interview now" />
+      {/* <meta property="fc:frame:button:1" content="Interview now" />
       {redirectUrl && (
         <>
           <meta
@@ -99,7 +99,7 @@ export const SEOPosition: FC<SEOPositionProps> = ({
           />
           <meta property="fc:frame:button:1:action" content="redirect" />
         </>
-      )}
+      )} */}
 
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:site" content={`Eden protocol`} />
