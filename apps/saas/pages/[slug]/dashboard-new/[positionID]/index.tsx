@@ -146,8 +146,9 @@ const PositionCRM: NextPageWithLayout = () => {
 
   const [isTopicListMenuOpen, setIsTopicListMenuOpen] = useState(true);
 
-  const [letterType, setLetterType] =
-    useState<"rejection" | "nextInterviewInvite" | "">("");
+  const [letterType, setLetterType] = useState<
+    "rejection" | "nextInterviewInvite" | ""
+  >("");
 
   const handleRejectionLetter = () => {
     setLetterType("rejection");
@@ -1452,17 +1453,17 @@ PositionCRM.getLayout = (page: any) => (
 export default PositionCRM;
 
 import { CompanyContext } from "@eden/package-context";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

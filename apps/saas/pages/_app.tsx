@@ -1,16 +1,13 @@
 import "../styles/global.css";
 import "react-toastify/dist/ReactToastify.css";
 
-import { ApolloProvider } from "@apollo/client";
-import { CompanyProvider, UserProvider } from "@eden/package-context";
-import { apolloClient } from "@eden/package-graphql";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
-import { SessionProvider } from "next-auth/react";
 import type { ReactElement, ReactNode } from "react";
 import * as React from "react";
-import { ToastContainer } from "react-toastify";
+
+import { AppProviders } from "@/components/config/AppProviders";
 
 import mixpanelConfig from "../utils/tools/mixpanel";
 
@@ -34,7 +31,7 @@ type AppPropsWithLayout = AppProps & {
 
 const App = ({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { ...pageProps },
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
@@ -42,20 +39,13 @@ const App = ({
   mixpanelConfig();
 
   return (
-    <>
-      <SessionProvider session={session}>
-        <ApolloProvider client={apolloClient}>
-          <UserProvider>
-            <CompanyProvider>
-              {/* <AppMaintainanceLayout /> */}
-              <AppDeviceLayout />
-              {getLayout(<Component {...pageProps} />)}
-            </CompanyProvider>
-          </UserProvider>
-          <ToastContainer />
-        </ApolloProvider>
-      </SessionProvider>
-    </>
+    <AppProviders>
+      <>
+        {/* <AppMaintainanceLayout /> */}
+        <AppDeviceLayout />
+        {getLayout(<Component {...pageProps} />)}
+      </>
+    </AppProviders>
   );
 };
 

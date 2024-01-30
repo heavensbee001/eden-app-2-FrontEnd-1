@@ -15,12 +15,10 @@ import {
   SEOPosition,
   Tooltip,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
-// import { getSession } from "next-auth/react";
 import { useContext, useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineUserAdd } from "react-icons/ai";
 import { BsStar } from "react-icons/bs";
@@ -659,7 +657,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   // if not session ask for login
   if (!session) {

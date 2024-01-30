@@ -5,10 +5,10 @@ import {
   EmployeeTypeInput,
 } from "@eden/package-graphql/generated";
 import { Button, SaasUserLayout } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { useContext } from "react";
 import { toast } from "react-toastify";
 
@@ -134,7 +134,7 @@ export async function getServerSideProps(ctx: {
   resolvedUrl: string;
   query: { company: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   // const url = ctx.req.url;
 

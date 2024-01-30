@@ -5,7 +5,6 @@ import { apolloClient } from "@eden/package-graphql";
 import { Members } from "@eden/package-graphql/generated";
 import { getMember, apolloMocks, findServers } from "@eden/package-mock";
 import { DecoratorFn } from "@storybook/react";
-import { SessionProvider } from "next-auth/react";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider/next-12";
 import * as React from "react";
 import "./global.css";
@@ -72,10 +71,8 @@ export const decorators: DecoratorFn[] = [
     </ApolloProvider>
   ),
   (Story) => (
-    <SessionProvider>
-      <UserContext.Provider value={injectContext}>
-        <Story />
-      </UserContext.Provider>
-    </SessionProvider>
+    <UserContext.Provider value={injectContext}>
+      <Story />
+    </UserContext.Provider>
   ),
 ];

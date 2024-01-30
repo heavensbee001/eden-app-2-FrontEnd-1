@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-// import { SessionProvider } from "next-auth/react";
+// import { DynamicSessionProvider } from "@eden/package-context";
 import { AdminLayout } from "./AdminLayout";
 
 export default {

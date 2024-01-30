@@ -85,7 +85,7 @@ export const CandidateInfo = ({
   const [index, setIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log("memberID", memberID);
+  // console.log("memberID", memberID);
 
   const [letterType, setLetterType] = useState<
     "rejection" | "nextInterviewInvite" | ""

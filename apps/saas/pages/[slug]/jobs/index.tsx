@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { gql, useQuery } from "@apollo/client";
+import { DynamicConnectButton } from "@dynamic-labs/sdk-react-core";
 // eslint-disable-next-line no-unused-vars
 import { CompanyContext, UserContext } from "@eden/package-context";
 import { Company, Maybe, Position } from "@eden/package-graphql/generated";
@@ -19,7 +20,6 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
 import {
   Dispatch,
   SetStateAction,
@@ -517,11 +517,7 @@ const PostJobToCommunityCard = ({
 
   const handlePostJobClick = async () => {
     setLoadingSpinner(true);
-    if (!currentUser) {
-      signIn("google", {
-        callbackUrl: `/redirect-page/post-job?community=${company?._id}`,
-      });
-    } else if (
+    if (
       currentUser?.companies &&
       currentUser?.companies[0] &&
       currentUser?.companies[0].company?.slug
@@ -562,13 +558,19 @@ const PostJobToCommunityCard = ({
             alt={`${company?.name} company image`}
           />
 
-          <Button
-            variant="secondary"
-            className="float-right"
-            onClick={handlePostJobClick}
-          >
-            Post a magic job
-          </Button>
+          {currentUser ? (
+            <Button
+              variant="secondary"
+              className="float-right"
+              onClick={handlePostJobClick}
+            >
+              Post a magic job
+            </Button>
+          ) : (
+            <DynamicConnectButton buttonClassName="w-full py-2 px-4 font-Moret text-lg rounded-md font-bold bg-edenGreen-600 text-white hover:bg-edenGreen-300 hover:text-edenGreen-600 disabled:!text-edenGray-500 disabled:!bg-edenGray-100">
+              Post a magic job
+            </DynamicConnectButton>
+          )}
         </div>
       )}
       <div className="pt-2">

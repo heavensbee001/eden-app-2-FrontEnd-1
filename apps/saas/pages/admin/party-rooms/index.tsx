@@ -90,7 +90,7 @@ const DiscoverPage: NextPageWithLayout = () => {
     <>
       <SEO />
       <div
-        className={`h-9/10 scrollbar-hide m-3 w-full space-y-4 overflow-y-scroll p-1 scrollbar-hide`}
+        className={`h-9/10 scrollbar-hide scrollbar-hide m-3 w-full space-y-4 overflow-y-scroll p-1`}
       >
         <Card shadow className="scrollbar-hide w-full bg-white p-4">
           <div className={`grid grid-cols-2`}>
@@ -218,14 +218,14 @@ DiscoverPage.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
 export default DiscoverPage;
 
 import { ServerTemplate } from "@eden/package-graphql/generated";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
-import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

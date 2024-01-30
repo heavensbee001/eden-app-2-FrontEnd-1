@@ -99,7 +99,7 @@ export const CompanyProvider = ({ children }: CompanyProviderProps) => {
     if (router.query.slug) {
       getCompanyFunc();
     }
-  }, []);
+  }, [router.query.slug]);
 
   useMemo(() => {
     if (dataFindCompany?.findCompanyFromSlug) {

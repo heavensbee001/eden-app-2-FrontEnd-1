@@ -116,6 +116,9 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
+
+  useAuthGate();
+
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID, panda } = router.query;
 
@@ -458,7 +461,7 @@ const PositionCRM: NextPageWithLayout = () => {
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
 
-    console.log("user.summaryQuestions = ", user.summaryQuestions);
+    // console.log("user.summaryQuestions = ", user.summaryQuestions);
   };
 
   const [updateSkillScore, setUpdateSkillScore] = useState<boolean>(false);
@@ -2070,10 +2073,11 @@ PositionCRM.getLayout = (page: any) => <SaasUserLayout>{page}</SaasUserLayout>;
 export default PositionCRM;
 
 import { CompanyContext, UserContext } from "@eden/package-context";
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
 import { BsFillGearFill, BsFillMicFill } from "react-icons/bs";
 import { GiHeartWings } from "react-icons/gi";
 import { TbTrashXFilled } from "react-icons/tb";
@@ -2083,7 +2087,7 @@ export async function getServerSideProps(ctx: {
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

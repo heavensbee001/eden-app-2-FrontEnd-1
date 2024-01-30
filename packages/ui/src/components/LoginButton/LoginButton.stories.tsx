@@ -1,5 +1,5 @@
+import { DynamicSessionProvider } from "@eden/package-context";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { SessionProvider } from "next-auth/react";
 
 import { LoginButton } from "./LoginButton";
 
@@ -11,27 +11,17 @@ export default {
 
 const Template: ComponentStory<typeof LoginButton> = () => {
   return (
-    <SessionProvider
-      session={{
-        expires: "1",
-        // user: {
-        //   email: "a",
-        //   name: "Miral",
-        //   image:
-        //     "https://pbs.twimg.com/profile_images/1513838045589430277/4Pxad6DL_400x400.jpg",
-        // },
-      }}
-    >
+    <DynamicSessionProvider fetchingToken={false}>
       <LoginButton />
-    </SessionProvider>
+    </DynamicSessionProvider>
   );
 };
 
 const NotLoggedIn: ComponentStory<typeof LoginButton> = () => {
   return (
-    <SessionProvider session={null}>
+    <DynamicSessionProvider fetchingToken={false}>
       <LoginButton />
-    </SessionProvider>
+    </DynamicSessionProvider>
   );
 };
 

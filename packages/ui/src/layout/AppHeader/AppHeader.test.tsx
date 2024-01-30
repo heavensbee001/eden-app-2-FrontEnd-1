@@ -1,7 +1,7 @@
 import { MockedProvider } from "@apollo/client/testing";
+import { DynamicSessionProvider } from "@eden/package-context";
 import { FIND_MEMBER } from "@eden/package-graphql";
 import { render } from "@testing-library/react";
-import { SessionProvider } from "next-auth/react";
 
 import { AppHeader } from "./";
 jest.mock("next/router", () => require("next-router-mock"));
@@ -29,16 +29,11 @@ const mocks = [
 describe("AppHeader", () => {
   it("renders without throwing", () => {
     const { container } = render(
-      <SessionProvider
-        session={{
-          expires: "1",
-          user: { id: "1", email: "a", name: "Miral", image: "c" },
-        }}
-      >
+      <DynamicSessionProvider fetchingToken={false}>
         <MockedProvider mocks={mocks}>
           <AppHeader />
         </MockedProvider>
-      </SessionProvider>
+      </DynamicSessionProvider>
     );
 
     expect(container).toBeInTheDocument();

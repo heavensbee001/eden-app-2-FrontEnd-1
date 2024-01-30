@@ -24,7 +24,7 @@ type ProjectRoleInputs = {
     description: string;
     expectations: Maybe<string>[];
     benefits: Maybe<string>[];
-    nodes: Maybe<NodesType>[];
+    nodes: Maybe<any>[];
     hoursPerWeek: number;
     openPositions: number;
     ratePerHour: number;

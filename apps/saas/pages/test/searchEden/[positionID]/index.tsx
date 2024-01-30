@@ -13,7 +13,7 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
-import { classNames } from "@eden/package-ui/utils";
+import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -278,13 +278,12 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 export default HomePage;
 
 import { IncomingMessage, ServerResponse } from "http";
-import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 
