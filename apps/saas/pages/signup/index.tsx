@@ -1,10 +1,9 @@
-import { UserContext } from "@eden/package-context";
 import { AppUserLayout, Button } from "@eden/package-ui";
 import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { BiChevronDown, BiChevronRight } from "react-icons/bi";
 
 import { NextPageWithLayout } from "../_app";
@@ -38,7 +37,6 @@ const HARDCODED_POOLS = [
 
 const SignupCommunity: NextPageWithLayout = () => {
   const router = useRouter();
-  const { currentUser } = useContext(UserContext);
   const [selectedCollective, setSelectedCollective] = useState<number>(-1);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
