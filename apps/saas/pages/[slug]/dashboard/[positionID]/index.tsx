@@ -116,6 +116,9 @@ type relevantNodeObj = {
 
 const PositionCRM: NextPageWithLayout = () => {
   const router = useRouter();
+
+  useAuthGate();
+
   // eslint-disable-next-line no-unused-vars
   const { positionID, slug, listID, panda } = router.query;
 
@@ -458,7 +461,7 @@ const PositionCRM: NextPageWithLayout = () => {
     if (user.summaryQuestions)
       setSelectedUserSummaryQuestions(user.summaryQuestions);
 
-    console.log("user.summaryQuestions = ", user.summaryQuestions);
+    // console.log("user.summaryQuestions = ", user.summaryQuestions);
   };
 
   const [updateSkillScore, setUpdateSkillScore] = useState<boolean>(false);
@@ -2070,6 +2073,7 @@ PositionCRM.getLayout = (page: any) => <SaasUserLayout>{page}</SaasUserLayout>;
 export default PositionCRM;
 
 import { CompanyContext, UserContext } from "@eden/package-context";
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
 import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import dynamic from "next/dynamic";

@@ -1,5 +1,6 @@
 // import { UserContext } from "@eden/package-context";
 import { Button, SaasUserLayout } from "@eden/package-ui";
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
 import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
@@ -172,6 +173,8 @@ const PRODUCTS: PRODUCTS_TYPE = [
 ];
 
 const SubscribePage: NextPageWithLayout = () => {
+  useAuthGate();
+
   // eslint-disable-next-line no-unused-vars
   const router = useRouter();
   const slug = router.query.slug;

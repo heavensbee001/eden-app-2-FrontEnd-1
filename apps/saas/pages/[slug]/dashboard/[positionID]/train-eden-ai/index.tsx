@@ -20,6 +20,7 @@ import {
   Wizard,
   WizardStep,
 } from "@eden/package-ui";
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
 import { classNames, getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
@@ -211,6 +212,9 @@ const TrainAiPage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const { company } = useContext(CompanyContext);
   const router = useRouter();
+
+  useAuthGate();
+
   const { positionID, panda } = router.query;
 
   const [interviewEnded, setInterviewEnded] = useState(false);

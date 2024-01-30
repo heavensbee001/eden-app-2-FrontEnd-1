@@ -3,6 +3,7 @@ import { gql, useMutation } from "@apollo/client";
 import { CompanyContext } from "@eden/package-context";
 import { EmployeeTypeInput } from "@eden/package-graphql/generated";
 import { Avatar, Button, SaasUserLayout } from "@eden/package-ui";
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
 import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import { useContext } from "react";
@@ -29,6 +30,8 @@ const ADD_EMPLOYEES_COMPANY = gql`
 `;
 
 const PendingRequestsPage: NextPageWithLayout = () => {
+  useAuthGate();
+
   const { company } = useContext(CompanyContext);
 
   const [addEmployeesCompany] = useMutation(ADD_EMPLOYEES_COMPANY, {

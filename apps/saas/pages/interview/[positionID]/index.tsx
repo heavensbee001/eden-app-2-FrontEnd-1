@@ -42,6 +42,9 @@ const SUBMIT_CANDIDATE_POSITION = gql`
 const HomePage: NextPageWithLayout = () => {
   const { currentUser } = useContext(UserContext);
   const router = useRouter();
+
+  useAuthGate();
+
   const { positionID, panda } = router.query;
   // eslint-disable-next-line no-unused-vars
   const [interviewEnded, setInterviewEnded] = useState(false);
@@ -579,6 +582,7 @@ HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
 
 export default HomePage;
 
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
 import { IncomingMessage, ServerResponse } from "http";
 import mixpanel from "mixpanel-browser";
 

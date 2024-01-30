@@ -7,6 +7,7 @@ import {
   Modal,
   SaasUserLayout,
 } from "@eden/package-ui";
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
 import { getCookieFromContext } from "@eden/package-ui/utils";
 // import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
@@ -147,6 +148,9 @@ const CreatePositionModal = ({
 
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
+
+  useAuthGate();
+
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const [companyLoading, setCompanyLoading] = useState(true);
   const [updatePositionLoading, setUpdatePositionLoading] =

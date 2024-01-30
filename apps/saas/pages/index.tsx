@@ -1,7 +1,4 @@
-import {
-  DynamicConnectButton,
-  DynamicWidget,
-} from "@dynamic-labs/sdk-react-core";
+import { DynamicConnectButton } from "@dynamic-labs/sdk-react-core";
 import { DynamicSessionContext } from "@eden/package-context";
 import { AppUserLayout, EdenAiProcessingModal, SEO } from "@eden/package-ui";
 import { getCookieFromContext } from "@eden/package-ui/utils";
@@ -36,7 +33,6 @@ const LoginPage: NextPageWithLayout = ({
       <div
         className={`flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden pb-16`}
       >
-        <DynamicWidget innerButtonComponent="Log in" />
         {heroImage}
         <h1 className="text-bold text-edenGreen-600 mb-4 flex items-center justify-center text-center text-4xl">
           Hey 👋, so good to see you!

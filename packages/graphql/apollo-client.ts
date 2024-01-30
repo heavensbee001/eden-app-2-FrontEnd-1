@@ -16,6 +16,8 @@ import { createClient } from "graphql-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 
 import jwt_decode from "jwt-decode";
+import { getCookie, setCookie } from "cookies-next";
+import { parseCookie } from "../ui/utils";
 
 type decodedType = {
   exp: number;
@@ -34,7 +36,7 @@ const httpLinkEden = new HttpLink({ uri: EDEN_API_URL, fetch });
 console.log("EDEN_API_WSS", EDEN_API_WSS);
 
 const edenLink = new ApolloLink((operation, forward) => {
-  const token = localStorage.getItem("eden_access_token");
+  const { token } = parseCookie(getCookie("edenAuthToken")!);
 
   if (token) decoded = jwt_decode(token as string);
 
@@ -48,34 +50,48 @@ const edenLink = new ApolloLink((operation, forward) => {
     });
     return forward(operation);
   }
+  return forward(operation);
 
-  return fromPromise(
-    fetch(`/api/auth/fetchToken`)
-      .then((res) => res.json())
-      .then((data: any) => {
-        // console.log("DATA", data);
-        // console.log("ERROR", data.error);
-        if (data.error) return toPromise(forward(operation));
+  /*
+    ----------
+    This was messing up the auth flow, so I'm commenting it out for now.
+    We can revisit this later if needed.
+    ----------
+  */
 
-        // console.log("client.ts");
-        // console.log(auth.getToken());
+  // return fromPromise(
+  //   fetch(`/api/auth/dynamic`, {
+  //     method: "POST",
+  //     body: JSON.stringify({ accessToken: authToken }),
+  //     headers: { "Content-Type": "application/json" },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data: any) => {
+  //       console.log("DATA", data);
+  //       // console.log("ERROR", data.error);
+  //       if (data.error) return toPromise(forward(operation));
 
-        const edenToken = data.edenToken;
-        if (edenToken) {
-          operation.setContext({
-            headers: {
-              authorization: `Bearer ${edenToken}`,
-            },
-          });
-          localStorage.setItem("eden_access_token", edenToken);
-          return toPromise(forward(operation));
-        } else return toPromise(forward(operation));
-      })
+  //       // console.log("client.ts");
+  //       // console.log(auth.getToken());
 
-      .catch(() => {
-        return toPromise(forward(operation));
-      })
-  );
+  //       const edenToken = data.edenToken;
+  //       if (edenToken) {
+  //         operation.setContext({
+  //           headers: {
+  //             authorization: `Bearer ${edenToken}`,
+  //           },
+  //         });
+  //         setCookie("edenAuthToken", data.edenToken, {
+  //           expires: new Date(parseCookie(data.edenToken).exp * 1000),
+  //         });
+  //         return toPromise(forward(operation));
+  //       } else return toPromise(forward(operation));
+  //     })
+
+  //     .catch(() => {
+  //       return toPromise(forward(operation));
+  //     })
+  // );
 });
 
 const CREATE_ERROR = gql`
@@ -88,7 +104,7 @@ const CREATE_ERROR = gql`
 
 const errorLink = onError(({ graphQLErrors }) => {
   let errorToken: decodedType;
-  const token = localStorage.getItem("eden_access_token");
+  const { token } = parseCookie(getCookie("edenAuthToken")!);
 
   if (token) errorToken = jwt_decode(token as string);
 
