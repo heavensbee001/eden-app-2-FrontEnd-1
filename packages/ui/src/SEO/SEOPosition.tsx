@@ -97,7 +97,7 @@ export const SEOPosition: FC<SEOPositionProps> = ({
                 : `https://edenprotocol.app/api/fc/redirect?redirect=${redirectUrl}`
             }
           />
-          <meta property="fc:frame:button:1:action" content="redirect" />
+          <meta property="fc:frame:button:1:action" content="post_redirect" />
         </>
       )}
 
