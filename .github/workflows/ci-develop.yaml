@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 18
       - name: Restore node modules cache
         uses: actions/cache@v2
         env:
@@ -31,6 +31,8 @@ jobs:
       # - name: Build alpha
       #   run: yarn build:alpha
       - name: Build saas
+        env:
+          NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID: ${{ secrets.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID }}
         run: yarn build:saas
       # - name: Build landing
       #   run: yarn build:landing
@@ -38,4 +40,3 @@ jobs:
       #   run: yarn build
       # - name: Deploy to Vercel (Develop Preview)
       #   run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
-

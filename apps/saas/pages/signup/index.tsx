@@ -1,4 +1,5 @@
 import { AppUserLayout, Button } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -46,7 +47,7 @@ const SignupCommunity: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center bg-[url('/oasis-bg.png')] bg-cover bg-no-repeat overflow-y-scroll pb-16">
+      <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-y-scroll bg-[url('/oasis-bg.png')] bg-cover bg-no-repeat pb-16">
         <div>
           <div className="mx-auto flex h-[236px] w-[604px] flex-col items-center justify-center rounded-lg bg-white">
             <div className="font-Moret text-edenGreen-600 text-2xl font-bold leading-[33.6px]">
@@ -76,7 +77,7 @@ const SignupCommunity: NextPageWithLayout = () => {
                   viewBox="0 0 24 24"
                   strokeWidth={2.3}
                   stroke="#393939"
-                  className="h-4 w-4 -mb-px"
+                  className="-mb-px h-4 w-4"
                 >
                   <path
                     strokeLinecap="round"
@@ -86,10 +87,10 @@ const SignupCommunity: NextPageWithLayout = () => {
                 </svg>
               </div>
               {showOptions && (
-                <div className="z-10 border-edenGray-500 bg-edenPink-200 absolute left-0 top-full w-[204px] translate-y-1 rounded-md border">
+                <div className="border-edenGray-500 bg-edenPink-200 absolute left-0 top-full z-10 w-[204px] translate-y-1 rounded-md border">
                   {HARDCODED_POOLS.map((pool, index) => (
                     <div
-                      className="hover:bg-edenPink-400 pl-4 text-xs hover:cursor-pointer py-2"
+                      className="hover:bg-edenPink-400 py-2 pl-4 text-xs hover:cursor-pointer"
                       onClick={() => handleSelect(index)}
                       key={index}
                     >
@@ -108,11 +109,11 @@ const SignupCommunity: NextPageWithLayout = () => {
                 here
               </Link>
             </p>
+
             <Button
               disabled={selectedCollective === -1}
               className="flex h-[34px] items-center"
               onClick={() => {
-                // signIn("google", { callbackUrl: router.asPath });
                 if (selectedCollective > -1)
                   router.push(HARDCODED_POOLS[selectedCollective].url);
               }}
@@ -183,8 +184,20 @@ SignupCommunity.getLayout = (page: any) => (
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
+  resolvedUrl: string;
 }) {
-  const url = ctx.req.url;
+  const url = ctx.resolvedUrl;
+
+  const session = getCookieFromContext(ctx);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/?redirect=${encodeURIComponent(url)}`,
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: { key: url },

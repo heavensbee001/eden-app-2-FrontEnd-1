@@ -1,28 +1,27 @@
-import {
-  AppUserLayout,
-  Button,
-  EdenAiProcessingModal,
-  SEO,
-} from "@eden/package-ui";
+import { DynamicConnectButton } from "@dynamic-labs/sdk-react-core";
+import { DynamicSessionContext } from "@eden/package-context";
+import { AppUserLayout, EdenAiProcessingModal, SEO } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getSession, signIn } from "next-auth/react";
-import { useState } from "react";
+import { ReactElement, useContext, useMemo, useState } from "react";
 
 import { NextPageWithLayout } from "./_app";
 
-const HomePage: NextPageWithLayout = ({
+const LoginPage: NextPageWithLayout = ({
   redirect,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
-  const [loadingSpinner, setLoadingSpinner] = useState(false);
+  const { edenSession } = useContext(DynamicSessionContext);
+  const [redirecting, setRedirecting] = useState<boolean>(false);
 
-  const handleSignUp = () => {
-    setLoadingSpinner(true);
-    router.push("/signup");
-    setLoadingSpinner(false);
-  };
+  useMemo(() => {
+    if (edenSession) {
+      setRedirecting(true);
+      router.push(redirect);
+    }
+  }, [edenSession]);
 
   return (
     <>
@@ -31,38 +30,31 @@ const HomePage: NextPageWithLayout = ({
         <title>Eden protocol</title>
       </Head>
       <div
-        className={`min-h-[calc(100vh-4rem)] overflow-hidden flex flex-col items-center justify-center pb-16`}
+        className={`flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden pb-16`}
       >
         {heroImage}
         <h1 className="text-bold text-edenGreen-600 mb-4 flex items-center justify-center text-center text-4xl">
           Hey 👋, so good to see you!
         </h1>
-        <h2 className="text-bold text-edenGreen-600 text-center mb-12">
-          ✨ Let’s create some work-you-love-magic! ✨
+        <h2 className="text-bold text-edenGreen-600 mb-12 text-center">
+          {"✨ Let's create some work-you-love-magic! ✨"}
         </h2>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            signIn("google", { callbackUrl: redirect });
-          }}
-          className="w-40 mb-6"
-        >
-          Log in
-        </Button>
-        <Button onClick={handleSignUp} className="w-40">
-          Sign up
-        </Button>
+        <DynamicConnectButton buttonClassName="w-40 mb-6 py-2 px-4 font-Moret text-lg rounded-md font-bold bg-edenGreen-600 text-white hover:bg-edenGreen-300 hover:text-edenGreen-600 disabled:!text-edenGray-500 disabled:!bg-edenGray-100">
+          <span>Log in</span>
+        </DynamicConnectButton>
+
+        {/* <DynamicConnectButton buttonClassName="w-40 mb-6 py-2 px-4 font-Moret text-lg rounded-md font-bold border-2 border-edenGreen-600 bg-white text-edenGreen-600 hover:bg-edenGreen-600 hover:text-white disabled:!text-edenGray-500 disabled:!bg-edenGray-100">
+          <span>Sign up</span>
+        </DynamicConnectButton> */}
+
+        <EdenAiProcessingModal title="Redirecting" open={redirecting} />
       </div>
-      <EdenAiProcessingModal
-        title="Loading signup page"
-        open={loadingSpinner}
-      />
     </>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
   const { redirect } = ctx.query;
 
   // let redirectUrl = "/";
@@ -94,9 +86,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-HomePage.getLayout = (page) => <AppUserLayout>{page}</AppUserLayout>;
+LoginPage.getLayout = (page: ReactElement) => (
+  <AppUserLayout>{page}</AppUserLayout>
+);
 
-export default HomePage;
+export default LoginPage;
 
 const heroImage = (
   <svg

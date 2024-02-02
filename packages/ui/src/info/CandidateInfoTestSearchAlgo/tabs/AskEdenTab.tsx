@@ -8,14 +8,15 @@ import {
 } from "@eden/package-ui";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { FC, useContext, useState } from "react";
+
+import { getCookieFromContext } from "../../../../utils";
 
 async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = await getCookieFromContext(ctx);
 
   const url = ctx.req.url?.replace("/", "");
 

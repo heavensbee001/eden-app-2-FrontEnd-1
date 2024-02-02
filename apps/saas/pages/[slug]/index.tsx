@@ -5,10 +5,10 @@ import {
   EdenAiProcessingModal,
   SaasUserLayout,
 } from "@eden/package-ui";
+// import { getCookieFromContext } from "@eden/package-ui/utils";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { useContext, useMemo, useState } from "react";
 import { BiPlus } from "react-icons/bi";
 import { v4 as uuidv4 } from "uuid";
@@ -160,18 +160,18 @@ HomePage.getLayout = (page) => <SaasUserLayout>{page}</SaasUserLayout>;
 export default HomePage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
+  // const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/?redirect=${url}`,
-        permanent: false,
-      },
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: `/?redirect=${url}`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   return {
     props: {},

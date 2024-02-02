@@ -1,4 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { CompanyContext, UserContext } from "@eden/package-context";
 import {
   Avatar,
@@ -11,7 +12,6 @@ import { classNames } from "@eden/package-ui/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 import { useContext, useState } from "react";
 import { IconPickerItem } from "react-fa-icon-picker";
 import { useForm } from "react-hook-form";
@@ -386,9 +386,10 @@ const UserButton = ({ unwrapped }: UserButtonProps) => {
   const router = useRouter();
   const { currentUser } = useContext(UserContext);
   const { company } = useContext(CompanyContext);
+  const { handleLogOut } = useDynamicContext();
 
   const handleLogout = () => {
-    signOut();
+    handleLogOut();
     localStorage.removeItem("eden_access_token");
   };
 

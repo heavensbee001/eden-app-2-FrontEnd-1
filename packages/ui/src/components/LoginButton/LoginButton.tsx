@@ -1,11 +1,13 @@
+import {
+  DynamicConnectButton,
+  useDynamicContext,
+} from "@dynamic-labs/sdk-react-core";
 import { UserContext } from "@eden/package-context";
 import { Avatar } from "@eden/package-ui";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
-import { signIn, signOut } from "next-auth/react";
 import { Fragment, useContext } from "react";
-import { FaGoogle } from "react-icons/fa";
 
 const menuItems = [
   {
@@ -41,6 +43,7 @@ export interface ILoginButtonProps {
 export const LoginButton = ({ inApp }: ILoginButtonProps) => {
   const router = useRouter();
   const { currentUser } = useContext(UserContext);
+  const { handleLogOut } = useDynamicContext();
 
   return (
     <div className="top-16 z-50 text-right">
@@ -60,17 +63,9 @@ export const LoginButton = ({ inApp }: ILoginButtonProps) => {
               />
             </Menu.Button>
           ) : (
-            <button
-              className={`text-darkGreen flex rounded-full border border-blue-400 bg-white/50 p-1.5 font-medium hover:border-blue-600 hover:bg-white/60`}
-              onClick={() => signIn("google")}
-            >
-              <span className={`rounded-full bg-[#176bef] p-1`}>
-                <FaGoogle size={`1.2em`} color={`#ffffff`} />
-              </span>
-              <span className={`my-auto pl-2 pr-4 text-sm`}>
-                Login with Google
-              </span>
-            </button>
+            <DynamicConnectButton buttonClassName="w-40 mb-6 py-2 px-4 font-Moret text-lg rounded-md font-bold bg-edenGreen-600 text-white hover:bg-edenGreen-300 hover:text-edenGreen-600 disabled:!text-edenGray-500 disabled:!bg-edenGray-100">
+              <span>Log in</span>
+            </DynamicConnectButton>
           )}
         </>
         <Transition
@@ -119,7 +114,7 @@ export const LoginButton = ({ inApp }: ILoginButtonProps) => {
                 {({ active }) => (
                   <button
                     onClick={() => {
-                      signOut();
+                      handleLogOut();
                       localStorage.removeItem("eden_access_token");
                     }}
                     className={`${

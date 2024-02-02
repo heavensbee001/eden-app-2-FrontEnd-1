@@ -731,16 +731,16 @@ HomePage.getLayout = (page: any) => <AppUserLayoutNew>{page}</AppUserLayoutNew>;
 
 export default HomePage;
 
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

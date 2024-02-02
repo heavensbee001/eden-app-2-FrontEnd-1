@@ -7,11 +7,12 @@ import {
   Modal,
   SaasUserLayout,
 } from "@eden/package-ui";
+import useAuthGate from "@eden/package-ui/src/hooks/useAuthGate/useAuthGate";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 // import axios from "axios";
 import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { useContext, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiPlus } from "react-icons/bi";
@@ -147,6 +148,9 @@ const CreatePositionModal = ({
 
 const HomePage: NextPageWithLayout = () => {
   const router = useRouter();
+
+  useAuthGate();
+
   const { company, getCompanyFunc } = useContext(CompanyContext);
   const [companyLoading, setCompanyLoading] = useState(true);
   const [updatePositionLoading, setUpdatePositionLoading] =
@@ -332,7 +336,7 @@ export async function getServerSideProps(ctx: {
   res: ServerResponse;
   query: { slug: string };
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url;
 

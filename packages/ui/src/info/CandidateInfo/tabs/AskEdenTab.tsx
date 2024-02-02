@@ -5,16 +5,16 @@ import {
   ChatMessage,
   InterviewEdenAI,
 } from "@eden/package-ui";
+import { getCookieFromContext } from "@eden/package-ui/utils";
 import { IncomingMessage, ServerResponse } from "http";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { FC, useState } from "react";
 
 export async function getServerSideProps(ctx: {
   req: IncomingMessage;
   res: ServerResponse;
 }) {
-  const session = await getSession(ctx);
+  const session = getCookieFromContext(ctx);
 
   const url = ctx.req.url?.replace("/", "");
 
@@ -144,7 +144,7 @@ export const AskEdenTab: FC<Props> = ({ member, candidate }) => {
 
   return (
     <div className="w-full">
-      <div className="relative h-[calc(100vh-17rem)] mt-3">
+      <div className="relative mt-3 h-[calc(100vh-17rem)]">
         <div className="absolute left-0 top-2 z-20 w-full">
           {/* <ProgressBarGeneric
             color="accentColor"
