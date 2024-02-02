@@ -51,7 +51,9 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <DynamicContextProvider
       settings={{
-        environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
+        environmentId:
+          process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID! ||
+          "3ac2b7c5-e627-4143-a538-e0fdc2c54f01", //this is prod env id
         walletConnectors: [EthereumWalletConnectors],
         eventsCallbacks: {
           onAuthSuccess: onDynamicAuthSuccess,
