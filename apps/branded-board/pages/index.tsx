@@ -72,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (session) {
     return {
       redirect: {
-        destination: redirect || "/developer-dao/jobs",
+        destination: redirect || "/jobs",
         permanent: false,
       },
       props: {},
@@ -81,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      redirect: redirect || "/developer-dao/jobs",
+      redirect: redirect || "/jobs",
     },
   };
 };
