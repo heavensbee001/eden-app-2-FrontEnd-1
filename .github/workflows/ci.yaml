@@ -35,6 +35,8 @@ jobs:
       #   run: yarn build:nodes
       - name: Build saas
         run: yarn build:saas
+      - name: Build branded job board
+        run: yarn build:branded
       # - name: Build landing
       #   run: yarn build:landing
       # - name: Build web
