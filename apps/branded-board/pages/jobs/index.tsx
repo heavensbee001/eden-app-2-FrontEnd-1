@@ -8,6 +8,7 @@ import {
   SEOJobBoard,
 } from "@eden/package-ui";
 import axios from "axios";
+import { IncomingMessage, ServerResponse } from "http";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +16,7 @@ import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
-import type { NextPageWithLayout } from "../../_app";
+import type { NextPageWithLayout } from "../_app";
 // const ReactTooltip = dynamic<any>(() => import("react-tooltip"), {
 //   ssr: false,
 // });
@@ -127,15 +128,22 @@ JobsPage.getLayout = (page) => (
   <BrandedAppUserLayout>{page}</BrandedAppUserLayout>
 );
 
-export const getServerSideProps = async (context: any) => {
+export const getServerSideProps = async (context: {
+  req: IncomingMessage;
+  res: ServerResponse;
+}) => {
   try {
+    const _slug =
+      process.env.NEXT_PUBLIC_FORCE_SLUG_LOCALHOST ||
+      context.req.headers.host?.split(".")[0];
+
     const companyRes = await axios.post(
       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
       {
         headers: {
           "Access-Control-Allow-Origin": `*`,
         },
-        variables: { fields: { slug: context.params.slug } },
+        variables: { fields: { slug: _slug } },
         query: `
       query ($fields: findCompanyFromSlugInput) {
         findCompanyFromSlug(fields: $fields) {
@@ -193,7 +201,7 @@ export const getServerSideProps = async (context: any) => {
             "Access-Control-Allow-Origin": `*`,
           },
           variables: {
-            fields: { slug: context.params.slug },
+            fields: { slug: _slug },
           },
           query: `
         query Query($fields: findPositionsOfCommunityInput) {

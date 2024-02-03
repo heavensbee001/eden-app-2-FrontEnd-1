@@ -29,7 +29,7 @@ import { SlLocationPin } from "react-icons/sl";
 import { TbMoneybag } from "react-icons/tb";
 import { toast } from "react-toastify";
 
-import type { NextPageWithLayout } from "../../../_app";
+import type { NextPageWithLayout } from "../../_app";
 
 const PositionPage: NextPageWithLayout = ({
   position,
@@ -590,6 +590,9 @@ const client = new ApolloClient({
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const positionID = ctx.params?.positionID;
   const { edit } = ctx.query;
+  const _slug =
+    process.env.NEXT_PUBLIC_FORCE_SLUG_LOCALHOST ||
+    ctx.req.headers.host?.split(".")[0];
 
   const { data } = await client.query({
     query: gql`
@@ -682,7 +685,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       method: "POST",
       body: JSON.stringify({
         userID: session?.user!.id,
-        companySlug: ctx.query.slug,
+        companySlug: _slug,
       }),
       headers: { "Content-Type": "application/json" },
     }
@@ -694,7 +697,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (res.status === 401) {
     return {
       redirect: {
-        destination: `/request-access?company=${ctx.query.slug}`,
+        destination: `/request-access?company=${_slug}`,
         permanent: false,
       },
     };
