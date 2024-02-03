@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%;
+  }
+
+  h4 {
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%;
+  }
+
+  p,
+  a,
+  span,
+  div {
+    /* font-family: "Roboto", sans-serif; */
+  }
+
+  body {
+    font-family: "Roboto", sans-serif;
+    white-space: pre-wrap;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
+
+.remove-arrow::-webkit-inner-spin-button,
+.remove-arrow::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.remove-arrow {
+  -moz-appearance: textfield;
+}
+
+.__react_component_tooltip.show {
+  opacity: 1 !important;
+}
+
+@layer components {
+  .input-primary {
+    @apply font-Unica focus:border-accentColor focus:ring-soilGreen-500 my-2 flex w-full resize-none rounded-md border border-zinc-400/50 px-2 py-1 text-base focus:outline-transparent focus:ring;
+  }
+}
+
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 3px);
+}

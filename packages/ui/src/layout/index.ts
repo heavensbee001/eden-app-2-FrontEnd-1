@@ -6,5 +6,6 @@ export * from "./AppPublicLayout";
 export * from "./AppUserLayout";
 export * from "./AppUserLayoutNew";
 export * from "./AppUserSubmenuLayout";
+export * from "./BrandedAppUserLayout";
 export * from "./GridLayout";
 export * from "./SaasUserLayout";
