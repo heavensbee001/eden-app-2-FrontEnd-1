@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "turbo run dev --filter=@eden/app-alpha... --parallel",
     "dev:saas": "turbo run dev --filter=@eden/app-saas... --parallel",
+    "dev:branded": "turbo run dev --filter=@eden/branded-board... --parallel",
     "dev:landing": "turbo run dev --filter=@eden/app-landing... --parallel",
     "dev:alpha": "turbo run dev --filter=@eden/app-alpha... --parallel",
     "dev:prod": "turbo run dev --filter=web... --parallel",
@@ -23,6 +24,7 @@
     "clean-windows": "turbo run clean-windows && rd /s /q node_modules",
     "build": "turbo run build --filter=web...",
     "build:saas": "turbo run build --filter=@eden/app-saas...",
+    "build:branded": "turbo run build --filter=@eden/branded-board...",
     "build:landing": "turbo run build --filter=@eden/app-landing...",
     "build:alpha": "turbo run build --filter=@eden/app-alpha...",
     "build:nodes": "turbo run build --filter=@eden/app-nodes...",
