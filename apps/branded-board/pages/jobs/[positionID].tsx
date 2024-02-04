@@ -1372,7 +1372,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   const session = getCookieFromContext(ctx);
   const userApplied = data.findPosition.candidates.find(
-    (_cand: CandidateType) => _cand.user?._id === session?.user?.id
+    (_cand: CandidateType) => _cand.user?._id === session?._id
   );
 
   let submitted = false;
@@ -1419,7 +1419,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     {
       method: "POST",
       body: JSON.stringify({
-        userID: session?.user!.id,
+        userID: session?._id,
         companySlug: _slug,
       }),
       headers: { "Content-Type": "application/json" },
