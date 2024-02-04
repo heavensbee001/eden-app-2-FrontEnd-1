@@ -322,7 +322,7 @@ const PositionCard = ({ position, setLoadingSpinner }: PositionCardProps) => {
 
   const handlePickJobs = async (pos: any) => {
     setLoadingSpinner(true);
-    await router.push(`/${pos.company?.slug}/jobs/${pos._id}`);
+    await router.push(`/jobs/${pos._id}`);
     setLoadingSpinner(false);
   };
 
