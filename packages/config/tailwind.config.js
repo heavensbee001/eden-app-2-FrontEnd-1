@@ -23,6 +23,7 @@ module.exports = {
           500: "#F5C7DE",
         },
         edenGray: {
+          50: "#F8F8F8",
           100: "#F2F2F2",
           500: "#9D9D9D",
           700: "#626262",

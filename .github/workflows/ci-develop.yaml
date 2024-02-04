@@ -34,6 +34,10 @@ jobs:
         env:
           NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID: ${{ secrets.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID }}
         run: yarn build:saas
+      - name: Build branded job board
+        env:
+          NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID: ${{ secrets.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID }}
+        run: yarn build:branded
       # - name: Build landing
       #   run: yarn build:landing
       # - name: Build web
