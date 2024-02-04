@@ -1039,7 +1039,7 @@ const PositionPage: NextPageWithLayout = ({
                 {/* ---- BENEFITS ---- */}
                 {(editMode ||
                   (position?.company?.benefits &&
-                    getValues("company.founders") != "N/A")) && (
+                    getValues("company.benefits") != "N/A")) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">Benefits & perks</h3>
                     <p className="text-xs">
@@ -1070,7 +1070,7 @@ const PositionPage: NextPageWithLayout = ({
                 {/* ---- COMPANY VALUES ---- */}
                 {(editMode ||
                   (position?.company?.values &&
-                    getValues("company.founders") != "N/A")) && (
+                    getValues("company.values") != "N/A")) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">Company Values</h3>
                     <p className="text-xs">
