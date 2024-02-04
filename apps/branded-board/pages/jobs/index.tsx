@@ -1,4 +1,5 @@
 // eslint-disable-next-line no-unused-vars
+import { CheckIcon } from "@dynamic-labs/sdk-react-core";
 import { Maybe, Position } from "@eden/package-graphql/generated";
 import {
   BrandedAppUserLayout,
@@ -13,7 +14,8 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
 import type { NextPageWithLayout } from "../_app";
@@ -23,11 +25,12 @@ import type { NextPageWithLayout } from "../_app";
 
 const JobsPage: NextPageWithLayout = ({ company, positions }) => {
   const [loadingSpinner, setLoadingSpinner] = useState(false);
+  const [officePolicyFilter, setOfficePolicyFilter] = useState<string[]>([]);
 
   const _positions: Position[] =
     (company?.type === "COMMUNITY"
-      ? positions
-      : positions?.map((item: any) => {
+      ? positions.reverse()
+      : positions?.reverse().map((item: any) => {
           //this map avoids having to fetch company again inside each position in backend
           item!.company = {
             _id: company?._id,
@@ -37,6 +40,24 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
           };
           return item;
         })) || [];
+
+  const _filteredPositions =
+    officePolicyFilter.length === 0
+      ? []
+      : _positions.filter((_position: Position) => {
+          const _isHybrid =
+            _position?.generalDetails?.officePolicy === "hybrid-1-day-office" ||
+            _position?.generalDetails?.officePolicy === "hybrid-2-day-office" ||
+            _position?.generalDetails?.officePolicy === "hybrid-3-day-office" ||
+            _position?.generalDetails?.officePolicy === "hybrid-4-day-office";
+
+          return (
+            _isHybrid ||
+            officePolicyFilter.includes(
+              _position?.generalDetails?.officePolicy!
+            )
+          );
+        });
 
   return (
     <>
@@ -63,9 +84,23 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
       </Head>
 
       {/* -------- Banner -------- */}
-      <section className="mx-auto mb-8 max-w-screen-xl px-8">
-        <div className="mb-4 h-96 w-full rounded-lg bg-black px-12">
-          <div className="flex h-full w-full max-w-[60%] flex-col justify-center">
+      <section className="mx-auto mb-8 max-w-screen-xl px-2 md:px-8">
+        <div className="relative mb-4 w-full rounded-lg bg-black bg-[url('/banner-job-board-mobile.png')] bg-cover bg-center px-4 pb-36 pt-8 md:h-96 md:bg-[url('/banner-job-board.png')] md:px-12 md:pb-2 md:pt-4">
+          {/* company image */}
+          <div className="">
+            <Image
+              width="72"
+              height="72"
+              className="mx-auto mx-auto rounded-lg"
+              src={`${
+                company?.imageUrl
+                  ? company?.imageUrl
+                  : "/default-company-image.svg"
+              }`}
+              alt={`${company?.name} company image`}
+            />
+          </div>
+          <div className="flex w-full flex-col justify-center py-4 md:h-[calc(100%-72px)] md:max-w-[60%]">
             <h1 className="mb-2 text-white">
               {"The "}
               {company?.name}
@@ -77,10 +112,10 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
               }
             </p>
 
-            <div className="flex items-center">
-              <Link href={`/signup`}>
+            <div className="flex items-center justify-center md:justify-start">
+              <Link href={`/signup`} className="mr-3">
                 <BrandedButton color="#000000">
-                  Join Talent Collective
+                  Join the Collective
                 </BrandedButton>
               </Link>
               <span className="mr-3 text-white">or</span>
@@ -92,19 +127,22 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
         </div>
       </section>
 
-      <div className="mx-auto grid max-w-screen-xl grid-cols-12 gap-4 px-8 pb-16">
+      <div className="mx-auto grid max-w-screen-xl grid-cols-12 gap-4 px-2 pb-16 md:px-8">
         {/* -------- Filter & Ask Eden sections -------- */}
-        <section className="col-span-3">
+        <section className="col-span-12 md:col-span-3">
           {/* -------- Filter sections -------- */}
-          <FilterOpportunities />
+          <FilterOpportunities
+            onChange={(data: any) => {
+              setOfficePolicyFilter(data.officePolicy);
+            }}
+          />
         </section>
         {/* -------- Jobs Section -------- */}
-        <section className="col-span-9 px-6 pt-2">
+        <section className="col-span-12 pt-2 md:col-span-9 md:px-6">
           <h3 className="mb-2">Open opportunities</h3>
-          <div className="grid w-full grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3">
-            {_positions
-              ?.reverse()
-              .map((position: Maybe<Position>, index: number) => {
+          <div className="grid w-full grid-cols-1 gap-x-6 gap-y-4 md:gap-y-8 lg:grid-cols-3">
+            {_filteredPositions.map(
+              (position: Maybe<Position>, index: number) => {
                 return (
                   <PositionCard
                     position={position!}
@@ -112,7 +150,8 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
                     key={index}
                   />
                 );
-              })}
+              }
+            )}
           </div>
         </section>
       </div>
@@ -328,7 +367,7 @@ const PositionCard = ({ position, setLoadingSpinner }: PositionCardProps) => {
 
   return (
     <div
-      className="transition-ease-in-out group relative col-span-1 w-full cursor-pointer rounded-md bg-white p-1 shadow-sm transition-all hover:scale-[101%] hover:shadow-md"
+      className="transition-ease-in-out group relative col-span-1 w-full cursor-pointer rounded-md bg-[#F7F8F7] p-1 shadow-sm transition-all hover:scale-[101%] hover:shadow-md"
       onClick={() => {
         handlePickJobs(position);
       }}
@@ -395,14 +434,27 @@ const PositionCard = ({ position, setLoadingSpinner }: PositionCardProps) => {
   );
 };
 
-type FilterOpportunitiesProps = {};
+type FilterOpportunitiesProps = {
+  // eslint-disable-next-line no-unused-vars
+  onChange: (data: any) => void;
+};
 
-const FilterOpportunities = ({}: FilterOpportunitiesProps) => {
+const FilterOpportunities = ({ onChange }: FilterOpportunitiesProps) => {
   const [unwrapped, setUnwrapped] = useState(false);
 
+  const { watch, setValue, getValues } = useForm<any>({
+    defaultValues: {
+      officePolicy: ["on-site", "remote", "hybrid"],
+    },
+  });
+
+  useMemo(() => {
+    onChange({ officePolicy: getValues("officePolicy") });
+  }, [watch("officePolicy")]);
+
   return (
-    <section className="rounded-md bg-white p-4">
-      <div className="flex items-center">
+    <section className="rounded-md bg-[#F7F8F7] p-4">
+      <div className="mb-4 flex items-center">
         <h3>Filter opportunities</h3>
         <div
           className="hover:bg-edenGray-100 ml-auto flex h-5 w-5 cursor-pointer items-center justify-center rounded-full"
@@ -413,6 +465,90 @@ const FilterOpportunities = ({}: FilterOpportunitiesProps) => {
           {unwrapped ? <BiChevronDown /> : <BiChevronUp />}
         </div>
       </div>
+
+      <form>
+        <div className="relative mb-2 mr-2 inline-block">
+          <input
+            defaultChecked={true}
+            id="on-site"
+            type="checkbox"
+            className="peer hidden"
+            onChange={(e) => {
+              e.target.checked
+                ? setValue("officePolicy", [
+                    ...getValues("officePolicy"),
+                    "on-site",
+                  ])
+                : setValue(
+                    "officePolicy",
+                    getValues("officePolicy").filter(
+                      (item: string) => item !== "on-site"
+                    )
+                  );
+            }}
+          />
+          <label
+            htmlFor="on-site"
+            className="border-soilGray text-edenGray-500 cursor-pointer select-none rounded-sm border px-2 py-0.5 peer-checked:border-2 peer-checked:border-black peer-checked:text-black"
+          >
+            On-site
+          </label>
+        </div>
+        <div className="relative mb-2 mr-2 inline-block">
+          <input
+            defaultChecked={true}
+            id="remote"
+            type="checkbox"
+            className="peer hidden"
+            onChange={(e) => {
+              e.target.checked
+                ? setValue("officePolicy", [
+                    ...getValues("officePolicy"),
+                    "remote",
+                  ])
+                : setValue(
+                    "officePolicy",
+                    getValues("officePolicy").filter(
+                      (item: string) => item !== "remote"
+                    )
+                  );
+            }}
+          />
+          <label
+            htmlFor="remote"
+            className="border-soilGray text-edenGray-500 cursor-pointer select-none rounded-sm border px-2 py-0.5 peer-checked:border-2 peer-checked:border-black peer-checked:text-black"
+          >
+            Remote
+          </label>
+        </div>
+        <div className="relative mb-2 mr-2 inline-block">
+          <input
+            defaultChecked={true}
+            id="hybrid"
+            type="checkbox"
+            className="peer hidden"
+            onChange={(e) => {
+              e.target.checked
+                ? setValue("officePolicy", [
+                    ...getValues("officePolicy"),
+                    "hybrid",
+                  ])
+                : setValue(
+                    "officePolicy",
+                    getValues("officePolicy").filter(
+                      (item: string) => item !== "hybrid"
+                    )
+                  );
+            }}
+          />
+          <label
+            htmlFor="hybrid"
+            className="border-soilGray text-edenGray-500 cursor-pointer select-none rounded-sm border px-2 py-0.5 peer-checked:border-2 peer-checked:border-black peer-checked:text-black"
+          >
+            Hybrid
+          </label>
+        </div>
+      </form>
     </section>
   );
 };
@@ -429,7 +565,7 @@ const BrandedButton = ({ children, color }: BrandedButtonProps) => {
       style={{
         backgroundColor: color,
       }}
-      className="mr-3 inline-block rounded-md border border-white px-4 py-2 text-white hover:!bg-white hover:text-black"
+      className="whitespace-no-wrap inline-block rounded-md border border-white px-4 py-2 text-white hover:!bg-white hover:text-black"
     >
       {children}
     </button>
