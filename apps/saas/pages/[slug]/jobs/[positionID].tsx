@@ -121,6 +121,8 @@ const PositionPage: NextPageWithLayout = ({
   const [trainAiModalOpen, setTrainAiModalOpen] = useState(false);
   const [openAskEden, setOpenAskEden] = useState(false);
 
+  console.log(position.company);
+
   const { control, register, handleSubmit, getValues, setValue } = useForm<any>(
     {
       defaultValues: {
@@ -262,7 +264,7 @@ const PositionPage: NextPageWithLayout = ({
     }
   };
 
-  console.log("publishModalOpen", publishModalOpen);
+  // console.log("publishModalOpen", publishModalOpen);
 
   const parseOfficePolicy = (_officePolicy: string) => {
     if (_officePolicy === "on-site") return "On site";
@@ -1070,7 +1072,7 @@ const PositionPage: NextPageWithLayout = ({
                 {/* ---- COMPANY VALUES ---- */}
                 {(editMode ||
                   (position?.company?.values &&
-                    getValues("company.founders") != "N/A")) && (
+                    getValues("company.values") != "N/A")) && (
                   <div className="border-edenGreen-300 border-b-2 py-4 last:!border-0">
                     <h3 className="text-edenGreen-600">Company Values</h3>
                     <p className="text-xs">
@@ -1422,7 +1424,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   );
 
-  console.log(res.status);
+  // console.log(res.status);
 
   // if not authorised, redirect to request-access
   if (res.status === 401) {
