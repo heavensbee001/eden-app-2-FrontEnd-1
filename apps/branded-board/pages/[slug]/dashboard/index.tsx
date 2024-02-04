@@ -349,10 +349,7 @@ export async function getServerSideProps(ctx: {
     };
   }
 
-  if (
-    session.accessLevel === 5 &&
-    session.user?.id !== "113589215262737174259"
-  ) {
+  if (session.accessLevel === 5 && session._id !== "113589215262737174259") {
     return {
       props: { key: url },
     };
