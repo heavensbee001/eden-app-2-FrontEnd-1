@@ -2,7 +2,7 @@ import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
 
 export const config = {
-  runtime: "experimental-edge",
+  runtime: "edge",
 };
 
 const DEFAULT_IMAGE = `https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg`;
@@ -17,39 +17,38 @@ export default async function handler(req: NextRequest) {
 
     // console.log("urlDecoded", urlDecoded);
 
-    // find name in request url
-    const nameIndex = urlDecoded.indexOf("name=");
+    // find handle in request url
+    const handleIndex = urlDecoded.indexOf("handle=");
 
-    // get name string in request url
-    const nameString = urlDecoded.slice(nameIndex);
+    // get handle string in request url
+    const handleString = urlDecoded.slice(handleIndex);
 
-    // console.log("nameString", nameString);
-
-    // get name value in request url and split value by = and &
-    const nameValue = nameString
+    // get handle value in request url and split value by = and &
+    const handleValue = handleString
       .split("=")[1]
       .split("&")[0]
       .replace(/\+/g, " ");
 
-    // console.log("nameValue", nameValue);
+    // find handle in request url
+    const roleIndex = urlDecoded.indexOf("role=");
 
-    // find description in request url
-    const descriptionIndex = urlDecoded.indexOf("description=");
+    // get handle string in request url
+    const roleString = urlDecoded.slice(roleIndex);
 
-    // get description string in request url
-    const descriptionString = urlDecoded.slice(descriptionIndex);
-
-    // get description value in request url and split value by = and &
-    const descriptionValue = descriptionString
+    // get handle value in request url and split value by = and &
+    const roleValue = roleString
       .split("=")[1]
       .split("&")[0]
       .replace(/\+/g, " ");
 
     const imageSrc = searchParams.get("image") ?? DEFAULT_IMAGE;
 
-    const name = nameValue ? `${nameValue}` : "";
+    // check if imageSrc ends with .webp
+    const isWebp = imageSrc.endsWith(".webp");
 
-    const description = descriptionValue ? descriptionValue : "";
+    const handle = handleValue ? `@${handleValue}` : "";
+
+    const role = roleValue ? roleValue : "";
 
     return new ImageResponse(
       (
@@ -69,25 +68,25 @@ export default async function handler(req: NextRequest) {
             <div tw="flex w-full md:items-center justify-between">
               <div tw={`flex flex-col w-1/2 pl-8`}>
                 <span tw={`text-lg`} style={{ color: "#071B08" }}>
-                  view this grant on
+                  connect with me on
                 </span>
                 <span tw="text-zinc-600 text-2xl" style={{ color: "#071B08" }}>
                   {title}
                 </span>
                 <h2 tw="flex flex-col font-bold text-left py-6 flex-wrap">
                   <span tw={`text-4xl font-extrabold text-zinc-800`}>
-                    {name}
+                    {handle}
                   </span>
-                  <span tw={`text-zinc-600 text-3xl`}>{description}</span>
+                  <span tw={`text-zinc-600 text-3xl`}>{role}</span>
                 </h2>
               </div>
 
               <div tw="flex">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  alt={`${name} profile image`}
+                  alt={`${handle} profile image`}
                   height={400}
-                  src={imageSrc}
+                  src={isWebp ? DEFAULT_IMAGE : imageSrc}
                   style={{ margin: "0 0px" }}
                   width={400}
                 />

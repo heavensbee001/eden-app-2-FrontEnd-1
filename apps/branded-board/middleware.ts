@@ -33,6 +33,10 @@ export async function middleware(req: NextRequest) {
   const subdomain =
     process.env.NEXT_PUBLIC_FORCE_SLUG_LOCALHOST || getValidSubdomain(host);
 
+  if (url.pathname.includes("/api/")) {
+    return;
+  }
+
   if (subdomain) {
     // Subdomain available, rewriting
     // console.log(

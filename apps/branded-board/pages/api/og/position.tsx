@@ -2,7 +2,7 @@ import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
 
 export const config = {
-  runtime: "experimental-edge",
+  runtime: "edge",
 };
 
 const DEFAULT_IMAGE = `https://pbs.twimg.com/profile_images/1595723986524045312/fqOO4ZI__400x400.jpg`;
@@ -10,7 +10,7 @@ const DEFAULT_IMAGE = `https://pbs.twimg.com/profile_images/1595723986524045312/
 export default async function handler(req: NextRequest) {
   try {
     const moretBold = await fetch(
-      new URL("../../../../public/fonts/moret/Moret-Bold.woff", import.meta.url)
+      new URL("../../../public/fonts/moret/Moret-Bold.woff", import.meta.url)
     ).then((res) => res.arrayBuffer());
 
     const { searchParams } = new URL(req.url);

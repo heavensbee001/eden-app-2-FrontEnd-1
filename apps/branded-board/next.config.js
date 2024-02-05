@@ -17,18 +17,6 @@ module.exports = {
     ],
     formats: ["image/avif"],
   },
-  webpack: (config, { webpack }) => {
-    // Note: we provide webpack above so you should not `require` it
-    // Perform customizations to webpack config
-    config.plugins.push(
-      new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
-        resource.request = resource.request.replace(/^node:/, "");
-      })
-    );
-
-    // Important: return the modified config
-    return config;
-  },
 };
 
 const sentryConfig = {
