@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { BiPlus } from "react-icons/bi";
 import { v4 as uuidv4 } from "uuid";
 
-import type { NextPageWithLayout } from "../../../_app";
+import type { NextPageWithLayout } from "../../../../_app";
 
 const UPDATE_POSITION = gql`
   mutation ($fields: updatePositionInput!) {

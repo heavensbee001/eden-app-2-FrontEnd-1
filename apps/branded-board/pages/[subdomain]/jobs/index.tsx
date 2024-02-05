@@ -9,8 +9,7 @@ import {
   SEOJobBoard,
 } from "@eden/package-ui";
 import axios from "axios";
-import { IncomingMessage, ServerResponse } from "http";
-import Head from "next/head";
+import { InferGetStaticPropsType } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,7 +22,10 @@ import type { NextPageWithLayout } from "../../_app";
 //   ssr: false,
 // });
 
-const JobsPage: NextPageWithLayout = ({ company, positions }) => {
+const JobsPage: NextPageWithLayout = ({
+  company,
+  positions,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [loadingSpinner, setLoadingSpinner] = useState(false);
   const [officePolicyFilter, setOfficePolicyFilter] = useState<string[]>([]);
 
@@ -66,22 +68,6 @@ const JobsPage: NextPageWithLayout = ({ company, positions }) => {
         description={company.description}
         company={company}
       />
-      <Head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(h,o,t,j,a,r){
-                  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                  h._hjSettings={hjid:${process.env.NEXT_PUBLIC_HOTJAR_ID},hjsv:6};
-                  a=o.getElementsByTagName('head')[0];
-                  r=o.createElement('script');r.async=1;
-                  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                  a.appendChild(r);
-              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-            `,
-          }}
-        />
-      </Head>
 
       {/* -------- Banner -------- */}
       <section className="mx-auto mb-8 max-w-screen-xl px-2 md:px-8">
@@ -167,9 +153,7 @@ JobsPage.getLayout = (page) => (
   <BrandedAppUserLayout>{page}</BrandedAppUserLayout>
 );
 
-export const getServerSideProps = async (context: {
-  req: IncomingMessage;
-  res: ServerResponse;
+export const getStaticProps = async (context: {
   params: { subdomain: string };
 }) => {
   try {
@@ -298,7 +282,7 @@ export const getServerSideProps = async (context: {
       },
       // 10 min to rebuild all paths
       // (this means new data will show up after 10 min of being added)
-      // revalidate: 600,
+      revalidate: 600,
     };
   } catch (error) {
     console.log(error);
@@ -306,47 +290,44 @@ export const getServerSideProps = async (context: {
   }
 };
 
-// export const getStaticPaths = async () => {
-//   try {
-//     const res = await axios.post(
-//       process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
-//       {
-//         headers: {
-//           "Access-Control-Allow-Origin": `*`,
-//         },
-//         variables: { fields: [] },
-//         query: `
-//         query FindCompanies($fields: findCompaniesInput) {
-//           findCompanies(fields: $fields) {
-//             _id
-//             slug
-//           }
-//         }
-//         `,
-//       }
-//     );
+export const getStaticPaths = async () => {
+  try {
+    const res = await axios.post(
+      process.env.NEXT_PUBLIC_GRAPHQL_URL as string,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `*`,
+        },
+        variables: { fields: [] },
+        query: `
+        query FindCompanies($fields: findCompaniesInput) {
+          findCompanies(fields: $fields) {
+            _id
+            slug
+          }
+        }
+        `,
+      }
+    );
 
-//     const paths = res.data.data.findCompanies
-//       .filter((_comp: any) => !!_comp.slug)
-//       .map((_comp: any) => ({
-//         params: { slug: _comp.slug },
-//       }));
+    const paths = res.data.data.findCompanies
+      .filter((_comp: any) => !!_comp.slug)
+      .map((_comp: any) => ({
+        params: { subdomain: _comp.slug },
+      }));
 
-//     console.log("getStaticPaths --- ", paths);
-
-//     // { fallback: false } means other routes should 404
-//     return {
-//       paths,
-//       fallback: true,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       paths: [],
-//       fallback: true,
-//     };
-//   }
-// };
+    return {
+      paths,
+      fallback: true,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      paths: [],
+      fallback: true,
+    };
+  }
+};
 
 export default JobsPage;
 

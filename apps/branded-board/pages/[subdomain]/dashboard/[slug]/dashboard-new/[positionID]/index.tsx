@@ -41,7 +41,7 @@ const CandidateInfoNew = dynamic(
   }
 );
 
-import { NextPageWithLayout } from "../../../../_app";
+import { NextPageWithLayout } from "../../../../../_app";
 
 const UPDATE_POSITION = gql`
   mutation ($fields: updatePositionInput!) {

@@ -13,7 +13,7 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
-import { NextPageWithLayout } from "../../../_app";
+import { NextPageWithLayout } from "../../../../_app";
 
 const FIND_COMPANY_FROM_SLUG = gql`
   query ($fields: findCompanyFromSlugInput) {

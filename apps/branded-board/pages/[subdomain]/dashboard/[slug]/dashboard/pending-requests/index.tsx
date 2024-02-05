@@ -10,7 +10,7 @@ import { useContext } from "react";
 import { toast } from "react-toastify";
 
 // import { useContext } from "react";
-import type { NextPageWithLayout } from "../../../../_app";
+import type { NextPageWithLayout } from "../../../../../_app";
 
 const ADD_EMPLOYEES_COMPANY = gql`
   mutation ($fields: addEmployeesCompanyInput!) {

@@ -2,7 +2,7 @@ import SeoImage from "@eden/package-ui/src/components/SeoImage";
 import { ImageResponse } from "@vercel/og";
 
 export const config = {
-  runtime: "edge",
+  runtime: "experimental-edge",
 };
 
 export default async function handler() {
